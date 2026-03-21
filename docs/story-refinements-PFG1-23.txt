@@ -1,0 +1,61 @@
+Historia de usuario
+
+Como administrador de hotel,
+Quiero crear nuevas tarifas asociadas a mis habitaciones desde el portal administrativo,
+Para definir los precios base por noche según tipo de tarifa y vigencia, y que estos precios se reflejen en las búsquedas de los viajeros.
+
+Contexto de negocio
+
+TravelHub permite a los hoteles configurar múltiples tarifas por habitación para manejar diferentes escenarios de pricing: tarifa estándar, fin de semana, temporada alta y promocional. Estas tarifas son el insumo principal para:
+- El motor de búsqueda: los viajeros ven los precios al buscar hospedaje.
+- Los filtros de precio: los viajeros filtran por rango de precio.
+- Los reportes de ingresos: se calculan con base en las tarifas aplicadas.
+- Los descuentos: se crean sobre una tarifa existente.
+
+La plataforma opera con múltiples monedas (USD, ARS, CLP, PEN, COP, MXN) según el país del hotel.
+
+Precondiciones
+
+- El administrador ha iniciado sesión en el portal de hoteles.
+- El hotel tiene al menos una habitación registrada en el sistema.
+- El administrador ha navegado a la sección "Tarifas" desde el dashboard.
+
+Criterios de aceptación
+
+CA1 — Acceso al formulario de creación
+- Dado que el administrador está en la sección de tarifas,
+- Cuando haga clic en "Nueva tarifa",
+- Entonces se abre el panel/formulario de creación con todos los campos vacíos.
+
+CA2 — Campos requeridos del formulario
+- Dado que el administrador está en el formulario de nueva tarifa,
+- Cuando visualice el formulario,
+- Entonces debe poder ingresar:
+  - Habitación (selector/dropdown con las habitaciones del hotel)
+  - Tipo de tarifa (Estándar, Fin de semana, Temporada alta, Promocional)
+  - Precio por noche (valor numérico con moneda del hotel, e.g., COP)
+  - Vigencia (fecha inicio y fecha fin)
+
+CA3 — Validaciones del formulario
+- Dado que el administrador intenta guardar la tarifa,
+- Cuando algún campo requerido esté vacío o inválido,
+- Entonces el sistema muestra mensajes de error inline indicando qué campos deben corregirse (e.g., "El precio debe ser mayor a 0", "La fecha fin debe ser posterior a la fecha inicio").
+
+CA4 — Guardado exitoso
+- Dado que el administrador completa todos los campos correctamente,
+- Cuando haga clic en "Guardar",
+- Entonces la tarifa se crea, aparece en el listado de tarifas, y se muestra una notificación de éxito.
+
+CA5 — Cancelar creación
+- Dado que el administrador está en el formulario de nueva tarifa,
+- Cuando haga clic en "Cancelar",
+- Entonces se cierra el formulario sin guardar cambios y vuelve al listado.
+
+CA6 — Tarifa visible en el listado
+- Dado que se creó la tarifa exitosamente,
+- Cuando el administrador vuelva al listado de tarifas,
+- Entonces la nueva tarifa aparece en la tabla con: habitación, tipo, precio/noche y vigencia.
+
+Diseño de referencia
+
+La sección de tarifas usa un layout dividido: a la izquierda una tabla con las tarifas configuradas (habitación, tipo, precio/noche, vigencia, acciones) con barra de búsqueda, filtros por tipo y paginación; a la derecha un panel de creación/edición con el formulario (habitación, tipo de tarifa como grid de 4 opciones, precio con prefijo de moneda, y vigencia con fechas inicio/fin).

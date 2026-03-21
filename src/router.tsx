@@ -19,6 +19,17 @@ import RatesPage from './hotels/pages/RatesPage';
 import DiscountsPage from './hotels/pages/DiscountsPage';
 import ReportsPage from './hotels/pages/ReportsPage';
 
+import MobileSearchPage from './mobile/pages/MobileSearchPage';
+import MobileResultsPage from './mobile/pages/MobileResultsPage';
+import MobilePropertyDetailPage from './mobile/pages/MobilePropertyDetailPage';
+import MobileReservationSummaryPage from './mobile/pages/MobileReservationSummaryPage';
+import MobileSuccessPage from './mobile/pages/MobileSuccessPage';
+import MobileLoginPage from './mobile/pages/MobileLoginPage';
+import MobileMyReservationsPage from './mobile/pages/MobileMyReservationsPage';
+import MobileReservationDetailPage from './mobile/pages/MobileReservationDetailPage';
+import MobileCancelReservationPage from './mobile/pages/MobileCancelReservationPage';
+import MobileQRCheckInPage from './mobile/pages/MobileQRCheckInPage';
+
 export const router = createBrowserRouter([
   // Design System
   { path: '/design-system', element: <DesignSystemPage /> },
@@ -42,4 +53,16 @@ export const router = createBrowserRouter([
   { path: '/hotel/rates', element: <RatesPage /> },
   { path: '/hotel/discounts', element: <DiscountsPage /> },
   { path: '/hotel/reports', element: <ReportsPage /> },
+
+  // Mobile Traveler App
+  { path: '/mobile/search', element: <MobileSearchPage /> },
+  { path: '/mobile/results', element: <MobileResultsPage /> },
+  { path: '/mobile/property/:id', element: <MobilePropertyDetailPage /> },
+  { path: '/mobile/checkout', element: <MobileReservationSummaryPage /> },
+  { path: '/mobile/success', element: <MobileSuccessPage /> },
+  { path: '/mobile/login', element: <MobileLoginPage /> },
+  { path: '/mobile/reservations', element: <MobileMyReservationsPage /> },
+  { path: '/mobile/reservations/:id', element: <MobileReservationDetailPage /> },
+  { path: '/mobile/reservations/:id/cancel', element: <MobileCancelReservationPage /> },
+  { path: '/mobile/reservations/:id/qr', element: <MobileQRCheckInPage /> },
 ]);
