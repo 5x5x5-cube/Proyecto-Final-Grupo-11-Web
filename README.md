@@ -1,54 +1,76 @@
-# React + TypeScript + Vite
+# TravelHub Prototype
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Prototipo de alta fidelidad para la plataforma TravelHub, desarrollado como parte del proyecto final de UX de la Maestría en Ingeniería de Software (Uniandes).
 
-Currently, two official plugins are available:
+## Stack Tecnológico
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 19** + **TypeScript**
+- **Material UI (MUI)** con tema personalizado basado en **Material Design 3**
+- **Vite** como bundler
+- **React Router** para navegación SPA
 
-## Expanding the ESLint configuration
+## Estructura del Proyecto
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+```
+src/
+├── design-system/         # Sistema de diseño reutilizable
+│   ├── components/        # Componentes atómicos (Brand, StatusChip, RatingBadge, etc.)
+│   ├── layouts/           # Layouts compartidos (TravelerLayout, HotelAdminLayout, CheckoutLayout)
+│   ├── pages/             # Página showcase del design system
+│   └── theme/             # Palette de colores y tema MUI
+├── travelers/             # Portal del viajero
+│   ├── data/              # Datos mock (hoteles, destinos, reservas)
+│   └── pages/             # Páginas del flujo del viajero
+└── hotels/                # Portal de administración hotelera
+    ├── data/              # Datos mock (dashboard, reservas, tarifas)
+    └── pages/             # Páginas del panel de administración
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Portal del Viajero
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Ruta | Página |
+|------|--------|
+| `/` | Home — búsqueda y destinos destacados |
+| `/login` | Inicio de sesión |
+| `/results` | Resultados de búsqueda con filtros |
+| `/property/:id` | Detalle de propiedad |
+| `/checkout/cart` | Carrito de reserva |
+| `/checkout/payment` | Método de pago |
+| `/checkout/confirmation` | Confirmación de reserva |
+| `/reservations` | Mis reservas |
+| `/reservations/:id` | Detalle de reserva (con modales de confirmación y cancelación) |
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+## Portal de Administración Hotelera
+
+| Ruta | Página |
+|------|--------|
+| `/hotel/login` | Inicio de sesión del hotel |
+| `/hotel/dashboard` | Dashboard con estadísticas y reservas recientes |
+| `/hotel/reservations` | Gestión de reservas |
+| `/hotel/reservations/:id` | Detalle de reserva del huésped |
+| `/hotel/rates` | Gestión de tarifas |
+| `/hotel/discounts` | Gestión de descuentos |
+| `/hotel/reports` | Reportes de ingresos |
+
+## Design System
+
+Disponible en `/design-system`. Incluye:
+
+- Paleta de colores completa (Material Design 3)
+- Tipografía (Heading, Subheading, Body, Caption, Label)
+- Componentes: Brand, StatusChip, RatingBadge, AmenityTag, SectionCard, InfoGrid, PriceBreakdown, FilterChip, SearchField, Inputs, Buttons, ModalOverlay
+
+## Instalación y Desarrollo
+
+```bash
+npm install
+npm run dev
+```
+
+La aplicación estará disponible en `http://localhost:5173`.
+
+## Build
+
+```bash
+npm run build
 ```
