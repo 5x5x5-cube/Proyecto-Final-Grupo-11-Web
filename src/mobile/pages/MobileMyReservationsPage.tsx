@@ -128,7 +128,7 @@ export default function MobileMyReservationsPage() {
                     {res.checkIn} → {res.checkOut}
                   </Typography>
                   <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.primary }}>
-                    {typeof res.totalPrice === 'number' ? formatPrice(res.totalPrice) : res.totalPrice}
+                    {formatPrice(typeof res.totalPrice === 'number' ? res.totalPrice : (res as any).totalPriceCop ?? 0)}
                   </Typography>
                 </Box>
 

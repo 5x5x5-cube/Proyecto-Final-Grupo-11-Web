@@ -8,9 +8,11 @@ import MobileShell from '../components/MobileShell';
 import FilterChip from '../../design-system/components/FilterChip';
 import { palette } from '../../design-system/theme/palette';
 import { mockHotels } from '../../travelers/data/mockHotels';
+import { useLocale } from '../../contexts/LocaleContext';
 
 export default function MobileResultsPage() {
   const { t } = useTranslation('mobile');
+  const { formatPrice } = useLocale();
 
   return (
     <MobileShell activeTab="search">
@@ -129,8 +131,8 @@ export default function MobileResultsPage() {
                   </Typography>
                 </Box>
                 <Box sx={{ textAlign: 'right' }}>
-                  <Typography sx={{ fontSize: 16, fontWeight: 700, color: palette.primary }}>
-                    {hotel.pricePerNightDisplay}
+                  <Typography sx={{ fontSize: 16, fontWeight: 700, color: palette.primary, whiteSpace: 'nowrap' }}>
+                    {formatPrice(hotel.pricePerNight)}
                   </Typography>
                   <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>{t('results.perNight')}</Typography>
                 </Box>
