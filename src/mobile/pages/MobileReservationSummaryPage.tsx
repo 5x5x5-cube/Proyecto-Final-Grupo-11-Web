@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MobileShell from '../components/MobileShell';
 import InfoGrid from '../../design-system/components/InfoGrid';
@@ -12,6 +13,7 @@ const hotel = mockHotels[0];
 
 export default function MobileReservationSummaryPage() {
   const { t } = useTranslation('mobile');
+  const { formatPrice } = useLocale();
 
   return (
     <MobileShell hideNav>
@@ -86,11 +88,11 @@ export default function MobileReservationSummaryPage() {
           </Typography>
           <PriceBreakdown
             rows={[
-              { label: t('summary.nightsBreakdown', { count: 5 }), value: 'COP 2.400.000' },
-              { label: t('summary.taxes', { percent: 11 }), value: 'COP 264.000' },
+              { label: t('summary.nightsBreakdown', { count: 5 }), value: formatPrice(2400000) },
+              { label: t('summary.taxes', { percent: 11 }), value: formatPrice(264000) },
             ]}
             totalLabel={t('summary.total')}
-            totalValue="COP 2.664.000"
+            totalValue={formatPrice(2664000)}
           />
         </Box>
 

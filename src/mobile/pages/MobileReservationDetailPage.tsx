@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import MobileShell from '../components/MobileShell';
@@ -13,6 +14,7 @@ import { mockReservations } from '../../travelers/data/mockReservations';
 
 export default function MobileReservationDetailPage() {
   const { t } = useTranslation('mobile');
+  const { formatPrice } = useLocale();
   const { id } = useParams();
   const reservation = mockReservations.find((r) => r.id === Number(id)) || mockReservations[0];
 
@@ -101,8 +103,8 @@ export default function MobileReservationDetailPage() {
           </Typography>
           <PriceBreakdown
             rows={[
-              { label: t('reservationDetail.accommodation', { count: 5 }), value: 'COP 2.400.000' },
-              { label: t('reservationDetail.taxes'), value: 'COP 264.000' },
+              { label: t('reservationDetail.accommodation', { count: 5 }), value: formatPrice(2400000) },
+              { label: t('reservationDetail.taxes'), value: formatPrice(264000) },
             ]}
             totalLabel={t('reservationDetail.totalPaid')}
             totalValue={reservation.totalPrice}

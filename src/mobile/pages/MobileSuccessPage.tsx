@@ -1,12 +1,14 @@
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MobileShell from '../components/MobileShell';
 import { palette } from '../../design-system/theme/palette';
 
 export default function MobileSuccessPage() {
   const { t } = useTranslation('mobile');
+  const { formatPrice } = useLocale();
 
   return (
     <MobileShell hideNav>
@@ -85,7 +87,7 @@ export default function MobileSuccessPage() {
             }}
           >
             <Typography sx={{ fontSize: 14, fontWeight: 700, color: palette.onSurface }}>{t('success.total')}</Typography>
-            <Typography sx={{ fontSize: 14, fontWeight: 700, color: palette.primary }}>COP 2.664.000</Typography>
+            <Typography sx={{ fontSize: 14, fontWeight: 700, color: palette.primary }}>{formatPrice(2664000)}</Typography>
           </Box>
         </Box>
 

@@ -10,6 +10,7 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import KingBedIcon from '@mui/icons-material/KingBed';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import SectionCard from '../../design-system/components/SectionCard';
 import InfoGrid from '../../design-system/components/InfoGrid';
@@ -17,6 +18,7 @@ import { palette } from '../../design-system/theme/palette';
 
 export default function HotelReservationDetailPage() {
   const { t } = useTranslation('hotels');
+  const { formatPrice } = useLocale();
 
   const breadcrumbs = [
     { label: t('reservationDetail.breadcrumbs.dashboard'), href: '/hotel/dashboard' },
@@ -239,10 +241,10 @@ export default function HotelReservationDetailPage() {
 
               <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
                 <Typography sx={{ fontSize: 16, fontWeight: 700, color: palette.primary }}>
-                  COP 888.000{t('reservationDetail.perNight')}
+                  {formatPrice(888000)}{t('reservationDetail.perNight')}
                 </Typography>
                 <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                  {t('reservationDetail.nightsTotal', { nights: 3, total: 'COP 2.664.000' })}
+                  {t('reservationDetail.nightsTotal', { nights: 3, total: formatPrice(2664000) })}
                 </Typography>
               </Box>
             </Box>
@@ -255,10 +257,10 @@ export default function HotelReservationDetailPage() {
           <SectionCard icon={<ReceiptLongIcon sx={{ fontSize: 18, color: palette.primary }} />} title={t('reservationDetail.paymentSummary')}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {[
-                { label: t('reservationDetail.roomNights', { count: 3 }), value: 'COP 2.664.000', color: palette.onSurface },
-                { label: t('reservationDetail.taxIVA'), value: 'COP 505.160', color: palette.onSurface },
-                { label: t('reservationDetail.serviceCharge'), value: 'COP 80.000', color: palette.onSurface },
-                { label: t('reservationDetail.discountApplied'), value: '-COP 100.000', color: palette.success },
+                { label: t('reservationDetail.roomNights', { count: 3 }), value: formatPrice(2664000), color: palette.onSurface },
+                { label: t('reservationDetail.taxIVA'), value: formatPrice(505160), color: palette.onSurface },
+                { label: t('reservationDetail.serviceCharge'), value: formatPrice(80000), color: palette.onSurface },
+                { label: t('reservationDetail.discountApplied'), value: `-${formatPrice(100000)}`, color: palette.success },
               ].map((row, index) => (
                 <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
@@ -277,7 +279,7 @@ export default function HotelReservationDetailPage() {
                   {t('reservationDetail.totalCharged')}
                 </Typography>
                 <Typography sx={{ fontSize: 16, fontWeight: 700, color: palette.primary }}>
-                  COP 3.149.160
+                  {formatPrice(3149160)}
                 </Typography>
               </Box>
             </Box>

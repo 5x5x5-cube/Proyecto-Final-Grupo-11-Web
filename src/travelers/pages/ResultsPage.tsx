@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
 import StarIcon from '@mui/icons-material/Star';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import TravelerNav from '../../design-system/layouts/TravelerNav';
 import AmenityTag from '../../design-system/components/AmenityTag';
 import RatingBadge from '../../design-system/components/RatingBadge';
@@ -17,6 +18,7 @@ const starOptions = [
 
 export default function ResultsPage() {
   const { t } = useTranslation('travelers');
+  const { formatPrice } = useLocale();
 
   const propertyTypes = [
     t('results.filters.propertyTypes.hotel'),
@@ -77,7 +79,7 @@ export default function ResultsPage() {
           <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>{t('results.filters.minimum')}</Typography>
           <Box
             component="input"
-            defaultValue="COP 0"
+            defaultValue={formatPrice(0)}
             sx={{
               width: '100%',
               height: 44,
@@ -94,7 +96,7 @@ export default function ResultsPage() {
           <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>{t('results.filters.maximum')}</Typography>
           <Box
             component="input"
-            defaultValue="COP 800.000"
+            defaultValue={formatPrice(800000)}
             sx={{
               width: '100%',
               height: 44,
@@ -449,7 +451,7 @@ export default function ResultsPage() {
                   </Typography>
                   <Box>
                     <Typography sx={{ fontSize: 26, fontWeight: 700, color: palette.primary }}>
-                      {hotel.pricePerNightDisplay}
+                      {formatPrice(hotel.pricePerNight)}
                     </Typography>
                     <Typography
                       sx={{ fontSize: 12, color: palette.onSurfaceVariant, textAlign: 'right' }}
@@ -458,7 +460,7 @@ export default function ResultsPage() {
                     </Typography>
                   </Box>
                   <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                    {hotel.totalPriceDisplay}
+                    {`${formatPrice(hotel.totalPrice)} ${t('results.card.total')}`}
                   </Typography>
                   <Button
                     variant="contained"

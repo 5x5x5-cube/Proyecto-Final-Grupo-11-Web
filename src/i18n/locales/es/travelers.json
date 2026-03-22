@@ -85,7 +85,8 @@
       "reviews": "resenas",
       "from": "desde",
       "perNight": "por noche",
-      "viewRooms": "Ver habitaciones"
+      "viewRooms": "Ver habitaciones",
+      "total": "total"
     },
     "searchSummary": "Cartagena · 15 mar -- 20 mar · 2 huespedes"
   },
@@ -176,6 +177,7 @@
       "serviceFeeValue": "COP 0",
       "totalToPay": "Total a pagar",
       "totalValue": "COP 2.664.000",
+      "nightsLabel": "noches",
       "continueToPayment": "Continuar al pago",
       "securePayment": "Pago 100% seguro · Cifrado SSL"
     }
@@ -218,7 +220,8 @@
       "taxesValue": "COP 264.000",
       "totalToPay": "Total a pagar",
       "totalValue": "COP 2.664.000",
-      "payButton": "Pagar COP 2.664.000",
+      "nightsLabel": "noches",
+      "payLabel": "Pagar",
       "secureTransaction": "Transaccion protegida con cifrado SSL"
     }
   },
@@ -316,7 +319,9 @@
     },
     "priceSummary": {
       "title": "Resumen de pago",
+      "nightsLabel": "noches",
       "tourismTax": "Impuesto al turismo",
+      "vat": "IVA (19%)",
       "totalPaid": "Total pagado"
     },
     "cancelBox": {

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
@@ -13,6 +14,7 @@ import { palette } from '../../design-system/theme/palette';
 
 export default function MobilePaymentPage() {
   const { t } = useTranslation('mobile');
+  const { formatPrice } = useLocale();
   const [selected, setSelected] = useState<string>('credit');
 
   const paymentMethods = [
@@ -196,7 +198,7 @@ export default function MobilePaymentPage() {
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '8px' }}>
             <Typography sx={{ fontSize: 13, fontWeight: 600, color: palette.onSurface }}>{t('payment.total')}</Typography>
-            <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.primary }}>COP 2.664.000</Typography>
+            <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.primary }}>{formatPrice(2664000)}</Typography>
           </Box>
         </Box>
 
@@ -239,7 +241,7 @@ export default function MobilePaymentPage() {
             width: '100%',
           }}
         >
-          {t('payment.payButton', { amount: 'COP 2.664.000' })}
+          {t('payment.payButton', { amount: formatPrice(2664000) })}
         </Box>
       </Box>
     </MobileShell>

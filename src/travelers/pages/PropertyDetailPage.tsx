@@ -18,6 +18,7 @@ import AcUnitIcon from '@mui/icons-material/AcUnit';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import TravelerLayout from '../../design-system/layouts/TravelerLayout';
 import RatingBadge from '../../design-system/components/RatingBadge';
 import { palette } from '../../design-system/theme/palette';
@@ -48,6 +49,7 @@ const reviews = [
 
 export default function PropertyDetailPage() {
   const { t } = useTranslation('travelers');
+  const { formatPrice } = useLocale();
 
   const amenities = [
     { icon: <WifiIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.freeWifi') },
@@ -65,14 +67,14 @@ export default function PropertyDetailPage() {
     {
       name: t('propertyDetail.rooms.superiorRoom'),
       features: t('propertyDetail.rooms.superiorFeatures'),
-      price: 'COP 480k',
+      price: formatPrice(480000),
       gradient: 'linear-gradient(135deg, #006874, #4A9FAA)',
       active: true,
     },
     {
       name: t('propertyDetail.rooms.juniorSuite'),
       features: t('propertyDetail.rooms.juniorFeatures'),
-      price: 'COP 680k',
+      price: formatPrice(680000),
       gradient: 'linear-gradient(135deg, #1A6B4F, #4A9F7E)',
       active: false,
     },
@@ -95,7 +97,7 @@ export default function PropertyDetailPage() {
         <Box>
           <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>{t('propertyDetail.booking.from')}</Typography>
           <Typography sx={{ fontSize: 32, fontWeight: 700, color: palette.primary }}>
-            COP 480.000{' '}
+            {formatPrice(480000)}{' '}
             <Typography component="span" sx={{ fontSize: 16, fontWeight: 400, color: palette.onSurfaceVariant }}>
               {t('propertyDetail.booking.perNight')}
             </Typography>
@@ -183,12 +185,12 @@ export default function PropertyDetailPage() {
         {/* Price breakdown */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: palette.onSurfaceVariant }}>
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>COP 480.000 x 5 {t('propertyDetail.booking.nights')}</Typography>
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>COP 2.400.000</Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{formatPrice(480000)} x 5 {t('propertyDetail.booking.nights')}</Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{formatPrice(2400000)}</Typography>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: palette.onSurfaceVariant }}>
             <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{t('propertyDetail.booking.taxesAndFees')}</Typography>
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>COP 264.000</Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{formatPrice(264000)}</Typography>
           </Box>
           <Box
             sx={{
@@ -202,7 +204,7 @@ export default function PropertyDetailPage() {
             }}
           >
             <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>{t('propertyDetail.booking.total')}</Typography>
-            <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>COP 2.664.000</Typography>
+            <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>{formatPrice(2664000)}</Typography>
           </Box>
         </Box>
 

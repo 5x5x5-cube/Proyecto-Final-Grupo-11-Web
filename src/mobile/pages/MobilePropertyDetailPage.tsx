@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StarIcon from '@mui/icons-material/Star';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
@@ -11,13 +12,14 @@ import { mockHotels } from '../../travelers/data/mockHotels';
 
 export default function MobilePropertyDetailPage() {
   const { t } = useTranslation('mobile');
+  const { formatPrice } = useLocale();
   const { id } = useParams();
   const hotel = mockHotels.find((h) => h.id === Number(id)) || mockHotels[0];
 
   const rooms = [
-    { name: t('propertyDetail.rooms.superior'), bed: t('propertyDetail.rooms.bedKing'), price: 'COP 480k', perNight: true },
-    { name: t('propertyDetail.rooms.double'), bed: t('propertyDetail.rooms.bedDouble'), price: 'COP 520k', perNight: true },
-    { name: t('propertyDetail.rooms.juniorSuite'), bed: t('propertyDetail.rooms.bedKingSuite'), price: 'COP 720k', perNight: true },
+    { name: t('propertyDetail.rooms.superior'), bed: t('propertyDetail.rooms.bedKing'), price: formatPrice(480000), perNight: true },
+    { name: t('propertyDetail.rooms.double'), bed: t('propertyDetail.rooms.bedDouble'), price: formatPrice(520000), perNight: true },
+    { name: t('propertyDetail.rooms.juniorSuite'), bed: t('propertyDetail.rooms.bedKingSuite'), price: formatPrice(720000), perNight: true },
   ];
 
   const reviews = [
@@ -243,7 +245,7 @@ export default function MobilePropertyDetailPage() {
       >
         <Box>
           <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.primary }}>
-            {hotel.pricePerNightDisplay}
+            {formatPrice(hotel.pricePerNight)}
           </Typography>
           <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>{t('propertyDetail.perNight')}</Typography>
         </Box>

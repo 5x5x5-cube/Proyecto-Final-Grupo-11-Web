@@ -16,6 +16,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import BedIcon from '@mui/icons-material/Bed';
 import CheckIcon from '@mui/icons-material/Check';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import { palette } from '../../design-system/theme/palette';
 
@@ -26,15 +27,16 @@ const typeChipStyles: Record<string, { bg: string; color: string }> = {
   seasonal: { bg: '#F3E8FF', color: '#7B1FA2' },
 };
 
-const roomCheckboxes = [
-  { name: 'Suite Deluxe King', sub: 'Piso 4 · COP 888K/noche', checked: true },
-  { name: 'Junior Suite', sub: 'Piso 3 · COP 560K/noche', checked: true },
-  { name: 'Habitacion Estandar', sub: 'Piso 2 · COP 320K/noche', checked: false },
-  { name: 'Habitacion Doble', sub: 'Piso 1 · COP 280K/noche', checked: false },
-];
-
 export default function DiscountsPage() {
   const { t } = useTranslation('hotels');
+  const { formatPrice } = useLocale();
+
+  const roomCheckboxes = [
+    { name: 'Suite Deluxe King', sub: `Piso 4 · ${formatPrice(888000)}/noche`, checked: true },
+    { name: 'Junior Suite', sub: `Piso 3 · ${formatPrice(560000)}/noche`, checked: true },
+    { name: 'Habitacion Estandar', sub: `Piso 2 · ${formatPrice(320000)}/noche`, checked: false },
+    { name: 'Habitacion Doble', sub: `Piso 1 · ${formatPrice(280000)}/noche`, checked: false },
+  ];
 
   const discountCards = [
     {
