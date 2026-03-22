@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StarIcon from '@mui/icons-material/Star';
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
@@ -8,21 +9,22 @@ import AmenityTag from '../../design-system/components/AmenityTag';
 import { palette } from '../../design-system/theme/palette';
 import { mockHotels } from '../../travelers/data/mockHotels';
 
-const rooms = [
-  { name: 'Habitacion Superior', bed: '1 cama King', price: 'COP 480k', perNight: true },
-  { name: 'Habitacion Doble', bed: '2 camas dobles', price: 'COP 520k', perNight: true },
-  { name: 'Suite Junior', bed: '1 cama King + sala', price: 'COP 720k', perNight: true },
-];
-
-const reviews = [
-  { name: 'Maria G.', rating: 5, text: 'Excelente ubicacion y servicio. Volveria sin dudarlo.' },
-  { name: 'Carlos M.', rating: 4, text: 'Muy buen hotel, desayuno variado. La piscina es hermosa.' },
-  { name: 'Ana L.', rating: 5, text: 'Increible experiencia. El personal es muy amable.' },
-];
-
 export default function MobilePropertyDetailPage() {
+  const { t } = useTranslation('mobile');
   const { id } = useParams();
   const hotel = mockHotels.find((h) => h.id === Number(id)) || mockHotels[0];
+
+  const rooms = [
+    { name: t('propertyDetail.rooms.superior'), bed: t('propertyDetail.rooms.bedKing'), price: 'COP 480k', perNight: true },
+    { name: t('propertyDetail.rooms.double'), bed: t('propertyDetail.rooms.bedDouble'), price: 'COP 520k', perNight: true },
+    { name: t('propertyDetail.rooms.juniorSuite'), bed: t('propertyDetail.rooms.bedKingSuite'), price: 'COP 720k', perNight: true },
+  ];
+
+  const reviews = [
+    { name: 'Maria G.', rating: 5, text: t('propertyDetail.reviewTexts.review1') },
+    { name: 'Carlos M.', rating: 4, text: t('propertyDetail.reviewTexts.review2') },
+    { name: 'Ana L.', rating: 5, text: t('propertyDetail.reviewTexts.review3') },
+  ];
 
   return (
     <MobileShell hideNav>
@@ -50,7 +52,7 @@ export default function MobilePropertyDetailPage() {
             }}
           >
             <PhotoLibraryIcon sx={{ fontSize: 14, color: '#fff' }} />
-            <Typography sx={{ color: '#fff', fontSize: 12 }}>+{hotel.photoCount} fotos</Typography>
+            <Typography sx={{ color: '#fff', fontSize: 12 }}>{t('propertyDetail.photos', { count: hotel.photoCount })}</Typography>
           </Box>
         </Box>
 
@@ -106,20 +108,18 @@ export default function MobilePropertyDetailPage() {
           </Box>
           <StarIcon sx={{ fontSize: 14, color: palette.star }} />
           <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-            {hotel.reviewCount} resenas
+            {t('propertyDetail.reviews', { count: hotel.reviewCount })}
           </Typography>
         </Box>
 
         {/* Description */}
         <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, lineHeight: 1.6, mb: '20px' }}>
-          Disfrute de una estadia inolvidable en uno de los hoteles mas iconicos de Cartagena.
-          Ubicado en el corazon del centro historico, ofrece una combinacion perfecta de historia,
-          lujo y comodidad moderna.
+          {t('propertyDetail.description')}
         </Typography>
 
         {/* Amenities */}
         <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface, mb: '10px' }}>
-          Servicios incluidos
+          {t('propertyDetail.includedServices')}
         </Typography>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '6px', mb: '24px' }}>
           {hotel.amenities.map((a) => (
@@ -129,7 +129,7 @@ export default function MobilePropertyDetailPage() {
 
         {/* Rooms */}
         <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface, mb: '10px' }}>
-          Habitaciones disponibles
+          {t('propertyDetail.availableRooms')}
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px', mb: '24px' }}>
           {rooms.map((room) => (
@@ -160,7 +160,7 @@ export default function MobilePropertyDetailPage() {
               </Box>
               <Box sx={{ textAlign: 'right', flexShrink: 0 }}>
                 <Typography sx={{ fontSize: 14, fontWeight: 700, color: palette.primary }}>{room.price}</Typography>
-                <Typography sx={{ fontSize: 10, color: palette.onSurfaceVariant }}>/noche</Typography>
+                <Typography sx={{ fontSize: 10, color: palette.onSurfaceVariant }}>{t('propertyDetail.perNight')}</Typography>
               </Box>
             </Box>
           ))}
@@ -168,7 +168,7 @@ export default function MobilePropertyDetailPage() {
 
         {/* Reviews */}
         <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface, mb: '10px' }}>
-          Resenas de huespedes
+          {t('propertyDetail.guestReviews')}
         </Typography>
         <Box
           sx={{
@@ -245,7 +245,7 @@ export default function MobilePropertyDetailPage() {
           <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.primary }}>
             {hotel.pricePerNightDisplay}
           </Typography>
-          <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>/noche</Typography>
+          <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>{t('propertyDetail.perNight')}</Typography>
         </Box>
         <Box
           component={Link}
@@ -261,7 +261,7 @@ export default function MobilePropertyDetailPage() {
             fontWeight: 600,
           }}
         >
-          Reservar ahora
+          {t('propertyDetail.bookNow')}
         </Box>
       </Box>
     </MobileShell>

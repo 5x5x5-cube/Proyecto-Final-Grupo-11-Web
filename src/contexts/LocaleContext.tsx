@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import i18n from '../i18n';
 
 type Language = 'ES' | 'EN';
 type Currency = 'COP' | 'USD' | 'MXN' | 'ARS' | 'CLP' | 'PEN';
@@ -39,6 +40,10 @@ const LocaleContext = createContext<LocaleContextType | null>(null);
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguage] = useState<Language>('ES');
   const [currency, setCurrency] = useState<Currency>('COP');
+
+  useEffect(() => {
+    i18n.changeLanguage(language);
+  }, [language]);
 
   const formatPrice = (copAmount: number): string => {
     const { rate, symbol, decimals } = exchangeRates[currency];

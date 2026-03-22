@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
@@ -10,15 +11,16 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import MobileShell from '../components/MobileShell';
 import { palette } from '../../design-system/theme/palette';
 
-const paymentMethods = [
-  { key: 'credit', label: 'Tarjeta credito', icon: CreditCardIcon },
-  { key: 'debit', label: 'Tarjeta debito', icon: AccountBalanceIcon },
-  { key: 'wallet', label: 'Billetera digital', icon: AccountBalanceWalletIcon },
-  { key: 'transfer', label: 'Transferencia', icon: SwapHorizIcon },
-] as const;
-
 export default function MobilePaymentPage() {
+  const { t } = useTranslation('mobile');
   const [selected, setSelected] = useState<string>('credit');
+
+  const paymentMethods = [
+    { key: 'credit', label: t('payment.creditCard'), icon: CreditCardIcon },
+    { key: 'debit', label: t('payment.debitCard'), icon: AccountBalanceIcon },
+    { key: 'wallet', label: t('payment.digitalWallet'), icon: AccountBalanceWalletIcon },
+    { key: 'transfer', label: t('payment.transfer'), icon: SwapHorizIcon },
+  ] as const;
 
   return (
     <MobileShell hideNav>
@@ -38,14 +40,14 @@ export default function MobilePaymentPage() {
           <ArrowBackIcon sx={{ fontSize: 22 }} />
         </Box>
         <Typography sx={{ fontSize: 16, fontWeight: 600, color: palette.onSurface }}>
-          Metodo de pago
+          {t('payment.title')}
         </Typography>
       </Box>
 
       <Box sx={{ px: '16px', pt: '16px', pb: '90px' }}>
         {/* Payment method grid */}
         <Typography sx={{ fontSize: 13, fontWeight: 600, color: palette.onSurface, mb: '10px' }}>
-          Selecciona un metodo
+          {t('payment.selectMethod')}
         </Typography>
         <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', mb: '20px' }}>
           {paymentMethods.map((method) => {
@@ -95,13 +97,13 @@ export default function MobilePaymentPage() {
             }}
           >
             <Typography sx={{ fontSize: 13, fontWeight: 600, color: palette.onSurface, mb: '14px' }}>
-              Datos de la tarjeta
+              {t('payment.cardDetails')}
             </Typography>
 
             {/* Numero */}
             <Box sx={{ mb: '12px' }}>
               <Typography sx={{ fontSize: 11, fontWeight: 600, color: palette.onSurfaceVariant, mb: '4px' }}>
-                Numero de tarjeta
+                {t('payment.cardNumber')}
               </Typography>
               <Box
                 sx={{
@@ -124,7 +126,7 @@ export default function MobilePaymentPage() {
             {/* Titular */}
             <Box sx={{ mb: '12px' }}>
               <Typography sx={{ fontSize: 11, fontWeight: 600, color: palette.onSurfaceVariant, mb: '4px' }}>
-                Nombre del titular
+                {t('payment.cardHolder')}
               </Typography>
               <Box
                 sx={{
@@ -144,7 +146,7 @@ export default function MobilePaymentPage() {
             <Box sx={{ display: 'flex', gap: '10px' }}>
               <Box sx={{ flex: 1 }}>
                 <Typography sx={{ fontSize: 11, fontWeight: 600, color: palette.onSurfaceVariant, mb: '4px' }}>
-                  Vencimiento
+                  {t('payment.expiry')}
                 </Typography>
                 <Box
                   sx={{
@@ -159,7 +161,7 @@ export default function MobilePaymentPage() {
               </Box>
               <Box sx={{ flex: 1 }}>
                 <Typography sx={{ fontSize: 11, fontWeight: 600, color: palette.onSurfaceVariant, mb: '4px' }}>
-                  CVV
+                  {t('payment.cvv')}
                 </Typography>
                 <Box
                   sx={{
@@ -190,10 +192,10 @@ export default function MobilePaymentPage() {
             Hotel Estelar Cartagena
           </Typography>
           <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-            Sab 15 mar – Jue 20 mar · 5 noches
+            Sab 15 mar – Jue 20 mar · {t('payment.nights', { count: 5 })}
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '8px' }}>
-            <Typography sx={{ fontSize: 13, fontWeight: 600, color: palette.onSurface }}>Total</Typography>
+            <Typography sx={{ fontSize: 13, fontWeight: 600, color: palette.onSurface }}>{t('payment.total')}</Typography>
             <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.primary }}>COP 2.664.000</Typography>
           </Box>
         </Box>
@@ -202,7 +204,7 @@ export default function MobilePaymentPage() {
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', mb: '8px' }}>
           <LockOutlinedIcon sx={{ fontSize: 16, color: palette.onSurfaceVariant }} />
           <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>
-            Transaccion protegida con cifrado SSL
+            {t('payment.securityNote')}
           </Typography>
         </Box>
       </Box>
@@ -237,7 +239,7 @@ export default function MobilePaymentPage() {
             width: '100%',
           }}
         >
-          Pagar COP 2.664.000
+          {t('payment.payButton', { amount: 'COP 2.664.000' })}
         </Box>
       </Box>
     </MobileShell>

@@ -1,10 +1,13 @@
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MobileShell from '../components/MobileShell';
 import { palette } from '../../design-system/theme/palette';
 
 export default function MobileSuccessPage() {
+  const { t } = useTranslation('mobile');
+
   return (
     <MobileShell hideNav>
       <Box
@@ -33,10 +36,10 @@ export default function MobileSuccessPage() {
         </Box>
 
         <Typography sx={{ fontSize: 20, fontWeight: 700, color: palette.onSurface, textAlign: 'center', mb: '8px' }}>
-          Reserva creada exitosamente
+          {t('success.title')}
         </Typography>
         <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, textAlign: 'center', mb: '24px' }}>
-          Hemos enviado la confirmacion a tu correo electronico
+          {t('success.subtitle')}
         </Typography>
 
         {/* Reservation Code */}
@@ -50,7 +53,7 @@ export default function MobileSuccessPage() {
           }}
         >
           <Typography sx={{ fontSize: 11, color: palette.primary, fontWeight: 600, textAlign: 'center', mb: '2px' }}>
-            CODIGO DE RESERVA
+            {t('success.reservationCode')}
           </Typography>
           <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.onPrimaryContainer, textAlign: 'center' }}>
             TH-2026-48291
@@ -68,10 +71,10 @@ export default function MobileSuccessPage() {
             mb: '32px',
           }}
         >
-          <Row label="Hotel" value="Hotel Santa Clara Sofitel" />
-          <Row label="Fechas" value="15 - 20 mar 2026" />
-          <Row label="Habitacion" value="Superior · 1 cama King" />
-          <Row label="Huespedes" value="2 adultos" />
+          <Row label={t('success.hotel')} value="Hotel Santa Clara Sofitel" />
+          <Row label={t('success.dates')} value="15 - 20 mar 2026" />
+          <Row label={t('success.room')} value={t('success.roomValue')} />
+          <Row label={t('success.guests')} value={t('success.guestsValue', { count: 2 })} />
           <Box
             sx={{
               borderTop: `1px solid ${palette.outlineVariant}`,
@@ -81,7 +84,7 @@ export default function MobileSuccessPage() {
               justifyContent: 'space-between',
             }}
           >
-            <Typography sx={{ fontSize: 14, fontWeight: 700, color: palette.onSurface }}>Total</Typography>
+            <Typography sx={{ fontSize: 14, fontWeight: 700, color: palette.onSurface }}>{t('success.total')}</Typography>
             <Typography sx={{ fontSize: 14, fontWeight: 700, color: palette.primary }}>COP 2.664.000</Typography>
           </Box>
         </Box>
@@ -105,7 +108,7 @@ export default function MobileSuccessPage() {
             mb: '12px',
           }}
         >
-          Ver mis reservas
+          {t('success.viewReservations')}
         </Box>
         <Box
           component={Link}
@@ -118,7 +121,7 @@ export default function MobileSuccessPage() {
             pb: '24px',
           }}
         >
-          Volver al inicio
+          {t('success.backToHome')}
         </Box>
       </Box>
     </MobileShell>

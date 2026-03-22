@@ -15,83 +15,9 @@ import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { useTranslation } from 'react-i18next';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import { palette } from '../../design-system/theme/palette';
-
-const rates = [
-  {
-    id: 1,
-    name: 'Suite Deluxe King',
-    location: 'Piso 4 · Vista al mar',
-    icon: KingBedIcon,
-    type: 'standard',
-    typeLabel: 'Estandar',
-    typeIcon: StarIcon,
-    price: 'COP 888.000',
-    validity: 'Todo el ano',
-    selected: true,
-  },
-  {
-    id: 2,
-    name: 'Suite Deluxe King',
-    location: 'Piso 4 · Vista al mar',
-    icon: KingBedIcon,
-    type: 'weekend',
-    typeLabel: 'Fin de semana',
-    typeIcon: WeekendIcon,
-    price: 'COP 1.050.000',
-    validity: 'Todo el ano',
-    selected: false,
-  },
-  {
-    id: 3,
-    name: 'Suite Deluxe King',
-    location: 'Piso 4 · Vista al mar',
-    icon: KingBedIcon,
-    type: 'season',
-    typeLabel: 'Temporada alta',
-    typeIcon: WbSunnyIcon,
-    price: 'COP 1.280.000',
-    validity: 'Dic 20 - Ene 10',
-    selected: false,
-  },
-  {
-    id: 4,
-    name: 'Junior Suite',
-    location: 'Piso 3 · Vista jardin',
-    icon: HotelIcon,
-    type: 'standard',
-    typeLabel: 'Estandar',
-    typeIcon: StarIcon,
-    price: 'COP 560.000',
-    validity: 'Todo el ano',
-    selected: false,
-  },
-  {
-    id: 5,
-    name: 'Junior Suite',
-    location: 'Piso 3 · Vista jardin',
-    icon: HotelIcon,
-    type: 'promo',
-    typeLabel: 'Promocional',
-    typeIcon: LocalOfferIcon,
-    price: 'COP 420.000',
-    validity: 'Mar 1 - Mar 31',
-    selected: false,
-  },
-  {
-    id: 6,
-    name: 'Habitacion Estandar',
-    location: 'Piso 2 · Vista interior',
-    icon: SingleBedIcon,
-    type: 'standard',
-    typeLabel: 'Estandar',
-    typeIcon: StarIcon,
-    price: 'COP 320.000',
-    validity: 'Todo el ano',
-    selected: false,
-  },
-];
 
 const typeChipStyles: Record<string, { bg: string; color: string }> = {
   standard: { bg: palette.primaryContainer, color: palette.primary },
@@ -100,21 +26,98 @@ const typeChipStyles: Record<string, { bg: string; color: string }> = {
   promo: { bg: palette.successContainer, color: palette.success },
 };
 
-const filterChips = ['Todas', 'Estandar', 'Fin de semana', 'Temporada', 'Promocional'];
-
-const rateTypeOptions = [
-  { icon: StarIcon, label: 'Estandar', desc: 'Precio base regular', selected: true },
-  { icon: WeekendIcon, label: 'Fin de semana', desc: 'Vie, Sab, Dom', selected: false },
-  { icon: WbSunnyIcon, label: 'Temporada alta', desc: 'Rango de fechas', selected: false },
-  { icon: LocalOfferIcon, label: 'Promocional', desc: 'Descuento especial', selected: false },
-];
-
 export default function RatesPage() {
+  const { t } = useTranslation('hotels');
+
+  const rates = [
+    {
+      id: 1,
+      name: 'Suite Deluxe King',
+      location: 'Piso 4 · Vista al mar',
+      icon: KingBedIcon,
+      type: 'standard',
+      typeLabel: t('rates.typeStandard'),
+      typeIcon: StarIcon,
+      price: 'COP 888.000',
+      validity: t('rates.allYear'),
+      selected: true,
+    },
+    {
+      id: 2,
+      name: 'Suite Deluxe King',
+      location: 'Piso 4 · Vista al mar',
+      icon: KingBedIcon,
+      type: 'weekend',
+      typeLabel: t('rates.typeWeekend'),
+      typeIcon: WeekendIcon,
+      price: 'COP 1.050.000',
+      validity: t('rates.allYear'),
+      selected: false,
+    },
+    {
+      id: 3,
+      name: 'Suite Deluxe King',
+      location: 'Piso 4 · Vista al mar',
+      icon: KingBedIcon,
+      type: 'season',
+      typeLabel: t('rates.typeSeason'),
+      typeIcon: WbSunnyIcon,
+      price: 'COP 1.280.000',
+      validity: 'Dic 20 - Ene 10',
+      selected: false,
+    },
+    {
+      id: 4,
+      name: 'Junior Suite',
+      location: 'Piso 3 · Vista jardin',
+      icon: HotelIcon,
+      type: 'standard',
+      typeLabel: t('rates.typeStandard'),
+      typeIcon: StarIcon,
+      price: 'COP 560.000',
+      validity: t('rates.allYear'),
+      selected: false,
+    },
+    {
+      id: 5,
+      name: 'Junior Suite',
+      location: 'Piso 3 · Vista jardin',
+      icon: HotelIcon,
+      type: 'promo',
+      typeLabel: t('rates.typePromo'),
+      typeIcon: LocalOfferIcon,
+      price: 'COP 420.000',
+      validity: 'Mar 1 - Mar 31',
+      selected: false,
+    },
+    {
+      id: 6,
+      name: 'Habitacion Estandar',
+      location: 'Piso 2 · Vista interior',
+      icon: SingleBedIcon,
+      type: 'standard',
+      typeLabel: t('rates.typeStandard'),
+      typeIcon: StarIcon,
+      price: 'COP 320.000',
+      validity: t('rates.allYear'),
+      selected: false,
+    },
+  ];
+
+  const filterChips = [t('rates.filterAll'), t('rates.filterStandard'), t('rates.filterWeekend'), t('rates.filterSeason'), t('rates.filterPromo')];
+
+  const rateTypeOptions = [
+    { icon: StarIcon, label: t('rates.typeStandard'), desc: t('rates.typeStandardDesc'), selected: true },
+    { icon: WeekendIcon, label: t('rates.typeWeekend'), desc: t('rates.typeWeekendDesc'), selected: false },
+    { icon: WbSunnyIcon, label: t('rates.typeSeason'), desc: t('rates.typeSeasonDesc'), selected: false },
+    { icon: LocalOfferIcon, label: t('rates.typePromo'), desc: t('rates.typePromoDesc'), selected: false },
+  ];
+
   return (
     <HotelAdminLayout
       activeNav="tarifas"
-      title="Gestion de Tarifas"
-      subtitle="Configura precios por habitacion, temporada y tipo de dia"
+      title={t('rates.title')}
+      subtitle={t('rates.subtitle')}
       topbarActions={
         <Box
           sx={{
@@ -132,7 +135,7 @@ export default function RatesPage() {
           }}
         >
           <AddIcon sx={{ fontSize: 16 }} />
-          Nueva tarifa
+          {t('rates.newRate')}
         </Box>
       }
     >
@@ -165,7 +168,7 @@ export default function RatesPage() {
           }}
         >
           <SearchIcon sx={{ fontSize: 18, color: palette.outline }} />
-          Buscar tarifa o habitacion...
+          {t('rates.searchPlaceholder')}
         </Box>
 
         <Box sx={{ width: '1px', height: 24, background: palette.outlineVariant, mx: '4px', flexShrink: 0 }} />
@@ -217,10 +220,10 @@ export default function RatesPage() {
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 14, fontWeight: 700, color: palette.onSurface }}>
               <SellIcon sx={{ fontSize: 18, color: palette.primary }} />
-              Tarifas configuradas
+              {t('rates.configuredRates')}
             </Box>
             <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-              12 tarifas · 4 habitaciones
+              {t('rates.ratesSummary', { rates: 12, rooms: 4 })}
             </Typography>
           </Box>
 
@@ -228,7 +231,7 @@ export default function RatesPage() {
           <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse' }}>
             <Box component="thead">
               <Box component="tr">
-                {['Habitacion', 'Tipo de tarifa', 'Precio / noche', 'Vigencia', 'Acciones'].map((header) => (
+                {[t('rates.tableHeaders.room'), t('rates.tableHeaders.rateType'), t('rates.tableHeaders.pricePerNight'), t('rates.tableHeaders.validity'), t('rates.tableHeaders.actions')].map((header) => (
                   <Box
                     component="th"
                     key={header}
@@ -310,7 +313,7 @@ export default function RatesPage() {
                     <Box component="td" sx={{ padding: '12px 16px', verticalAlign: 'middle' }}>
                       <Typography sx={{ fontSize: 15, fontWeight: 700, color: palette.onSurface }}>
                         {rate.price}{' '}
-                        <Box component="span" sx={{ fontSize: 11, color: palette.outline, fontWeight: 400 }}>/ noche</Box>
+                        <Box component="span" sx={{ fontSize: 11, color: palette.outline, fontWeight: 400 }}>{t('rates.perNight')}</Box>
                       </Typography>
                     </Box>
                     {/* Validity */}
@@ -374,7 +377,7 @@ export default function RatesPage() {
               mt: 'auto',
             }}
           >
-            <span>Mostrando 1-6 de 12 tarifas</span>
+            <span>{t('rates.showingRates', { from: 1, to: 6, total: 12 })}</span>
             <Box sx={{ display: 'flex', gap: '4px' }}>
               <Box
                 sx={{
@@ -467,7 +470,7 @@ export default function RatesPage() {
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 14, fontWeight: 700, color: '#fff' }}>
               <EditIcon sx={{ fontSize: 18 }} />
-              Editar tarifa
+              {t('rates.editRate')}
             </Box>
             <Box
               sx={{
@@ -489,7 +492,7 @@ export default function RatesPage() {
           <Box sx={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto', flex: 1 }}>
             {/* Room section */}
             <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
-              Habitacion
+              {t('rates.roomLabel')}
             </Typography>
             <Box sx={{ position: 'relative' }}>
               <Typography
@@ -505,7 +508,7 @@ export default function RatesPage() {
                   zIndex: 1,
                 }}
               >
-                Habitacion
+                {t('rates.roomLabel')}
               </Typography>
               <Box
                 component="select"
@@ -530,7 +533,7 @@ export default function RatesPage() {
 
             {/* Rate type section */}
             <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
-              Tipo de tarifa
+              {t('rates.rateTypeLabel')}
             </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               {rateTypeOptions.map((opt) => {
@@ -559,7 +562,7 @@ export default function RatesPage() {
 
             {/* Price section */}
             <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
-              Precio
+              {t('rates.priceLabel')}
             </Typography>
             <Box sx={{ position: 'relative' }}>
               <Typography
@@ -575,7 +578,7 @@ export default function RatesPage() {
                   zIndex: 1,
                 }}
               >
-                Precio por noche
+                {t('rates.pricePerNightLabel')}
               </Typography>
               <Box sx={{ display: 'flex' }}>
                 <Box
@@ -618,7 +621,7 @@ export default function RatesPage() {
 
             {/* Validity section */}
             <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
-              Vigencia
+              {t('rates.validityLabel')}
             </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <Box sx={{ position: 'relative' }}>
@@ -635,7 +638,7 @@ export default function RatesPage() {
                     zIndex: 1,
                   }}
                 >
-                  Fecha inicio
+                  {t('rates.startDate')}
                 </Typography>
                 <Box
                   component="input"
@@ -669,7 +672,7 @@ export default function RatesPage() {
                     zIndex: 1,
                   }}
                 >
-                  Fecha fin
+                  {t('rates.endDate')}
                 </Typography>
                 <Box
                   component="input"
@@ -717,7 +720,7 @@ export default function RatesPage() {
                 justifyContent: 'center',
               }}
             >
-              Cancelar
+              {t('rates.cancel')}
             </Box>
             <Box
               sx={{
@@ -737,7 +740,7 @@ export default function RatesPage() {
               }}
             >
               <SaveIcon sx={{ fontSize: 16 }} />
-              Guardar tarifa
+              {t('rates.saveRate')}
             </Box>
           </Box>
         </Box>

@@ -1,0 +1,43 @@
+{
+  "status": {
+    "confirmed": "Confirmada",
+    "pending": "Pendiente",
+    "cancelled": "Cancelada",
+    "past": "Pasada"
+  },
+  "nav": {
+    "home": "Inicio",
+    "hotels": "Hoteles",
+    "offers": "Ofertas",
+    "myReservations": "Mis reservas",
+    "login": "Iniciar sesion",
+    "searchDestinations": "Buscar destinos",
+    "detail": "Detalle"
+  },
+  "checkout": {
+    "accommodation": "Alojamiento",
+    "confirm": "Confirmar",
+    "payment": "Pago",
+    "confirmation": "Confirmación"
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "reservations": "Reservas",
+    "reports": "Reportes",
+    "rates": "Tarifas",
+    "discounts": "Descuentos",
+    "settings": "Configuración",
+    "logout": "Cerrar sesión",
+    "main": "Principal",
+    "management": "Gestión",
+    "hotelPortal": "Portal Hoteles"
+  },
+  "bottomNav": {
+    "search": "Buscar",
+    "myReservations": "Mis Reservas",
+    "profile": "Perfil"
+  },
+  "offline": {
+    "banner": "Sin conexion — Datos guardados"
+  }
+}

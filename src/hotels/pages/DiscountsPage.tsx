@@ -15,79 +15,15 @@ import CelebrationIcon from '@mui/icons-material/Celebration';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import BedIcon from '@mui/icons-material/Bed';
 import CheckIcon from '@mui/icons-material/Check';
+import { useTranslation } from 'react-i18next';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import { palette } from '../../design-system/theme/palette';
-
-const discountCards = [
-  {
-    id: 1,
-    value: '20',
-    typeChipClass: 'early',
-    typeIcon: EventAvailableIcon,
-    typeLabel: 'Reserva anticipada',
-    name: 'Early Bird -- 30 dias antes',
-    desc: 'Aplica para reservas realizadas con al menos 30 dias de anticipacion.',
-    validity: 'Ene 1 - Dic 31, 2026',
-    rooms: 'Todas las habitaciones',
-    startsIn: null,
-    status: 'active',
-    expired: false,
-  },
-  {
-    id: 2,
-    value: '15',
-    typeChipClass: 'lastmin',
-    typeIcon: BoltIcon,
-    typeLabel: 'Ultima hora',
-    name: 'Last Minute -- 48 horas',
-    desc: 'Descuento automatico para disponibilidad dentro de las proximas 48 horas.',
-    validity: 'Permanente',
-    rooms: 'Habitacion Estandar, Doble',
-    startsIn: null,
-    status: 'active',
-    expired: false,
-  },
-  {
-    id: 3,
-    value: '10',
-    typeChipClass: 'code',
-    typeIcon: VpnKeyIcon,
-    typeLabel: 'Codigo promo',
-    name: 'Codigo -- TravelHub Spring',
-    desc: 'Codigo exclusivo para la campana de primavera en app TravelHub.',
-    validity: 'Mar 1 - Abr 30, 2026',
-    rooms: null,
-    startsIn: null,
-    status: 'active',
-    expired: false,
-  },
-  {
-    id: 4,
-    value: '25',
-    typeChipClass: 'seasonal',
-    typeIcon: CelebrationIcon,
-    typeLabel: 'Temporada baja',
-    name: 'Semana de Descanso -- Abril',
-    desc: 'Promocion especial para incentivar reservas durante temporada baja de abril.',
-    validity: 'Abr 7 - Abr 28, 2026',
-    rooms: 'Todas las habitaciones',
-    startsIn: '38 dias',
-    status: 'scheduled',
-    expired: false,
-  },
-];
 
 const typeChipStyles: Record<string, { bg: string; color: string }> = {
   early: { bg: '#E8F0FE', color: '#1A73E8' },
   lastmin: { bg: palette.warningContainer, color: palette.warning },
   code: { bg: palette.successContainer, color: palette.success },
   seasonal: { bg: '#F3E8FF', color: '#7B1FA2' },
-};
-
-const statusStyles: Record<string, { bg: string; color: string; icon: React.ElementType; label: string }> = {
-  active: { bg: palette.successContainer, color: palette.success, icon: CheckCircleIcon, label: 'Activo' },
-  scheduled: { bg: '#E8F0FE', color: '#1A73E8', icon: ScheduleIcon, label: 'Programado' },
-  expired: { bg: palette.errorContainer, color: palette.error, icon: CancelIcon, label: 'Vencido' },
 };
 
 const roomCheckboxes = [
@@ -98,11 +34,78 @@ const roomCheckboxes = [
 ];
 
 export default function DiscountsPage() {
+  const { t } = useTranslation('hotels');
+
+  const discountCards = [
+    {
+      id: 1,
+      value: '20',
+      typeChipClass: 'early',
+      typeIcon: EventAvailableIcon,
+      typeLabel: t('discounts.typeEarlyBird'),
+      name: 'Early Bird -- 30 dias antes',
+      desc: 'Aplica para reservas realizadas con al menos 30 dias de anticipacion.',
+      validity: 'Ene 1 - Dic 31, 2026',
+      rooms: t('discounts.allRooms'),
+      startsIn: null,
+      status: 'active',
+      expired: false,
+    },
+    {
+      id: 2,
+      value: '15',
+      typeChipClass: 'lastmin',
+      typeIcon: BoltIcon,
+      typeLabel: t('discounts.typeLastMinute'),
+      name: 'Last Minute -- 48 horas',
+      desc: 'Descuento automatico para disponibilidad dentro de las proximas 48 horas.',
+      validity: t('discounts.permanent'),
+      rooms: 'Habitacion Estandar, Doble',
+      startsIn: null,
+      status: 'active',
+      expired: false,
+    },
+    {
+      id: 3,
+      value: '10',
+      typeChipClass: 'code',
+      typeIcon: VpnKeyIcon,
+      typeLabel: t('discounts.typePromoCode'),
+      name: 'Codigo -- TravelHub Spring',
+      desc: 'Codigo exclusivo para la campana de primavera en app TravelHub.',
+      validity: 'Mar 1 - Abr 30, 2026',
+      rooms: null,
+      startsIn: null,
+      status: 'active',
+      expired: false,
+    },
+    {
+      id: 4,
+      value: '25',
+      typeChipClass: 'seasonal',
+      typeIcon: CelebrationIcon,
+      typeLabel: t('discounts.typeSeasonal'),
+      name: 'Semana de Descanso -- Abril',
+      desc: 'Promocion especial para incentivar reservas durante temporada baja de abril.',
+      validity: 'Abr 7 - Abr 28, 2026',
+      rooms: t('discounts.allRooms'),
+      startsIn: '38 dias',
+      status: 'scheduled',
+      expired: false,
+    },
+  ];
+
+  const statusStyles: Record<string, { bg: string; color: string; icon: React.ElementType; label: string }> = {
+    active: { bg: palette.successContainer, color: palette.success, icon: CheckCircleIcon, label: t('discounts.statusActive') },
+    scheduled: { bg: '#E8F0FE', color: '#1A73E8', icon: ScheduleIcon, label: t('discounts.statusScheduled') },
+    expired: { bg: palette.errorContainer, color: palette.error, icon: CancelIcon, label: t('discounts.statusExpired') },
+  };
+
   return (
     <HotelAdminLayout
       activeNav="descuentos"
-      title="Gestion de Descuentos"
-      subtitle="Crea y administra promociones y codigos de descuento para tus habitaciones"
+      title={t('discounts.title')}
+      subtitle={t('discounts.subtitle')}
       topbarActions={
         <Box
           sx={{
@@ -120,7 +123,7 @@ export default function DiscountsPage() {
           }}
         >
           <AddIcon sx={{ fontSize: 16 }} />
-          Nuevo descuento
+          {t('discounts.newDiscount')}
         </Box>
       }
     >
@@ -197,18 +200,18 @@ export default function DiscountsPage() {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 11, color: palette.onSurfaceVariant }}>
                         <CalendarTodayIcon sx={{ fontSize: 13, color: palette.outline }} />
-                        Vigencia: <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>{card.validity}</Box>
+                        {t('discounts.validity')} <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>{card.validity}</Box>
                       </Box>
                       {card.rooms && (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 11, color: palette.onSurfaceVariant }}>
                           <BedIcon sx={{ fontSize: 13, color: palette.outline }} />
-                          Aplica a: <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>{card.rooms}</Box>
+                          {t('discounts.appliesTo')} <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>{card.rooms}</Box>
                         </Box>
                       )}
                       {card.startsIn && (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 11, color: palette.onSurfaceVariant }}>
                           <ScheduleIcon sx={{ fontSize: 13, color: palette.outline }} />
-                          Inicia en: <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>{card.startsIn}</Box>
+                          {t('discounts.startsIn')} <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>{card.startsIn}</Box>
                         </Box>
                       )}
                     </Box>
@@ -258,7 +261,7 @@ export default function DiscountsPage() {
                         }}
                       >
                         <EditIcon sx={{ fontSize: 13 }} />
-                        Editar
+                        {t('discounts.edit')}
                       </Box>
                       <Box
                         sx={{
@@ -277,7 +280,7 @@ export default function DiscountsPage() {
                         }}
                       >
                         <DeleteOutlineIcon sx={{ fontSize: 13 }} />
-                        Eliminar
+                        {t('discounts.delete')}
                       </Box>
                     </Box>
                   </Box>
@@ -311,7 +314,7 @@ export default function DiscountsPage() {
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 14, fontWeight: 700, color: '#fff' }}>
               <AddCircleIcon sx={{ fontSize: 18 }} />
-              Nuevo descuento
+              {t('discounts.panelTitle')}
             </Box>
             <Box
               sx={{
@@ -346,11 +349,11 @@ export default function DiscountsPage() {
                   zIndex: 1,
                 }}
               >
-                Nombre del descuento
+                {t('discounts.discountName')}
               </Typography>
               <Box
                 component="input"
-                placeholder="Ej. Early Bird Primavera 2026"
+                placeholder={t('discounts.discountNamePlaceholder')}
                 sx={{
                   width: '100%',
                   height: 48,
@@ -369,7 +372,7 @@ export default function DiscountsPage() {
 
             {/* Discount value */}
             <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
-              Valor del descuento
+              {t('discounts.discountValue')}
             </Typography>
             <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <Box
@@ -387,7 +390,7 @@ export default function DiscountsPage() {
                   alignItems: 'center',
                 }}
               >
-                % Porcentaje
+                {t('discounts.percentage')}
               </Box>
               <Box
                 sx={{
@@ -404,7 +407,7 @@ export default function DiscountsPage() {
                   alignItems: 'center',
                 }}
               >
-                COP Valor fijo
+                {t('discounts.fixedValue')}
               </Box>
             </Box>
             <Box sx={{ position: 'relative', mt: '8px' }}>
@@ -421,11 +424,11 @@ export default function DiscountsPage() {
                   zIndex: 1,
                 }}
               >
-                Porcentaje de descuento
+                {t('discounts.discountPercentage')}
               </Typography>
               <Box
                 component="input"
-                placeholder="Ej. 20"
+                placeholder={t('discounts.percentagePlaceholder')}
                 sx={{
                   width: '100%',
                   height: 48,
@@ -444,7 +447,7 @@ export default function DiscountsPage() {
 
             {/* Validity */}
             <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
-              Vigencia
+              {t('discounts.validityLabel')}
             </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <Box sx={{ position: 'relative' }}>
@@ -461,7 +464,7 @@ export default function DiscountsPage() {
                     zIndex: 1,
                   }}
                 >
-                  Fecha inicio
+                  {t('discounts.startDate')}
                 </Typography>
                 <Box
                   component="input"
@@ -495,7 +498,7 @@ export default function DiscountsPage() {
                     zIndex: 1,
                   }}
                 >
-                  Fecha fin
+                  {t('discounts.endDate')}
                 </Typography>
                 <Box
                   component="input"
@@ -519,7 +522,7 @@ export default function DiscountsPage() {
 
             {/* Applicable rooms */}
             <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
-              Habitaciones aplicables
+              {t('discounts.applicableRooms')}
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {roomCheckboxes.map((room) => (
@@ -585,7 +588,7 @@ export default function DiscountsPage() {
                 justifyContent: 'center',
               }}
             >
-              Cancelar
+              {t('discounts.cancel')}
             </Box>
             <Box
               sx={{
@@ -605,7 +608,7 @@ export default function DiscountsPage() {
               }}
             >
               <CheckCircleIcon sx={{ fontSize: 16 }} />
-              Crear descuento
+              {t('discounts.createDiscount')}
             </Box>
           </Box>
         </Box>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BookOnlineIcon from '@mui/icons-material/BookOnline';
 import AssessmentIcon from '@mui/icons-material/Assessment';
@@ -30,23 +31,25 @@ interface NavItem {
   path: string;
 }
 
-const mainNavItems: NavItem[] = [
-  { id: 'dashboard', label: 'Dashboard', icon: DashboardIcon, path: '/hotel/dashboard' },
-  { id: 'reservas', label: 'Reservas', icon: BookOnlineIcon, path: '/hotel/reservations' },
-  { id: 'reportes', label: 'Reportes', icon: AssessmentIcon, path: '/hotel/reports' },
-];
-
-const managementNavItems: NavItem[] = [
-  { id: 'tarifas', label: 'Tarifas', icon: PriceChangeIcon, path: '/hotel/rates' },
-  { id: 'descuentos', label: 'Descuentos', icon: DiscountIcon, path: '/hotel/discounts' },
-];
-
-const bottomNavItems: NavItem[] = [
-  { id: 'configuracion', label: 'Configuración', icon: SettingsIcon, path: '/hotel/settings' },
-  { id: 'cerrar-sesion', label: 'Cerrar sesión', icon: LogoutIcon, path: '/hotel/login' },
-];
-
 const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => {
+  const { t } = useTranslation('common');
+
+  const mainNavItems: NavItem[] = [
+    { id: 'dashboard', label: t('sidebar.dashboard'), icon: DashboardIcon, path: '/hotel/dashboard' },
+    { id: 'reservas', label: t('sidebar.reservations'), icon: BookOnlineIcon, path: '/hotel/reservations' },
+    { id: 'reportes', label: t('sidebar.reports'), icon: AssessmentIcon, path: '/hotel/reports' },
+  ];
+
+  const managementNavItems: NavItem[] = [
+    { id: 'tarifas', label: t('sidebar.rates'), icon: PriceChangeIcon, path: '/hotel/rates' },
+    { id: 'descuentos', label: t('sidebar.discounts'), icon: DiscountIcon, path: '/hotel/discounts' },
+  ];
+
+  const bottomNavItems: NavItem[] = [
+    { id: 'configuracion', label: t('sidebar.settings'), icon: SettingsIcon, path: '/hotel/settings' },
+    { id: 'cerrar-sesion', label: t('sidebar.logout'), icon: LogoutIcon, path: '/hotel/login' },
+  ];
+
   const renderNavItem = (item: NavItem) => {
     const isActive = activeItem === item.id;
     const IconComp = item.icon;
@@ -124,7 +127,7 @@ const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => 
             fontWeight: 600,
           }}
         >
-          Portal Hoteles
+          {t('sidebar.hotelPortal')}
         </Box>
       </Box>
 
@@ -188,7 +191,7 @@ const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => 
           mb: '8px',
         }}
       >
-        Principal
+        {t('sidebar.main')}
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px', mb: '24px' }}>
         {mainNavItems.map(renderNavItem)}
@@ -206,7 +209,7 @@ const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => 
           mb: '8px',
         }}
       >
-        Gesti&oacute;n
+        {t('sidebar.management')}
       </Typography>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px', mb: '24px' }}>
         {managementNavItems.map(renderNavItem)}

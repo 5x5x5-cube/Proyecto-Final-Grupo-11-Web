@@ -3,6 +3,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import { useTranslation } from 'react-i18next';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import StatusChip from '../../design-system/components/StatusChip';
 import SearchField from '../../design-system/components/SearchField';
@@ -19,10 +20,12 @@ const avatarColorMap = {
 } as const;
 
 export default function ReservationsPage() {
+  const { t } = useTranslation('hotels');
+
   return (
     <HotelAdminLayout
       activeNav="reservas"
-      title="Listado de reservas"
+      title={t('reservations.title')}
       subtitle="Hotel Santa Clara Sofitel · Febrero 2026"
     >
 
@@ -40,19 +43,19 @@ export default function ReservationsPage() {
         }}
       >
         <Box sx={{ maxWidth: 340, minWidth: 200 }}>
-          <SearchField placeholder="Buscar por huesped, codigo o habitacion..." />
+          <SearchField placeholder={t('reservations.searchPlaceholder')} />
         </Box>
 
         <Box sx={{ width: '1px', height: 32, backgroundColor: palette.outlineVariant, flexShrink: 0 }} />
 
         <FilterChip
-          label="Todas"
+          label={t('reservations.filterAll')}
           selected
           icon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
         />
-        <FilterChip label="Confirmadas" />
-        <FilterChip label="Pendientes" />
-        <FilterChip label="Canceladas" />
+        <FilterChip label={t('reservations.filterConfirmed')} />
+        <FilterChip label={t('reservations.filterPending')} />
+        <FilterChip label={t('reservations.filterCancelled')} />
 
         <Box sx={{ width: '1px', height: 32, backgroundColor: palette.outlineVariant, flexShrink: 0 }} />
 
@@ -87,7 +90,7 @@ export default function ReservationsPage() {
               cursor: 'pointer',
             }}
           >
-            Limpiar filtros
+            {t('reservations.clearFilters')}
           </Typography>
         </Box>
       </Box>
@@ -109,7 +112,7 @@ export default function ReservationsPage() {
           }}
         >
           <Typography sx={{ fontWeight: 700, fontSize: 14 }}>{reservationSummary.total}</Typography>
-          Total
+          {t('reservations.total')}
         </Box>
         <Box
           sx={{
@@ -126,7 +129,7 @@ export default function ReservationsPage() {
           }}
         >
           <Typography sx={{ fontWeight: 700, fontSize: 14 }}>{reservationSummary.confirmed}</Typography>
-          Confirmadas
+          {t('reservations.confirmed')}
         </Box>
         <Box
           sx={{
@@ -143,7 +146,7 @@ export default function ReservationsPage() {
           }}
         >
           <Typography sx={{ fontWeight: 700, fontSize: 14 }}>{reservationSummary.pending}</Typography>
-          Pendientes
+          {t('reservations.pending')}
         </Box>
         <Box
           sx={{
@@ -160,10 +163,10 @@ export default function ReservationsPage() {
           }}
         >
           <Typography sx={{ fontWeight: 700, fontSize: 14 }}>{reservationSummary.cancelled}</Typography>
-          Canceladas
+          {t('reservations.cancelled')}
         </Box>
         <Typography sx={{ marginLeft: 'auto', fontSize: 13, color: palette.onSurfaceVariant }}>
-          Mostrando 1–{hotelReservations.length} de {reservationSummary.total} reservas
+          {t('reservations.showing', { from: 1, to: hotelReservations.length, total: reservationSummary.total })}
         </Typography>
       </Box>
 
@@ -179,7 +182,7 @@ export default function ReservationsPage() {
         <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse' }}>
           <Box component="thead">
             <Box component="tr">
-              {['Codigo', 'Huesped', 'Habitacion', 'Llegada', 'Salida', 'Noches', 'Total', 'Estado', 'Acciones'].map(
+              {[t('reservations.tableHeaders.code'), t('reservations.tableHeaders.guest'), t('reservations.tableHeaders.room'), t('reservations.tableHeaders.checkIn'), t('reservations.tableHeaders.checkOut'), t('reservations.tableHeaders.nights'), t('reservations.tableHeaders.total'), t('reservations.tableHeaders.status'), t('reservations.tableHeaders.actions')].map(
                 (col) => (
                   <Box
                     component="th"
@@ -349,7 +352,7 @@ export default function ReservationsPage() {
                   }}
                 >
                   <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-                    {res.nights} noches
+                    {t('reservations.nightsCount', { count: res.nights })}
                   </Typography>
                 </Box>
 
@@ -415,7 +418,7 @@ export default function ReservationsPage() {
                             '&:hover': { backgroundColor: palette.successContainer },
                           }}
                         >
-                          Confirmar
+                          {t('reservations.confirm')}
                         </Button>
                         <Button
                           size="small"
@@ -432,7 +435,7 @@ export default function ReservationsPage() {
                             '&:hover': { backgroundColor: palette.errorContainer },
                           }}
                         >
-                          Rechazar
+                          {t('reservations.reject')}
                         </Button>
                       </>
                     ) : (
@@ -451,7 +454,7 @@ export default function ReservationsPage() {
                           '&:hover': { backgroundColor: palette.background },
                         }}
                       >
-                        Ver detalle
+                        {t('reservations.viewDetail')}
                       </Button>
                     )}
                   </Box>
@@ -472,7 +475,7 @@ export default function ReservationsPage() {
           }}
         >
           <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-            Mostrando 1–{hotelReservations.length} de {reservationSummary.total} reservas
+            {t('reservations.showing', { from: 1, to: hotelReservations.length, total: reservationSummary.total })}
           </Typography>
           <Box sx={{ display: 'flex', gap: '4px' }}>
             <Box

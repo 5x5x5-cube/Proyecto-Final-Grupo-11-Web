@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -10,6 +11,8 @@ import { palette } from '../../design-system/theme/palette';
 import { mockDestinations } from '../../travelers/data/mockDestinations';
 
 export default function MobileSearchPage() {
+  const { t } = useTranslation('mobile');
+
   return (
     <MobileShell activeTab="search">
       {/* Brand */}
@@ -28,13 +31,13 @@ export default function MobileSearchPage() {
         }}
       >
         <Typography sx={{ color: '#fff', fontSize: 26, fontWeight: 700, lineHeight: 1.2, mb: '4px' }}>
-          Tu proxima
+          {t('search.heroLine1')}
         </Typography>
         <Typography sx={{ color: '#fff', fontSize: 26, fontWeight: 700, lineHeight: 1.2, mb: '16px' }}>
-          aventura
+          {t('search.heroLine2')}
         </Typography>
         <Typography sx={{ color: 'rgba(255,255,255,0.8)', fontSize: 13, mb: '20px' }}>
-          Encuentra los mejores hoteles en Latinoamerica
+          {t('search.heroSubtitle')}
         </Typography>
 
         {/* Search Form */}
@@ -60,7 +63,7 @@ export default function MobileSearchPage() {
           {/* Guests */}
           <Box sx={fieldSx}>
             <PersonOutlineIcon sx={{ fontSize: 18, color: palette.onSurfaceVariant }} />
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>2 adultos</Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{t('search.guests', { count: 2 })}</Typography>
           </Box>
 
           {/* Search Button */}
@@ -82,7 +85,7 @@ export default function MobileSearchPage() {
             }}
           >
             <SearchIcon sx={{ fontSize: 18 }} />
-            Buscar
+            {t('search.searchButton')}
           </Box>
         </Box>
       </Box>
@@ -90,7 +93,7 @@ export default function MobileSearchPage() {
       {/* Popular Destinations */}
       <Box sx={{ px: '20px', pt: '24px', pb: '16px' }}>
         <Typography sx={{ fontSize: 17, fontWeight: 700, color: palette.onSurface, mb: '14px' }}>
-          Destinos populares
+          {t('search.popularDestinations')}
         </Typography>
         <Box
           sx={{
@@ -120,7 +123,7 @@ export default function MobileSearchPage() {
             >
               <Typography sx={{ color: '#fff', fontSize: 14, fontWeight: 700 }}>{dest.name}</Typography>
               <Typography sx={{ color: 'rgba(255,255,255,0.8)', fontSize: 11 }}>
-                {dest.hotelCount} hoteles
+                {t('search.hotels', { count: dest.hotelCount })}
               </Typography>
             </Box>
           ))}
