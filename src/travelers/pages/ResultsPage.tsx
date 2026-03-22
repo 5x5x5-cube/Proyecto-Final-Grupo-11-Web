@@ -450,7 +450,7 @@ export default function ResultsPage() {
                     {t('results.card.from')}
                   </Typography>
                   <Box>
-                    <Typography sx={{ fontSize: 26, fontWeight: 700, color: palette.primary }}>
+                    <Typography sx={{ fontSize: 26, fontWeight: 700, color: palette.primary, whiteSpace: 'nowrap' }}>
                       {formatPrice(hotel.pricePerNight)}
                     </Typography>
                     <Typography

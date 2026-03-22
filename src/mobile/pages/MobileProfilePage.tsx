@@ -1,4 +1,5 @@
-import { Box, Typography, Button } from '@mui/material';
+import { useState, useRef } from 'react';
+import { Box, Typography, Button, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -11,9 +12,19 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import MobileShell from '../components/MobileShell';
 import ProfileMenuRow from '../../design-system/components/ProfileMenuRow';
 import { palette } from '../../design-system/theme/palette';
+import { useLocale, languageNames, currencyNames } from '../../contexts/LocaleContext';
+import type { Language, Currency } from '../../contexts/LocaleContext';
+
+const languages: Language[] = ['ES', 'EN'];
+const currencies: Currency[] = ['COP', 'USD', 'MXN', 'ARS', 'CLP', 'PEN'];
 
 export default function MobileProfilePage() {
   const { t } = useTranslation('mobile');
+  const { language, currency, setLanguage, setCurrency } = useLocale();
+  const [langOpen, setLangOpen] = useState(false);
+  const [curOpen, setCurOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
+  const curRef = useRef<HTMLDivElement>(null);
 
   return (
     <MobileShell activeTab="profile">
@@ -80,9 +91,57 @@ export default function MobileProfilePage() {
           <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.onSurface, pt: '14px', pb: '4px' }}>
             {t('profile.preferences')}
           </Typography>
-          <ProfileMenuRow icon={<LanguageIcon sx={{ fontSize: 20 }} />} label={t('profile.language')} />
+          <Box ref={langRef}>
+            <ProfileMenuRow
+              icon={<LanguageIcon sx={{ fontSize: 20 }} />}
+              label={t('profile.language')}
+              value={`${language} — ${languageNames[language]}`}
+              onClick={() => setLangOpen(true)}
+            />
+          </Box>
+          <Menu
+            anchorEl={langRef.current}
+            open={langOpen}
+            onClose={() => setLangOpen(false)}
+            slotProps={{ paper: { sx: { borderRadius: '12px', mt: '4px', minWidth: 200 } } }}
+          >
+            {languages.map((lang) => (
+              <MenuItem
+                key={lang}
+                selected={lang === language}
+                onClick={() => { setLanguage(lang); setLangOpen(false); }}
+                sx={{ fontSize: 14 }}
+              >
+                {lang} — {languageNames[lang]}
+              </MenuItem>
+            ))}
+          </Menu>
           <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
-          <ProfileMenuRow icon={<AttachMoneyIcon sx={{ fontSize: 20 }} />} label={t('profile.currency')} />
+          <Box ref={curRef}>
+            <ProfileMenuRow
+              icon={<AttachMoneyIcon sx={{ fontSize: 20 }} />}
+              label={t('profile.currency')}
+              value={`${currency} — ${currencyNames[currency]}`}
+              onClick={() => setCurOpen(true)}
+            />
+          </Box>
+          <Menu
+            anchorEl={curRef.current}
+            open={curOpen}
+            onClose={() => setCurOpen(false)}
+            slotProps={{ paper: { sx: { borderRadius: '12px', mt: '4px', minWidth: 240 } } }}
+          >
+            {currencies.map((cur) => (
+              <MenuItem
+                key={cur}
+                selected={cur === currency}
+                onClick={() => { setCurrency(cur); setCurOpen(false); }}
+                sx={{ fontSize: 14 }}
+              >
+                {cur} — {currencyNames[cur]}
+              </MenuItem>
+            ))}
+          </Menu>
           <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
           <ProfileMenuRow icon={<NotificationsNoneIcon sx={{ fontSize: 20 }} />} label={t('profile.notifications')} />
         </Box>
