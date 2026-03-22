@@ -2,8 +2,29 @@ import { Box, Typography, TextField, Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { palette } from '../../design-system/theme/palette';
 
-export default function LoginPage() {
+export default function RegisterPage() {
   const navigate = useNavigate();
+
+  const inputSx = {
+    '& .MuiOutlinedInput-root': {
+      height: 56,
+      borderRadius: '4px',
+      fontSize: 16,
+      letterSpacing: '0.5px',
+      color: palette.onSurface,
+      '& fieldset': { borderColor: palette.outline },
+      '&:hover fieldset': { borderColor: palette.outline },
+      '&.Mui-focused fieldset': { borderColor: palette.primary },
+    },
+    '& .MuiInputLabel-root': {
+      fontSize: 12,
+      fontWeight: 400,
+      color: palette.outline,
+      letterSpacing: '0.4px',
+    },
+    '& .MuiInputLabel-shrink': { fontSize: 12, color: palette.outline },
+    '& input::placeholder': { color: palette.onSurfaceVariant, opacity: 1 },
+  };
 
   return (
     <Box
@@ -57,7 +78,7 @@ export default function LoginPage() {
         }}
       />
 
-      {/* Login wrapper */}
+      {/* Register wrapper */}
       <Box
         sx={{
           display: 'flex',
@@ -96,7 +117,6 @@ export default function LoginPage() {
             gap: '8px',
           }}
         >
-          {/* Card title */}
           <Typography
             sx={{
               fontSize: 24,
@@ -105,10 +125,19 @@ export default function LoginPage() {
               mb: '16px',
             }}
           >
-            Iniciar sesion
+            Crear cuenta
           </Typography>
 
-          {/* Email field */}
+          <Box sx={{ mb: '16px' }}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Nombre completo"
+              placeholder="Juan Perez"
+              sx={inputSx}
+            />
+          </Box>
+
           <Box sx={{ mb: '16px' }}>
             <TextField
               fullWidth
@@ -116,90 +145,48 @@ export default function LoginPage() {
               label="Correo electronico"
               placeholder="ejemplo@correo.com"
               type="email"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  height: 56,
-                  borderRadius: '4px',
-                  fontSize: 16,
-                  letterSpacing: '0.5px',
-                  color: palette.onSurface,
-                  '& fieldset': {
-                    borderColor: palette.outline,
-                  },
-                  '&:hover fieldset': {
-                    borderColor: palette.outline,
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: palette.primary,
-                  },
-                },
-                '& .MuiInputLabel-root': {
-                  fontSize: 12,
-                  fontWeight: 400,
-                  color: palette.outline,
-                  letterSpacing: '0.4px',
-                },
-                '& .MuiInputLabel-shrink': {
-                  fontSize: 12,
-                  color: palette.outline,
-                },
-                '& input::placeholder': {
-                  color: palette.onSurfaceVariant,
-                  opacity: 1,
-                },
-              }}
+              sx={inputSx}
             />
           </Box>
 
-          {/* Password field */}
+          <Box sx={{ mb: '16px' }}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Telefono"
+              placeholder="+57 300 123 4567"
+              type="tel"
+              sx={inputSx}
+            />
+          </Box>
+
           <Box sx={{ mb: '16px' }}>
             <TextField
               fullWidth
               variant="outlined"
               label="Contrasena"
-              placeholder="Ingresa tu contrasena"
+              placeholder="Crea una contrasena"
               type="password"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  height: 56,
-                  borderRadius: '4px',
-                  fontSize: 16,
-                  letterSpacing: '0.5px',
-                  color: palette.onSurface,
-                  '& fieldset': {
-                    borderColor: palette.outline,
-                  },
-                  '&:hover fieldset': {
-                    borderColor: palette.outline,
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: palette.primary,
-                  },
-                },
-                '& .MuiInputLabel-root': {
-                  fontSize: 12,
-                  fontWeight: 400,
-                  color: palette.outline,
-                  letterSpacing: '0.4px',
-                },
-                '& .MuiInputLabel-shrink': {
-                  fontSize: 12,
-                  color: palette.outline,
-                },
-                '& input::placeholder': {
-                  color: palette.onSurfaceVariant,
-                  opacity: 1,
-                },
-              }}
+              sx={inputSx}
             />
           </Box>
 
-          {/* Iniciar sesion button */}
+          <Box sx={{ mb: '16px' }}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              label="Confirmar contrasena"
+              placeholder="Repite tu contrasena"
+              type="password"
+              sx={inputSx}
+            />
+          </Box>
+
           <Button
             fullWidth
             variant="contained"
             disableElevation
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/login')}
             sx={{
               height: 48,
               backgroundColor: palette.primary,
@@ -211,15 +198,12 @@ export default function LoginPage() {
               letterSpacing: '0.1px',
               textTransform: 'none',
               mt: '8px',
-              '&:hover': {
-                backgroundColor: palette.primary,
-              },
+              '&:hover': { backgroundColor: palette.primary },
             }}
           >
-            Iniciar sesion
+            Crear cuenta
           </Button>
 
-          {/* Footer link */}
           <Typography
             sx={{
               textAlign: 'center',
@@ -228,16 +212,16 @@ export default function LoginPage() {
               mt: '8px',
             }}
           >
-            No tienes cuenta?{' '}
+            ¿Ya tienes cuenta?{' '}
             <Link
-              to="/register"
+              to="/login"
               style={{
                 color: palette.primary,
                 fontWeight: 500,
                 textDecoration: 'none',
               }}
             >
-              Registrate
+              Inicia sesion
             </Link>
           </Typography>
         </Box>

@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 
 import HomePage from './travelers/pages/HomePage';
 import LoginPage from './travelers/pages/LoginPage';
+import RegisterPage from './travelers/pages/RegisterPage';
 import ResultsPage from './travelers/pages/ResultsPage';
 import PropertyDetailPage from './travelers/pages/PropertyDetailPage';
 import CartPage from './travelers/pages/CartPage';
@@ -29,6 +30,9 @@ import MobileMyReservationsPage from './mobile/pages/MobileMyReservationsPage';
 import MobileReservationDetailPage from './mobile/pages/MobileReservationDetailPage';
 import MobileCancelReservationPage from './mobile/pages/MobileCancelReservationPage';
 import MobileQRCheckInPage from './mobile/pages/MobileQRCheckInPage';
+import MobileRegisterPage from './mobile/pages/MobileRegisterPage';
+import MobileProfilePage from './mobile/pages/MobileProfilePage';
+import MobilePaymentPage from './mobile/pages/MobilePaymentPage';
 
 export const router = createBrowserRouter([
   // Design System
@@ -37,6 +41,7 @@ export const router = createBrowserRouter([
   // Traveler Portal
   { path: '/', element: <HomePage /> },
   { path: '/login', element: <LoginPage /> },
+  { path: '/register', element: <RegisterPage /> },
   { path: '/results', element: <ResultsPage /> },
   { path: '/property/:id', element: <PropertyDetailPage /> },
   { path: '/checkout/cart', element: <CartPage /> },
@@ -61,6 +66,9 @@ export const router = createBrowserRouter([
   { path: '/mobile/checkout', element: <MobileReservationSummaryPage /> },
   { path: '/mobile/success', element: <MobileSuccessPage /> },
   { path: '/mobile/login', element: <MobileLoginPage /> },
+  { path: '/mobile/register', element: <MobileRegisterPage /> },
+  { path: '/mobile/profile', element: <MobileProfilePage /> },
+  { path: '/mobile/checkout/payment', element: <MobilePaymentPage /> },
   { path: '/mobile/reservations', element: <MobileMyReservationsPage /> },
   { path: '/mobile/reservations/:id', element: <MobileReservationDetailPage /> },
   { path: '/mobile/reservations/:id/cancel', element: <MobileCancelReservationPage /> },
