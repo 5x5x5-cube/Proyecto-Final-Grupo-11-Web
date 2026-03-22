@@ -14,8 +14,8 @@ const pastReservations = [
     id: 10,
     hotelName: 'Hotel Caribe by Faranda',
     location: 'El Laguito, Cartagena',
-    checkIn: 'Lun, 5 ene 2026',
-    checkOut: 'Vie, 9 ene 2026',
+    checkIn: '2026-01-05T15:00:00',
+    checkOut: '2026-01-09T12:00:00',
     status: 'past' as const,
     code: 'TH-2026-31205',
     totalPrice: 1750000,
@@ -28,8 +28,8 @@ const cancelledReservations = [
     id: 20,
     hotelName: 'Casa Quero Boutique',
     location: 'Getsemani, Cartagena',
-    checkIn: 'Mar, 3 feb 2026',
-    checkOut: 'Jue, 5 feb 2026',
+    checkIn: '2026-02-03T14:00:00',
+    checkOut: '2026-02-05T11:00:00',
     status: 'cancelled' as const,
     code: 'TH-2026-39102',
     totalPrice: 440000,
@@ -41,7 +41,7 @@ type Tab = 'active' | 'past' | 'cancelled';
 
 export default function MobileMyReservationsPage() {
   const { t } = useTranslation('mobile');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
   const [tab, setTab] = useState<Tab>('active');
 
   const tabData: Record<Tab, typeof mockReservations> = {
@@ -125,7 +125,7 @@ export default function MobileMyReservationsPage() {
 
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                    {res.checkIn} → {res.checkOut}
+                    {formatDate(res.checkIn, 'mediumWithDay')} → {formatDate(res.checkOut, 'mediumWithDay')}
                   </Typography>
                   <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.primary }}>
                     {formatPrice(typeof res.totalPrice === 'number' ? res.totalPrice : (res as any).totalPriceCop ?? 0)}

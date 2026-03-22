@@ -29,7 +29,7 @@ const typeChipStyles: Record<string, { bg: string; color: string }> = {
 
 export default function RatesPage() {
   const { t } = useTranslation('hotels');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   const rates = [
     {
@@ -65,7 +65,8 @@ export default function RatesPage() {
       typeLabel: t('rates.typeSeason'),
       typeIcon: WbSunnyIcon,
       price: formatPrice(1280000),
-      validity: 'Dic 20 - Ene 10',
+      validityStart: '2025-12-20',
+      validityEnd: '2026-01-10',
       selected: false,
     },
     {
@@ -89,7 +90,8 @@ export default function RatesPage() {
       typeLabel: t('rates.typePromo'),
       typeIcon: LocalOfferIcon,
       price: formatPrice(420000),
-      validity: 'Mar 1 - Mar 31',
+      validityStart: '2026-03-01',
+      validityEnd: '2026-03-31',
       selected: false,
     },
     {
@@ -320,7 +322,9 @@ export default function RatesPage() {
                     </Box>
                     {/* Validity */}
                     <Box component="td" sx={{ padding: '12px 16px', fontSize: 12, color: palette.onSurfaceVariant, verticalAlign: 'middle' }}>
-                      {rate.validity}
+                      {rate.validityStart && rate.validityEnd
+                        ? `${formatDate(rate.validityStart, 'short')} - ${formatDate(rate.validityEnd, 'short')}`
+                        : rate.validity}
                     </Box>
                     {/* Actions */}
                     <Box component="td" sx={{ padding: '12px 16px', verticalAlign: 'middle' }}>

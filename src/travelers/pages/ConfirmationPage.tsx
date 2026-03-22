@@ -23,7 +23,7 @@ import {
 /* ─── Main Content ─── */
 const ConfirmationPage: React.FC = () => {
   const { t } = useTranslation('travelers');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   /* ─── Sidebar ─── */
   const Sidebar = () => (
@@ -74,8 +74,8 @@ const ConfirmationPage: React.FC = () => {
       <InfoGrid
         columns={2}
         items={[
-          { label: t('confirmation.sidebar.checkIn'), value: t('confirmation.sidebar.checkInValue'), sub: t('confirmation.sidebar.checkInSub') },
-          { label: t('confirmation.sidebar.checkOut'), value: t('confirmation.sidebar.checkOutValue'), sub: t('confirmation.sidebar.checkOutSub') },
+          { label: t('confirmation.sidebar.checkIn'), value: formatDate('2026-03-15', 'mediumWithDay'), sub: '3:00 PM' },
+          { label: t('confirmation.sidebar.checkOut'), value: formatDate('2026-03-20', 'mediumWithDay'), sub: '12:00 PM' },
           { label: t('confirmation.sidebar.room'), value: t('confirmation.sidebar.roomValue'), sub: t('confirmation.sidebar.roomSub') },
           { label: t('confirmation.sidebar.guests'), value: t('confirmation.sidebar.guestsValue'), sub: t('confirmation.sidebar.guestsSub') },
         ]}

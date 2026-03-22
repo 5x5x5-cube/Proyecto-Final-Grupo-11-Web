@@ -28,7 +28,7 @@ const MyReservationsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [activeFilter, setActiveFilter] = useState(0);
   const { t } = useTranslation('travelers');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   const tabs = [t('myReservations.tabs.active'), t('myReservations.tabs.past'), t('myReservations.tabs.cancelled')];
   const filters = [
@@ -319,10 +319,10 @@ const MyReservationsPage: React.FC = () => {
                         {t('myReservations.card.checkIn')}
                       </Typography>
                       <Typography sx={{ fontSize: 14, fontWeight: 500, color: onSurface }}>
-                        {res.checkIn}
+                        {formatDate(res.checkIn, 'mediumWithDay')}
                       </Typography>
                       <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-                        Check-in {res.checkInTime}
+                        Check-in {new Date(res.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </Typography>
                     </Box>
                     <Box>
@@ -338,10 +338,10 @@ const MyReservationsPage: React.FC = () => {
                         {t('myReservations.card.checkOut')}
                       </Typography>
                       <Typography sx={{ fontSize: 14, fontWeight: 500, color: onSurface }}>
-                        {res.checkOut}
+                        {formatDate(res.checkOut, 'mediumWithDay')}
                       </Typography>
                       <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-                        Check-out {res.checkOutTime}
+                        Check-out {new Date(res.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </Typography>
                     </Box>
                     <Box>

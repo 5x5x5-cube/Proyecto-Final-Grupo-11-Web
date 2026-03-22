@@ -45,7 +45,7 @@ const iconColorMap = {
 
 export default function DashboardPage() {
   const { t } = useTranslation('hotels');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   const topbarActions = (
     <>
@@ -95,7 +95,7 @@ export default function DashboardPage() {
     <HotelAdminLayout
       activeNav="dashboard"
       title={t('dashboard.title')}
-      subtitle="Jueves, 27 de febrero de 2026 · Hotel Santa Clara Sofitel"
+      subtitle={`${formatDate('2026-02-27', 'mediumWithDay')} · Hotel Santa Clara Sofitel`}
       topbarActions={topbarActions}
     >
 
@@ -283,7 +283,7 @@ export default function DashboardPage() {
                       borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
                     }}
                   >
-                    {res.checkIn}
+                    {formatDate(res.checkIn, 'medium')}
                   </Box>
                   <Box
                     component="td"
@@ -294,7 +294,7 @@ export default function DashboardPage() {
                       borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
                     }}
                   >
-                    {res.checkOut}
+                    {formatDate(res.checkOut, 'medium')}
                   </Box>
                   <Box
                     component="td"
@@ -305,7 +305,7 @@ export default function DashboardPage() {
                       borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
                     }}
                   >
-                    {res.total}
+                    {formatPrice(res.totalCop)}
                   </Box>
                   <Box
                     component="td"
@@ -383,12 +383,12 @@ export default function DashboardPage() {
                     fontWeight: d.highlight ? 600 : 400,
                   }}
                 >
-                  {d.month}
+                  {formatDate(d.month, 'monthOnly')}
                 </Typography>
               ))}
             </Box>
             <Typography sx={{ padding: '0 24px 16px', fontSize: 13, color: palette.onSurfaceVariant }}>
-              Febrero 2026:{' '}
+              {formatDate('2026-02-01', 'monthYear')}:{' '}
               <Box component="span" sx={{ color: palette.primary, fontSize: 18, fontWeight: 700 }}>
                 {formatPrice(94200000)}
               </Box>

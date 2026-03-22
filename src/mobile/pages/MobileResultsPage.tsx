@@ -12,7 +12,7 @@ import { useLocale } from '../../contexts/LocaleContext';
 
 export default function MobileResultsPage() {
   const { t } = useTranslation('mobile');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   return (
     <MobileShell activeTab="search">
@@ -32,7 +32,7 @@ export default function MobileResultsPage() {
           <ArrowBackIcon sx={{ fontSize: 22 }} />
         </Box>
         <Typography sx={{ fontSize: 14, fontWeight: 500, color: palette.onSurface }}>
-          Cartagena · 15-20 mar · 2
+          {`Cartagena · ${formatDate('2026-03-15', 'short')}-${formatDate('2026-03-20', 'short')} · 2`}
         </Typography>
       </Box>
 

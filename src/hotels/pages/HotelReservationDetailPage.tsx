@@ -18,7 +18,7 @@ import { palette } from '../../design-system/theme/palette';
 
 export default function HotelReservationDetailPage() {
   const { t } = useTranslation('hotels');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   const breadcrumbs = [
     { label: t('reservationDetail.breadcrumbs.dashboard'), href: '/hotel/dashboard' },
@@ -61,7 +61,7 @@ export default function HotelReservationDetailPage() {
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13, color: palette.onSurfaceVariant }}>
               <Icon sx={{ fontSize: 14 }}>calendar_today</Icon>
-              {t('reservationDetail.receivedOn', { date: '24 feb 2026, 10:32 am' })}
+              {t('reservationDetail.receivedOn', { date: `${formatDate('2026-02-24', 'medium')}, 10:32 am` })}
               <Box component="span" sx={{ mx: '4px' }}>&middot;</Box>
               <Box
                 sx={{
@@ -171,8 +171,8 @@ export default function HotelReservationDetailPage() {
             <InfoGrid
               columns={4}
               items={[
-                { label: t('reservationDetail.checkIn'), value: 'Mar 15, 2026', sub: t('reservationDetail.from', { time: '3:00 PM' }) },
-                { label: t('reservationDetail.checkOut'), value: 'Mar 18, 2026', sub: t('reservationDetail.until', { time: '12:00 PM' }) },
+                { label: t('reservationDetail.checkIn'), value: formatDate('2026-03-15', 'medium'), sub: t('reservationDetail.from', { time: '3:00 PM' }) },
+                { label: t('reservationDetail.checkOut'), value: formatDate('2026-03-18', 'medium'), sub: t('reservationDetail.until', { time: '12:00 PM' }) },
                 { label: t('reservationDetail.duration'), value: t('reservationDetail.nightsCount', { count: 3 }), sub: t('reservationDetail.hours', { count: 72 }) },
                 { label: t('reservationDetail.guests'), value: t('reservationDetail.adults', { count: 2 }), sub: t('reservationDetail.noMinors') },
               ]}
@@ -345,7 +345,7 @@ export default function HotelReservationDetailPage() {
                   {t('reservationDetail.freeCancellationUntil')}
                 </Typography>
                 <Typography sx={{ fontWeight: 600, color: palette.success, fontSize: 12 }}>
-                  Mar 12, 2026
+                  {formatDate('2026-03-12', 'medium')}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
