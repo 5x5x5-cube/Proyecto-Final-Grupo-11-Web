@@ -1,9 +1,11 @@
 import { Box, Typography, TextField, Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { palette } from '../../design-system/theme/palette';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation('travelers');
 
   const inputSx = {
     '& .MuiOutlinedInput-root': {
@@ -125,15 +127,15 @@ export default function RegisterPage() {
               mb: '16px',
             }}
           >
-            Crear cuenta
+            {t('register.title')}
           </Typography>
 
           <Box sx={{ mb: '16px' }}>
             <TextField
               fullWidth
               variant="outlined"
-              label="Nombre completo"
-              placeholder="Juan Perez"
+              label={t('register.fullNameLabel')}
+              placeholder={t('register.fullNamePlaceholder')}
               sx={inputSx}
             />
           </Box>
@@ -142,8 +144,8 @@ export default function RegisterPage() {
             <TextField
               fullWidth
               variant="outlined"
-              label="Correo electronico"
-              placeholder="ejemplo@correo.com"
+              label={t('register.emailLabel')}
+              placeholder={t('register.emailPlaceholder')}
               type="email"
               sx={inputSx}
             />
@@ -153,8 +155,8 @@ export default function RegisterPage() {
             <TextField
               fullWidth
               variant="outlined"
-              label="Telefono"
-              placeholder="+57 300 123 4567"
+              label={t('register.phoneLabel')}
+              placeholder={t('register.phonePlaceholder')}
               type="tel"
               sx={inputSx}
             />
@@ -164,8 +166,8 @@ export default function RegisterPage() {
             <TextField
               fullWidth
               variant="outlined"
-              label="Contrasena"
-              placeholder="Crea una contrasena"
+              label={t('register.passwordLabel')}
+              placeholder={t('register.passwordPlaceholder')}
               type="password"
               sx={inputSx}
             />
@@ -175,8 +177,8 @@ export default function RegisterPage() {
             <TextField
               fullWidth
               variant="outlined"
-              label="Confirmar contrasena"
-              placeholder="Repite tu contrasena"
+              label={t('register.confirmPasswordLabel')}
+              placeholder={t('register.confirmPasswordPlaceholder')}
               type="password"
               sx={inputSx}
             />
@@ -201,7 +203,7 @@ export default function RegisterPage() {
               '&:hover': { backgroundColor: palette.primary },
             }}
           >
-            Crear cuenta
+            {t('register.submitButton')}
           </Button>
 
           <Typography
@@ -212,7 +214,7 @@ export default function RegisterPage() {
               mt: '8px',
             }}
           >
-            ¿Ya tienes cuenta?{' '}
+            {t('register.hasAccount')}{' '}
             <Link
               to="/login"
               style={{
@@ -221,7 +223,7 @@ export default function RegisterPage() {
                 textDecoration: 'none',
               }}
             >
-              Inicia sesion
+              {t('register.login')}
             </Link>
           </Typography>
         </Box>

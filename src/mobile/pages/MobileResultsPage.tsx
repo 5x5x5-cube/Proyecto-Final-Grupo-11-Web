@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SortIcon from '@mui/icons-material/Sort';
 import StarIcon from '@mui/icons-material/Star';
@@ -9,6 +10,8 @@ import { palette } from '../../design-system/theme/palette';
 import { mockHotels } from '../../travelers/data/mockHotels';
 
 export default function MobileResultsPage() {
+  const { t } = useTranslation('mobile');
+
   return (
     <MobileShell activeTab="search">
       {/* Top Bar */}
@@ -42,10 +45,10 @@ export default function MobileResultsPage() {
           '&::-webkit-scrollbar': { display: 'none' },
         }}
       >
-        <FilterChip label="Precio" />
-        <FilterChip label="Tipo" />
-        <FilterChip label="Calificacion" selected />
-        <FilterChip label="Servicios" />
+        <FilterChip label={t('results.filterPrice')} />
+        <FilterChip label={t('results.filterType')} />
+        <FilterChip label={t('results.filterRating')} selected />
+        <FilterChip label={t('results.filterServices')} />
         <Box sx={{ display: 'flex', alignItems: 'center', pl: '4px' }}>
           <SortIcon sx={{ fontSize: 20, color: palette.onSurfaceVariant }} />
         </Box>
@@ -54,7 +57,7 @@ export default function MobileResultsPage() {
       {/* Results count */}
       <Box sx={{ px: '16px', pb: '8px' }}>
         <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-          {mockHotels.length} propiedades encontradas
+          {t('results.propertiesFound', { count: mockHotels.length })}
         </Typography>
       </Box>
 
@@ -102,7 +105,7 @@ export default function MobileResultsPage() {
                   py: '2px',
                 }}
               >
-                <Typography sx={{ color: '#fff', fontSize: 11 }}>{hotel.photoCount} fotos</Typography>
+                <Typography sx={{ color: '#fff', fontSize: 11 }}>{t('results.photos', { count: hotel.photoCount })}</Typography>
               </Box>
             </Box>
 
@@ -129,7 +132,7 @@ export default function MobileResultsPage() {
                   <Typography sx={{ fontSize: 16, fontWeight: 700, color: palette.primary }}>
                     {hotel.pricePerNightDisplay}
                   </Typography>
-                  <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>/noche</Typography>
+                  <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>{t('results.perNight')}</Typography>
                 </Box>
               </Box>
             </Box>

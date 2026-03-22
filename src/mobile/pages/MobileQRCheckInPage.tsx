@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DownloadIcon from '@mui/icons-material/Download';
 import MobileShell from '../components/MobileShell';
@@ -60,6 +61,7 @@ function QRCodePlaceholder() {
 }
 
 export default function MobileQRCheckInPage() {
+  const { t } = useTranslation('mobile');
   const { id } = useParams();
   const reservation = mockReservations.find((r) => r.id === Number(id)) || mockReservations[0];
 
@@ -81,7 +83,7 @@ export default function MobileQRCheckInPage() {
           <ArrowBackIcon sx={{ fontSize: 22 }} />
         </Box>
         <Typography sx={{ fontSize: 16, fontWeight: 600, color: palette.onSurface }}>
-          Check-in con codigo QR
+          {t('qrCheckIn.title')}
         </Typography>
       </Box>
 
@@ -146,7 +148,7 @@ export default function MobileQRCheckInPage() {
           }}
         >
           <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, textAlign: 'center', lineHeight: 1.5 }}>
-            Presenta este codigo en recepcion para realizar tu check-in de manera rapida y sin contacto.
+            {t('qrCheckIn.instruction')}
           </Typography>
         </Box>
 
@@ -168,7 +170,7 @@ export default function MobileQRCheckInPage() {
           }}
         >
           <DownloadIcon sx={{ fontSize: 18 }} />
-          Descargar QR
+          {t('qrCheckIn.downloadQR')}
         </Box>
       </Box>
     </MobileShell>

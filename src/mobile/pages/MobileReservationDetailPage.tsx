@@ -1,7 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import StarIcon from '@mui/icons-material/Star';
 import QrCodeIcon from '@mui/icons-material/QrCode';
 import MobileShell from '../components/MobileShell';
 import OfflineBanner from '../components/OfflineBanner';
@@ -12,6 +12,7 @@ import { palette } from '../../design-system/theme/palette';
 import { mockReservations } from '../../travelers/data/mockReservations';
 
 export default function MobileReservationDetailPage() {
+  const { t } = useTranslation('mobile');
   const { id } = useParams();
   const reservation = mockReservations.find((r) => r.id === Number(id)) || mockReservations[0];
 
@@ -35,7 +36,7 @@ export default function MobileReservationDetailPage() {
           <ArrowBackIcon sx={{ fontSize: 22 }} />
         </Box>
         <Typography sx={{ fontSize: 16, fontWeight: 600, color: palette.onSurface }}>
-          Detalle de reserva
+          {t('reservationDetail.title')}
         </Typography>
       </Box>
 
@@ -75,10 +76,10 @@ export default function MobileReservationDetailPage() {
           <InfoGrid
             columns={2}
             items={[
-              { label: 'Check-in', value: reservation.checkIn, sub: reservation.checkInTime },
-              { label: 'Check-out', value: reservation.checkOut, sub: reservation.checkOutTime },
-              { label: 'Duracion', value: `${reservation.nights} noches` },
-              { label: 'Huespedes', value: reservation.guests },
+              { label: t('reservationDetail.checkIn'), value: reservation.checkIn, sub: reservation.checkInTime },
+              { label: t('reservationDetail.checkOut'), value: reservation.checkOut, sub: reservation.checkOutTime },
+              { label: t('reservationDetail.duration'), value: t('reservationDetail.nights', { count: reservation.nights }) },
+              { label: t('reservationDetail.guests'), value: reservation.guests },
             ]}
           />
         </Box>
@@ -86,7 +87,7 @@ export default function MobileReservationDetailPage() {
         {/* Room */}
         <Box sx={{ background: '#fff', borderRadius: '12px', border: `1px solid ${palette.outlineVariant}`, p: '16px', mb: '16px' }}>
           <Typography sx={{ fontSize: 11, fontWeight: 600, color: palette.primary, textTransform: 'uppercase', letterSpacing: 0.5, mb: '4px' }}>
-            Habitacion
+            {t('reservationDetail.room')}
           </Typography>
           <Typography sx={{ fontSize: 14, fontWeight: 500, color: palette.onSurface }}>
             {reservation.room}
@@ -96,14 +97,14 @@ export default function MobileReservationDetailPage() {
         {/* Payment Summary */}
         <Box sx={{ background: '#fff', borderRadius: '12px', border: `1px solid ${palette.outlineVariant}`, p: '16px', mb: '24px' }}>
           <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
-            Resumen de pago
+            {t('reservationDetail.paymentSummary')}
           </Typography>
           <PriceBreakdown
             rows={[
-              { label: 'Alojamiento (5 noches)', value: 'COP 2.400.000' },
-              { label: 'Impuestos', value: 'COP 264.000' },
+              { label: t('reservationDetail.accommodation', { count: 5 }), value: 'COP 2.400.000' },
+              { label: t('reservationDetail.taxes'), value: 'COP 264.000' },
             ]}
-            totalLabel="Total pagado"
+            totalLabel={t('reservationDetail.totalPaid')}
             totalValue={reservation.totalPrice}
           />
         </Box>
@@ -128,7 +129,7 @@ export default function MobileReservationDetailPage() {
             }}
           >
             <QrCodeIcon sx={{ fontSize: 18 }} />
-            Mostrar QR
+            {t('reservationDetail.showQR')}
           </Box>
           <Box
             component={Link}
@@ -146,7 +147,7 @@ export default function MobileReservationDetailPage() {
               fontWeight: 600,
             }}
           >
-            Cancelar reserva
+            {t('reservationDetail.cancelReservation')}
           </Box>
         </Box>
       </Box>

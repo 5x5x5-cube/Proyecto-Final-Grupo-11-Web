@@ -9,10 +9,32 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SellIcon from '@mui/icons-material/Sell';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { palette } from '../../design-system/theme/palette';
 
 export default function HotelLoginPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation('hotels');
+
+  const trustBadges = [
+    { icon: <LockIcon sx={{ fontSize: 16, color: palette.primary }} />, text: t('login.trustBadges.ssl') },
+    { icon: <VerifiedUserIcon sx={{ fontSize: 16, color: palette.primary }} />, text: t('login.trustBadges.secure') },
+    { icon: <SupportAgentIcon sx={{ fontSize: 16, color: palette.primary }} />, text: t('login.trustBadges.support') },
+    { icon: <LanguageIcon sx={{ fontSize: 16, color: palette.primary }} />, text: t('login.trustBadges.countries') },
+  ];
+
+  const stats = [
+    { num: '2.4k+', label: t('login.stats.hotels') },
+    { num: '6', label: t('login.stats.countries') },
+    { num: '98%', label: t('login.stats.satisfaction') },
+  ];
+
+  const features = [
+    { icon: <DashboardIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: t('login.features.dashboard') },
+    { icon: <EventAvailableIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: t('login.features.reservations') },
+    { icon: <BarChartIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: t('login.features.reports') },
+    { icon: <SellIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: t('login.features.rates') },
+  ];
 
   return (
     <Box
@@ -74,7 +96,7 @@ export default function HotelLoginPage() {
             }}
           >
             <HotelIcon sx={{ fontSize: 14 }} />
-            Portal de Hoteles
+            {t('login.portalBadge')}
           </Box>
         </Box>
 
@@ -88,7 +110,7 @@ export default function HotelLoginPage() {
               mb: '4px',
             }}
           >
-            Bienvenido de vuelta
+            {t('login.welcome')}
           </Typography>
           <Typography
             sx={{
@@ -97,7 +119,7 @@ export default function HotelLoginPage() {
               mb: '16px',
             }}
           >
-            Ingresa tus credenciales para acceder a tu portal de administracion.
+            {t('login.subtitle')}
           </Typography>
 
           {/* Email field */}
@@ -105,8 +127,8 @@ export default function HotelLoginPage() {
             <TextField
               fullWidth
               variant="outlined"
-              label="Correo electronico"
-              placeholder="admin@mihotel.com"
+              label={t('login.emailLabel')}
+              placeholder={t('login.emailPlaceholder')}
               type="email"
               sx={{
                 '& .MuiOutlinedInput-root': {
@@ -134,7 +156,7 @@ export default function HotelLoginPage() {
             <TextField
               fullWidth
               variant="outlined"
-              label="Contrasena"
+              label={t('login.passwordLabel')}
               placeholder="••••••••"
               type="password"
               sx={{
@@ -169,7 +191,7 @@ export default function HotelLoginPage() {
               mb: '8px',
             }}
           >
-            Olvidaste tu contrasena?
+            {t('login.forgotPassword')}
           </Typography>
 
           {/* Login button */}
@@ -191,25 +213,25 @@ export default function HotelLoginPage() {
               '&:hover': { backgroundColor: palette.primary },
             }}
           >
-            Iniciar sesion
+            {t('login.loginButton')}
           </Button>
 
           {/* Divider */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', my: '4px' }}>
             <Divider sx={{ flex: 1, borderColor: palette.outlineVariant }} />
             <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant, whiteSpace: 'nowrap' }}>
-              Nuevo en TravelHub Hotels?
+              {t('login.newToTravelHub')}
             </Typography>
             <Divider sx={{ flex: 1, borderColor: palette.outlineVariant }} />
           </Box>
 
           {/* Help text */}
           <Typography sx={{ textAlign: 'center', fontSize: 13, color: palette.onSurfaceVariant }}>
-            Contactanos en{' '}
+            {t('login.contactUs')}{' '}
             <Box component="span" sx={{ color: palette.primary, fontWeight: 500, cursor: 'pointer' }}>
               partners@travelhub.com
             </Box>{' '}
-            para registrar tu hotel.
+            {t('login.contactSuffix')}
           </Typography>
         </Box>
 
@@ -225,12 +247,7 @@ export default function HotelLoginPage() {
             width: '100%',
           }}
         >
-          {[
-            { icon: <LockIcon sx={{ fontSize: 16, color: palette.primary }} />, text: 'SSL cifrado' },
-            { icon: <VerifiedUserIcon sx={{ fontSize: 16, color: palette.primary }} />, text: 'Acceso seguro' },
-            { icon: <SupportAgentIcon sx={{ fontSize: 16, color: palette.primary }} />, text: 'Soporte 24/7' },
-            { icon: <LanguageIcon sx={{ fontSize: 16, color: palette.primary }} />, text: '6 paises' },
-          ].map((item, index) => (
+          {trustBadges.map((item, index) => (
             <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 12, color: palette.onSurfaceVariant }}>
               {item.icon}
               {item.text}
@@ -288,7 +305,7 @@ export default function HotelLoginPage() {
             zIndex: 1,
           }}
         >
-          Panel de administracion
+          {t('login.adminPanel')}
         </Typography>
 
         {/* Title */}
@@ -303,7 +320,7 @@ export default function HotelLoginPage() {
             zIndex: 1,
           }}
         >
-          Gestiona tu hotel con total control
+          {t('login.heroTitle')}
         </Typography>
 
         {/* Subtitle */}
@@ -317,16 +334,12 @@ export default function HotelLoginPage() {
             zIndex: 1,
           }}
         >
-          Supervisa reservas, ingresos, tarifas y descuentos desde un solo lugar. En tiempo real.
+          {t('login.heroSubtitle')}
         </Typography>
 
         {/* Stats row */}
         <Box sx={{ display: 'flex', gap: '20px', position: 'relative', zIndex: 1 }}>
-          {[
-            { num: '2.4k+', label: 'Hoteles registrados' },
-            { num: '6', label: 'Paises' },
-            { num: '98%', label: 'Satisfaccion' },
-          ].map((stat, index) => (
+          {stats.map((stat, index) => (
             <Box
               key={index}
               sx={{
@@ -364,12 +377,7 @@ export default function HotelLoginPage() {
             maxWidth: 480,
           }}
         >
-          {[
-            { icon: <DashboardIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: 'Dashboard centralizado con metricas en tiempo real' },
-            { icon: <EventAvailableIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: 'Gestion completa de reservas: confirmar, rechazar, detalles' },
-            { icon: <BarChartIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: 'Reportes de ingresos mensuales con graficos descargables' },
-            { icon: <SellIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: 'Control de tarifas y descuentos por habitacion' },
-          ].map((feature, index) => (
+          {features.map((feature, index) => (
             <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <Box
                 sx={{

@@ -1,8 +1,11 @@
 import { Box, Typography } from '@mui/material';
 import WifiOffIcon from '@mui/icons-material/WifiOff';
+import { useTranslation } from 'react-i18next';
 import { palette } from '../../design-system/theme/palette';
 
 export default function OfflineBanner() {
+  const { t } = useTranslation('common');
+
   return (
     <Box
       sx={{
@@ -16,7 +19,7 @@ export default function OfflineBanner() {
     >
       <WifiOffIcon sx={{ fontSize: 16, color: palette.warning }} />
       <Typography sx={{ fontSize: 12, fontWeight: 500, color: palette.warning }}>
-        Sin conexion — Datos guardados
+        {t('offline.banner')}
       </Typography>
     </Box>
   );

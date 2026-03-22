@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import MobileShell from '../components/MobileShell';
 import InfoGrid from '../../design-system/components/InfoGrid';
@@ -10,6 +11,8 @@ import { mockHotels } from '../../travelers/data/mockHotels';
 const hotel = mockHotels[0];
 
 export default function MobileReservationSummaryPage() {
+  const { t } = useTranslation('mobile');
+
   return (
     <MobileShell hideNav>
       {/* Top Bar */}
@@ -28,7 +31,7 @@ export default function MobileReservationSummaryPage() {
           <ArrowBackIcon sx={{ fontSize: 22 }} />
         </Box>
         <Typography sx={{ fontSize: 16, fontWeight: 600, color: palette.onSurface }}>
-          Resumen de reserva
+          {t('summary.title')}
         </Typography>
       </Box>
 
@@ -58,7 +61,7 @@ export default function MobileReservationSummaryPage() {
             <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>{hotel.name}</Typography>
             <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>{hotel.location}</Typography>
             <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant, mt: '2px' }}>
-              Habitacion Superior · 1 cama King
+              {t('summary.roomInfo')}
             </Typography>
           </Box>
         </Box>
@@ -68,10 +71,10 @@ export default function MobileReservationSummaryPage() {
           <InfoGrid
             columns={2}
             items={[
-              { label: 'Check-in', value: 'Sab, 15 mar', sub: '15:00' },
-              { label: 'Check-out', value: 'Jue, 20 mar', sub: '12:00' },
-              { label: 'Duracion', value: '5 noches' },
-              { label: 'Huespedes', value: '2 adultos' },
+              { label: t('summary.checkIn'), value: 'Sab, 15 mar', sub: '15:00' },
+              { label: t('summary.checkOut'), value: 'Jue, 20 mar', sub: '12:00' },
+              { label: t('summary.duration'), value: t('summary.nights', { count: 5 }) },
+              { label: t('summary.guests'), value: t('summary.guestsValue', { count: 2 }) },
             ]}
           />
         </Box>
@@ -79,14 +82,14 @@ export default function MobileReservationSummaryPage() {
         {/* Price Breakdown */}
         <Box sx={{ background: '#fff', borderRadius: '12px', border: `1px solid ${palette.outlineVariant}`, p: '16px', mb: '16px' }}>
           <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
-            Detalle del precio
+            {t('summary.priceDetail')}
           </Typography>
           <PriceBreakdown
             rows={[
-              { label: 'COP 480k × 5 noches', value: 'COP 2.400.000' },
-              { label: 'Impuestos (11%)', value: 'COP 264.000' },
+              { label: t('summary.nightsBreakdown', { count: 5 }), value: 'COP 2.400.000' },
+              { label: t('summary.taxes', { percent: 11 }), value: 'COP 264.000' },
             ]}
-            totalLabel="Total"
+            totalLabel={t('summary.total')}
             totalValue="COP 2.664.000"
           />
         </Box>
@@ -94,10 +97,10 @@ export default function MobileReservationSummaryPage() {
         {/* Cancellation Policy */}
         <Box sx={{ background: palette.successContainer, borderRadius: '12px', p: '14px', mb: '16px' }}>
           <Typography sx={{ fontSize: 13, fontWeight: 600, color: palette.success, mb: '4px' }}>
-            Cancelacion gratuita
+            {t('summary.freeCancellation')}
           </Typography>
           <Typography sx={{ fontSize: 12, color: palette.success, lineHeight: 1.5 }}>
-            Cancelacion gratuita hasta 48 horas antes del check-in. Despues se cobra el 50% de la primera noche.
+            {t('summary.cancellationPolicy')}
           </Typography>
         </Box>
       </Box>
@@ -132,7 +135,7 @@ export default function MobileReservationSummaryPage() {
             width: '100%',
           }}
         >
-          Continuar al pago
+          {t('summary.continueToPayment')}
         </Box>
       </Box>
     </MobileShell>

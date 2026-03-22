@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import StarIcon from '@mui/icons-material/Star';
+import { useTranslation } from 'react-i18next';
 import MobileShell from '../components/MobileShell';
 import OfflineBanner from '../components/OfflineBanner';
 import StatusChip from '../../design-system/components/StatusChip';
@@ -39,6 +39,7 @@ const cancelledReservations = [
 type Tab = 'active' | 'past' | 'cancelled';
 
 export default function MobileMyReservationsPage() {
+  const { t } = useTranslation('mobile');
   const [tab, setTab] = useState<Tab>('active');
 
   const tabData: Record<Tab, typeof mockReservations> = {
@@ -55,36 +56,36 @@ export default function MobileMyReservationsPage() {
 
       <Box sx={{ px: '16px', pt: '16px' }}>
         <Typography sx={{ fontSize: 20, fontWeight: 700, color: palette.onSurface, mb: '16px' }}>
-          Mis reservas
+          {t('myReservations.title')}
         </Typography>
 
         {/* Tabs */}
         <Box sx={{ display: 'flex', gap: '0', mb: '16px', borderBottom: `2px solid ${palette.outlineVariant}` }}>
           {[
-            { key: 'active' as Tab, label: 'Activas', count: 2 },
-            { key: 'past' as Tab, label: 'Pasadas', count: 1 },
-            { key: 'cancelled' as Tab, label: 'Canceladas', count: 1 },
-          ].map((t) => (
+            { key: 'active' as Tab, label: t('myReservations.active'), count: 2 },
+            { key: 'past' as Tab, label: t('myReservations.past'), count: 1 },
+            { key: 'cancelled' as Tab, label: t('myReservations.cancelled'), count: 1 },
+          ].map((tabItem) => (
             <Box
-              key={t.key}
-              onClick={() => setTab(t.key)}
+              key={tabItem.key}
+              onClick={() => setTab(tabItem.key)}
               sx={{
                 flex: 1,
                 textAlign: 'center',
                 pb: '10px',
                 cursor: 'pointer',
-                borderBottom: tab === t.key ? `2px solid ${palette.primary}` : '2px solid transparent',
+                borderBottom: tab === tabItem.key ? `2px solid ${palette.primary}` : '2px solid transparent',
                 mb: '-2px',
               }}
             >
               <Typography
                 sx={{
                   fontSize: 13,
-                  fontWeight: tab === t.key ? 600 : 400,
-                  color: tab === t.key ? palette.primary : palette.onSurfaceVariant,
+                  fontWeight: tab === tabItem.key ? 600 : 400,
+                  color: tab === tabItem.key ? palette.primary : palette.onSurfaceVariant,
                 }}
               >
-                {t.label} ({t.count})
+                {tabItem.label} ({tabItem.count})
               </Typography>
             </Box>
           ))}

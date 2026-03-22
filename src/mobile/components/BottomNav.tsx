@@ -3,15 +3,18 @@ import SearchIcon from '@mui/icons-material/Search';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { palette } from '../../design-system/theme/palette';
 
-const tabs = [
-  { key: 'search', label: 'Buscar', icon: SearchIcon, to: '/mobile/search' },
-  { key: 'reservations', label: 'Mis Reservas', icon: EventNoteIcon, to: '/mobile/reservations' },
-  { key: 'profile', label: 'Perfil', icon: PersonOutlineIcon, to: '/mobile/profile' },
-] as const;
-
 export default function BottomNav({ active }: { active: string }) {
+  const { t } = useTranslation('common');
+
+  const tabs = [
+    { key: 'search', label: t('bottomNav.search'), icon: SearchIcon, to: '/mobile/search' },
+    { key: 'reservations', label: t('bottomNav.myReservations'), icon: EventNoteIcon, to: '/mobile/reservations' },
+    { key: 'profile', label: t('bottomNav.profile'), icon: PersonOutlineIcon, to: '/mobile/profile' },
+  ] as const;
+
   return (
     <Box
       sx={{

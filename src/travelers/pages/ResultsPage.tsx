@@ -2,221 +2,248 @@ import { Box, Typography, Button, Checkbox, FormControlLabel } from '@mui/materi
 import { Link } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
 import StarIcon from '@mui/icons-material/Star';
+import { useTranslation } from 'react-i18next';
 import TravelerNav from '../../design-system/layouts/TravelerNav';
 import AmenityTag from '../../design-system/components/AmenityTag';
 import RatingBadge from '../../design-system/components/RatingBadge';
 import { palette } from '../../design-system/theme/palette';
 import { mockHotels } from '../data/mockHotels';
 
-const propertyTypes = ['Hotel', 'Hostal', 'Apartamento', 'Resort', 'Cabana'];
 const starOptions = [
   { label: '5', value: 5, selected: false },
   { label: '4+', value: 4, selected: true },
   { label: '3+', value: 3, selected: false },
-  { label: 'Todos', value: 0, selected: false },
-];
-const amenitiesFilter = [
-  { label: 'Wi-Fi gratuito', checked: true },
-  { label: 'Desayuno incluido', checked: true },
-  { label: 'Piscina', checked: false },
-  { label: 'Estacionamiento', checked: false },
-  { label: 'Mascotas permitidas', checked: false },
-  { label: 'Aire acondicionado', checked: false },
 ];
 
-const FilterSidebar = () => (
-  <Box
-    sx={{
-      width: 280,
-      minWidth: 280,
-      maxWidth: 280,
-      boxSizing: 'border-box',
-      backgroundColor: '#ffffff',
-      borderRight: `1px solid ${palette.outlineVariant}`,
-      padding: '20px',
-      overflowY: 'auto',
-      overflowX: 'hidden',
-      flexShrink: 0,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '28px',
-      maxHeight: 'calc(100vh - 72px)',
-      position: 'sticky',
-      top: 0,
-    }}
-  >
-    <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface }}>
-      Filtros
-    </Typography>
+export default function ResultsPage() {
+  const { t } = useTranslation('travelers');
 
-    {/* Price range */}
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <Typography
-        sx={{
-          fontSize: 13,
-          fontWeight: 500,
-          color: palette.onSurfaceVariant,
-          letterSpacing: '0.5px',
-          textTransform: 'uppercase',
-        }}
-      >
-        Precio por noche
-      </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>Minimo</Typography>
-        <Box
-          component="input"
-          defaultValue="COP 0"
-          sx={{
-            width: '100%',
-            height: 44,
-            border: `1px solid ${palette.outline}`,
-            borderRadius: '8px',
-            padding: '0 12px',
-            fontFamily: "'Roboto', sans-serif",
-            fontSize: 14,
-            color: palette.onSurface,
-            outline: 'none',
-            boxSizing: 'border-box',
-          }}
-        />
-        <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>Maximo</Typography>
-        <Box
-          component="input"
-          defaultValue="COP 800.000"
-          sx={{
-            width: '100%',
-            height: 44,
-            border: `1px solid ${palette.outline}`,
-            borderRadius: '8px',
-            padding: '0 12px',
-            fontFamily: "'Roboto', sans-serif",
-            fontSize: 14,
-            color: palette.onSurface,
-            outline: 'none',
-            boxSizing: 'border-box',
-          }}
-        />
-      </Box>
-    </Box>
+  const propertyTypes = [
+    t('results.filters.propertyTypes.hotel'),
+    t('results.filters.propertyTypes.hostel'),
+    t('results.filters.propertyTypes.apartment'),
+    t('results.filters.propertyTypes.resort'),
+    t('results.filters.propertyTypes.cabin'),
+  ];
 
-    {/* Property type */}
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <Typography
-        sx={{
-          fontSize: 13,
-          fontWeight: 500,
-          color: palette.onSurfaceVariant,
-          letterSpacing: '0.5px',
-          textTransform: 'uppercase',
-        }}
-      >
-        Tipo de alojamiento
+  const amenitiesFilter = [
+    { label: t('results.filters.freeWifi'), checked: true },
+    { label: t('results.filters.breakfastIncluded'), checked: true },
+    { label: t('results.filters.pool'), checked: false },
+    { label: t('results.filters.parking'), checked: false },
+    { label: t('results.filters.petsAllowed'), checked: false },
+    { label: t('results.filters.airConditioning'), checked: false },
+  ];
+
+  const FilterSidebar = () => (
+    <Box
+      sx={{
+        width: 280,
+        minWidth: 280,
+        maxWidth: 280,
+        boxSizing: 'border-box',
+        backgroundColor: '#ffffff',
+        borderRight: `1px solid ${palette.outlineVariant}`,
+        padding: '20px',
+        overflowY: 'auto',
+        overflowX: 'hidden',
+        flexShrink: 0,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '28px',
+        maxHeight: 'calc(100vh - 72px)',
+        position: 'sticky',
+        top: 0,
+      }}
+    >
+      <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface }}>
+        {t('results.filters.title')}
       </Typography>
-      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-        {propertyTypes.map((type, i) => (
+
+      {/* Price range */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography
+          sx={{
+            fontSize: 13,
+            fontWeight: 500,
+            color: palette.onSurfaceVariant,
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase',
+          }}
+        >
+          {t('results.filters.pricePerNight')}
+        </Typography>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>{t('results.filters.minimum')}</Typography>
           <Box
-            key={type}
+            component="input"
+            defaultValue="COP 0"
             sx={{
-              height: 32,
-              px: '16px',
-              border: `1px solid ${i === 0 ? palette.primaryContainer : palette.outlineVariant}`,
+              width: '100%',
+              height: 44,
+              border: `1px solid ${palette.outline}`,
               borderRadius: '8px',
-              fontSize: 13,
-              fontWeight: i === 0 ? 500 : 400,
-              color: i === 0 ? palette.onPrimaryContainer : palette.onSurfaceVariant,
-              backgroundColor: i === 0 ? palette.primaryContainer : 'transparent',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
+              padding: '0 12px',
+              fontFamily: "'Roboto', sans-serif",
+              fontSize: 14,
+              color: palette.onSurface,
+              outline: 'none',
+              boxSizing: 'border-box',
             }}
-          >
-            {type}
-          </Box>
-        ))}
-      </Box>
-    </Box>
-
-    {/* Star rating */}
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <Typography
-        sx={{
-          fontSize: 13,
-          fontWeight: 500,
-          color: palette.onSurfaceVariant,
-          letterSpacing: '0.5px',
-          textTransform: 'uppercase',
-        }}
-      >
-        Calificacion
-      </Typography>
-      <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-        {starOptions.map((opt) => (
+          />
+          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>{t('results.filters.maximum')}</Typography>
           <Box
-            key={opt.label}
+            component="input"
+            defaultValue="COP 800.000"
+            sx={{
+              width: '100%',
+              height: 44,
+              border: `1px solid ${palette.outline}`,
+              borderRadius: '8px',
+              padding: '0 12px',
+              fontFamily: "'Roboto', sans-serif",
+              fontSize: 14,
+              color: palette.onSurface,
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
+          />
+        </Box>
+      </Box>
+
+      {/* Property type */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography
+          sx={{
+            fontSize: 13,
+            fontWeight: 500,
+            color: palette.onSurfaceVariant,
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase',
+          }}
+        >
+          {t('results.filters.propertyType')}
+        </Typography>
+        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          {propertyTypes.map((type, i) => (
+            <Box
+              key={type}
+              sx={{
+                height: 32,
+                px: '16px',
+                border: `1px solid ${i === 0 ? palette.primaryContainer : palette.outlineVariant}`,
+                borderRadius: '8px',
+                fontSize: 13,
+                fontWeight: i === 0 ? 500 : 400,
+                color: i === 0 ? palette.onPrimaryContainer : palette.onSurfaceVariant,
+                backgroundColor: i === 0 ? palette.primaryContainer : 'transparent',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              {type}
+            </Box>
+          ))}
+        </Box>
+      </Box>
+
+      {/* Star rating */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography
+          sx={{
+            fontSize: 13,
+            fontWeight: 500,
+            color: palette.onSurfaceVariant,
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase',
+          }}
+        >
+          {t('results.filters.rating')}
+        </Typography>
+        <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
+          {starOptions.map((opt) => (
+            <Box
+              key={opt.label}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '6px 10px',
+                border: `1px solid ${opt.selected ? palette.primaryContainer : palette.outlineVariant}`,
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: 13,
+                color: opt.selected ? palette.onPrimaryContainer : palette.onSurfaceVariant,
+                backgroundColor: opt.selected ? palette.primaryContainer : 'transparent',
+                fontWeight: opt.selected ? 500 : 400,
+              }}
+            >
+              {opt.value > 0 && <StarIcon sx={{ color: palette.star, fontSize: 14 }} />}
+              {opt.label}
+            </Box>
+          ))}
+          <Box
             sx={{
               display: 'flex',
               alignItems: 'center',
               gap: '4px',
               padding: '6px 10px',
-              border: `1px solid ${opt.selected ? palette.primaryContainer : palette.outlineVariant}`,
+              border: `1px solid ${palette.outlineVariant}`,
               borderRadius: '8px',
               cursor: 'pointer',
               fontSize: 13,
-              color: opt.selected ? palette.onPrimaryContainer : palette.onSurfaceVariant,
-              backgroundColor: opt.selected ? palette.primaryContainer : 'transparent',
-              fontWeight: opt.selected ? 500 : 400,
+              color: palette.onSurfaceVariant,
+              backgroundColor: 'transparent',
+              fontWeight: 400,
             }}
           >
-            {opt.value > 0 && <StarIcon sx={{ color: palette.star, fontSize: 14 }} />}
-            {opt.label}
+            {t('results.filters.all')}
           </Box>
+        </Box>
+      </Box>
+
+      {/* Amenities */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Typography
+          sx={{
+            fontSize: 13,
+            fontWeight: 500,
+            color: palette.onSurfaceVariant,
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase',
+          }}
+        >
+          {t('results.filters.amenities')}
+        </Typography>
+        {amenitiesFilter.map((amenity) => (
+          <FormControlLabel
+            key={amenity.label}
+            control={
+              <Checkbox
+                defaultChecked={amenity.checked}
+                sx={{
+                  color: palette.outline,
+                  '&.Mui-checked': { color: palette.primary },
+                  padding: '0 10px 0 0',
+                }}
+                size="small"
+              />
+            }
+            label={amenity.label}
+            sx={{
+              ml: 0,
+              '& .MuiFormControlLabel-label': {
+                fontSize: 14,
+                color: palette.onSurface,
+              },
+            }}
+          />
         ))}
       </Box>
     </Box>
+  );
 
-    {/* Amenities */}
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <Typography
-        sx={{
-          fontSize: 13,
-          fontWeight: 500,
-          color: palette.onSurfaceVariant,
-          letterSpacing: '0.5px',
-          textTransform: 'uppercase',
-        }}
-      >
-        Servicios
-      </Typography>
-      {amenitiesFilter.map((amenity) => (
-        <FormControlLabel
-          key={amenity.label}
-          control={
-            <Checkbox
-              defaultChecked={amenity.checked}
-              sx={{
-                color: palette.outline,
-                '&.Mui-checked': { color: palette.primary },
-                padding: '0 10px 0 0',
-              }}
-              size="small"
-            />
-          }
-          label={amenity.label}
-          sx={{
-            ml: 0,
-            '& .MuiFormControlLabel-label': {
-              fontSize: 14,
-              color: palette.onSurface,
-            },
-          }}
-        />
-      ))}
-    </Box>
-  </Box>
-);
-
-export default function ResultsPage() {
   return (
     <Box
       sx={{
@@ -228,7 +255,7 @@ export default function ResultsPage() {
         overflow: 'hidden',
       }}
     >
-      <TravelerNav variant="results" searchSummary="Cartagena · 15 mar -- 20 mar · 2 huespedes" />
+      <TravelerNav variant="results" searchSummary={t('results.searchSummary')} />
 
       {/* PAGE BODY */}
       <Box sx={{ display: 'flex', minHeight: 'calc(100vh - 72px)', mt: '72px', overflow: 'hidden', maxWidth: '100vw' }}>
@@ -259,17 +286,17 @@ export default function ResultsPage() {
           >
             <Typography sx={{ fontSize: 16, color: palette.onSurface, minWidth: 0 }} noWrap>
               <Box component="span" sx={{ fontWeight: 600 }}>
-                247 alojamientos
+                {t('results.header.accommodationsFound', { count: 247 })}
               </Box>{' '}
-              encontrados en Cartagena · 15--20 mar · 2 huespedes
+              {t('results.header.foundIn')}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
               <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-                Ordenar por
+                {t('results.header.sortBy')}
               </Typography>
               <Box
                 component="select"
-                defaultValue="Recomendados"
+                defaultValue={t('results.header.recommended')}
                 sx={{
                   fontFamily: "'Roboto', sans-serif",
                   fontSize: 14,
@@ -282,11 +309,11 @@ export default function ResultsPage() {
                   outline: 'none',
                 }}
               >
-                <option>Recomendados</option>
-                <option>Precio: menor a mayor</option>
-                <option>Precio: mayor a menor</option>
-                <option>Calificacion</option>
-                <option>Popularidad</option>
+                <option>{t('results.header.recommended')}</option>
+                <option>{t('results.header.priceLowToHigh')}</option>
+                <option>{t('results.header.priceHighToLow')}</option>
+                <option>{t('results.header.ratingSort')}</option>
+                <option>{t('results.header.popularity')}</option>
               </Box>
             </Box>
           </Box>
@@ -331,7 +358,7 @@ export default function ResultsPage() {
                       borderRadius: '100px',
                     }}
                   >
-                    {hotel.photoCount} fotos
+                    {t('results.card.photos', { count: hotel.photoCount })}
                   </Box>
                 </Box>
 
@@ -385,7 +412,7 @@ export default function ResultsPage() {
                       {hotel.starsText}
                     </Typography>
                     <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                      ({hotel.reviewCount} resenas)
+                      ({hotel.reviewCount} {t('results.card.reviews')})
                     </Typography>
                   </Box>
                   <Box
@@ -418,7 +445,7 @@ export default function ResultsPage() {
                   <Typography
                     sx={{ fontSize: 11, color: palette.onSurfaceVariant, textAlign: 'right' }}
                   >
-                    desde
+                    {t('results.card.from')}
                   </Typography>
                   <Box>
                     <Typography sx={{ fontSize: 26, fontWeight: 700, color: palette.primary }}>
@@ -427,7 +454,7 @@ export default function ResultsPage() {
                     <Typography
                       sx={{ fontSize: 12, color: palette.onSurfaceVariant, textAlign: 'right' }}
                     >
-                      por noche
+                      {t('results.card.perNight')}
                     </Typography>
                   </Box>
                   <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
@@ -449,7 +476,7 @@ export default function ResultsPage() {
                       '&:hover': { backgroundColor: palette.primary },
                     }}
                   >
-                    Ver habitaciones
+                    {t('results.card.viewRooms')}
                   </Button>
                 </Box>
               </Box>

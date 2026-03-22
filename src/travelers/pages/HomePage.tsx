@@ -1,6 +1,7 @@
 import { Box, Typography, Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import TravelerNav from '../../design-system/layouts/TravelerNav';
 import { palette } from '../../design-system/theme/palette';
 import { mockDestinations } from '../data/mockDestinations';
@@ -10,7 +11,8 @@ const basePrices = [120000, 95000, 85000, 110000, 78000];
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const { language, formatPrice } = useLocale();
+  const { formatPrice } = useLocale();
+  const { t } = useTranslation('travelers');
 
   return (
     <Box
@@ -68,7 +70,7 @@ export default function HomePage() {
             textTransform: 'uppercase',
           }}
         >
-          {language === 'ES' ? '6 paises · Hoteles y hospedajes' : '6 countries · Hotels & lodging'}
+          {t('home.hero.eyebrow')}
         </Typography>
 
         {/* Title */}
@@ -84,7 +86,7 @@ export default function HomePage() {
             maxWidth: 720,
           }}
         >
-          {language === 'ES' ? 'Tu proxima aventura comienza aqui' : 'Your next adventure starts here'}
+          {t('home.hero.title')}
         </Typography>
 
         {/* Subtitle */}
@@ -98,9 +100,7 @@ export default function HomePage() {
             lineHeight: 1.5,
           }}
         >
-          {language === 'ES'
-            ? 'Reserva hoteles y hostales en Colombia, Peru, Ecuador, Mexico, Chile y Argentina.'
-            : 'Book hotels and hostels in Colombia, Peru, Ecuador, Mexico, Chile and Argentina.'}
+          {t('home.hero.subtitle')}
         </Typography>
 
         {/* Search card */}
@@ -141,10 +141,10 @@ export default function HomePage() {
                 mb: '4px',
               }}
             >
-              Destino
+              {t('home.search.destination')}
             </Typography>
             <Typography sx={{ fontSize: 15, fontWeight: 400, color: palette.outline }}>
-              Ciudad o hotel
+              {t('home.search.destinationPlaceholder')}
             </Typography>
           </Box>
 
@@ -170,10 +170,10 @@ export default function HomePage() {
                 mb: '4px',
               }}
             >
-              Llegada
+              {t('home.search.checkIn')}
             </Typography>
             <Typography sx={{ fontSize: 15, fontWeight: 400, color: palette.outline }}>
-              Selecciona fecha
+              {t('home.search.selectDate')}
             </Typography>
           </Box>
 
@@ -199,10 +199,10 @@ export default function HomePage() {
                 mb: '4px',
               }}
             >
-              Salida
+              {t('home.search.checkOut')}
             </Typography>
             <Typography sx={{ fontSize: 15, fontWeight: 400, color: palette.outline }}>
-              Selecciona fecha
+              {t('home.search.selectDate')}
             </Typography>
           </Box>
 
@@ -227,10 +227,10 @@ export default function HomePage() {
                 mb: '4px',
               }}
             >
-              Huespedes
+              {t('home.search.guests')}
             </Typography>
             <Typography sx={{ fontSize: 15, fontWeight: 400, color: palette.outline }}>
-              1 adulto
+              {t('home.search.defaultGuests')}
             </Typography>
           </Box>
 
@@ -257,7 +257,7 @@ export default function HomePage() {
               },
             }}
           >
-            Buscar
+            {t('home.search.searchButton')}
           </Button>
         </Box>
       </Box>
@@ -272,7 +272,7 @@ export default function HomePage() {
             mb: '20px',
           }}
         >
-          {language === 'ES' ? 'Destinos populares' : 'Popular destinations'}
+          {t('home.destinations.title')}
         </Typography>
 
         <Box sx={{ display: 'flex', gap: '16px' }}>
@@ -324,7 +324,7 @@ export default function HomePage() {
                     color: 'rgba(255,255,255,0.8)',
                   }}
                 >
-                  {dest.country} · {language === 'ES' ? `desde ${formatPrice(basePrices[idx])}/noche` : `from ${formatPrice(basePrices[idx])}/night`}
+                  {dest.country} · {t('home.destinations.fromPerNight', { price: formatPrice(basePrices[idx]) })}
                 </Typography>
               </Box>
             </Box>

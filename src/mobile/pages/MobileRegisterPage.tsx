@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
@@ -9,6 +10,8 @@ import Brand from '../../design-system/components/Brand';
 import { palette } from '../../design-system/theme/palette';
 
 export default function MobileRegisterPage() {
+  const { t } = useTranslation('mobile');
+
   return (
     <MobileShell hideNav>
       <Box
@@ -25,7 +28,7 @@ export default function MobileRegisterPage() {
           <Brand size={28} variant="nav" />
         </Box>
         <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, mb: '32px' }}>
-          Crea tu cuenta para comenzar a reservar
+          {t('register.subtitle')}
         </Typography>
 
         {/* Register Card */}
@@ -39,13 +42,13 @@ export default function MobileRegisterPage() {
           }}
         >
           <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.onSurface, mb: '20px' }}>
-            Crear cuenta
+            {t('register.title')}
           </Typography>
 
           {/* Nombre completo */}
           <Box sx={{ mb: '14px' }}>
             <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurfaceVariant, mb: '6px' }}>
-              Nombre completo
+              {t('register.fullName')}
             </Typography>
             <Box
               sx={{
@@ -68,7 +71,7 @@ export default function MobileRegisterPage() {
           {/* Email */}
           <Box sx={{ mb: '14px' }}>
             <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurfaceVariant, mb: '6px' }}>
-              Correo electronico
+              {t('register.email')}
             </Typography>
             <Box
               sx={{
@@ -91,7 +94,7 @@ export default function MobileRegisterPage() {
           {/* Telefono */}
           <Box sx={{ mb: '14px' }}>
             <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurfaceVariant, mb: '6px' }}>
-              Telefono
+              {t('register.phone')}
             </Typography>
             <Box
               sx={{
@@ -114,7 +117,7 @@ export default function MobileRegisterPage() {
           {/* Contrasena */}
           <Box sx={{ mb: '14px' }}>
             <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurfaceVariant, mb: '6px' }}>
-              Contrasena
+              {t('register.password')}
             </Typography>
             <Box
               sx={{
@@ -137,7 +140,7 @@ export default function MobileRegisterPage() {
           {/* Confirmar contrasena */}
           <Box sx={{ mb: '24px' }}>
             <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurfaceVariant, mb: '6px' }}>
-              Confirmar contrasena
+              {t('register.confirmPassword')}
             </Typography>
             <Box
               sx={{
@@ -176,13 +179,13 @@ export default function MobileRegisterPage() {
               mb: '16px',
             }}
           >
-            Crear cuenta
+            {t('register.button')}
           </Box>
 
           <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, textAlign: 'center' }}>
-            ¿Ya tienes cuenta?{' '}
+            {t('register.hasAccount')}{' '}
             <Link to="/mobile/login" style={{ color: palette.primary, fontWeight: 600, fontSize: 13, textDecoration: 'none' }}>
-              Inicia sesion
+              {t('register.login')}
             </Link>
           </Typography>
         </Box>

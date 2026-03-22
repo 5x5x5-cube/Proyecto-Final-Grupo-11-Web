@@ -3,121 +3,122 @@ import PaymentsIcon from '@mui/icons-material/Payments';
 import LockIcon from '@mui/icons-material/Lock';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import CheckoutLayout from '../../design-system/layouts/CheckoutLayout';
 import SectionCard from '../../design-system/components/SectionCard';
 import { palette } from '../../design-system/theme/palette';
 
-const PaymentSidebar = ({ onPay }: { onPay: () => void }) => (
-  <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-    <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.onSurface }}>
-      Resumen de reserva
-    </Typography>
-
-    {/* Booking mini card */}
-    <Box
-      sx={{
-        backgroundColor: palette.background,
-        borderRadius: '12px',
-        padding: '16px',
-        display: 'flex',
-        gap: '14px',
-        alignItems: 'flex-start',
-      }}
-    >
-      <Box
-        sx={{
-          width: 60,
-          height: 60,
-          borderRadius: '10px',
-          background: 'linear-gradient(135deg, #003740, #006874)',
-          flexShrink: 0,
-        }}
-      />
-      <Box>
-        <Typography
-          sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface, mb: '4px' }}
-        >
-          Hotel Santa Clara Sofitel
-        </Typography>
-        <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant, mb: '2px' }}>
-          15 mar -- 20 mar 2026 · 5 noches
-        </Typography>
-        <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-          Habitacion Superior · 2 adultos
-        </Typography>
-      </Box>
-    </Box>
-
-    {/* Price breakdown */}
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-          COP 480.000 x 5 noches
-        </Typography>
-        <Typography sx={{ fontSize: 14, color: palette.onSurface }}>COP 2.400.000</Typography>
-      </Box>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-          Impuestos y tasas
-        </Typography>
-        <Typography sx={{ fontSize: 14, color: palette.onSurface }}>COP 264.000</Typography>
-      </Box>
-      <Box sx={{ height: 1, backgroundColor: palette.outlineVariant }} />
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Typography sx={{ fontSize: 16, fontWeight: 600, color: palette.onSurface }}>
-          Total a pagar
-        </Typography>
-        <Typography sx={{ fontSize: 24, fontWeight: 700, color: palette.primary }}>
-          COP 2.664.000
-        </Typography>
-      </Box>
-    </Box>
-
-    {/* Pay button */}
-    <Button
-      variant="contained"
-      disableElevation
-      fullWidth
-      onClick={onPay}
-      sx={{
-        height: 56,
-        backgroundColor: palette.primary,
-        borderRadius: '100px',
-        fontFamily: "'Roboto', sans-serif",
-        fontSize: 16,
-        fontWeight: 600,
-        color: '#fff',
-        textTransform: 'none',
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        '&:hover': { backgroundColor: palette.primary },
-      }}
-    >
-      <LockIcon sx={{ fontSize: 20 }} />
-      Pagar COP 2.664.000
-    </Button>
-
-    {/* Secure note */}
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
-      <VerifiedUserIcon sx={{ fontSize: 15, color: palette.primary }} />
-      <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-        Transaccion protegida con cifrado SSL
-      </Typography>
-    </Box>
-
-  </Box>
-);
-
 export default function PaymentPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation('travelers');
+
+  const PaymentSidebar = () => (
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.onSurface }}>
+        {t('payment.sidebar.title')}
+      </Typography>
+
+      {/* Booking mini card */}
+      <Box
+        sx={{
+          backgroundColor: palette.background,
+          borderRadius: '12px',
+          padding: '16px',
+          display: 'flex',
+          gap: '14px',
+          alignItems: 'flex-start',
+        }}
+      >
+        <Box
+          sx={{
+            width: 60,
+            height: 60,
+            borderRadius: '10px',
+            background: 'linear-gradient(135deg, #003740, #006874)',
+            flexShrink: 0,
+          }}
+        />
+        <Box>
+          <Typography
+            sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface, mb: '4px' }}
+          >
+            Hotel Santa Clara Sofitel
+          </Typography>
+          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant, mb: '2px' }}>
+            {t('payment.sidebar.dates')}
+          </Typography>
+          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
+            {t('payment.sidebar.room')}
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Price breakdown */}
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+            {t('payment.sidebar.nightsPrice')}
+          </Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{t('payment.sidebar.nightsTotal')}</Typography>
+        </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+            {t('payment.sidebar.taxesAndFees')}
+          </Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{t('payment.sidebar.taxesValue')}</Typography>
+        </Box>
+        <Box sx={{ height: 1, backgroundColor: palette.outlineVariant }} />
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography sx={{ fontSize: 16, fontWeight: 600, color: palette.onSurface }}>
+            {t('payment.sidebar.totalToPay')}
+          </Typography>
+          <Typography sx={{ fontSize: 24, fontWeight: 700, color: palette.primary }}>
+            {t('payment.sidebar.totalValue')}
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Pay button */}
+      <Button
+        variant="contained"
+        disableElevation
+        fullWidth
+        onClick={() => navigate('/checkout/confirmation')}
+        sx={{
+          height: 56,
+          backgroundColor: palette.primary,
+          borderRadius: '100px',
+          fontFamily: "'Roboto', sans-serif",
+          fontSize: 16,
+          fontWeight: 600,
+          color: '#fff',
+          textTransform: 'none',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          '&:hover': { backgroundColor: palette.primary },
+        }}
+      >
+        <LockIcon sx={{ fontSize: 20 }} />
+        {t('payment.sidebar.payButton')}
+      </Button>
+
+      {/* Secure note */}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
+        <VerifiedUserIcon sx={{ fontSize: 15, color: palette.primary }} />
+        <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
+          {t('payment.sidebar.secureTransaction')}
+        </Typography>
+      </Box>
+    </Box>
+  );
 
   return (
-    <CheckoutLayout currentStep={3} sidebar={<PaymentSidebar onPay={() => navigate('/checkout/confirmation')} />}>
+    <CheckoutLayout currentStep={3} sidebar={<PaymentSidebar />}>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         <SectionCard
           icon={<PaymentsIcon sx={{ color: palette.primary, fontSize: 20 }} />}
-          title="Metodo de pago"
+          title={t('payment.method.title')}
         >
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {/* Payment method tabs */}
@@ -139,7 +140,7 @@ export default function PaymentPage() {
               >
                 <Typography sx={{ fontSize: 28 }}>💳</Typography>
                 <Typography sx={{ fontSize: 13, fontWeight: 500, color: palette.primary }}>
-                  Tarjeta
+                  {t('payment.method.card')}
                 </Typography>
               </Box>
               {/* Billetera digital */}
@@ -159,7 +160,7 @@ export default function PaymentPage() {
               >
                 <Typography sx={{ fontSize: 28 }}>📱</Typography>
                 <Typography sx={{ fontSize: 13, fontWeight: 500, color: palette.onSurfaceVariant }}>
-                  Billetera digital
+                  {t('payment.method.digitalWallet')}
                 </Typography>
               </Box>
               {/* Transferencia */}
@@ -179,7 +180,7 @@ export default function PaymentPage() {
               >
                 <Typography sx={{ fontSize: 28 }}>🏦</Typography>
                 <Typography sx={{ fontSize: 13, fontWeight: 500, color: palette.onSurfaceVariant }}>
-                  Transferencia
+                  {t('payment.method.transfer')}
                 </Typography>
               </Box>
             </Box>
@@ -239,7 +240,7 @@ export default function PaymentPage() {
                       mb: '2px',
                     }}
                   >
-                    TITULAR
+                    {t('payment.cardPreview.cardHolder')}
                   </Typography>
                   <Typography sx={{ fontSize: 14, fontWeight: 500, color: '#fff' }}>
                     CARLOS MARTINEZ
@@ -255,7 +256,7 @@ export default function PaymentPage() {
                       textAlign: 'right',
                     }}
                   >
-                    VENCE
+                    {t('payment.cardPreview.expires')}
                   </Typography>
                   <Typography sx={{ fontSize: 14, fontWeight: 500, color: '#fff' }}>
                     12/28
@@ -277,12 +278,12 @@ export default function PaymentPage() {
                     letterSpacing: '0.4px',
                   }}
                 >
-                  Numero de tarjeta
+                  {t('payment.form.cardNumber')}
                 </Typography>
                 <Box
                   component="input"
                   defaultValue="•••• •••• •••• 4242"
-                  placeholder="1234 5678 9012 3456"
+                  placeholder={t('payment.form.cardNumberPlaceholder')}
                   sx={{
                     width: '100%',
                     height: 52,
@@ -311,7 +312,7 @@ export default function PaymentPage() {
                     letterSpacing: '0.4px',
                   }}
                 >
-                  Nombre del titular
+                  {t('payment.form.cardHolderName')}
                 </Typography>
                 <Box
                   component="input"
@@ -345,12 +346,12 @@ export default function PaymentPage() {
                       letterSpacing: '0.4px',
                     }}
                   >
-                    Fecha de vencimiento
+                    {t('payment.form.expiryDate')}
                   </Typography>
                   <Box
                     component="input"
                     defaultValue="12/28"
-                    placeholder="MM/AA"
+                    placeholder={t('payment.form.expiryPlaceholder')}
                     sx={{
                       width: '100%',
                       height: 52,
@@ -377,7 +378,7 @@ export default function PaymentPage() {
                       letterSpacing: '0.4px',
                     }}
                   >
-                    CVV
+                    {t('payment.form.cvv')}
                   </Typography>
                   <Box
                     component="input"
@@ -409,11 +410,11 @@ export default function PaymentPage() {
                       letterSpacing: '0.4px',
                     }}
                   >
-                    Moneda
+                    {t('payment.form.currency')}
                   </Typography>
                   <Box
                     component="select"
-                    defaultValue="COP – Peso colombiano"
+                    defaultValue={t('payment.form.currencies.cop')}
                     sx={{
                       width: '100%',
                       height: 52,
@@ -429,12 +430,12 @@ export default function PaymentPage() {
                       cursor: 'pointer',
                     }}
                   >
-                    <option>COP -- Peso colombiano</option>
-                    <option>USD -- Dolar americano</option>
-                    <option>MXN -- Peso mexicano</option>
-                    <option>ARS -- Peso argentino</option>
-                    <option>CLP -- Peso chileno</option>
-                    <option>PEN -- Sol peruano</option>
+                    <option>{t('payment.form.currencies.cop')}</option>
+                    <option>{t('payment.form.currencies.usd')}</option>
+                    <option>{t('payment.form.currencies.mxn')}</option>
+                    <option>{t('payment.form.currencies.ars')}</option>
+                    <option>{t('payment.form.currencies.clp')}</option>
+                    <option>{t('payment.form.currencies.pen')}</option>
                   </Box>
                 </Box>
               </Box>

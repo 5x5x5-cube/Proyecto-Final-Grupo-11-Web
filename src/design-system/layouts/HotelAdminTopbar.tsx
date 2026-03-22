@@ -3,6 +3,7 @@ import { Box, Typography, IconButton, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import LanguageIcon from '@mui/icons-material/Language';
+import { useLocale } from '../../contexts/LocaleContext';
 import {
   primary,
   onSurface,
@@ -29,6 +30,8 @@ const HotelAdminTopbar: React.FC<HotelAdminTopbarProps> = ({
   subtitle,
   actions,
 }) => {
+  const { language, currency } = useLocale();
+
   return (
     <Box
       sx={{
@@ -104,7 +107,7 @@ const HotelAdminTopbar: React.FC<HotelAdminTopbarProps> = ({
           }}
         >
           <LanguageIcon sx={{ fontSize: '16px', color: onSurfaceVariant }} />
-          <Typography sx={{ fontSize: '12px', color: onSurfaceVariant }}>ES</Typography>
+          <Typography sx={{ fontSize: '12px', color: onSurfaceVariant }}>{language}</Typography>
         </Box>
 
         {/* Currency selector */}
@@ -118,7 +121,7 @@ const HotelAdminTopbar: React.FC<HotelAdminTopbarProps> = ({
             cursor: 'pointer',
           }}
         >
-          <Typography sx={{ fontSize: '12px', color: onSurfaceVariant }}>COP</Typography>
+          <Typography sx={{ fontSize: '12px', color: onSurfaceVariant }}>{currency}</Typography>
         </Box>
 
         {/* Notification bell */}

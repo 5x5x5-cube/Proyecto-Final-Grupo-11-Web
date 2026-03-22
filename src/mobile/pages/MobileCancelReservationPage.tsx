@@ -1,5 +1,6 @@
 import { Box, Typography } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
@@ -8,6 +9,7 @@ import { palette } from '../../design-system/theme/palette';
 import { mockReservations } from '../../travelers/data/mockReservations';
 
 export default function MobileCancelReservationPage() {
+  const { t } = useTranslation('mobile');
   const { id } = useParams();
   const reservation = mockReservations.find((r) => r.id === Number(id)) || mockReservations[0];
 
@@ -29,7 +31,7 @@ export default function MobileCancelReservationPage() {
           <ArrowBackIcon sx={{ fontSize: 22 }} />
         </Box>
         <Typography sx={{ fontSize: 16, fontWeight: 600, color: palette.onSurface }}>
-          Cancelar reserva
+          {t('cancelReservation.title')}
         </Typography>
       </Box>
 
@@ -52,7 +54,7 @@ export default function MobileCancelReservationPage() {
         </Box>
 
         <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.onSurface, textAlign: 'center', mb: '4px' }}>
-          Cancelar reserva
+          {t('cancelReservation.title')}
         </Typography>
         <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, textAlign: 'center', mb: '24px' }}>
           {reservation.code}
@@ -69,11 +71,10 @@ export default function MobileCancelReservationPage() {
           }}
         >
           <Typography sx={{ fontSize: 13, fontWeight: 600, color: palette.onSurface, mb: '8px' }}>
-            Politica de cancelacion
+            {t('cancelReservation.cancellationPolicy')}
           </Typography>
           <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant, lineHeight: 1.6 }}>
-            Al cancelar con mas de 48 horas de anticipacion, recibiras un reembolso del 100%.
-            Cancelaciones tardias reciben el 50% de reembolso.
+            {t('cancelReservation.cancellationPolicyText')}
           </Typography>
         </Box>
 
@@ -88,10 +89,10 @@ export default function MobileCancelReservationPage() {
           }}
         >
           <Typography sx={{ fontSize: 13, fontWeight: 600, color: palette.onSurface, mb: '10px' }}>
-            Detalle del reembolso
+            {t('cancelReservation.refundDetail')}
           </Typography>
-          <Row label="Monto pagado" value={reservation.totalPrice} />
-          <Row label="Reembolso (100%)" value={reservation.totalPrice} highlight />
+          <Row label={t('cancelReservation.amountPaid')} value={reservation.totalPrice} />
+          <Row label={t('cancelReservation.refund', { percent: 100 })} value={reservation.totalPrice} highlight />
           <Box
             sx={{
               borderTop: `1px solid ${palette.outlineVariant}`,
@@ -101,7 +102,7 @@ export default function MobileCancelReservationPage() {
               justifyContent: 'space-between',
             }}
           >
-            <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.success }}>Total reembolso</Typography>
+            <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.success }}>{t('cancelReservation.totalRefund')}</Typography>
             <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.success }}>
               {reservation.totalPrice}
             </Typography>
@@ -124,7 +125,7 @@ export default function MobileCancelReservationPage() {
           <CreditCardIcon sx={{ fontSize: 20, color: palette.onSurfaceVariant }} />
           <Box>
             <Typography sx={{ fontSize: 13, fontWeight: 500, color: palette.onSurface }}>VISA ****4242</Typography>
-            <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>Reembolso en 5-10 dias habiles</Typography>
+            <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>{t('cancelReservation.refundTime')}</Typography>
           </Box>
         </Box>
 
@@ -147,7 +148,7 @@ export default function MobileCancelReservationPage() {
               fontWeight: 600,
             }}
           >
-            Volver
+            {t('cancelReservation.back')}
           </Box>
           <Box
             component={Link}
@@ -166,7 +167,7 @@ export default function MobileCancelReservationPage() {
               fontWeight: 600,
             }}
           >
-            Confirmar
+            {t('cancelReservation.confirm')}
           </Box>
         </Box>
       </Box>

@@ -1,5 +1,6 @@
 import { Box, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
@@ -12,6 +13,8 @@ import ProfileMenuRow from '../../design-system/components/ProfileMenuRow';
 import { palette } from '../../design-system/theme/palette';
 
 export default function MobileProfilePage() {
+  const { t } = useTranslation('mobile');
+
   return (
     <MobileShell activeTab="profile">
       <Box sx={{ px: '16px', pt: '20px', pb: '16px' }}>
@@ -55,13 +58,13 @@ export default function MobileProfilePage() {
           }}
         >
           <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.onSurface, pt: '14px', pb: '4px' }}>
-            Informacion personal
+            {t('profile.personalInfo')}
           </Typography>
-          <ProfileMenuRow icon={<PersonOutlineIcon sx={{ fontSize: 20 }} />} label="Nombre" />
+          <ProfileMenuRow icon={<PersonOutlineIcon sx={{ fontSize: 20 }} />} label={t('profile.name')} />
           <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
-          <ProfileMenuRow icon={<EmailOutlinedIcon sx={{ fontSize: 20 }} />} label="Correo" />
+          <ProfileMenuRow icon={<EmailOutlinedIcon sx={{ fontSize: 20 }} />} label={t('profile.email')} />
           <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
-          <ProfileMenuRow icon={<PhoneOutlinedIcon sx={{ fontSize: 20 }} />} label="Telefono" />
+          <ProfileMenuRow icon={<PhoneOutlinedIcon sx={{ fontSize: 20 }} />} label={t('profile.phone')} />
         </Box>
 
         {/* Preferencias */}
@@ -75,13 +78,13 @@ export default function MobileProfilePage() {
           }}
         >
           <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.onSurface, pt: '14px', pb: '4px' }}>
-            Preferencias
+            {t('profile.preferences')}
           </Typography>
-          <ProfileMenuRow icon={<LanguageIcon sx={{ fontSize: 20 }} />} label="Idioma" />
+          <ProfileMenuRow icon={<LanguageIcon sx={{ fontSize: 20 }} />} label={t('profile.language')} />
           <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
-          <ProfileMenuRow icon={<AttachMoneyIcon sx={{ fontSize: 20 }} />} label="Moneda" />
+          <ProfileMenuRow icon={<AttachMoneyIcon sx={{ fontSize: 20 }} />} label={t('profile.currency')} />
           <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
-          <ProfileMenuRow icon={<NotificationsNoneIcon sx={{ fontSize: 20 }} />} label="Notificaciones" />
+          <ProfileMenuRow icon={<NotificationsNoneIcon sx={{ fontSize: 20 }} />} label={t('profile.notifications')} />
         </Box>
 
         {/* Logout */}
@@ -102,7 +105,7 @@ export default function MobileProfilePage() {
             '&:hover': { borderColor: palette.error, backgroundColor: palette.errorContainer },
           }}
         >
-          Cerrar sesion
+          {t('profile.logout')}
         </Button>
       </Box>
     </MobileShell>

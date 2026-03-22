@@ -11,41 +11,9 @@ import PersonIcon from '@mui/icons-material/Person';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ScheduleIcon from '@mui/icons-material/Schedule';
+import { useTranslation } from 'react-i18next';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import { palette } from '../../design-system/theme/palette';
-
-const kpiCards = [
-  {
-    icon: PaymentsIcon,
-    iconClass: 'teal',
-    iconBg: palette.primaryContainer,
-    iconColor: palette.primary,
-    trend: '+18%',
-    trendUp: true,
-    value: 'COP 94.2M',
-    label: 'Ingresos totales',
-  },
-  {
-    icon: EventAvailableIcon,
-    iconClass: 'green',
-    iconBg: palette.successContainer,
-    iconColor: palette.success,
-    trend: '+12%',
-    trendUp: true,
-    value: '127',
-    label: 'Reservas completadas',
-  },
-  {
-    icon: ConfirmationNumberIcon,
-    iconClass: 'amber',
-    iconBg: palette.warningContainer,
-    iconColor: palette.warning,
-    trend: '+5%',
-    trendUp: true,
-    value: 'COP 741K',
-    label: 'Ticket promedio',
-  },
-];
 
 const barData = [
   { label: 'S1 Ene', height: 90 },
@@ -58,66 +26,6 @@ const barData = [
   { label: 'S4 Feb', height: 132 },
 ];
 
-const chartFilters = ['Ingresos'];
-
-const transactions = [
-  {
-    code: 'TH-2026-00483',
-    guest: 'Carlos Mendoza',
-    room: 'Suite Deluxe King',
-    checkin: '15 Mar 2026',
-    nights: 3,
-    total: 'COP 3.149.160',
-    status: 'pending',
-    statusLabel: 'Pendiente',
-    statusIcon: ScheduleIcon,
-  },
-  {
-    code: 'TH-2026-00471',
-    guest: 'Ana Torres',
-    room: 'Habitacion Estandar',
-    checkin: '10 Mar 2026',
-    nights: 2,
-    total: 'COP 980.000',
-    status: 'confirmed',
-    statusLabel: 'Confirmada',
-    statusIcon: CheckCircleIcon,
-  },
-  {
-    code: 'TH-2026-00459',
-    guest: 'Luis Herrera',
-    room: 'Junior Suite',
-    checkin: '05 Mar 2026',
-    nights: 4,
-    total: 'COP 2.240.000',
-    status: 'confirmed',
-    statusLabel: 'Confirmada',
-    statusIcon: CheckCircleIcon,
-  },
-  {
-    code: 'TH-2026-00445',
-    guest: 'Maria Gomez',
-    room: 'Suite Deluxe King',
-    checkin: '28 Feb 2026',
-    nights: 1,
-    total: 'COP 888.000',
-    status: 'cancelled',
-    statusLabel: 'Cancelada',
-    statusIcon: CancelIcon,
-  },
-  {
-    code: 'TH-2026-00432',
-    guest: 'Jorge Ruiz',
-    room: 'Habitacion Doble',
-    checkin: '22 Feb 2026',
-    nights: 5,
-    total: 'COP 3.500.000',
-    status: 'confirmed',
-    statusLabel: 'Confirmada',
-    statusIcon: CheckCircleIcon,
-  },
-];
-
 const statusChipStyles: Record<string, { bg: string; color: string }> = {
   confirmed: { bg: palette.successContainer, color: palette.success },
   pending: { bg: palette.warningContainer, color: palette.warning },
@@ -125,10 +33,102 @@ const statusChipStyles: Record<string, { bg: string; color: string }> = {
 };
 
 export default function ReportsPage() {
+  const { t } = useTranslation('hotels');
+
+  const kpiCards = [
+    {
+      icon: PaymentsIcon,
+      iconBg: palette.primaryContainer,
+      iconColor: palette.primary,
+      trend: '+18%',
+      trendUp: true,
+      value: 'COP 94.2M',
+      label: t('reports.totalRevenue'),
+    },
+    {
+      icon: EventAvailableIcon,
+      iconBg: palette.successContainer,
+      iconColor: palette.success,
+      trend: '+12%',
+      trendUp: true,
+      value: '127',
+      label: t('reports.completedReservations'),
+    },
+    {
+      icon: ConfirmationNumberIcon,
+      iconBg: palette.warningContainer,
+      iconColor: palette.warning,
+      trend: '+5%',
+      trendUp: true,
+      value: 'COP 741K',
+      label: t('reports.averageTicket'),
+    },
+  ];
+
+  const transactions = [
+    {
+      code: 'TH-2026-00483',
+      guest: 'Carlos Mendoza',
+      room: 'Suite Deluxe King',
+      checkin: '15 Mar 2026',
+      nights: 3,
+      total: 'COP 3.149.160',
+      status: 'pending',
+      statusLabel: t('reports.statusPending'),
+      statusIcon: ScheduleIcon,
+    },
+    {
+      code: 'TH-2026-00471',
+      guest: 'Ana Torres',
+      room: 'Habitacion Estandar',
+      checkin: '10 Mar 2026',
+      nights: 2,
+      total: 'COP 980.000',
+      status: 'confirmed',
+      statusLabel: t('reports.statusConfirmed'),
+      statusIcon: CheckCircleIcon,
+    },
+    {
+      code: 'TH-2026-00459',
+      guest: 'Luis Herrera',
+      room: 'Junior Suite',
+      checkin: '05 Mar 2026',
+      nights: 4,
+      total: 'COP 2.240.000',
+      status: 'confirmed',
+      statusLabel: t('reports.statusConfirmed'),
+      statusIcon: CheckCircleIcon,
+    },
+    {
+      code: 'TH-2026-00445',
+      guest: 'Maria Gomez',
+      room: 'Suite Deluxe King',
+      checkin: '28 Feb 2026',
+      nights: 1,
+      total: 'COP 888.000',
+      status: 'cancelled',
+      statusLabel: t('reports.statusCancelled'),
+      statusIcon: CancelIcon,
+    },
+    {
+      code: 'TH-2026-00432',
+      guest: 'Jorge Ruiz',
+      room: 'Habitacion Doble',
+      checkin: '22 Feb 2026',
+      nights: 5,
+      total: 'COP 3.500.000',
+      status: 'confirmed',
+      statusLabel: t('reports.statusConfirmed'),
+      statusIcon: CheckCircleIcon,
+    },
+  ];
+
+  const chartFilters = [t('reports.revenueFilter')];
+
   return (
     <HotelAdminLayout
       activeNav="reportes"
-      title="Reporte de Ingresos"
+      title={t('reports.title')}
       subtitle="Hotel Boutique El Patio · Periodo: Enero - Febrero 2026"
       topbarActions={
         <>
@@ -167,7 +167,7 @@ export default function ReportsPage() {
             }}
           >
             <DownloadIcon sx={{ fontSize: 16 }} />
-            Descargar PDF
+            {t('reports.downloadPdf')}
           </Box>
         </>
       }
@@ -250,7 +250,7 @@ export default function ReportsPage() {
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 14, fontWeight: 700, color: palette.onSurface }}>
             <BarChartIcon sx={{ fontSize: 18, color: palette.primary }} />
-            Ingresos por semana · Ene-Feb 2026
+            {t('reports.revenueByWeek')}
           </Box>
           <Box sx={{ display: 'flex', gap: '8px' }}>
             {chartFilters.map((filter, i) => (
@@ -308,7 +308,7 @@ export default function ReportsPage() {
           <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse' }}>
             <Box component="thead">
               <Box component="tr">
-                {['Codigo', 'Huesped', 'Habitacion', 'Check-in', 'Noches', 'Total', 'Estado'].map((header) => (
+                {[t('reports.tableHeaders.code'), t('reports.tableHeaders.guest'), t('reports.tableHeaders.room'), t('reports.tableHeaders.checkIn'), t('reports.tableHeaders.nights'), t('reports.tableHeaders.total'), t('reports.tableHeaders.status')].map((header) => (
                   <Box
                     component="th"
                     key={header}
