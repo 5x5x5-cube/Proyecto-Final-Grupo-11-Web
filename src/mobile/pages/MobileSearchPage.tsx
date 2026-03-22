@@ -1,6 +1,7 @@
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import SearchIcon from '@mui/icons-material/Search';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
@@ -12,6 +13,7 @@ import { mockDestinations } from '../../travelers/data/mockDestinations';
 
 export default function MobileSearchPage() {
   const { t } = useTranslation('mobile');
+  const { formatDate } = useLocale();
 
   return (
     <MobileShell activeTab="search">
@@ -52,11 +54,11 @@ export default function MobileSearchPage() {
           <Box sx={{ display: 'flex', gap: '10px' }}>
             <Box sx={{ ...fieldSx, flex: 1 }}>
               <CalendarTodayIcon sx={{ fontSize: 16, color: palette.onSurfaceVariant }} />
-              <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>15 mar</Typography>
+              <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>{formatDate('2026-03-15', 'short')}</Typography>
             </Box>
             <Box sx={{ ...fieldSx, flex: 1 }}>
               <CalendarTodayIcon sx={{ fontSize: 16, color: palette.onSurfaceVariant }} />
-              <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>20 mar</Typography>
+              <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>{formatDate('2026-03-20', 'short')}</Typography>
             </Box>
           </Box>
 

@@ -5,6 +5,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DownloadIcon from '@mui/icons-material/Download';
 import MobileShell from '../components/MobileShell';
 import { palette } from '../../design-system/theme/palette';
+import { useLocale } from '../../contexts/LocaleContext';
 import { mockReservations } from '../../travelers/data/mockReservations';
 
 function QRCodePlaceholder() {
@@ -62,6 +63,7 @@ function QRCodePlaceholder() {
 
 export default function MobileQRCheckInPage() {
   const { t } = useTranslation('mobile');
+  const { formatDate } = useLocale();
   const { id } = useParams();
   const reservation = mockReservations.find((r) => r.id === Number(id)) || mockReservations[0];
 
@@ -130,7 +132,7 @@ export default function MobileQRCheckInPage() {
           {reservation.hotelName}
         </Typography>
         <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, textAlign: 'center', mb: '4px' }}>
-          {reservation.checkIn} — {reservation.checkOut}
+          {formatDate(reservation.checkIn, 'mediumWithDay')} — {formatDate(reservation.checkOut, 'mediumWithDay')}
         </Typography>
         <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant, textAlign: 'center', mb: '8px' }}>
           {reservation.room} · {reservation.guests}

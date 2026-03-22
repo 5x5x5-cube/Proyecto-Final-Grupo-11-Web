@@ -14,7 +14,7 @@ import { palette } from '../../design-system/theme/palette';
 
 export default function MobilePaymentPage() {
   const { t } = useTranslation('mobile');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
   const [selected, setSelected] = useState<string>('credit');
 
   const paymentMethods = [
@@ -194,7 +194,7 @@ export default function MobilePaymentPage() {
             Hotel Estelar Cartagena
           </Typography>
           <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-            Sab 15 mar – Jue 20 mar · {t('payment.nights', { count: 5 })}
+            {`${formatDate('2026-03-15', 'shortWithDay')} – ${formatDate('2026-03-20', 'shortWithDay')} · ${t('payment.nights', { count: 5 })}`}
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: '8px' }}>
             <Typography sx={{ fontSize: 13, fontWeight: 600, color: palette.onSurface }}>{t('payment.total')}</Typography>

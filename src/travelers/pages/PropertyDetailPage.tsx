@@ -49,7 +49,7 @@ const reviews = [
 
 export default function PropertyDetailPage() {
   const { t } = useTranslation('travelers');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   const amenities = [
     { icon: <WifiIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.freeWifi') },
@@ -126,7 +126,7 @@ export default function PropertyDetailPage() {
             >
               {t('propertyDetail.booking.checkIn')}
             </Typography>
-            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>Sab, 15 mar</Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatDate('2026-03-15', 'shortWithDay')}</Typography>
           </Box>
           <Box
             sx={{
@@ -148,7 +148,7 @@ export default function PropertyDetailPage() {
             >
               {t('propertyDetail.booking.checkOut')}
             </Typography>
-            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>Jue, 20 mar</Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatDate('2026-03-20', 'shortWithDay')}</Typography>
           </Box>
         </Box>
 

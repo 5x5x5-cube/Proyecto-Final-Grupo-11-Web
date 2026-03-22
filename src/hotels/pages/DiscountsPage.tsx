@@ -29,7 +29,7 @@ const typeChipStyles: Record<string, { bg: string; color: string }> = {
 
 export default function DiscountsPage() {
   const { t } = useTranslation('hotels');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   const roomCheckboxes = [
     { name: 'Suite Deluxe King', sub: `Piso 4 · ${formatPrice(888000)}/noche`, checked: true },
@@ -47,7 +47,8 @@ export default function DiscountsPage() {
       typeLabel: t('discounts.typeEarlyBird'),
       name: 'Early Bird -- 30 dias antes',
       desc: 'Aplica para reservas realizadas con al menos 30 dias de anticipacion.',
-      validity: 'Ene 1 - Dic 31, 2026',
+      validityStart: '2026-01-01',
+      validityEnd: '2026-12-31',
       rooms: t('discounts.allRooms'),
       startsIn: null,
       status: 'active',
@@ -75,7 +76,8 @@ export default function DiscountsPage() {
       typeLabel: t('discounts.typePromoCode'),
       name: 'Codigo -- TravelHub Spring',
       desc: 'Codigo exclusivo para la campana de primavera en app TravelHub.',
-      validity: 'Mar 1 - Abr 30, 2026',
+      validityStart: '2026-03-01',
+      validityEnd: '2026-04-30',
       rooms: null,
       startsIn: null,
       status: 'active',
@@ -89,7 +91,8 @@ export default function DiscountsPage() {
       typeLabel: t('discounts.typeSeasonal'),
       name: 'Semana de Descanso -- Abril',
       desc: 'Promocion especial para incentivar reservas durante temporada baja de abril.',
-      validity: 'Abr 7 - Abr 28, 2026',
+      validityStart: '2026-04-07',
+      validityEnd: '2026-04-28',
       rooms: t('discounts.allRooms'),
       startsIn: '38 dias',
       status: 'scheduled',
@@ -202,7 +205,11 @@ export default function DiscountsPage() {
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 11, color: palette.onSurfaceVariant }}>
                         <CalendarTodayIcon sx={{ fontSize: 13, color: palette.outline }} />
-                        {t('discounts.validity')} <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>{card.validity}</Box>
+                        {t('discounts.validity')} <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>
+                          {card.validityStart && card.validityEnd
+                            ? `${formatDate(card.validityStart, 'short')} - ${formatDate(card.validityEnd, 'medium')}`
+                            : card.validity}
+                        </Box>
                       </Box>
                       {card.rooms && (
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 11, color: palette.onSurfaceVariant }}>

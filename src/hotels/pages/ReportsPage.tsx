@@ -17,14 +17,14 @@ import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import { palette } from '../../design-system/theme/palette';
 
 const barData = [
-  { label: 'S1 Ene', height: 90 },
-  { label: 'S2 Ene', height: 112 },
-  { label: 'S3 Ene', height: 98 },
-  { label: 'S4 Ene', height: 140 },
-  { label: 'S1 Feb', height: 125 },
-  { label: 'S2 Feb', height: 156 },
-  { label: 'S3 Feb', height: 144 },
-  { label: 'S4 Feb', height: 132 },
+  { week: 1, month: '2026-01-01', height: 90 },
+  { week: 2, month: '2026-01-01', height: 112 },
+  { week: 3, month: '2026-01-01', height: 98 },
+  { week: 4, month: '2026-01-01', height: 140 },
+  { week: 1, month: '2026-02-01', height: 125 },
+  { week: 2, month: '2026-02-01', height: 156 },
+  { week: 3, month: '2026-02-01', height: 144 },
+  { week: 4, month: '2026-02-01', height: 132 },
 ];
 
 const statusChipStyles: Record<string, { bg: string; color: string }> = {
@@ -35,7 +35,7 @@ const statusChipStyles: Record<string, { bg: string; color: string }> = {
 
 export default function ReportsPage() {
   const { t } = useTranslation('hotels');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   const kpiCards = [
     {
@@ -72,7 +72,7 @@ export default function ReportsPage() {
       code: 'TH-2026-00483',
       guest: 'Carlos Mendoza',
       room: 'Suite Deluxe King',
-      checkin: '15 Mar 2026',
+      checkin: '2026-03-15',
       nights: 3,
       total: formatPrice(3149160),
       status: 'pending',
@@ -83,7 +83,7 @@ export default function ReportsPage() {
       code: 'TH-2026-00471',
       guest: 'Ana Torres',
       room: 'Habitacion Estandar',
-      checkin: '10 Mar 2026',
+      checkin: '2026-03-10',
       nights: 2,
       total: formatPrice(980000),
       status: 'confirmed',
@@ -94,7 +94,7 @@ export default function ReportsPage() {
       code: 'TH-2026-00459',
       guest: 'Luis Herrera',
       room: 'Junior Suite',
-      checkin: '05 Mar 2026',
+      checkin: '2026-03-05',
       nights: 4,
       total: formatPrice(2240000),
       status: 'confirmed',
@@ -105,7 +105,7 @@ export default function ReportsPage() {
       code: 'TH-2026-00445',
       guest: 'Maria Gomez',
       room: 'Suite Deluxe King',
-      checkin: '28 Feb 2026',
+      checkin: '2026-02-28',
       nights: 1,
       total: formatPrice(888000),
       status: 'cancelled',
@@ -116,7 +116,7 @@ export default function ReportsPage() {
       code: 'TH-2026-00432',
       guest: 'Jorge Ruiz',
       room: 'Habitacion Doble',
-      checkin: '22 Feb 2026',
+      checkin: '2026-02-22',
       nights: 5,
       total: formatPrice(3500000),
       status: 'confirmed',
@@ -131,7 +131,7 @@ export default function ReportsPage() {
     <HotelAdminLayout
       activeNav="reportes"
       title={t('reports.title')}
-      subtitle="Hotel Boutique El Patio · Periodo: Enero - Febrero 2026"
+      subtitle={`Hotel Boutique El Patio · Periodo: ${formatDate('2026-01-01', 'monthOnly')} - ${formatDate('2026-02-01', 'monthYear')}`}
       topbarActions={
         <>
           <Box
@@ -150,7 +150,7 @@ export default function ReportsPage() {
             }}
           >
             <CalendarMonthIcon sx={{ fontSize: 18, color: palette.primary }} />
-            Ene - Feb 2026
+            {formatDate('2026-01-01', 'monthOnly')} - {formatDate('2026-02-01', 'monthYear')}
             <ExpandMoreIcon sx={{ fontSize: 18, color: palette.onSurfaceVariant }} />
           </Box>
           <Box
@@ -277,9 +277,9 @@ export default function ReportsPage() {
 
         {/* Bar chart */}
         <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: '10px', height: 180, padding: '0 8px' }}>
-          {barData.map((bar) => (
+          {barData.map((bar, idx) => (
             <Box
-              key={bar.label}
+              key={idx}
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
@@ -299,7 +299,7 @@ export default function ReportsPage() {
                 />
               </Box>
               <Typography sx={{ fontSize: 10, color: palette.outline, fontWeight: 500 }}>
-                {bar.label}
+                {`S${bar.week} ${formatDate(bar.month, 'monthOnly')}`}
               </Typography>
             </Box>
           ))}
@@ -378,7 +378,7 @@ export default function ReportsPage() {
                       {tx.room}
                     </Box>
                     <Box component="td" sx={{ padding: '10px 12px', fontSize: 13, color: palette.onSurface, borderBottom: `1px solid ${palette.outlineVariant}` }}>
-                      {tx.checkin}
+                      {formatDate(tx.checkin, 'medium')}
                     </Box>
                     <Box component="td" sx={{ padding: '10px 12px', fontSize: 13, color: palette.onSurface, borderBottom: `1px solid ${palette.outlineVariant}` }}>
                       {tx.nights}

@@ -12,7 +12,7 @@ import { palette } from '../../design-system/theme/palette';
 export default function PaymentPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   const PaymentSidebar = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -47,7 +47,7 @@ export default function PaymentPage() {
             Hotel Santa Clara Sofitel
           </Typography>
           <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant, mb: '2px' }}>
-            {t('payment.sidebar.dates')}
+            {`${formatDate('2026-03-15', 'short')} – ${formatDate('2026-03-20', 'medium')} · 5 ${t('payment.sidebar.nightsLabel')}`}
           </Typography>
           <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
             {t('payment.sidebar.room')}

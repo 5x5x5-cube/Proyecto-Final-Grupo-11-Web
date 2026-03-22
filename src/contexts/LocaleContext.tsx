@@ -3,6 +3,16 @@ import i18n from '../i18n';
 
 type Language = 'ES' | 'EN';
 type Currency = 'COP' | 'USD' | 'MXN' | 'ARS' | 'CLP' | 'PEN';
+type DateFormat = 'short' | 'shortWithDay' | 'medium' | 'mediumWithDay' | 'monthYear' | 'monthOnly';
+
+const dateFormatOptions: Record<DateFormat, Intl.DateTimeFormatOptions> = {
+  short: { day: 'numeric', month: 'short' },
+  shortWithDay: { weekday: 'short', day: 'numeric', month: 'short' },
+  medium: { day: 'numeric', month: 'short', year: 'numeric' },
+  mediumWithDay: { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' },
+  monthYear: { month: 'short', year: 'numeric' },
+  monthOnly: { month: 'short' },
+};
 
 interface LocaleContextType {
   language: Language;
@@ -10,6 +20,7 @@ interface LocaleContextType {
   setLanguage: (lang: Language) => void;
   setCurrency: (cur: Currency) => void;
   formatPrice: (copAmount: number) => string;
+  formatDate: (date: string | Date, format: DateFormat) => string;
 }
 
 const exchangeRates: Record<Currency, { rate: number; symbol: string; decimals: number }> = {
@@ -45,6 +56,12 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     i18n.changeLanguage(language);
   }, [language]);
 
+  const formatDate = (date: string | Date, format: DateFormat): string => {
+    const d = typeof date === 'string' ? new Date(date) : date;
+    const locale = language === 'ES' ? 'es' : 'en';
+    return new Intl.DateTimeFormat(locale, dateFormatOptions[format]).format(d);
+  };
+
   const formatPrice = (copAmount: number): string => {
     const { rate, symbol, decimals } = exchangeRates[currency];
     const converted = copAmount * rate;
@@ -56,7 +73,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <LocaleContext.Provider value={{ language, currency, setLanguage, setCurrency, formatPrice }}>
+    <LocaleContext.Provider value={{ language, currency, setLanguage, setCurrency, formatPrice, formatDate }}>
       {children}
     </LocaleContext.Provider>
   );
@@ -69,4 +86,4 @@ export function useLocale() {
 }
 
 export { currencyNames, languageNames };
-export type { Language, Currency };
+export type { Language, Currency, DateFormat };

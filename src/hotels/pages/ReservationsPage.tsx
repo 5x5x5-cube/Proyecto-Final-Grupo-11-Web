@@ -4,6 +4,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import StatusChip from '../../design-system/components/StatusChip';
 import SearchField from '../../design-system/components/SearchField';
@@ -21,12 +22,13 @@ const avatarColorMap = {
 
 export default function ReservationsPage() {
   const { t } = useTranslation('hotels');
+  const { formatPrice, formatDate } = useLocale();
 
   return (
     <HotelAdminLayout
       activeNav="reservas"
       title={t('reservations.title')}
-      subtitle="Hotel Santa Clara Sofitel · Febrero 2026"
+      subtitle={`Hotel Santa Clara Sofitel · ${formatDate('2026-02-01', 'monthYear')}`}
     >
 
       {/* Filter bar */}
@@ -77,7 +79,7 @@ export default function ReservationsPage() {
           }}
         >
           <CalendarTodayIcon sx={{ fontSize: 16, color: palette.primary }} />
-          1 feb – 28 feb 2026
+          {formatDate('2026-02-01', 'short')} – {formatDate('2026-02-28', 'medium')}
         </Box>
 
         {/* Clear filters */}
@@ -319,7 +321,7 @@ export default function ReservationsPage() {
                     verticalAlign: 'middle',
                   }}
                 >
-                  {res.checkIn}
+                  {formatDate(res.checkIn, 'medium')}
                 </Box>
 
                 {/* Check-out */}
@@ -336,7 +338,7 @@ export default function ReservationsPage() {
                     verticalAlign: 'middle',
                   }}
                 >
-                  {res.checkOut}
+                  {formatDate(res.checkOut, 'medium')}
                 </Box>
 
                 {/* Nights */}
@@ -369,7 +371,7 @@ export default function ReservationsPage() {
                   }}
                 >
                   <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.primary }}>
-                    {res.total}
+                    {formatPrice(res.totalCop)}
                   </Typography>
                 </Box>
 

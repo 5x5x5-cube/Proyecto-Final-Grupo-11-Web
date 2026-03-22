@@ -13,7 +13,7 @@ const hotel = mockHotels[0];
 
 export default function MobileReservationSummaryPage() {
   const { t } = useTranslation('mobile');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   return (
     <MobileShell hideNav>
@@ -73,8 +73,8 @@ export default function MobileReservationSummaryPage() {
           <InfoGrid
             columns={2}
             items={[
-              { label: t('summary.checkIn'), value: 'Sab, 15 mar', sub: '15:00' },
-              { label: t('summary.checkOut'), value: 'Jue, 20 mar', sub: '12:00' },
+              { label: t('summary.checkIn'), value: formatDate('2026-03-15', 'shortWithDay'), sub: '15:00' },
+              { label: t('summary.checkOut'), value: formatDate('2026-03-20', 'shortWithDay'), sub: '12:00' },
               { label: t('summary.duration'), value: t('summary.nights', { count: 5 }) },
               { label: t('summary.guests'), value: t('summary.guestsValue', { count: 2 }) },
             ]}

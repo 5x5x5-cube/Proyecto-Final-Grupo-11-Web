@@ -8,7 +8,7 @@ import { palette } from '../../design-system/theme/palette';
 
 export default function MobileSuccessPage() {
   const { t } = useTranslation('mobile');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   return (
     <MobileShell hideNav>
@@ -74,7 +74,7 @@ export default function MobileSuccessPage() {
           }}
         >
           <Row label={t('success.hotel')} value="Hotel Santa Clara Sofitel" />
-          <Row label={t('success.dates')} value="15 - 20 mar 2026" />
+          <Row label={t('success.dates')} value={`${formatDate('2026-03-15', 'short')} - ${formatDate('2026-03-20', 'medium')}`} />
           <Row label={t('success.room')} value={t('success.roomValue')} />
           <Row label={t('success.guests')} value={t('success.guestsValue', { count: 2 })} />
           <Box

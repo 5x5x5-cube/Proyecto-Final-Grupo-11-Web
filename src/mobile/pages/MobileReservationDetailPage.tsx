@@ -14,7 +14,7 @@ import { mockReservations } from '../../travelers/data/mockReservations';
 
 export default function MobileReservationDetailPage() {
   const { t } = useTranslation('mobile');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
   const { id } = useParams();
   const reservation = mockReservations.find((r) => r.id === Number(id)) || mockReservations[0];
 
@@ -78,8 +78,8 @@ export default function MobileReservationDetailPage() {
           <InfoGrid
             columns={2}
             items={[
-              { label: t('reservationDetail.checkIn'), value: reservation.checkIn, sub: reservation.checkInTime },
-              { label: t('reservationDetail.checkOut'), value: reservation.checkOut, sub: reservation.checkOutTime },
+              { label: t('reservationDetail.checkIn'), value: formatDate(reservation.checkIn, 'mediumWithDay'), sub: new Date(reservation.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
+              { label: t('reservationDetail.checkOut'), value: formatDate(reservation.checkOut, 'mediumWithDay'), sub: new Date(reservation.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) },
               { label: t('reservationDetail.duration'), value: t('reservationDetail.nights', { count: reservation.nights }) },
               { label: t('reservationDetail.guests'), value: reservation.guests },
             ]}

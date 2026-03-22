@@ -49,7 +49,7 @@ const ReservationDetailPage: React.FC = () => {
   const [confirmedOpen, setConfirmedOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
   const { t } = useTranslation('travelers');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate, language } = useLocale();
 
   /* ─── Left Sidebar ─── */
   const UserSidebar: React.FC = () => {
@@ -390,8 +390,8 @@ const ReservationDetailPage: React.FC = () => {
           </Typography>
           {[
             { label: t('reservationDetail.confirmedModal.hotel'), value: 'Hotel Santa Clara Sofitel' },
-            { label: t('reservationDetail.confirmedModal.checkIn'), value: 'S\u00e1b, 15 mar 2026 \u2014 3:00 PM' },
-            { label: t('reservationDetail.confirmedModal.checkOut'), value: 'Jue, 20 mar 2026 \u2014 12:00 PM' },
+            { label: t('reservationDetail.confirmedModal.checkIn'), value: `${formatDate('2026-03-15T15:00:00', 'mediumWithDay')} \u2014 ${new Date('2026-03-15T15:00:00').toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}` },
+            { label: t('reservationDetail.confirmedModal.checkOut'), value: `${formatDate('2026-03-20T12:00:00', 'mediumWithDay')} \u2014 ${new Date('2026-03-20T12:00:00').toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}` },
             { label: t('reservationDetail.confirmedModal.duration'), value: '5 noches' },
             { label: t('reservationDetail.confirmedModal.room'), value: 'Habitaci\u00f3n Superior' },
             { label: t('reservationDetail.confirmedModal.guests'), value: '2 adultos' },
@@ -537,8 +537,8 @@ const ReservationDetailPage: React.FC = () => {
           </Typography>
           {[
             { label: t('reservationDetail.cancelModal.cancellationType'), value: t('reservationDetail.cancelModal.cancellationTypeValue'), color: success },
-            { label: t('reservationDetail.cancelModal.deadlineLabel'), value: 'Mar 12, 2026', color: onSurface },
-            { label: t('reservationDetail.cancelModal.currentDateLabel'), value: 'Mar 5, 2026', color: onSurface },
+            { label: t('reservationDetail.cancelModal.deadlineLabel'), value: formatDate('2026-03-12', 'medium'), color: onSurface },
+            { label: t('reservationDetail.cancelModal.currentDateLabel'), value: formatDate('2026-03-05', 'medium'), color: onSurface },
             { label: t('reservationDetail.cancelModal.penaltyApplied'), value: t('reservationDetail.cancelModal.penaltyValue'), color: success },
           ].map((row) => (
             <Box
@@ -780,8 +780,8 @@ const ReservationDetailPage: React.FC = () => {
                 <InfoGrid
                   columns={4}
                   items={[
-                    { label: t('reservationDetail.infoGrid.checkIn'), value: t('reservationDetail.infoGrid.checkInValue'), sub: t('reservationDetail.infoGrid.checkInSub') },
-                    { label: t('reservationDetail.infoGrid.checkOut'), value: t('reservationDetail.infoGrid.checkOutValue'), sub: t('reservationDetail.infoGrid.checkOutSub') },
+                    { label: t('reservationDetail.infoGrid.checkIn'), value: formatDate('2026-03-15', 'mediumWithDay'), sub: '3:00 PM' },
+                    { label: t('reservationDetail.infoGrid.checkOut'), value: formatDate('2026-03-20', 'mediumWithDay'), sub: '12:00 PM' },
                     { label: t('reservationDetail.infoGrid.duration'), value: t('reservationDetail.infoGrid.durationValue'), sub: t('reservationDetail.infoGrid.durationSub') },
                     { label: t('reservationDetail.infoGrid.guests'), value: t('reservationDetail.infoGrid.guestsValue'), sub: t('reservationDetail.infoGrid.guestsSub') },
                   ]}
@@ -870,7 +870,7 @@ const ReservationDetailPage: React.FC = () => {
                       {t('reservationDetail.paymentHistory.bookingPayment')}
                     </Typography>
                     <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-                      15 feb 2026 &middot; 10:34 a.m.
+                      {formatDate('2026-02-15', 'medium')} &middot; 10:34 a.m.
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <CreditCardIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />

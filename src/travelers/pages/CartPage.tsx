@@ -18,7 +18,7 @@ import { palette } from '../../design-system/theme/palette';
 
 export default function CartPage() {
   const { t } = useTranslation('travelers');
-  const { formatPrice } = useLocale();
+  const { formatPrice, formatDate } = useLocale();
 
   const CartSidebar = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -154,8 +154,8 @@ export default function CartPage() {
             <InfoGrid
               columns={3}
               items={[
-                { label: t('cart.accommodation.checkIn'), value: t('cart.accommodation.checkInDate'), sub: t('cart.accommodation.checkInSub') },
-                { label: t('cart.accommodation.checkOut'), value: t('cart.accommodation.checkOutDate'), sub: t('cart.accommodation.checkOutSub') },
+                { label: t('cart.accommodation.checkIn'), value: formatDate('2026-03-15', 'mediumWithDay'), sub: '3:00 PM' },
+                { label: t('cart.accommodation.checkOut'), value: formatDate('2026-03-20', 'mediumWithDay'), sub: '12:00 PM' },
                 { label: t('cart.accommodation.duration'), value: t('cart.accommodation.durationValue'), sub: t('cart.accommodation.durationSub') },
               ]}
             />
