@@ -16,6 +16,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import { palette } from '../../design-system/theme/palette';
 
@@ -28,6 +29,7 @@ const typeChipStyles: Record<string, { bg: string; color: string }> = {
 
 export default function RatesPage() {
   const { t } = useTranslation('hotels');
+  const { formatPrice } = useLocale();
 
   const rates = [
     {
@@ -38,7 +40,7 @@ export default function RatesPage() {
       type: 'standard',
       typeLabel: t('rates.typeStandard'),
       typeIcon: StarIcon,
-      price: 'COP 888.000',
+      price: formatPrice(888000),
       validity: t('rates.allYear'),
       selected: true,
     },
@@ -50,7 +52,7 @@ export default function RatesPage() {
       type: 'weekend',
       typeLabel: t('rates.typeWeekend'),
       typeIcon: WeekendIcon,
-      price: 'COP 1.050.000',
+      price: formatPrice(1050000),
       validity: t('rates.allYear'),
       selected: false,
     },
@@ -62,7 +64,7 @@ export default function RatesPage() {
       type: 'season',
       typeLabel: t('rates.typeSeason'),
       typeIcon: WbSunnyIcon,
-      price: 'COP 1.280.000',
+      price: formatPrice(1280000),
       validity: 'Dic 20 - Ene 10',
       selected: false,
     },
@@ -74,7 +76,7 @@ export default function RatesPage() {
       type: 'standard',
       typeLabel: t('rates.typeStandard'),
       typeIcon: StarIcon,
-      price: 'COP 560.000',
+      price: formatPrice(560000),
       validity: t('rates.allYear'),
       selected: false,
     },
@@ -86,7 +88,7 @@ export default function RatesPage() {
       type: 'promo',
       typeLabel: t('rates.typePromo'),
       typeIcon: LocalOfferIcon,
-      price: 'COP 420.000',
+      price: formatPrice(420000),
       validity: 'Mar 1 - Mar 31',
       selected: false,
     },
@@ -98,7 +100,7 @@ export default function RatesPage() {
       type: 'standard',
       typeLabel: t('rates.typeStandard'),
       typeIcon: StarIcon,
-      price: 'COP 320.000',
+      price: formatPrice(320000),
       validity: t('rates.allYear'),
       selected: false,
     },

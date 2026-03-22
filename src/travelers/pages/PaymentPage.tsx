@@ -4,6 +4,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import CheckoutLayout from '../../design-system/layouts/CheckoutLayout';
 import SectionCard from '../../design-system/components/SectionCard';
 import { palette } from '../../design-system/theme/palette';
@@ -11,6 +12,7 @@ import { palette } from '../../design-system/theme/palette';
 export default function PaymentPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
+  const { formatPrice } = useLocale();
 
   const PaymentSidebar = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -57,15 +59,15 @@ export default function PaymentPage() {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-            {t('payment.sidebar.nightsPrice')}
+            {`${formatPrice(480000)} x 5 ${t('payment.sidebar.nightsLabel')}`}
           </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{t('payment.sidebar.nightsTotal')}</Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(2400000)}</Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
             {t('payment.sidebar.taxesAndFees')}
           </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{t('payment.sidebar.taxesValue')}</Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(264000)}</Typography>
         </Box>
         <Box sx={{ height: 1, backgroundColor: palette.outlineVariant }} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -73,7 +75,7 @@ export default function PaymentPage() {
             {t('payment.sidebar.totalToPay')}
           </Typography>
           <Typography sx={{ fontSize: 24, fontWeight: 700, color: palette.primary }}>
-            {t('payment.sidebar.totalValue')}
+            {formatPrice(2664000)}
           </Typography>
         </Box>
       </Box>
@@ -100,7 +102,7 @@ export default function PaymentPage() {
         }}
       >
         <LockIcon sx={{ fontSize: 20 }} />
-        {t('payment.sidebar.payButton')}
+        {`${t('payment.sidebar.payLabel')} ${formatPrice(2664000)}`}
       </Button>
 
       {/* Secure note */}

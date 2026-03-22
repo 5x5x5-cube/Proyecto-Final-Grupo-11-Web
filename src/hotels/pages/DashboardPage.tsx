@@ -13,6 +13,7 @@ import SellIcon from '@mui/icons-material/Sell';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import AppsIcon from '@mui/icons-material/Apps';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import StatusChip from '../../design-system/components/StatusChip';
 import { palette } from '../../design-system/theme/palette';
@@ -44,6 +45,7 @@ const iconColorMap = {
 
 export default function DashboardPage() {
   const { t } = useTranslation('hotels');
+  const { formatPrice } = useLocale();
 
   const topbarActions = (
     <>
@@ -388,7 +390,7 @@ export default function DashboardPage() {
             <Typography sx={{ padding: '0 24px 16px', fontSize: 13, color: palette.onSurfaceVariant }}>
               Febrero 2026:{' '}
               <Box component="span" sx={{ color: palette.primary, fontSize: 18, fontWeight: 700 }}>
-                COP 94.2M
+                {formatPrice(94200000)}
               </Box>
             </Typography>
           </Box>

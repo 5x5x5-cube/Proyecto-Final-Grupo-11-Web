@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import MobileShell from '../components/MobileShell';
 import OfflineBanner from '../components/OfflineBanner';
 import StatusChip from '../../design-system/components/StatusChip';
@@ -17,7 +18,7 @@ const pastReservations = [
     checkOut: 'Vie, 9 ene 2026',
     status: 'past' as const,
     code: 'TH-2026-31205',
-    totalPrice: 'COP 1.750.000',
+    totalPrice: 1750000,
     gradient: 'linear-gradient(135deg, #5B5EA6, #8E91CC)',
   },
 ];
@@ -31,7 +32,7 @@ const cancelledReservations = [
     checkOut: 'Jue, 5 feb 2026',
     status: 'cancelled' as const,
     code: 'TH-2026-39102',
-    totalPrice: 'COP 440.000',
+    totalPrice: 440000,
     gradient: 'linear-gradient(135deg, #1A6B4F, #4A9F7E)',
   },
 ];
@@ -40,6 +41,7 @@ type Tab = 'active' | 'past' | 'cancelled';
 
 export default function MobileMyReservationsPage() {
   const { t } = useTranslation('mobile');
+  const { formatPrice } = useLocale();
   const [tab, setTab] = useState<Tab>('active');
 
   const tabData: Record<Tab, typeof mockReservations> = {
@@ -126,7 +128,7 @@ export default function MobileMyReservationsPage() {
                     {res.checkIn} → {res.checkOut}
                   </Typography>
                   <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.primary }}>
-                    {res.totalPrice}
+                    {typeof res.totalPrice === 'number' ? formatPrice(res.totalPrice) : res.totalPrice}
                   </Typography>
                 </Box>
 

@@ -9,6 +9,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import CancelIcon from '@mui/icons-material/Cancel';
 import LockIcon from '@mui/icons-material/Lock';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import CheckoutLayout from '../../design-system/layouts/CheckoutLayout';
 import SectionCard from '../../design-system/components/SectionCard';
 import InfoGrid from '../../design-system/components/InfoGrid';
@@ -17,6 +18,7 @@ import { palette } from '../../design-system/theme/palette';
 
 export default function CartPage() {
   const { t } = useTranslation('travelers');
+  const { formatPrice } = useLocale();
 
   const CartSidebar = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -28,25 +30,25 @@ export default function CartPage() {
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-            {t('cart.sidebar.nightsPrice')}
+            {`${formatPrice(480000)} x 5 ${t('cart.sidebar.nightsLabel')}`}
           </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{t('cart.sidebar.nightsTotal')}</Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(2400000)}</Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
             {t('cart.sidebar.tourismTax')}
           </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{t('cart.sidebar.tourismTaxValue')}</Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(96000)}</Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{t('cart.sidebar.vat')}</Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{t('cart.sidebar.vatValue')}</Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(168000)}</Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
             {t('cart.sidebar.serviceFee')}
           </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{t('cart.sidebar.serviceFeeValue')}</Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(0)}</Typography>
         </Box>
         <Box sx={{ height: 1, backgroundColor: palette.outlineVariant }} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -54,7 +56,7 @@ export default function CartPage() {
             {t('cart.sidebar.totalToPay')}
           </Typography>
           <Typography sx={{ fontSize: 22, fontWeight: 700, color: palette.primary }}>
-            {t('cart.sidebar.totalValue')}
+            {formatPrice(2664000)}
           </Typography>
         </Box>
       </Box>
@@ -188,7 +190,7 @@ export default function CartPage() {
               </Box>
               <Box sx={{ textAlign: 'right' }}>
                 <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.primary }}>
-                  COP 480.000
+                  {formatPrice(480000)}
                 </Typography>
                 <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
                   {t('cart.accommodation.perNight')}

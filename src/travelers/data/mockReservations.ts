@@ -14,6 +14,7 @@ export const mockReservations = [
     status: 'confirmed' as const,
     code: 'TH-2026-48291',
     totalPrice: 'COP 2.664.000',
+    totalPriceCop: 2664000,
     gradient: 'linear-gradient(135deg, #003740, #006874)',
   },
   {
@@ -31,6 +32,7 @@ export const mockReservations = [
     status: 'pending' as const,
     code: 'TH-2026-51034',
     totalPrice: 'COP 726.000',
+    totalPriceCop: 726000,
     gradient: 'linear-gradient(135deg, #1A6B4F, #4A9F7E)',
   },
 ];

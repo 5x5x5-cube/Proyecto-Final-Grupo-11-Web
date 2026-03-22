@@ -8,6 +8,7 @@ import BedIcon from '@mui/icons-material/Bed';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import TravelerLayout from '../../design-system/layouts/TravelerLayout';
 import StatusChip from '../../design-system/components/StatusChip';
 import FilterChip from '../../design-system/components/FilterChip';
@@ -27,6 +28,7 @@ const MyReservationsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [activeFilter, setActiveFilter] = useState(0);
   const { t } = useTranslation('travelers');
+  const { formatPrice } = useLocale();
 
   const tabs = [t('myReservations.tabs.active'), t('myReservations.tabs.past'), t('myReservations.tabs.cancelled')];
   const filters = [
@@ -398,7 +400,7 @@ const MyReservationsPage: React.FC = () => {
                   <Box sx={{ textAlign: 'right' }}>
                     <Typography sx={{ fontSize: 11, color: onSurfaceVariant }}>{t('myReservations.card.totalPaid')}</Typography>
                     <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>
-                      {res.totalPrice}
+                      {formatPrice(res.totalPriceCop)}
                     </Typography>
                   </Box>
 

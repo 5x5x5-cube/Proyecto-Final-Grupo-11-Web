@@ -6,6 +6,7 @@ import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import PlaceIcon from '@mui/icons-material/Place';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import CheckoutLayout from '../../design-system/layouts/CheckoutLayout';
 import InfoGrid from '../../design-system/components/InfoGrid';
 import {
@@ -22,6 +23,7 @@ import {
 /* ─── Main Content ─── */
 const ConfirmationPage: React.FC = () => {
   const { t } = useTranslation('travelers');
+  const { formatPrice } = useLocale();
 
   /* ─── Sidebar ─── */
   const Sidebar = () => (
@@ -88,7 +90,7 @@ const ConfirmationPage: React.FC = () => {
             <CreditCardIcon sx={{ fontSize: 16, color: primary }} />
             <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>VISA &bull;&bull;&bull;&bull; 4242</Typography>
           </Box>
-          <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>COP 2.664.000</Typography>
+          <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>{formatPrice(2664000)}</Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Box

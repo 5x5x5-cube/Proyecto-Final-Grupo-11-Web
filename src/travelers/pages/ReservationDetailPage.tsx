@@ -21,6 +21,7 @@ import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import LuggageIcon from '@mui/icons-material/Luggage';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import TravelerLayout from '../../design-system/layouts/TravelerLayout';
 import StatusChip from '../../design-system/components/StatusChip';
 import SectionCard from '../../design-system/components/SectionCard';
@@ -48,6 +49,7 @@ const ReservationDetailPage: React.FC = () => {
   const [confirmedOpen, setConfirmedOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
   const { t } = useTranslation('travelers');
+  const { formatPrice } = useLocale();
 
   /* ─── Left Sidebar ─── */
   const UserSidebar: React.FC = () => {
@@ -217,9 +219,9 @@ const ReservationDetailPage: React.FC = () => {
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {[
-          { label: 'COP 480.000 \u00D7 5 noches', value: 'COP 2.400.000' },
-          { label: t('reservationDetail.priceSummary.tourismTax'), value: 'COP 96.000' },
-          { label: 'IVA (19%)', value: 'COP 168.000' },
+          { label: `${formatPrice(480000)} \u00D7 5 ${t('reservationDetail.priceSummary.nightsLabel')}`, value: formatPrice(2400000) },
+          { label: t('reservationDetail.priceSummary.tourismTax'), value: formatPrice(96000) },
+          { label: t('reservationDetail.priceSummary.vat'), value: formatPrice(168000) },
         ].map((row) => (
           <Box key={row.label} sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography sx={{ fontSize: 14, color: onSurfaceVariant }}>{row.label}</Typography>
@@ -229,7 +231,7 @@ const ReservationDetailPage: React.FC = () => {
         <Divider sx={{ borderColor: outlineVariant }} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Typography sx={{ fontSize: 16, fontWeight: 600, color: onSurface }}>{t('reservationDetail.priceSummary.totalPaid')}</Typography>
-          <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>COP 2.664.000</Typography>
+          <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>{formatPrice(2664000)}</Typography>
         </Box>
       </Box>
 
@@ -252,7 +254,7 @@ const ReservationDetailPage: React.FC = () => {
         </Box>
         <Typography sx={{ fontSize: 13, color: onSurfaceVariant, lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: t('reservationDetail.cancelBox.description') }} />
         <Typography sx={{ fontSize: 14, fontWeight: 500, color: onSurface }}>
-          {t('reservationDetail.cancelBox.estimatedRefund')} <strong style={{ color: success }}>COP 2.664.000</strong>
+          {t('reservationDetail.cancelBox.estimatedRefund')} <strong style={{ color: success }}>{formatPrice(2664000)}</strong>
         </Typography>
         <Button
           onClick={() => setCancelOpen(true)}
@@ -417,7 +419,7 @@ const ReservationDetailPage: React.FC = () => {
             }}
           >
             <Typography sx={{ fontSize: 14, fontWeight: 700, color: onSurface }}>{t('reservationDetail.confirmedModal.total')}</Typography>
-            <Typography sx={{ fontSize: 16, fontWeight: 700, color: primary }}>COP 2.664.000</Typography>
+            <Typography sx={{ fontSize: 16, fontWeight: 700, color: primary }}>{formatPrice(2664000)}</Typography>
           </Box>
         </Box>
 
@@ -569,8 +571,8 @@ const ReservationDetailPage: React.FC = () => {
             {t('reservationDetail.cancelModal.refundBreakdown')}
           </Typography>
           {[
-            { label: t('reservationDetail.cancelModal.originalAmount'), value: 'COP 2.664.000', color: onSurface },
-            { label: t('reservationDetail.cancelModal.cancellationPenalty'), value: '-COP 0', color: success },
+            { label: t('reservationDetail.cancelModal.originalAmount'), value: formatPrice(2664000), color: onSurface },
+            { label: t('reservationDetail.cancelModal.cancellationPenalty'), value: `-${formatPrice(0)}`, color: success },
           ].map((row) => (
             <Box
               key={row.label}
@@ -600,7 +602,7 @@ const ReservationDetailPage: React.FC = () => {
             <Typography sx={{ fontSize: 14, fontWeight: 600, color: success }}>
               {t('reservationDetail.cancelModal.totalRefund')}
             </Typography>
-            <Typography sx={{ fontSize: 18, fontWeight: 700, color: success }}>COP 2.664.000</Typography>
+            <Typography sx={{ fontSize: 18, fontWeight: 700, color: success }}>{formatPrice(2664000)}</Typography>
           </Box>
         </Box>
 
@@ -887,7 +889,7 @@ const ReservationDetailPage: React.FC = () => {
                     }}
                   >
                     <Typography sx={{ fontSize: 16, fontWeight: 600, color: success }}>
-                      COP 2.664.000
+                      {formatPrice(2664000)}
                     </Typography>
                     <Box
                       sx={{

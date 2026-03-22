@@ -85,7 +85,8 @@
       "reviews": "reviews",
       "from": "from",
       "perNight": "per night",
-      "viewRooms": "View rooms"
+      "viewRooms": "View rooms",
+      "total": "total"
     },
     "searchSummary": "Cartagena · Mar 15 -- Mar 20 · 2 guests"
   },
@@ -176,6 +177,7 @@
       "serviceFeeValue": "COP 0",
       "totalToPay": "Total to pay",
       "totalValue": "COP 2,664,000",
+      "nightsLabel": "nights",
       "continueToPayment": "Continue to payment",
       "securePayment": "100% secure payment · SSL encrypted"
     }
@@ -218,7 +220,8 @@
       "taxesValue": "COP 264,000",
       "totalToPay": "Total to pay",
       "totalValue": "COP 2,664,000",
-      "payButton": "Pay COP 2,664,000",
+      "nightsLabel": "nights",
+      "payLabel": "Pay",
       "secureTransaction": "Transaction protected with SSL encryption"
     }
   },
@@ -316,7 +319,9 @@
     },
     "priceSummary": {
       "title": "Payment summary",
+      "nightsLabel": "nights",
       "tourismTax": "Tourism tax",
+      "vat": "VAT (19%)",
       "totalPaid": "Total paid"
     },
     "cancelBox": {

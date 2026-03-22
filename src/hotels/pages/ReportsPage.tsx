@@ -12,6 +12,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import { palette } from '../../design-system/theme/palette';
 
@@ -34,6 +35,7 @@ const statusChipStyles: Record<string, { bg: string; color: string }> = {
 
 export default function ReportsPage() {
   const { t } = useTranslation('hotels');
+  const { formatPrice } = useLocale();
 
   const kpiCards = [
     {
@@ -42,7 +44,7 @@ export default function ReportsPage() {
       iconColor: palette.primary,
       trend: '+18%',
       trendUp: true,
-      value: 'COP 94.2M',
+      value: formatPrice(94200000),
       label: t('reports.totalRevenue'),
     },
     {
@@ -60,7 +62,7 @@ export default function ReportsPage() {
       iconColor: palette.warning,
       trend: '+5%',
       trendUp: true,
-      value: 'COP 741K',
+      value: formatPrice(741000),
       label: t('reports.averageTicket'),
     },
   ];
@@ -72,7 +74,7 @@ export default function ReportsPage() {
       room: 'Suite Deluxe King',
       checkin: '15 Mar 2026',
       nights: 3,
-      total: 'COP 3.149.160',
+      total: formatPrice(3149160),
       status: 'pending',
       statusLabel: t('reports.statusPending'),
       statusIcon: ScheduleIcon,
@@ -83,7 +85,7 @@ export default function ReportsPage() {
       room: 'Habitacion Estandar',
       checkin: '10 Mar 2026',
       nights: 2,
-      total: 'COP 980.000',
+      total: formatPrice(980000),
       status: 'confirmed',
       statusLabel: t('reports.statusConfirmed'),
       statusIcon: CheckCircleIcon,
@@ -94,7 +96,7 @@ export default function ReportsPage() {
       room: 'Junior Suite',
       checkin: '05 Mar 2026',
       nights: 4,
-      total: 'COP 2.240.000',
+      total: formatPrice(2240000),
       status: 'confirmed',
       statusLabel: t('reports.statusConfirmed'),
       statusIcon: CheckCircleIcon,
@@ -105,7 +107,7 @@ export default function ReportsPage() {
       room: 'Suite Deluxe King',
       checkin: '28 Feb 2026',
       nights: 1,
-      total: 'COP 888.000',
+      total: formatPrice(888000),
       status: 'cancelled',
       statusLabel: t('reports.statusCancelled'),
       statusIcon: CancelIcon,
@@ -116,7 +118,7 @@ export default function ReportsPage() {
       room: 'Habitacion Doble',
       checkin: '22 Feb 2026',
       nights: 5,
-      total: 'COP 3.500.000',
+      total: formatPrice(3500000),
       status: 'confirmed',
       statusLabel: t('reports.statusConfirmed'),
       statusIcon: CheckCircleIcon,
