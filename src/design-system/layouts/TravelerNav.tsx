@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Box, Typography, Button, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
@@ -49,6 +49,15 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
   const { language, currency, setLanguage, setCurrency } = useLocale();
   const [langAnchor, setLangAnchor] = useState<null | HTMLElement>(null);
   const [curAnchor, setCurAnchor] = useState<null | HTMLElement>(null);
+  const langBtnRef = useRef<HTMLDivElement>(null);
+  const curBtnRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const open = params.get('open');
+    if (open === 'language' && langBtnRef.current) setLangAnchor(langBtnRef.current);
+    if (open === 'currency' && curBtnRef.current) setCurAnchor(curBtnRef.current);
+  }, []);
 
   const navLinks = [
     { label: t('nav.home'), path: '/' },
@@ -140,6 +149,7 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
         {/* Language selector */}
         <Box
+          ref={langBtnRef}
           onClick={(e) => setLangAnchor(e.currentTarget)}
           sx={{
             display: 'flex',
@@ -176,6 +186,7 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
 
         {/* Currency selector */}
         <Box
+          ref={curBtnRef}
           onClick={(e) => setCurAnchor(e.currentTarget)}
           sx={{
             display: 'flex',

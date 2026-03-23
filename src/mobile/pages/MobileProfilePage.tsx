@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Box, Typography, Button, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +25,13 @@ export default function MobileProfilePage() {
   const [curOpen, setCurOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
   const curRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const open = params.get('open');
+    if (open === 'language') setLangOpen(true);
+    if (open === 'currency') setCurOpen(true);
+  }, []);
 
   return (
     <MobileShell activeTab="profile">
