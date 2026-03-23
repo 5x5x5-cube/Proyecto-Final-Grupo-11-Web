@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Box, Typography, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { Link } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
@@ -9,6 +10,7 @@ import AmenityTag from '../../design-system/components/AmenityTag';
 import RatingBadge from '../../design-system/components/RatingBadge';
 import { palette } from '../../design-system/theme/palette';
 import { mockHotels } from '../data/mockHotels';
+import ResultsPageSkeleton from './ResultsPage.skeleton';
 
 const starOptions = [
   { label: '5', value: 5, selected: false },
@@ -17,8 +19,16 @@ const starOptions = [
 ];
 
 export default function ResultsPage() {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
   const { t } = useTranslation('travelers');
   const { formatPrice } = useLocale();
+
+  if (loading) return <ResultsPageSkeleton />;
 
   const propertyTypes = [
     t('results.filters.propertyTypes.hotel'),

@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Box, Typography, Button, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
@@ -22,6 +23,7 @@ import { useLocale } from '../../contexts/LocaleContext';
 import TravelerLayout from '../../design-system/layouts/TravelerLayout';
 import RatingBadge from '../../design-system/components/RatingBadge';
 import { palette } from '../../design-system/theme/palette';
+import PropertyDetailPageSkeleton from './PropertyDetailPage.skeleton';
 
 const reviews = [
   {
@@ -48,8 +50,16 @@ const reviews = [
 ];
 
 export default function PropertyDetailPage() {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
+
+  if (loading) return <PropertyDetailPageSkeleton />;
 
   const amenities = [
     { icon: <WifiIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.freeWifi') },
