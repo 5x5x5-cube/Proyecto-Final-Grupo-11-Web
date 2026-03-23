@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocale } from '../../contexts/LocaleContext';
 import TravelerLayout from '../../design-system/layouts/TravelerLayout';
 import StatusChip from '../../design-system/components/StatusChip';
+import ReservationDetailPageSkeleton from './ReservationDetailPage.skeleton';
 import SectionCard from '../../design-system/components/SectionCard';
 import InfoGrid from '../../design-system/components/InfoGrid';
 import RatingBadge from '../../design-system/components/RatingBadge';
@@ -46,6 +47,12 @@ import {
 
 /* ─── Main Page ─── */
 const ReservationDetailPage: React.FC = () => {
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
   const [confirmedOpen, setConfirmedOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
   const { t } = useTranslation('travelers');
@@ -57,6 +64,8 @@ const ReservationDetailPage: React.FC = () => {
     if (modal === 'confirmation') setConfirmedOpen(true);
     if (modal === 'cancel') setCancelOpen(true);
   }, []);
+
+  if (loading) return <ReservationDetailPageSkeleton />;
 
   /* ─── Left Sidebar ─── */
   const UserSidebar: React.FC = () => {
