@@ -1,11 +1,46 @@
-import { Box, Typography, TextField, Button } from '@mui/material';
+import { Box, Typography, TextField, Button, CircularProgress } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { palette } from '../../design-system/theme/palette';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function RegisterPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [nameTouched, setNameTouched] = useState(false);
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+  const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+
+  const nameError = nameTouched && name.trim().length === 0;
+  const emailError = emailTouched && !EMAIL_REGEX.test(email);
+  const passwordError = passwordTouched && password.length < 6;
+  const confirmPasswordError = confirmPasswordTouched && confirmPassword !== password;
+
+  const isFormValid =
+    name.trim().length > 0 &&
+    EMAIL_REGEX.test(email) &&
+    password.length >= 6 &&
+    confirmPassword === password;
+
+  const handleSubmit = () => {
+    if (!isFormValid || loading) return;
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      navigate('/login');
+    }, 1500);
+  };
 
   const inputSx = {
     '& .MuiOutlinedInput-root': {
@@ -136,6 +171,11 @@ export default function RegisterPage() {
               variant="outlined"
               label={t('register.fullNameLabel')}
               placeholder={t('register.fullNamePlaceholder')}
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={() => setNameTouched(true)}
+              error={nameError}
+              helperText={nameError ? t('register.nameRequired', 'Name is required') : undefined}
               sx={inputSx}
             />
           </Box>
@@ -147,6 +187,11 @@ export default function RegisterPage() {
               label={t('register.emailLabel')}
               placeholder={t('register.emailPlaceholder')}
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => setEmailTouched(true)}
+              error={emailError}
+              helperText={emailError ? t('register.emailInvalid', 'Invalid email address') : undefined}
               sx={inputSx}
             />
           </Box>
@@ -169,6 +214,11 @@ export default function RegisterPage() {
               label={t('register.passwordLabel')}
               placeholder={t('register.passwordPlaceholder')}
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onBlur={() => setPasswordTouched(true)}
+              error={passwordError}
+              helperText={passwordError ? t('register.passwordMinLength', 'Password must be at least 6 characters') : undefined}
               sx={inputSx}
             />
           </Box>
@@ -180,6 +230,11 @@ export default function RegisterPage() {
               label={t('register.confirmPasswordLabel')}
               placeholder={t('register.confirmPasswordPlaceholder')}
               type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              onBlur={() => setConfirmPasswordTouched(true)}
+              error={confirmPasswordError}
+              helperText={confirmPasswordError ? t('register.passwordMismatch', 'Passwords do not match') : undefined}
               sx={inputSx}
             />
           </Box>
@@ -188,7 +243,8 @@ export default function RegisterPage() {
             fullWidth
             variant="contained"
             disableElevation
-            onClick={() => navigate('/login')}
+            disabled={!isFormValid || loading}
+            onClick={handleSubmit}
             sx={{
               height: 48,
               backgroundColor: palette.primary,
@@ -203,7 +259,7 @@ export default function RegisterPage() {
               '&:hover': { backgroundColor: palette.primary },
             }}
           >
-            {t('register.submitButton')}
+            {loading ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : t('register.submitButton')}
           </Button>
 
           <Typography
