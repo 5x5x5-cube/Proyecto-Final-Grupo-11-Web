@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button, Divider } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -50,6 +50,13 @@ const ReservationDetailPage: React.FC = () => {
   const [cancelOpen, setCancelOpen] = useState(false);
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate, language } = useLocale();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const modal = params.get('modal');
+    if (modal === 'confirmation') setConfirmedOpen(true);
+    if (modal === 'cancel') setCancelOpen(true);
+  }, []);
 
   /* ─── Left Sidebar ─── */
   const UserSidebar: React.FC = () => {

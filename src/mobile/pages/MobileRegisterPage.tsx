@@ -8,6 +8,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import MobileShell from '../components/MobileShell';
 import Brand from '../../design-system/components/Brand';
 import { palette } from '../../design-system/theme/palette';
+import LanguagePill from '../../design-system/components/LanguagePill';
 
 export default function MobileRegisterPage() {
   const { t } = useTranslation('mobile');
@@ -23,6 +24,11 @@ export default function MobileRegisterPage() {
           pt: '36px',
         }}
       >
+        {/* Language selector */}
+        <Box sx={{ alignSelf: 'flex-end', mb: '16px' }}>
+          <LanguagePill />
+        </Box>
+
         {/* Brand */}
         <Box sx={{ mb: '8px' }}>
           <Brand size={28} variant="nav" />

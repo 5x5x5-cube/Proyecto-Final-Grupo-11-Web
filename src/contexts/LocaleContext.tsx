@@ -49,8 +49,16 @@ const languageNames: Record<Language, string> = {
 const LocaleContext = createContext<LocaleContextType | null>(null);
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
-  const [language, setLanguage] = useState<Language>('ES');
-  const [currency, setCurrency] = useState<Currency>('COP');
+  const params = new URLSearchParams(window.location.search);
+  const initLang = params.get('lang')?.toUpperCase();
+  const initCur = params.get('currency')?.toUpperCase();
+
+  const [language, setLanguage] = useState<Language>(
+    initLang === 'EN' ? 'EN' : 'ES'
+  );
+  const [currency, setCurrency] = useState<Currency>(
+    initCur && initCur in exchangeRates ? initCur as Currency : 'COP'
+  );
 
   useEffect(() => {
     i18n.changeLanguage(language);
