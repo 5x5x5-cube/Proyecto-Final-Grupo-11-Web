@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { Skeleton } from '@mui/material';
 import { Box, Typography, Button, IconButton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
@@ -24,42 +24,18 @@ import TravelerLayout from '../../design-system/layouts/TravelerLayout';
 import RatingBadge from '../../design-system/components/RatingBadge';
 import { palette } from '../../design-system/theme/palette';
 import PropertyDetailPageSkeleton from './PropertyDetailPage.skeleton';
-
-const reviews = [
-  {
-    initial: 'M',
-    name: 'Maria Gonzalez',
-    date: 'Febrero 2026',
-    stars: 5,
-    text: '"Experiencia increible. El personal fue amabilisimo y las instalaciones son impecables. Sin duda regresare."',
-  },
-  {
-    initial: 'J',
-    name: 'Juan Perez',
-    date: 'Enero 2026',
-    stars: 5,
-    text: '"La ubicacion es perfecta, en pleno centro historico. El desayuno fue excelente y la piscina una delicia."',
-  },
-  {
-    initial: 'A',
-    name: 'Andrea Rios',
-    date: 'Enero 2026',
-    stars: 4,
-    text: '"Muy buena experiencia en general. Las habitaciones son hermosas y el spa es de primera. Recomendado."',
-  },
-];
+import { useHotelDetail, useHotelReviews } from '../../api/hooks/useSearch';
 
 export default function PropertyDetailPage() {
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: hotelDetail, isLoading: isHotelLoading } = useHotelDetail(1);
+  const { data: reviewsData, isLoading: isReviewsLoading } = useHotelReviews(1);
 
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
 
-  if (loading) return <PropertyDetailPageSkeleton />;
+  if (isHotelLoading) return <PropertyDetailPageSkeleton />;
+
+  const reviews = (reviewsData ?? []) as Array<{ initial: string; name: string; date: string; stars: number; text: string }>;
 
   const amenities = [
     { icon: <WifiIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.freeWifi') },
@@ -541,6 +517,17 @@ export default function PropertyDetailPage() {
           <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
             {t('propertyDetail.guestReviews')}
           </Typography>
+          {isReviewsLoading ? (
+            <Box sx={{ display: 'flex', gap: '16px', overflow: 'hidden' }}>
+              {[0, 1, 2].map((i) => (
+                <Box key={i} sx={{ flex: 1, border: `1px solid ${palette.outlineVariant}`, borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <Skeleton animation="wave" variant="rounded" height={36} />
+                  <Skeleton animation="wave" variant="text" width={80} />
+                  <Skeleton animation="wave" variant="rounded" height={60} />
+                </Box>
+              ))}
+            </Box>
+          ) : (
           <Box sx={{ display: 'flex', gap: '16px', overflow: 'hidden' }}>
             {reviews.map((review) => (
               <Box
@@ -594,6 +581,7 @@ export default function PropertyDetailPage() {
               </Box>
             ))}
           </Box>
+          )}
         </Box>
       </Box>
     </TravelerLayout>
