@@ -3,28 +3,25 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { palette } from '../../design-system/theme/palette';
+import { useLogin } from '../../api/hooks/useAuth';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function LoginPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
+  const login = useLogin();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailTouched, setEmailTouched] = useState(false);
-  const [loading, setLoading] = useState(false);
 
   const emailError = emailTouched && !EMAIL_REGEX.test(email);
   const isFormValid = EMAIL_REGEX.test(email) && password.length > 0;
 
   const handleSubmit = () => {
-    if (!isFormValid || loading) return;
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate('/');
-    }, 1500);
+    if (!isFormValid || login.isPending) return;
+    login.mutate({ email, password }, { onSuccess: () => navigate('/') });
   };
 
   return (
@@ -228,7 +225,7 @@ export default function LoginPage() {
             fullWidth
             variant="contained"
             disableElevation
-            disabled={!isFormValid || loading}
+            disabled={!isFormValid || login.isPending}
             onClick={handleSubmit}
             sx={{
               height: 48,
@@ -246,7 +243,7 @@ export default function LoginPage() {
               },
             }}
           >
-            {loading ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : t('login.submitButton')}
+            {login.isPending ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : t('login.submitButton')}
           </Button>
 
           {/* Footer link */}
