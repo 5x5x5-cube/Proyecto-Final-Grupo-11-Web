@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import AddIcon from '@mui/icons-material/Add';
@@ -23,6 +23,7 @@ import {
   revenueData,
   quickAccessItems,
 } from '../data/mockDashboard';
+import DashboardPageSkeleton from './DashboardPage.skeleton';
 
 const iconMap: Record<string, React.ElementType> = {
   luggage: LuggageIcon,
@@ -46,6 +47,24 @@ const iconColorMap = {
 export default function DashboardPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    return (
+      <HotelAdminLayout
+        activeNav="dashboard"
+        title={t('dashboard.title')}
+        subtitle={`${formatDate('2026-02-27', 'mediumWithDay')} · Hotel Santa Clara Sofitel`}
+      >
+        <DashboardPageSkeleton />
+      </HotelAdminLayout>
+    );
+  }
 
   const topbarActions = (
     <>
