@@ -9,17 +9,18 @@ import { useLocale } from '../../contexts/LocaleContext';
 import CheckoutLayout from '../../design-system/layouts/CheckoutLayout';
 import SectionCard from '../../design-system/components/SectionCard';
 import { palette } from '../../design-system/theme/palette';
+import { useInitiatePayment } from '../../api/hooks/usePayments';
 
 export default function PaymentPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
+  const payment = useInitiatePayment();
 
   const [cardNumber, setCardNumber] = useState('');
   const [cardHolder, setCardHolder] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
-  const [loading, setLoading] = useState(false);
 
   const formatCardNumber = (value: string) => {
     const digits = value.replace(/\D/g, '').slice(0, 16);
@@ -49,12 +50,8 @@ export default function PaymentPage() {
   const isFormValid = isCardNumberValid && isExpiryValid && isCvvValid && isCardHolderValid;
 
   const handlePay = () => {
-    if (!isFormValid || loading) return;
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate('/checkout/confirmation');
-    }, 2000);
+    if (!isFormValid || payment.isPending) return;
+    payment.mutate({ cardNumber, cardHolder, expiry, cvv }, { onSuccess: () => navigate('/checkout/confirmation') });
   };
 
   const PaymentSidebar = () => (
@@ -128,7 +125,7 @@ export default function PaymentPage() {
         variant="contained"
         disableElevation
         fullWidth
-        disabled={!isFormValid || loading}
+        disabled={!isFormValid || payment.isPending}
         onClick={handlePay}
         sx={{
           height: 56,
@@ -145,7 +142,7 @@ export default function PaymentPage() {
           '&:hover': { backgroundColor: palette.primary },
         }}
       >
-        {loading ? (
+        {payment.isPending ? (
           <CircularProgress size={20} sx={{ color: '#fff' }} />
         ) : (
           <>
