@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Box, Typography, Button, Divider, Icon } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
@@ -15,16 +16,31 @@ import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import SectionCard from '../../design-system/components/SectionCard';
 import InfoGrid from '../../design-system/components/InfoGrid';
 import { palette } from '../../design-system/theme/palette';
+import HotelReservationDetailPageSkeleton from './HotelReservationDetailPage.skeleton';
 
 export default function HotelReservationDetailPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   const breadcrumbs = [
     { label: t('reservationDetail.breadcrumbs.dashboard'), href: '/hotel/dashboard' },
     { label: t('reservationDetail.breadcrumbs.reservations'), href: '/hotel/reservations' },
     { label: 'TH-2026-00483' },
   ];
+  if (loading) {
+    return (
+      <HotelAdminLayout activeNav="reservas" breadcrumbs={breadcrumbs}>
+        <HotelReservationDetailPageSkeleton />
+      </HotelAdminLayout>
+    );
+  }
+
   return (
     <HotelAdminLayout activeNav="reservas" breadcrumbs={breadcrumbs}>
       {/* Page header card */}
