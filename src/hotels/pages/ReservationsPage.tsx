@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -11,7 +10,7 @@ import StatusChip from '../../design-system/components/StatusChip';
 import SearchField from '../../design-system/components/SearchField';
 import FilterChip from '../../design-system/components/FilterChip';
 import { palette } from '../../design-system/theme/palette';
-import { hotelReservations, reservationSummary } from '../data/mockHotelReservations';
+import { useHotelBookings } from '../../api/hooks/useHotelBookings';
 import ReservationsPageSkeleton from './ReservationsPage.skeleton';
 
 const avatarColorMap = {
@@ -26,13 +25,9 @@ export default function ReservationsPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
 
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data, isLoading } = useHotelBookings();
 
-  if (loading) {
+  if (isLoading || !data) {
     return (
       <HotelAdminLayout
         activeNav="reservas"
@@ -43,6 +38,8 @@ export default function ReservationsPage() {
       </HotelAdminLayout>
     );
   }
+
+  const { reservations: hotelReservations, summary: reservationSummary } = data as any;
 
   return (
     <HotelAdminLayout
