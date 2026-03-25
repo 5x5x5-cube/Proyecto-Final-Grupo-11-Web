@@ -1,0 +1,44 @@
+Historia de usuario
+
+Como administrador de hotel,
+Quiero confirmar o rechazar las reservas pendientes desde el detalle de reserva en el portal administrativo,
+Para gestionar la ocupación de mi alojamiento y notificar oportunamente al viajero sobre el estado de su solicitud.
+
+Contexto de negocio
+
+TravelHub opera en 6 países (Colombia, Perú, Ecuador, México, Chile, Argentina) conectando hoteles con viajeros. Cuando un viajero crea una reserva desde la app móvil o el portal web, esta queda en estado "Pendiente de confirmación" hasta que el administrador del hotel la revise y tome una decisión. Esta acción es crítica porque:
+- Impacta directamente la experiencia del viajero (recibe notificación push de cambio de estado).
+- Libera o bloquea inventario de habitaciones para otros viajeros.
+- Alimenta los reportes de ingresos del hotel.
+
+Precondiciones
+
+- El administrador ha iniciado sesión en el portal de hoteles.
+- Existe al menos una reserva en estado "Pendiente" visible en el listado de reservas.
+- El administrador ha navegado al detalle de la reserva.
+
+Criterios de aceptación
+
+CA1 — Confirmar reserva
+- Dado que el administrador está en el detalle de una reserva con estado "Pendiente",
+- Cuando haga clic en el botón "Confirmar reserva",
+- Entonces el sistema cambia el estado de la reserva a "Confirmada", muestra una notificación de éxito en el portal, y el viajero recibe notificación del cambio de estado.
+
+CA2 — Rechazar reserva
+- Dado que el administrador está en el detalle de una reserva con estado "Pendiente",
+- Cuando haga clic en el botón "Rechazar",
+- Entonces el sistema muestra un diálogo de confirmación (para evitar rechazos accidentales), y al confirmar, cambia el estado a "Rechazada", libera el inventario de la habitación, y notifica al viajero.
+
+CA3 — Acciones no disponibles para reservas ya procesadas
+- Dado que la reserva tiene estado "Confirmada", "Rechazada" o "Cancelada",
+- Cuando el administrador vea el detalle,
+- Entonces los botones de confirmar/rechazar no están disponibles (deshabilitados o no visibles).
+
+CA4 — Retroalimentación visual
+- Dado que el administrador confirma o rechaza,
+- Cuando la acción se procesa,
+- Entonces el estado visible se actualiza inmediatamente (badge/chip de estado) sin necesidad de recargar la página.
+
+Diseño de referencia
+
+La pantalla de detalle de reserva muestra la información completa del huésped (nombre, país, contacto), las fechas de estadía, la habitación con sus amenidades, el resumen de pago con desglose, y la política de cancelación. En la parte superior se encuentran los botones de acción "Rechazar" (outlined, rojo) y "Confirmar reserva" (primary, filled) junto al código de reserva y el estado actual.
