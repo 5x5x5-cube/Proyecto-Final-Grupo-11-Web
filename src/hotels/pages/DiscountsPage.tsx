@@ -36,7 +36,11 @@ export default function DiscountsPage() {
 
   if (isLoading) {
     return (
-      <HotelAdminLayout activeNav="descuentos" title={t('discounts.title')} subtitle={t('discounts.subtitle')}>
+      <HotelAdminLayout
+        activeNav="descuentos"
+        title={t('discounts.title')}
+        subtitle={t('discounts.subtitle')}
+      >
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200 }}>
           <CircularProgress sx={{ color: palette.primary }} />
         </Box>
@@ -113,10 +117,28 @@ export default function DiscountsPage() {
     },
   ];
 
-  const statusStyles: Record<string, { bg: string; color: string; icon: React.ElementType; label: string }> = {
-    active: { bg: palette.successContainer, color: palette.success, icon: CheckCircleIcon, label: t('discounts.statusActive') },
-    scheduled: { bg: '#E8F0FE', color: '#1A73E8', icon: ScheduleIcon, label: t('discounts.statusScheduled') },
-    expired: { bg: palette.errorContainer, color: palette.error, icon: CancelIcon, label: t('discounts.statusExpired') },
+  const statusStyles: Record<
+    string,
+    { bg: string; color: string; icon: React.ElementType; label: string }
+  > = {
+    active: {
+      bg: palette.successContainer,
+      color: palette.success,
+      icon: CheckCircleIcon,
+      label: t('discounts.statusActive'),
+    },
+    scheduled: {
+      bg: '#E8F0FE',
+      color: '#1A73E8',
+      icon: ScheduleIcon,
+      label: t('discounts.statusScheduled'),
+    },
+    expired: {
+      bg: palette.errorContainer,
+      color: palette.error,
+      icon: CancelIcon,
+      label: t('discounts.statusExpired'),
+    },
   };
 
   return (
@@ -145,13 +167,27 @@ export default function DiscountsPage() {
         </Box>
       }
     >
-
       {/* Content layout: discount cards + form panel */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 400px', gap: '20px', flex: 1, overflow: 'hidden' }}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 400px',
+          gap: '20px',
+          flex: 1,
+          overflow: 'hidden',
+        }}
+      >
         {/* Left: discount grid */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px', overflow: 'hidden' }}>
-          <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', overflow: 'hidden' }}>
-            {discountCards.map((card) => {
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(3, 1fr)',
+              gap: '14px',
+              overflow: 'hidden',
+            }}
+          >
+            {discountCards.map(card => {
               const TypeIcon = card.typeIcon;
               const chipStyle = typeChipStyles[card.typeChipClass];
               const status = statusStyles[card.status];
@@ -181,10 +217,22 @@ export default function DiscountsPage() {
                     }}
                   >
                     <Box sx={{ display: 'flex', alignItems: 'baseline', gap: '2px' }}>
-                      <Typography sx={{ fontSize: 22, fontWeight: 800, color: card.expired ? palette.outline : palette.primary }}>
+                      <Typography
+                        sx={{
+                          fontSize: 22,
+                          fontWeight: 800,
+                          color: card.expired ? palette.outline : palette.primary,
+                        }}
+                      >
                         {card.value}
                       </Typography>
-                      <Typography sx={{ fontSize: 14, fontWeight: 600, color: card.expired ? palette.outline : palette.primary }}>
+                      <Typography
+                        sx={{
+                          fontSize: 14,
+                          fontWeight: 600,
+                          color: card.expired ? palette.outline : palette.primary,
+                        }}
+                      >
                         %
                       </Typography>
                     </Box>
@@ -207,33 +255,80 @@ export default function DiscountsPage() {
                   </Box>
 
                   {/* Card body */}
-                  <Box sx={{ padding: '14px 16px', flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <Box
+                    sx={{
+                      padding: '14px 16px',
+                      flex: 1,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '8px',
+                    }}
+                  >
                     <Typography sx={{ fontSize: 14, fontWeight: 700, color: palette.onSurface }}>
                       {card.name}
                     </Typography>
-                    <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant, lineHeight: 1.4 }}>
+                    <Typography
+                      sx={{ fontSize: 12, color: palette.onSurfaceVariant, lineHeight: 1.4 }}
+                    >
                       {card.desc}
                     </Typography>
 
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 11, color: palette.onSurfaceVariant }}>
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          fontSize: 11,
+                          color: palette.onSurfaceVariant,
+                        }}
+                      >
                         <CalendarTodayIcon sx={{ fontSize: 13, color: palette.outline }} />
-                        {t('discounts.validity')} <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>
+                        {t('discounts.validity')}{' '}
+                        <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>
                           {card.validityStart && card.validityEnd
                             ? `${formatDate(card.validityStart, 'short')} - ${formatDate(card.validityEnd, 'medium')}`
                             : card.validity}
                         </Box>
                       </Box>
                       {card.rooms && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 11, color: palette.onSurfaceVariant }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: 11,
+                            color: palette.onSurfaceVariant,
+                          }}
+                        >
                           <BedIcon sx={{ fontSize: 13, color: palette.outline }} />
-                          {t('discounts.appliesTo')} <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>{card.rooms}</Box>
+                          {t('discounts.appliesTo')}{' '}
+                          <Box
+                            component="strong"
+                            sx={{ color: palette.onSurface, fontWeight: 600 }}
+                          >
+                            {card.rooms}
+                          </Box>
                         </Box>
                       )}
                       {card.startsIn && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 11, color: palette.onSurfaceVariant }}>
+                        <Box
+                          sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            fontSize: 11,
+                            color: palette.onSurfaceVariant,
+                          }}
+                        >
                           <ScheduleIcon sx={{ fontSize: 13, color: palette.outline }} />
-                          {t('discounts.startsIn')} <Box component="strong" sx={{ color: palette.onSurface, fontWeight: 600 }}>{card.startsIn}</Box>
+                          {t('discounts.startsIn')}{' '}
+                          <Box
+                            component="strong"
+                            sx={{ color: palette.onSurface, fontWeight: 600 }}
+                          >
+                            {card.startsIn}
+                          </Box>
                         </Box>
                       )}
                     </Box>
@@ -334,7 +429,16 @@ export default function DiscountsPage() {
               background: 'linear-gradient(135deg, #006874, #004F58)',
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 14, fontWeight: 700, color: '#fff' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: 14,
+                fontWeight: 700,
+                color: '#fff',
+              }}
+            >
               <AddCircleIcon sx={{ fontSize: 18 }} />
               {t('discounts.panelTitle')}
             </Box>
@@ -355,7 +459,16 @@ export default function DiscountsPage() {
           </Box>
 
           {/* Panel body */}
-          <Box sx={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '14px', overflowY: 'auto', flex: 1 }}>
+          <Box
+            sx={{
+              padding: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '14px',
+              overflowY: 'auto',
+              flex: 1,
+            }}
+          >
             {/* Discount name */}
             <Box sx={{ position: 'relative' }}>
               <Typography
@@ -393,7 +506,16 @@ export default function DiscountsPage() {
             </Box>
 
             {/* Discount value */}
-            <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
+            <Typography
+              sx={{
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+                color: palette.outline,
+                mb: '-4px',
+              }}
+            >
               {t('discounts.discountValue')}
             </Typography>
             <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
@@ -468,7 +590,16 @@ export default function DiscountsPage() {
             </Box>
 
             {/* Validity */}
-            <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
+            <Typography
+              sx={{
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+                color: palette.outline,
+                mb: '-4px',
+              }}
+            >
               {t('discounts.validityLabel')}
             </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
@@ -543,11 +674,20 @@ export default function DiscountsPage() {
             </Box>
 
             {/* Applicable rooms */}
-            <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
+            <Typography
+              sx={{
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+                color: palette.outline,
+                mb: '-4px',
+              }}
+            >
               {t('discounts.applicableRooms')}
             </Typography>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {roomCheckboxes.map((room) => (
+              {roomCheckboxes.map(room => (
                 <Box
                   key={room.name}
                   sx={{
@@ -577,8 +717,12 @@ export default function DiscountsPage() {
                     {room.checked && <CheckIcon sx={{ fontSize: 13, color: '#fff' }} />}
                   </Box>
                   <Box>
-                    <Typography sx={{ fontSize: 12, fontWeight: 500, color: palette.onSurface }}>{room.name}</Typography>
-                    <Typography sx={{ fontSize: 10, color: palette.outline }}>{room.sub}</Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 500, color: palette.onSurface }}>
+                      {room.name}
+                    </Typography>
+                    <Typography sx={{ fontSize: 10, color: palette.outline }}>
+                      {room.sub}
+                    </Typography>
                   </Box>
                 </Box>
               ))}

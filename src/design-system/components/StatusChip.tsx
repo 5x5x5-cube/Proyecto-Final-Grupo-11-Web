@@ -10,11 +10,34 @@ type Status = 'confirmed' | 'pending' | 'cancelled' | 'past';
 export default function StatusChip({ status, label }: { status: Status; label?: string }) {
   const { t } = useTranslation('common');
 
-  const statusConfig: Record<Status, { bg: string; color: string; icon: React.ReactNode; label: string }> = {
-    confirmed: { bg: palette.successContainer, color: palette.success, icon: <CheckCircleIcon sx={{ fontSize: 14 }} />, label: t('status.confirmed') },
-    pending: { bg: palette.warningContainer, color: palette.warning, icon: <ScheduleIcon sx={{ fontSize: 14 }} />, label: t('status.pending') },
-    cancelled: { bg: palette.errorContainer, color: palette.error, icon: <CancelIcon sx={{ fontSize: 14 }} />, label: t('status.cancelled') },
-    past: { bg: palette.outlineVariant, color: palette.onSurfaceVariant, icon: null, label: t('status.past') },
+  const statusConfig: Record<
+    Status,
+    { bg: string; color: string; icon: React.ReactNode; label: string }
+  > = {
+    confirmed: {
+      bg: palette.successContainer,
+      color: palette.success,
+      icon: <CheckCircleIcon sx={{ fontSize: 14 }} />,
+      label: t('status.confirmed'),
+    },
+    pending: {
+      bg: palette.warningContainer,
+      color: palette.warning,
+      icon: <ScheduleIcon sx={{ fontSize: 14 }} />,
+      label: t('status.pending'),
+    },
+    cancelled: {
+      bg: palette.errorContainer,
+      color: palette.error,
+      icon: <CancelIcon sx={{ fontSize: 14 }} />,
+      label: t('status.cancelled'),
+    },
+    past: {
+      bg: palette.outlineVariant,
+      color: palette.onSurfaceVariant,
+      icon: null,
+      label: t('status.past'),
+    },
   };
 
   const config = statusConfig[status];

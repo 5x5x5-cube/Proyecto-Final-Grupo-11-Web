@@ -30,7 +30,9 @@ export default function ReservationsPageSkeleton() {
           <SearchField placeholder={t('reservations.searchPlaceholder')} />
         </Box>
 
-        <Box sx={{ width: '1px', height: 32, backgroundColor: palette.outlineVariant, flexShrink: 0 }} />
+        <Box
+          sx={{ width: '1px', height: 32, backgroundColor: palette.outlineVariant, flexShrink: 0 }}
+        />
 
         <FilterChip
           label={t('reservations.filterAll')}
@@ -41,7 +43,9 @@ export default function ReservationsPageSkeleton() {
         <FilterChip label={t('reservations.filterPending')} />
         <FilterChip label={t('reservations.filterCancelled')} />
 
-        <Box sx={{ width: '1px', height: 32, backgroundColor: palette.outlineVariant, flexShrink: 0 }} />
+        <Box
+          sx={{ width: '1px', height: 32, backgroundColor: palette.outlineVariant, flexShrink: 0 }}
+        />
 
         <Box
           sx={{
@@ -123,11 +127,23 @@ export default function ReservationsPageSkeleton() {
             }}
           >
             {/* Code badge */}
-            <Skeleton animation="wave" variant="rounded" width={80} height={24} sx={{ borderRadius: '6px' }} />
+            <Skeleton
+              animation="wave"
+              variant="rounded"
+              width={80}
+              height={24}
+              sx={{ borderRadius: '6px' }}
+            />
 
             {/* Guest with avatar + two lines */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <Skeleton animation="wave" variant="circular" width={36} height={36} sx={{ flexShrink: 0 }} />
+              <Skeleton
+                animation="wave"
+                variant="circular"
+                width={36}
+                height={36}
+                sx={{ flexShrink: 0 }}
+              />
               <Box>
                 <Skeleton animation="wave" variant="text" width={100} height={20} />
                 <Skeleton animation="wave" variant="text" width={130} height={16} />
@@ -153,10 +169,22 @@ export default function ReservationsPageSkeleton() {
             <Skeleton animation="wave" variant="text" width={90} height={22} />
 
             {/* Status chip */}
-            <Skeleton animation="wave" variant="rounded" width={80} height={24} sx={{ borderRadius: '100px' }} />
+            <Skeleton
+              animation="wave"
+              variant="rounded"
+              width={80}
+              height={24}
+              sx={{ borderRadius: '100px' }}
+            />
 
             {/* Action button(s) */}
-            <Skeleton animation="wave" variant="rounded" width={90} height={32} sx={{ borderRadius: '100px' }} />
+            <Skeleton
+              animation="wave"
+              variant="rounded"
+              width={90}
+              height={32}
+              sx={{ borderRadius: '100px' }}
+            />
           </Box>
         ))}
 
@@ -173,7 +201,14 @@ export default function ReservationsPageSkeleton() {
           <Skeleton animation="wave" variant="text" width={160} height={20} />
           <Box sx={{ display: 'flex', gap: '4px' }}>
             {Array.from({ length: 7 }).map((_, i) => (
-              <Skeleton key={i} animation="wave" variant="rounded" width={36} height={36} sx={{ borderRadius: '8px' }} />
+              <Skeleton
+                key={i}
+                animation="wave"
+                variant="rounded"
+                width={36}
+                height={36}
+                sx={{ borderRadius: '8px' }}
+              />
             ))}
           </Box>
         </Box>

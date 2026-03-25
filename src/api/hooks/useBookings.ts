@@ -32,8 +32,7 @@ export function useBookingPayments(bookingId: number) {
 export function useCancelBooking() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (bookingId: number) =>
-      httpClient.post(`/bookings/${bookingId}/cancel`),
+    mutationFn: (bookingId: number) => httpClient.post(`/bookings/${bookingId}/cancel`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
     },
@@ -43,8 +42,7 @@ export function useCancelBooking() {
 export function useCreateBooking() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: unknown) =>
-      httpClient.post('/bookings', { body: data }),
+    mutationFn: (data: unknown) => httpClient.post('/bookings', { body: data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
     },

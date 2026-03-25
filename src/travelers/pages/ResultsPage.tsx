@@ -26,10 +26,18 @@ export default function ResultsPage() {
   if (isLoading || !hotels) return <ResultsPageSkeleton />;
 
   const mockHotels = hotels as Array<{
-    id: number; type: string; name: string; location: string;
-    rating: number; reviewCount: number; starsText: string;
-    pricePerNight: number; totalPrice: number; gradient: string;
-    amenities: Array<{ icon: string; label: string }>; photoCount: number;
+    id: number;
+    type: string;
+    name: string;
+    location: string;
+    rating: number;
+    reviewCount: number;
+    starsText: string;
+    pricePerNight: number;
+    totalPrice: number;
+    gradient: string;
+    amenities: Array<{ icon: string; label: string }>;
+    photoCount: number;
   }>;
 
   const propertyTypes = [
@@ -88,7 +96,9 @@ export default function ResultsPage() {
           {t('results.filters.pricePerNight')}
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>{t('results.filters.minimum')}</Typography>
+          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
+            {t('results.filters.minimum')}
+          </Typography>
           <Box
             component="input"
             defaultValue={formatPrice(0)}
@@ -105,7 +115,9 @@ export default function ResultsPage() {
               boxSizing: 'border-box',
             }}
           />
-          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>{t('results.filters.maximum')}</Typography>
+          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
+            {t('results.filters.maximum')}
+          </Typography>
           <Box
             component="input"
             defaultValue={formatPrice(800000)}
@@ -176,7 +188,7 @@ export default function ResultsPage() {
           {t('results.filters.rating')}
         </Typography>
         <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
-          {starOptions.map((opt) => (
+          {starOptions.map(opt => (
             <Box
               key={opt.label}
               sx={{
@@ -230,7 +242,7 @@ export default function ResultsPage() {
         >
           {t('results.filters.amenities')}
         </Typography>
-        {amenitiesFilter.map((amenity) => (
+        {amenitiesFilter.map(amenity => (
           <FormControlLabel
             key={amenity.label}
             control={
@@ -272,7 +284,15 @@ export default function ResultsPage() {
       <TravelerNav variant="results" searchSummary={t('results.searchSummary')} />
 
       {/* PAGE BODY */}
-      <Box sx={{ display: 'flex', minHeight: 'calc(100vh - 72px)', mt: '72px', overflow: 'hidden', maxWidth: '100vw' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          minHeight: 'calc(100vh - 72px)',
+          mt: '72px',
+          overflow: 'hidden',
+          maxWidth: '100vw',
+        }}
+      >
         {/* SIDEBAR FILTERS */}
         <FilterSidebar />
 
@@ -333,7 +353,7 @@ export default function ResultsPage() {
           </Box>
 
           {/* Hotel cards */}
-          {mockHotels.map((hotel) => (
+          {mockHotels.map(hotel => (
             <Link
               key={hotel.id}
               to={`/property/${hotel.id}`}
@@ -437,7 +457,7 @@ export default function ResultsPage() {
                       flexWrap: 'wrap',
                     }}
                   >
-                    {hotel.amenities.map((amenity) => (
+                    {hotel.amenities.map(amenity => (
                       <AmenityTag key={amenity.label} icon={amenity.icon} label={amenity.label} />
                     ))}
                   </Box>
@@ -462,7 +482,14 @@ export default function ResultsPage() {
                     {t('results.card.from')}
                   </Typography>
                   <Box>
-                    <Typography sx={{ fontSize: 26, fontWeight: 700, color: palette.primary, whiteSpace: 'nowrap' }}>
+                    <Typography
+                      sx={{
+                        fontSize: 26,
+                        fontWeight: 700,
+                        color: palette.primary,
+                        whiteSpace: 'nowrap',
+                      }}
+                    >
                       {formatPrice(hotel.pricePerNight)}
                     </Typography>
                     <Typography

@@ -38,17 +38,25 @@ export default function CartPage() {
           <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
             {`${formatPrice(480000)} x 5 ${t('cart.sidebar.nightsLabel')}`}
           </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(2400000)}</Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
+            {formatPrice(2400000)}
+          </Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
             {t('cart.sidebar.tourismTax')}
           </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(96000)}</Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
+            {formatPrice(96000)}
+          </Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{t('cart.sidebar.vat')}</Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(168000)}</Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+            {t('cart.sidebar.vat')}
+          </Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
+            {formatPrice(168000)}
+          </Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
@@ -160,9 +168,21 @@ export default function CartPage() {
             <InfoGrid
               columns={3}
               items={[
-                { label: t('cart.accommodation.checkIn'), value: formatDate('2026-03-15', 'mediumWithDay'), sub: '3:00 PM' },
-                { label: t('cart.accommodation.checkOut'), value: formatDate('2026-03-20', 'mediumWithDay'), sub: '12:00 PM' },
-                { label: t('cart.accommodation.duration'), value: t('cart.accommodation.durationValue'), sub: t('cart.accommodation.durationSub') },
+                {
+                  label: t('cart.accommodation.checkIn'),
+                  value: formatDate('2026-03-15', 'mediumWithDay'),
+                  sub: '3:00 PM',
+                },
+                {
+                  label: t('cart.accommodation.checkOut'),
+                  value: formatDate('2026-03-20', 'mediumWithDay'),
+                  sub: '12:00 PM',
+                },
+                {
+                  label: t('cart.accommodation.duration'),
+                  value: t('cart.accommodation.durationValue'),
+                  sub: t('cart.accommodation.durationSub'),
+                },
               ]}
             />
 
@@ -258,15 +278,24 @@ export default function CartPage() {
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <CheckCircleIcon sx={{ color: '#1A6B4F', fontSize: 18 }} />
-              <Typography sx={{ fontSize: 13, color: palette.onSurface }} dangerouslySetInnerHTML={{ __html: t('cart.cancellation.free') }} />
+              <Typography
+                sx={{ fontSize: 13, color: palette.onSurface }}
+                dangerouslySetInnerHTML={{ __html: t('cart.cancellation.free') }}
+              />
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <InfoIcon sx={{ color: '#F4A020', fontSize: 18 }} />
-              <Typography sx={{ fontSize: 13, color: palette.onSurface }} dangerouslySetInnerHTML={{ __html: t('cart.cancellation.halfCharge') }} />
+              <Typography
+                sx={{ fontSize: 13, color: palette.onSurface }}
+                dangerouslySetInnerHTML={{ __html: t('cart.cancellation.halfCharge') }}
+              />
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <CancelIcon sx={{ color: '#B5451B', fontSize: 18 }} />
-              <Typography sx={{ fontSize: 13, color: palette.onSurface }} dangerouslySetInnerHTML={{ __html: t('cart.cancellation.noRefund') }} />
+              <Typography
+                sx={{ fontSize: 13, color: palette.onSurface }}
+                dangerouslySetInnerHTML={{ __html: t('cart.cancellation.noRefund') }}
+              />
             </Box>
           </Box>
         </SectionCard>

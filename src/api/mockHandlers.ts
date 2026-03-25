@@ -13,7 +13,7 @@ import {
 
 type Handler = (
   config: RequestConfig | undefined,
-  match: RegExpMatchArray,
+  match: RegExpMatchArray
 ) => { status: number; data: unknown };
 
 interface MockRoute {
@@ -167,18 +167,81 @@ const hotelReservationDetail = {
 
 // Reports data
 const reportKpis = [
-  { label: 'Ingresos totales', value: 'COP 94.2M', change: '+12%', changeType: 'up' as const, icon: 'payments', iconColor: 'green' as const },
-  { label: 'Reservas completadas', value: '47', change: '+8%', changeType: 'up' as const, icon: 'event_available', iconColor: 'teal' as const },
-  { label: 'Ticket promedio', value: 'COP 2.0M', change: '+5%', changeType: 'up' as const, icon: 'confirmation_number', iconColor: 'amber' as const },
-  { label: 'Tasa de ocupacion', value: '78%', change: '+3%', changeType: 'up' as const, icon: 'trending_up', iconColor: 'blue' as const },
+  {
+    label: 'Ingresos totales',
+    value: 'COP 94.2M',
+    change: '+12%',
+    changeType: 'up' as const,
+    icon: 'payments',
+    iconColor: 'green' as const,
+  },
+  {
+    label: 'Reservas completadas',
+    value: '47',
+    change: '+8%',
+    changeType: 'up' as const,
+    icon: 'event_available',
+    iconColor: 'teal' as const,
+  },
+  {
+    label: 'Ticket promedio',
+    value: 'COP 2.0M',
+    change: '+5%',
+    changeType: 'up' as const,
+    icon: 'confirmation_number',
+    iconColor: 'amber' as const,
+  },
+  {
+    label: 'Tasa de ocupacion',
+    value: '78%',
+    change: '+3%',
+    changeType: 'up' as const,
+    icon: 'trending_up',
+    iconColor: 'blue' as const,
+  },
 ];
 
 const reportTransactions = [
-  { id: 'TH-48291', guest: 'Carlos Martinez', room: 'Habitación Superior', date: '2026-03-15', amount: 2664000, status: 'confirmed' as const },
-  { id: 'TH-48305', guest: 'Laura Sanchez', room: 'Suite Junior', date: '2026-03-18', amount: 4080000, status: 'pending' as const },
-  { id: 'TH-48312', guest: 'Miguel Torres', room: 'Habitación Superior', date: '2026-03-20', amount: 1596000, status: 'confirmed' as const },
-  { id: 'TH-48320', guest: 'Ana Ramirez', room: 'Suite Junior', date: '2026-03-25', amount: 2448000, status: 'pending' as const },
-  { id: 'TH-48331', guest: 'Julian Lopez', room: 'Habitación Superior', date: '2026-04-01', amount: 1596000, status: 'confirmed' as const },
+  {
+    id: 'TH-48291',
+    guest: 'Carlos Martinez',
+    room: 'Habitación Superior',
+    date: '2026-03-15',
+    amount: 2664000,
+    status: 'confirmed' as const,
+  },
+  {
+    id: 'TH-48305',
+    guest: 'Laura Sanchez',
+    room: 'Suite Junior',
+    date: '2026-03-18',
+    amount: 4080000,
+    status: 'pending' as const,
+  },
+  {
+    id: 'TH-48312',
+    guest: 'Miguel Torres',
+    room: 'Habitación Superior',
+    date: '2026-03-20',
+    amount: 1596000,
+    status: 'confirmed' as const,
+  },
+  {
+    id: 'TH-48320',
+    guest: 'Ana Ramirez',
+    room: 'Suite Junior',
+    date: '2026-03-25',
+    amount: 2448000,
+    status: 'pending' as const,
+  },
+  {
+    id: 'TH-48331',
+    guest: 'Julian Lopez',
+    room: 'Habitación Superior',
+    date: '2026-04-01',
+    amount: 1596000,
+    status: 'confirmed' as const,
+  },
 ];
 
 // Bar chart data for revenue (same as inline in ReportsPage)
@@ -198,7 +261,11 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'POST',
     pattern: /^\/auth\/login$/,
-    handler: () => ok({ token: 'mock-jwt-token', user: { id: 1, name: 'Carlos Martinez', email: 'carlos.m@email.com' } }),
+    handler: () =>
+      ok({
+        token: 'mock-jwt-token',
+        user: { id: 1, name: 'Carlos Martinez', email: 'carlos.m@email.com' },
+      }),
   },
   {
     method: 'POST',
@@ -208,7 +275,8 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'GET',
     pattern: /^\/auth\/me$/,
-    handler: () => ok({ id: 1, name: 'Carlos Martinez', email: 'carlos.m@email.com', initials: 'C' }),
+    handler: () =>
+      ok({ id: 1, name: 'Carlos Martinez', email: 'carlos.m@email.com', initials: 'C' }),
   },
   {
     method: 'POST',
@@ -279,7 +347,7 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'POST',
     pattern: /^\/cart\/items$/,
-    handler: (_config) => created(cartData),
+    handler: _config => created(cartData),
   },
   {
     method: 'DELETE',
@@ -296,7 +364,8 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'POST',
     pattern: /^\/payments\/initiate$/,
-    handler: () => ok({ paymentId: 'pay-001', status: 'approved', redirectUrl: '/checkout/confirmation' }),
+    handler: () =>
+      ok({ paymentId: 'pay-001', status: 'approved', redirectUrl: '/checkout/confirmation' }),
   },
   {
     method: 'GET',
@@ -335,12 +404,12 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'POST',
     pattern: /^\/bookings\/tariffs$/,
-    handler: (_config) => created({ id: 5, ...(_config?.body as object) }),
+    handler: _config => created({ id: 5, ...(_config?.body as object) }),
   },
   {
     method: 'PUT',
     pattern: /^\/bookings\/tariffs\/(\d+)$/,
-    handler: (_config) => ok({ id: 1, ...(_config?.body as object) }),
+    handler: _config => ok({ id: 1, ...(_config?.body as object) }),
   },
   {
     method: 'DELETE',
@@ -357,12 +426,12 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'POST',
     pattern: /^\/bookings\/discounts$/,
-    handler: (_config) => created({ id: 4, ...(_config?.body as object) }),
+    handler: _config => created({ id: 4, ...(_config?.body as object) }),
   },
   {
     method: 'PUT',
     pattern: /^\/bookings\/discounts\/(\d+)$/,
-    handler: (_config) => ok({ id: 1, ...(_config?.body as object) }),
+    handler: _config => ok({ id: 1, ...(_config?.body as object) }),
   },
   {
     method: 'DELETE',

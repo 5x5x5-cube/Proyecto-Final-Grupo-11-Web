@@ -121,13 +121,39 @@ export default function RatesPage() {
     },
   ];
 
-  const filterChips = [t('rates.filterAll'), t('rates.filterStandard'), t('rates.filterWeekend'), t('rates.filterSeason'), t('rates.filterPromo')];
+  const filterChips = [
+    t('rates.filterAll'),
+    t('rates.filterStandard'),
+    t('rates.filterWeekend'),
+    t('rates.filterSeason'),
+    t('rates.filterPromo'),
+  ];
 
   const rateTypeOptions = [
-    { icon: StarIcon, label: t('rates.typeStandard'), desc: t('rates.typeStandardDesc'), selected: true },
-    { icon: WeekendIcon, label: t('rates.typeWeekend'), desc: t('rates.typeWeekendDesc'), selected: false },
-    { icon: WbSunnyIcon, label: t('rates.typeSeason'), desc: t('rates.typeSeasonDesc'), selected: false },
-    { icon: LocalOfferIcon, label: t('rates.typePromo'), desc: t('rates.typePromoDesc'), selected: false },
+    {
+      icon: StarIcon,
+      label: t('rates.typeStandard'),
+      desc: t('rates.typeStandardDesc'),
+      selected: true,
+    },
+    {
+      icon: WeekendIcon,
+      label: t('rates.typeWeekend'),
+      desc: t('rates.typeWeekendDesc'),
+      selected: false,
+    },
+    {
+      icon: WbSunnyIcon,
+      label: t('rates.typeSeason'),
+      desc: t('rates.typeSeasonDesc'),
+      selected: false,
+    },
+    {
+      icon: LocalOfferIcon,
+      label: t('rates.typePromo'),
+      desc: t('rates.typePromoDesc'),
+      selected: false,
+    },
   ];
 
   return (
@@ -156,7 +182,6 @@ export default function RatesPage() {
         </Box>
       }
     >
-
       {/* Filter bar */}
       <Box
         sx={{
@@ -188,7 +213,15 @@ export default function RatesPage() {
           {t('rates.searchPlaceholder')}
         </Box>
 
-        <Box sx={{ width: '1px', height: 24, background: palette.outlineVariant, mx: '4px', flexShrink: 0 }} />
+        <Box
+          sx={{
+            width: '1px',
+            height: 24,
+            background: palette.outlineVariant,
+            mx: '4px',
+            flexShrink: 0,
+          }}
+        />
 
         <Box sx={{ display: 'flex', gap: '8px' }}>
           {filterChips.map((chip, i) => (
@@ -209,11 +242,18 @@ export default function RatesPage() {
             </Box>
           ))}
         </Box>
-
       </Box>
 
       {/* Content layout: table + edit panel */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: '20px', flex: 1, overflow: 'hidden' }}>
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 380px',
+          gap: '20px',
+          flex: 1,
+          overflow: 'hidden',
+        }}
+      >
         {/* Rates table card */}
         <Box
           sx={{
@@ -235,7 +275,16 @@ export default function RatesPage() {
               borderBottom: `1px solid ${palette.outlineVariant}`,
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 14, fontWeight: 700, color: palette.onSurface }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: 14,
+                fontWeight: 700,
+                color: palette.onSurface,
+              }}
+            >
               <SellIcon sx={{ fontSize: 18, color: palette.primary }} />
               {t('rates.configuredRates')}
             </Box>
@@ -248,7 +297,13 @@ export default function RatesPage() {
           <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse' }}>
             <Box component="thead">
               <Box component="tr">
-                {[t('rates.tableHeaders.room'), t('rates.tableHeaders.rateType'), t('rates.tableHeaders.pricePerNight'), t('rates.tableHeaders.validity'), t('rates.tableHeaders.actions')].map((header) => (
+                {[
+                  t('rates.tableHeaders.room'),
+                  t('rates.tableHeaders.rateType'),
+                  t('rates.tableHeaders.pricePerNight'),
+                  t('rates.tableHeaders.validity'),
+                  t('rates.tableHeaders.actions'),
+                ].map(header => (
                   <Box
                     component="th"
                     key={header}
@@ -270,7 +325,7 @@ export default function RatesPage() {
               </Box>
             </Box>
             <Box component="tbody">
-              {rates.map((rate) => {
+              {rates.map(rate => {
                 const IconComp = rate.icon;
                 const TypeIcon = rate.typeIcon;
                 const chipStyle = typeChipStyles[rate.type];
@@ -285,7 +340,15 @@ export default function RatesPage() {
                     }}
                   >
                     {/* Room cell */}
-                    <Box component="td" sx={{ padding: '12px 16px', fontSize: 13, color: palette.onSurface, verticalAlign: 'middle' }}>
+                    <Box
+                      component="td"
+                      sx={{
+                        padding: '12px 16px',
+                        fontSize: 13,
+                        color: palette.onSurface,
+                        verticalAlign: 'middle',
+                      }}
+                    >
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <Box
                           sx={{
@@ -302,8 +365,14 @@ export default function RatesPage() {
                           <IconComp sx={{ fontSize: 16, color: 'rgba(255,255,255,0.8)' }} />
                         </Box>
                         <Box>
-                          <Typography sx={{ fontSize: 13, fontWeight: 600, color: palette.onSurface }}>{rate.name}</Typography>
-                          <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>{rate.location}</Typography>
+                          <Typography
+                            sx={{ fontSize: 13, fontWeight: 600, color: palette.onSurface }}
+                          >
+                            {rate.name}
+                          </Typography>
+                          <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>
+                            {rate.location}
+                          </Typography>
                         </Box>
                       </Box>
                     </Box>
@@ -330,11 +399,24 @@ export default function RatesPage() {
                     <Box component="td" sx={{ padding: '12px 16px', verticalAlign: 'middle' }}>
                       <Typography sx={{ fontSize: 15, fontWeight: 700, color: palette.onSurface }}>
                         {rate.price}{' '}
-                        <Box component="span" sx={{ fontSize: 11, color: palette.outline, fontWeight: 400 }}>{t('rates.perNight')}</Box>
+                        <Box
+                          component="span"
+                          sx={{ fontSize: 11, color: palette.outline, fontWeight: 400 }}
+                        >
+                          {t('rates.perNight')}
+                        </Box>
                       </Typography>
                     </Box>
                     {/* Validity */}
-                    <Box component="td" sx={{ padding: '12px 16px', fontSize: 12, color: palette.onSurfaceVariant, verticalAlign: 'middle' }}>
+                    <Box
+                      component="td"
+                      sx={{
+                        padding: '12px 16px',
+                        fontSize: 12,
+                        color: palette.onSurfaceVariant,
+                        verticalAlign: 'middle',
+                      }}
+                    >
                       {rate.validityStart && rate.validityEnd
                         ? `${formatDate(rate.validityStart, 'short')} - ${formatDate(rate.validityEnd, 'short')}`
                         : rate.validity}
@@ -353,10 +435,17 @@ export default function RatesPage() {
                             alignItems: 'center',
                             justifyContent: 'center',
                             cursor: 'pointer',
-                            '&:hover': { background: rate.selected ? palette.primary : palette.background },
+                            '&:hover': {
+                              background: rate.selected ? palette.primary : palette.background,
+                            },
                           }}
                         >
-                          <EditIcon sx={{ fontSize: 16, color: rate.selected ? '#fff' : palette.onSurfaceVariant }} />
+                          <EditIcon
+                            sx={{
+                              fontSize: 16,
+                              color: rate.selected ? '#fff' : palette.onSurfaceVariant,
+                            }}
+                          />
                         </Box>
                         <Box
                           sx={{
@@ -373,7 +462,10 @@ export default function RatesPage() {
                             '&:hover .delete-icon': { color: palette.error },
                           }}
                         >
-                          <DeleteOutlineIcon className="delete-icon" sx={{ fontSize: 16, color: palette.onSurfaceVariant }} />
+                          <DeleteOutlineIcon
+                            className="delete-icon"
+                            sx={{ fontSize: 16, color: palette.onSurfaceVariant }}
+                          />
                         </Box>
                       </Box>
                     </Box>
@@ -487,7 +579,16 @@ export default function RatesPage() {
               background: palette.primary,
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 14, fontWeight: 700, color: '#fff' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: 14,
+                fontWeight: 700,
+                color: '#fff',
+              }}
+            >
               <EditIcon sx={{ fontSize: 18 }} />
               {t('rates.editRate')}
             </Box>
@@ -508,9 +609,27 @@ export default function RatesPage() {
           </Box>
 
           {/* Panel body */}
-          <Box sx={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto', flex: 1 }}>
+          <Box
+            sx={{
+              padding: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              overflowY: 'auto',
+              flex: 1,
+            }}
+          >
             {/* Room section */}
-            <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
+            <Typography
+              sx={{
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+                color: palette.outline,
+                mb: '-4px',
+              }}
+            >
               {t('rates.roomLabel')}
             </Typography>
             <Box sx={{ position: 'relative' }}>
@@ -551,11 +670,20 @@ export default function RatesPage() {
             </Box>
 
             {/* Rate type section */}
-            <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
+            <Typography
+              sx={{
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+                color: palette.outline,
+                mb: '-4px',
+              }}
+            >
               {t('rates.rateTypeLabel')}
             </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-              {rateTypeOptions.map((opt) => {
+              {rateTypeOptions.map(opt => {
                 const OptIcon = opt.icon;
                 return (
                   <Box
@@ -572,15 +700,28 @@ export default function RatesPage() {
                     }}
                   >
                     <OptIcon sx={{ fontSize: 18, color: palette.primary, mb: '2px' }} />
-                    <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurface }}>{opt.label}</Typography>
-                    <Typography sx={{ fontSize: 10, color: palette.outline }}>{opt.desc}</Typography>
+                    <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurface }}>
+                      {opt.label}
+                    </Typography>
+                    <Typography sx={{ fontSize: 10, color: palette.outline }}>
+                      {opt.desc}
+                    </Typography>
                   </Box>
                 );
               })}
             </Box>
 
             {/* Price section */}
-            <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
+            <Typography
+              sx={{
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+                color: palette.outline,
+                mb: '-4px',
+              }}
+            >
               {t('rates.priceLabel')}
             </Typography>
             <Box sx={{ position: 'relative' }}>
@@ -639,7 +780,16 @@ export default function RatesPage() {
             </Box>
 
             {/* Validity section */}
-            <Typography sx={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: palette.outline, mb: '-4px' }}>
+            <Typography
+              sx={{
+                fontSize: 11,
+                fontWeight: 600,
+                letterSpacing: '1px',
+                textTransform: 'uppercase',
+                color: palette.outline,
+                mb: '-4px',
+              }}
+            >
               {t('rates.validityLabel')}
             </Typography>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>

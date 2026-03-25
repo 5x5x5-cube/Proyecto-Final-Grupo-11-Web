@@ -78,7 +78,6 @@ export default function ReportsPage() {
         </>
       }
     >
-
       {/* KPI cards */}
       <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', mb: '20px' }}>
         {kpisLoading
@@ -95,9 +94,23 @@ export default function ReportsPage() {
                   gap: '8px',
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <Skeleton animation="wave" variant="rounded" width={40} height={40} sx={{ borderRadius: '12px' }} />
-                  <Skeleton animation="wave" variant="rounded" width={52} height={22} sx={{ borderRadius: '100px' }} />
+                <Box
+                  sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                >
+                  <Skeleton
+                    animation="wave"
+                    variant="rounded"
+                    width={40}
+                    height={40}
+                    sx={{ borderRadius: '12px' }}
+                  />
+                  <Skeleton
+                    animation="wave"
+                    variant="rounded"
+                    width={52}
+                    height={22}
+                    sx={{ borderRadius: '100px' }}
+                  />
                 </Box>
                 <Skeleton animation="wave" variant="text" width={120} height={36} />
                 <Skeleton animation="wave" variant="text" width={150} height={18} />
@@ -118,7 +131,9 @@ export default function ReportsPage() {
                     gap: '8px',
                   }}
                 >
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <Box
+                    sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+                  >
                     <Box
                       sx={{
                         width: 40,
@@ -176,7 +191,16 @@ export default function ReportsPage() {
       >
         {/* Card header */}
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 14, fontWeight: 700, color: palette.onSurface }}>
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: 14,
+              fontWeight: 700,
+              color: palette.onSurface,
+            }}
+          >
             <BarChartIcon sx={{ fontSize: 18, color: palette.primary }} />
             {t('reports.revenueByWeek')}
           </Box>
@@ -202,16 +226,38 @@ export default function ReportsPage() {
         </Box>
 
         {/* Bar chart */}
-        <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: '10px', height: 180, padding: '0 8px' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'flex-end',
+            gap: '10px',
+            height: 180,
+            padding: '0 8px',
+          }}
+        >
           {revenueLoading
             ? Array.from({ length: 8 }).map((_, idx) => {
                 const heights = [90, 112, 98, 140, 125, 156, 144, 132];
                 return (
-                  <Box key={idx} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flex: 1 }}>
+                  <Box
+                    key={idx}
+                    sx={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '6px',
+                      flex: 1,
+                    }}
+                  >
                     <Skeleton
                       animation="wave"
                       variant="rounded"
-                      sx={{ width: 20, height: heights[idx], borderRadius: '4px 4px 0 0', transform: 'none' }}
+                      sx={{
+                        width: 20,
+                        height: heights[idx],
+                        borderRadius: '4px 4px 0 0',
+                        transform: 'none',
+                      }}
                     />
                     <Skeleton animation="wave" variant="text" width={28} height={14} />
                   </Box>
@@ -276,14 +322,26 @@ export default function ReportsPage() {
                 >
                   <Skeleton animation="wave" variant="text" width={110} height={18} />
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <Skeleton animation="wave" variant="circular" width={28} height={28} sx={{ flexShrink: 0 }} />
+                    <Skeleton
+                      animation="wave"
+                      variant="circular"
+                      width={28}
+                      height={28}
+                      sx={{ flexShrink: 0 }}
+                    />
                     <Skeleton animation="wave" variant="text" width={90} height={18} />
                   </Box>
                   <Skeleton animation="wave" variant="text" width={110} height={18} />
                   <Skeleton animation="wave" variant="text" width={75} height={18} />
                   <Skeleton animation="wave" variant="text" width={20} height={18} />
                   <Skeleton animation="wave" variant="text" width={80} height={18} />
-                  <Skeleton animation="wave" variant="rounded" width={80} height={22} sx={{ borderRadius: '100px' }} />
+                  <Skeleton
+                    animation="wave"
+                    variant="rounded"
+                    width={80}
+                    height={22}
+                    sx={{ borderRadius: '100px' }}
+                  />
                 </Box>
               ))}
             </>
@@ -291,7 +349,15 @@ export default function ReportsPage() {
             <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse' }}>
               <Box component="thead">
                 <Box component="tr">
-                  {[t('reports.tableHeaders.code'), t('reports.tableHeaders.guest'), t('reports.tableHeaders.room'), t('reports.tableHeaders.checkIn'), t('reports.tableHeaders.nights'), t('reports.tableHeaders.total'), t('reports.tableHeaders.status')].map((header) => (
+                  {[
+                    t('reports.tableHeaders.code'),
+                    t('reports.tableHeaders.guest'),
+                    t('reports.tableHeaders.room'),
+                    t('reports.tableHeaders.checkIn'),
+                    t('reports.tableHeaders.nights'),
+                    t('reports.tableHeaders.total'),
+                    t('reports.tableHeaders.status'),
+                  ].map(header => (
                     <Box
                       component="th"
                       key={header}
@@ -336,7 +402,15 @@ export default function ReportsPage() {
                       >
                         {tx.code}
                       </Box>
-                      <Box component="td" sx={{ padding: '10px 12px', fontSize: 13, color: palette.onSurface, borderBottom: `1px solid ${palette.outlineVariant}` }}>
+                      <Box
+                        component="td"
+                        sx={{
+                          padding: '10px 12px',
+                          fontSize: 13,
+                          color: palette.onSurface,
+                          borderBottom: `1px solid ${palette.outlineVariant}`,
+                        }}
+                      >
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <Box
                             sx={{
@@ -355,19 +429,58 @@ export default function ReportsPage() {
                           {tx.guest}
                         </Box>
                       </Box>
-                      <Box component="td" sx={{ padding: '10px 12px', fontSize: 13, color: palette.onSurface, borderBottom: `1px solid ${palette.outlineVariant}` }}>
+                      <Box
+                        component="td"
+                        sx={{
+                          padding: '10px 12px',
+                          fontSize: 13,
+                          color: palette.onSurface,
+                          borderBottom: `1px solid ${palette.outlineVariant}`,
+                        }}
+                      >
                         {tx.room}
                       </Box>
-                      <Box component="td" sx={{ padding: '10px 12px', fontSize: 13, color: palette.onSurface, borderBottom: `1px solid ${palette.outlineVariant}` }}>
+                      <Box
+                        component="td"
+                        sx={{
+                          padding: '10px 12px',
+                          fontSize: 13,
+                          color: palette.onSurface,
+                          borderBottom: `1px solid ${palette.outlineVariant}`,
+                        }}
+                      >
                         {formatDate(tx.checkin, 'medium')}
                       </Box>
-                      <Box component="td" sx={{ padding: '10px 12px', fontSize: 13, color: palette.onSurface, borderBottom: `1px solid ${palette.outlineVariant}` }}>
+                      <Box
+                        component="td"
+                        sx={{
+                          padding: '10px 12px',
+                          fontSize: 13,
+                          color: palette.onSurface,
+                          borderBottom: `1px solid ${palette.outlineVariant}`,
+                        }}
+                      >
                         {tx.nights}
                       </Box>
-                      <Box component="td" sx={{ padding: '10px 12px', fontSize: 13, fontWeight: 600, color: palette.onSurface, borderBottom: `1px solid ${palette.outlineVariant}` }}>
+                      <Box
+                        component="td"
+                        sx={{
+                          padding: '10px 12px',
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: palette.onSurface,
+                          borderBottom: `1px solid ${palette.outlineVariant}`,
+                        }}
+                      >
                         {tx.total}
                       </Box>
-                      <Box component="td" sx={{ padding: '10px 12px', borderBottom: `1px solid ${palette.outlineVariant}` }}>
+                      <Box
+                        component="td"
+                        sx={{
+                          padding: '10px 12px',
+                          borderBottom: `1px solid ${palette.outlineVariant}`,
+                        }}
+                      >
                         <Box
                           sx={{
                             display: 'inline-flex',

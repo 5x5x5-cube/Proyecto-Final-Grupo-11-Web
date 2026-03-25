@@ -15,7 +15,11 @@ import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import SectionCard from '../../design-system/components/SectionCard';
 import InfoGrid from '../../design-system/components/InfoGrid';
 import { palette } from '../../design-system/theme/palette';
-import { useHotelBookingDetail, useConfirmBooking, useRejectBooking } from '../../api/hooks/useHotelBookings';
+import {
+  useHotelBookingDetail,
+  useConfirmBooking,
+  useRejectBooking,
+} from '../../api/hooks/useHotelBookings';
 import HotelReservationDetailPageSkeleton from './HotelReservationDetailPage.skeleton';
 
 export default function HotelReservationDetailPage() {
@@ -74,10 +78,22 @@ export default function HotelReservationDetailPage() {
             <Typography sx={{ fontSize: 20, fontWeight: 700, color: palette.onSurface }}>
               {t('reservationDetail.reservationOf', { name: 'Carlos Mendoza' })}
             </Typography>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: 13, color: palette.onSurfaceVariant }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: 13,
+                color: palette.onSurfaceVariant,
+              }}
+            >
               <Icon sx={{ fontSize: 14 }}>calendar_today</Icon>
-              {t('reservationDetail.receivedOn', { date: `${formatDate('2026-02-24', 'medium')}, 10:32 am` })}
-              <Box component="span" sx={{ mx: '4px' }}>&middot;</Box>
+              {t('reservationDetail.receivedOn', {
+                date: `${formatDate('2026-02-24', 'medium')}, 10:32 am`,
+              })}
+              <Box component="span" sx={{ mx: '4px' }}>
+                &middot;
+              </Box>
               <Box
                 sx={{
                   display: 'inline-flex',
@@ -115,7 +131,10 @@ export default function HotelReservationDetailPage() {
               fontSize: 13,
               fontWeight: 600,
               textTransform: 'none',
-              '&:hover': { backgroundColor: palette.errorContainer, border: `1px solid ${palette.error}` },
+              '&:hover': {
+                backgroundColor: palette.errorContainer,
+                border: `1px solid ${palette.error}`,
+              },
             }}
           >
             {t('reservationDetail.reject')}
@@ -148,7 +167,10 @@ export default function HotelReservationDetailPage() {
         {/* Left column */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Guest info card */}
-          <SectionCard icon={<PersonIcon sx={{ fontSize: 18, color: palette.primary }} />} title={t('reservationDetail.guestInfo')}>
+          <SectionCard
+            icon={<PersonIcon sx={{ fontSize: 18, color: palette.primary }} />}
+            title={t('reservationDetail.guestInfo')}
+          >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <Box
                 sx={{
@@ -172,11 +194,27 @@ export default function HotelReservationDetailPage() {
                   Colombia · CC 1020303040
                 </Typography>
                 <Box sx={{ display: 'flex', gap: '16px' }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: 12, color: palette.onSurfaceVariant }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      fontSize: 12,
+                      color: palette.onSurfaceVariant,
+                    }}
+                  >
                     <EmailIcon sx={{ fontSize: 14, color: palette.primary }} />
                     carlos.mendoza@email.com
                   </Box>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: 12, color: palette.onSurfaceVariant }}>
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      fontSize: 12,
+                      color: palette.onSurfaceVariant,
+                    }}
+                  >
                     <PhoneIcon sx={{ fontSize: 14, color: palette.primary }} />
                     +57 310 456 7890
                   </Box>
@@ -186,14 +224,33 @@ export default function HotelReservationDetailPage() {
           </SectionCard>
 
           {/* Booking details card */}
-          <SectionCard icon={<EventAvailableIcon sx={{ fontSize: 18, color: palette.primary }} />} title={t('reservationDetail.bookingDetails')}>
+          <SectionCard
+            icon={<EventAvailableIcon sx={{ fontSize: 18, color: palette.primary }} />}
+            title={t('reservationDetail.bookingDetails')}
+          >
             <InfoGrid
               columns={4}
               items={[
-                { label: t('reservationDetail.checkIn'), value: formatDate('2026-03-15', 'medium'), sub: t('reservationDetail.from', { time: '3:00 PM' }) },
-                { label: t('reservationDetail.checkOut'), value: formatDate('2026-03-18', 'medium'), sub: t('reservationDetail.until', { time: '12:00 PM' }) },
-                { label: t('reservationDetail.duration'), value: t('reservationDetail.nightsCount', { count: 3 }), sub: t('reservationDetail.hours', { count: 72 }) },
-                { label: t('reservationDetail.guests'), value: t('reservationDetail.adults', { count: 2 }), sub: t('reservationDetail.noMinors') },
+                {
+                  label: t('reservationDetail.checkIn'),
+                  value: formatDate('2026-03-15', 'medium'),
+                  sub: t('reservationDetail.from', { time: '3:00 PM' }),
+                },
+                {
+                  label: t('reservationDetail.checkOut'),
+                  value: formatDate('2026-03-18', 'medium'),
+                  sub: t('reservationDetail.until', { time: '12:00 PM' }),
+                },
+                {
+                  label: t('reservationDetail.duration'),
+                  value: t('reservationDetail.nightsCount', { count: 3 }),
+                  sub: t('reservationDetail.hours', { count: 72 }),
+                },
+                {
+                  label: t('reservationDetail.guests'),
+                  value: t('reservationDetail.adults', { count: 2 }),
+                  sub: t('reservationDetail.noMinors'),
+                },
               ]}
             />
 
@@ -241,7 +298,7 @@ export default function HotelReservationDetailPage() {
                   1 cama King · Vista al mar · 45 m2
                 </Typography>
                 <Box sx={{ display: 'flex', gap: '6px', mt: '4px' }}>
-                  {['WiFi', 'A/C', 'Desayuno', 'Jacuzzi', 'Cancelacion gratuita'].map((amenity) => (
+                  {['WiFi', 'A/C', 'Desayuno', 'Jacuzzi', 'Cancelacion gratuita'].map(amenity => (
                     <Box
                       key={amenity}
                       sx={{
@@ -260,7 +317,8 @@ export default function HotelReservationDetailPage() {
 
               <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
                 <Typography sx={{ fontSize: 16, fontWeight: 700, color: palette.primary }}>
-                  {formatPrice(888000)}{t('reservationDetail.perNight')}
+                  {formatPrice(888000)}
+                  {t('reservationDetail.perNight')}
                 </Typography>
                 <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
                   {t('reservationDetail.nightsTotal', { nights: 3, total: formatPrice(2664000) })}
@@ -273,15 +331,37 @@ export default function HotelReservationDetailPage() {
         {/* Right column */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Payment summary card */}
-          <SectionCard icon={<ReceiptLongIcon sx={{ fontSize: 18, color: palette.primary }} />} title={t('reservationDetail.paymentSummary')}>
+          <SectionCard
+            icon={<ReceiptLongIcon sx={{ fontSize: 18, color: palette.primary }} />}
+            title={t('reservationDetail.paymentSummary')}
+          >
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {[
-                { label: t('reservationDetail.roomNights', { count: 3 }), value: formatPrice(2664000), color: palette.onSurface },
-                { label: t('reservationDetail.taxIVA'), value: formatPrice(505160), color: palette.onSurface },
-                { label: t('reservationDetail.serviceCharge'), value: formatPrice(80000), color: palette.onSurface },
-                { label: t('reservationDetail.discountApplied'), value: `-${formatPrice(100000)}`, color: palette.success },
+                {
+                  label: t('reservationDetail.roomNights', { count: 3 }),
+                  value: formatPrice(2664000),
+                  color: palette.onSurface,
+                },
+                {
+                  label: t('reservationDetail.taxIVA'),
+                  value: formatPrice(505160),
+                  color: palette.onSurface,
+                },
+                {
+                  label: t('reservationDetail.serviceCharge'),
+                  value: formatPrice(80000),
+                  color: palette.onSurface,
+                },
+                {
+                  label: t('reservationDetail.discountApplied'),
+                  value: `-${formatPrice(100000)}`,
+                  color: palette.success,
+                },
               ].map((row, index) => (
-                <Box key={index} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box
+                  key={index}
+                  sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                >
                   <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
                     {row.label}
                   </Typography>
@@ -357,7 +437,10 @@ export default function HotelReservationDetailPage() {
           </SectionCard>
 
           {/* Cancellation policy card */}
-          <SectionCard icon={<PolicyIcon sx={{ fontSize: 18, color: palette.primary }} />} title={t('reservationDetail.cancellationPolicy')}>
+          <SectionCard
+            icon={<PolicyIcon sx={{ fontSize: 18, color: palette.primary }} />}
+            title={t('reservationDetail.cancellationPolicy')}
+          >
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
                 <Typography sx={{ color: palette.onSurfaceVariant, fontSize: 12 }}>

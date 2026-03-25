@@ -36,11 +36,7 @@ const FilterChip: React.FC<FilterChipProps> = ({ label, selected = false, icon, 
         },
       }}
     >
-      {icon && (
-        <Box sx={{ display: 'flex', alignItems: 'center', fontSize: '16px' }}>
-          {icon}
-        </Box>
-      )}
+      {icon && <Box sx={{ display: 'flex', alignItems: 'center', fontSize: '16px' }}>{icon}</Box>}
       <Typography
         sx={{
           fontSize: '13px',

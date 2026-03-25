@@ -53,11 +53,9 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const initLang = params.get('lang')?.toUpperCase();
   const initCur = params.get('currency')?.toUpperCase();
 
-  const [language, setLanguage] = useState<Language>(
-    initLang === 'EN' ? 'EN' : 'ES'
-  );
+  const [language, setLanguage] = useState<Language>(initLang === 'EN' ? 'EN' : 'ES');
   const [currency, setCurrency] = useState<Currency>(
-    initCur && initCur in exchangeRates ? initCur as Currency : 'COP'
+    initCur && initCur in exchangeRates ? (initCur as Currency) : 'COP'
   );
 
   useEffect(() => {
@@ -81,7 +79,9 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <LocaleContext.Provider value={{ language, currency, setLanguage, setCurrency, formatPrice, formatDate }}>
+    <LocaleContext.Provider
+      value={{ language, currency, setLanguage, setCurrency, formatPrice, formatDate }}
+    >
       {children}
     </LocaleContext.Provider>
   );

@@ -68,7 +68,12 @@ const ReservationDetailPage: React.FC = () => {
   /* ─── Left Sidebar ─── */
   const UserSidebar: React.FC = () => {
     const menuItems = [
-      { icon: <LuggageIcon sx={{ fontSize: 20 }} />, label: t('myReservations.sidebar.myReservations'), active: true, badge: '3' },
+      {
+        icon: <LuggageIcon sx={{ fontSize: 20 }} />,
+        label: t('myReservations.sidebar.myReservations'),
+        active: true,
+        badge: '3',
+      },
     ];
 
     const bottomItems = [
@@ -121,7 +126,9 @@ const ReservationDetailPage: React.FC = () => {
             <Typography sx={{ fontSize: 14, fontWeight: 600, color: onSurface }}>
               Carlos Mart&iacute;nez
             </Typography>
-            <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>carlos.m@email.com</Typography>
+            <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
+              carlos.m@email.com
+            </Typography>
           </Box>
         </Box>
 
@@ -141,7 +148,7 @@ const ReservationDetailPage: React.FC = () => {
         </Typography>
 
         {/* Menu items */}
-        {menuItems.map((item) => (
+        {menuItems.map(item => (
           <Box
             key={item.label}
             component={item.active ? Link : 'div'}
@@ -189,7 +196,7 @@ const ReservationDetailPage: React.FC = () => {
         <Box sx={{ height: 1, background: outlineVariant, my: '12px' }} />
 
         {/* Bottom items */}
-        {bottomItems.map((item) => (
+        {bottomItems.map(item => (
           <Box
             key={item.label}
             sx={{
@@ -229,14 +236,19 @@ const ReservationDetailPage: React.FC = () => {
       }}
     >
       {/* Price summary */}
-      <Typography sx={{ fontSize: 17, fontWeight: 700, color: onSurface }}>{t('reservationDetail.priceSummary.title')}</Typography>
+      <Typography sx={{ fontSize: 17, fontWeight: 700, color: onSurface }}>
+        {t('reservationDetail.priceSummary.title')}
+      </Typography>
 
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {[
-          { label: `${formatPrice(480000)} \u00D7 5 ${t('reservationDetail.priceSummary.nightsLabel')}`, value: formatPrice(2400000) },
+          {
+            label: `${formatPrice(480000)} \u00D7 5 ${t('reservationDetail.priceSummary.nightsLabel')}`,
+            value: formatPrice(2400000),
+          },
           { label: t('reservationDetail.priceSummary.tourismTax'), value: formatPrice(96000) },
           { label: t('reservationDetail.priceSummary.vat'), value: formatPrice(168000) },
-        ].map((row) => (
+        ].map(row => (
           <Box key={row.label} sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Typography sx={{ fontSize: 14, color: onSurfaceVariant }}>{row.label}</Typography>
             <Typography sx={{ fontSize: 14, color: onSurface }}>{row.value}</Typography>
@@ -244,8 +256,12 @@ const ReservationDetailPage: React.FC = () => {
         ))}
         <Divider sx={{ borderColor: outlineVariant }} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography sx={{ fontSize: 16, fontWeight: 600, color: onSurface }}>{t('reservationDetail.priceSummary.totalPaid')}</Typography>
-          <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>{formatPrice(2664000)}</Typography>
+          <Typography sx={{ fontSize: 16, fontWeight: 600, color: onSurface }}>
+            {t('reservationDetail.priceSummary.totalPaid')}
+          </Typography>
+          <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>
+            {formatPrice(2664000)}
+          </Typography>
         </Box>
       </Box>
 
@@ -264,11 +280,17 @@ const ReservationDetailPage: React.FC = () => {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <CancelIcon sx={{ fontSize: 18, color: error }} />
-          <Typography sx={{ fontSize: 15, fontWeight: 600, color: error }}>{t('reservationDetail.cancelBox.title')}</Typography>
+          <Typography sx={{ fontSize: 15, fontWeight: 600, color: error }}>
+            {t('reservationDetail.cancelBox.title')}
+          </Typography>
         </Box>
-        <Typography sx={{ fontSize: 13, color: onSurfaceVariant, lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: t('reservationDetail.cancelBox.description') }} />
+        <Typography
+          sx={{ fontSize: 13, color: onSurfaceVariant, lineHeight: 1.5 }}
+          dangerouslySetInnerHTML={{ __html: t('reservationDetail.cancelBox.description') }}
+        />
         <Typography sx={{ fontSize: 14, fontWeight: 500, color: onSurface }}>
-          {t('reservationDetail.cancelBox.estimatedRefund')} <strong style={{ color: success }}>{formatPrice(2664000)}</strong>
+          {t('reservationDetail.cancelBox.estimatedRefund')}{' '}
+          <strong style={{ color: success }}>{formatPrice(2664000)}</strong>
         </Typography>
         <Button
           onClick={() => setCancelOpen(true)}
@@ -403,13 +425,25 @@ const ReservationDetailPage: React.FC = () => {
             {t('reservationDetail.confirmedModal.bookingSummary')}
           </Typography>
           {[
-            { label: t('reservationDetail.confirmedModal.hotel'), value: 'Hotel Santa Clara Sofitel' },
-            { label: t('reservationDetail.confirmedModal.checkIn'), value: `${formatDate('2026-03-15T15:00:00', 'mediumWithDay')} \u2014 ${new Date('2026-03-15T15:00:00').toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}` },
-            { label: t('reservationDetail.confirmedModal.checkOut'), value: `${formatDate('2026-03-20T12:00:00', 'mediumWithDay')} \u2014 ${new Date('2026-03-20T12:00:00').toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}` },
+            {
+              label: t('reservationDetail.confirmedModal.hotel'),
+              value: 'Hotel Santa Clara Sofitel',
+            },
+            {
+              label: t('reservationDetail.confirmedModal.checkIn'),
+              value: `${formatDate('2026-03-15T15:00:00', 'mediumWithDay')} \u2014 ${new Date('2026-03-15T15:00:00').toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}`,
+            },
+            {
+              label: t('reservationDetail.confirmedModal.checkOut'),
+              value: `${formatDate('2026-03-20T12:00:00', 'mediumWithDay')} \u2014 ${new Date('2026-03-20T12:00:00').toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}`,
+            },
             { label: t('reservationDetail.confirmedModal.duration'), value: '5 noches' },
-            { label: t('reservationDetail.confirmedModal.room'), value: 'Habitaci\u00f3n Superior' },
+            {
+              label: t('reservationDetail.confirmedModal.room'),
+              value: 'Habitaci\u00f3n Superior',
+            },
             { label: t('reservationDetail.confirmedModal.guests'), value: '2 adultos' },
-          ].map((row) => (
+          ].map(row => (
             <Box
               key={row.label}
               sx={{
@@ -420,7 +454,9 @@ const ReservationDetailPage: React.FC = () => {
               }}
             >
               <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>{row.label}</Typography>
-              <Typography sx={{ fontSize: 13, fontWeight: 600, color: onSurface }}>{row.value}</Typography>
+              <Typography sx={{ fontSize: 13, fontWeight: 600, color: onSurface }}>
+                {row.value}
+              </Typography>
             </Box>
           ))}
           <Divider sx={{ borderColor: outlineVariant, my: '4px' }} />
@@ -432,8 +468,12 @@ const ReservationDetailPage: React.FC = () => {
               padding: '4px 0',
             }}
           >
-            <Typography sx={{ fontSize: 14, fontWeight: 700, color: onSurface }}>{t('reservationDetail.confirmedModal.total')}</Typography>
-            <Typography sx={{ fontSize: 16, fontWeight: 700, color: primary }}>{formatPrice(2664000)}</Typography>
+            <Typography sx={{ fontSize: 14, fontWeight: 700, color: onSurface }}>
+              {t('reservationDetail.confirmedModal.total')}
+            </Typography>
+            <Typography sx={{ fontSize: 16, fontWeight: 700, color: primary }}>
+              {formatPrice(2664000)}
+            </Typography>
           </Box>
         </Box>
 
@@ -461,7 +501,10 @@ const ReservationDetailPage: React.FC = () => {
               text: t('reservationDetail.confirmedModal.roomReserved'),
             },
           ].map((step, i) => (
-            <Box key={i} sx={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '6px 0' }}>
+            <Box
+              key={i}
+              sx={{ display: 'flex', alignItems: 'flex-start', gap: '10px', padding: '6px 0' }}
+            >
               <Box
                 sx={{
                   width: 28,
@@ -476,7 +519,10 @@ const ReservationDetailPage: React.FC = () => {
               >
                 {step.icon}
               </Box>
-              <Typography sx={{ fontSize: 13, color: onSurfaceVariant, lineHeight: 1.5 }} dangerouslySetInnerHTML={{ __html: step.text }} />
+              <Typography
+                sx={{ fontSize: 13, color: onSurfaceVariant, lineHeight: 1.5 }}
+                dangerouslySetInnerHTML={{ __html: step.text }}
+              />
             </Box>
           ))}
         </Box>
@@ -550,11 +596,27 @@ const ReservationDetailPage: React.FC = () => {
             {t('reservationDetail.cancelModal.policyApplied')}
           </Typography>
           {[
-            { label: t('reservationDetail.cancelModal.cancellationType'), value: t('reservationDetail.cancelModal.cancellationTypeValue'), color: success },
-            { label: t('reservationDetail.cancelModal.deadlineLabel'), value: formatDate('2026-03-12', 'medium'), color: onSurface },
-            { label: t('reservationDetail.cancelModal.currentDateLabel'), value: formatDate('2026-03-05', 'medium'), color: onSurface },
-            { label: t('reservationDetail.cancelModal.penaltyApplied'), value: t('reservationDetail.cancelModal.penaltyValue'), color: success },
-          ].map((row) => (
+            {
+              label: t('reservationDetail.cancelModal.cancellationType'),
+              value: t('reservationDetail.cancelModal.cancellationTypeValue'),
+              color: success,
+            },
+            {
+              label: t('reservationDetail.cancelModal.deadlineLabel'),
+              value: formatDate('2026-03-12', 'medium'),
+              color: onSurface,
+            },
+            {
+              label: t('reservationDetail.cancelModal.currentDateLabel'),
+              value: formatDate('2026-03-05', 'medium'),
+              color: onSurface,
+            },
+            {
+              label: t('reservationDetail.cancelModal.penaltyApplied'),
+              value: t('reservationDetail.cancelModal.penaltyValue'),
+              color: success,
+            },
+          ].map(row => (
             <Box
               key={row.label}
               sx={{
@@ -565,7 +627,9 @@ const ReservationDetailPage: React.FC = () => {
               }}
             >
               <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>{row.label}</Typography>
-              <Typography sx={{ fontSize: 13, fontWeight: 600, color: row.color }}>{row.value}</Typography>
+              <Typography sx={{ fontSize: 13, fontWeight: 600, color: row.color }}>
+                {row.value}
+              </Typography>
             </Box>
           ))}
         </Box>
@@ -585,9 +649,17 @@ const ReservationDetailPage: React.FC = () => {
             {t('reservationDetail.cancelModal.refundBreakdown')}
           </Typography>
           {[
-            { label: t('reservationDetail.cancelModal.originalAmount'), value: formatPrice(2664000), color: onSurface },
-            { label: t('reservationDetail.cancelModal.cancellationPenalty'), value: `-${formatPrice(0)}`, color: success },
-          ].map((row) => (
+            {
+              label: t('reservationDetail.cancelModal.originalAmount'),
+              value: formatPrice(2664000),
+              color: onSurface,
+            },
+            {
+              label: t('reservationDetail.cancelModal.cancellationPenalty'),
+              value: `-${formatPrice(0)}`,
+              color: success,
+            },
+          ].map(row => (
             <Box
               key={row.label}
               sx={{
@@ -598,7 +670,9 @@ const ReservationDetailPage: React.FC = () => {
               }}
             >
               <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>{row.label}</Typography>
-              <Typography sx={{ fontSize: 13, fontWeight: 600, color: row.color }}>{row.value}</Typography>
+              <Typography sx={{ fontSize: 13, fontWeight: 600, color: row.color }}>
+                {row.value}
+              </Typography>
             </Box>
           ))}
           <Divider sx={{ borderColor: outlineVariant, my: '4px' }} />
@@ -616,7 +690,9 @@ const ReservationDetailPage: React.FC = () => {
             <Typography sx={{ fontSize: 14, fontWeight: 600, color: success }}>
               {t('reservationDetail.cancelModal.totalRefund')}
             </Typography>
-            <Typography sx={{ fontSize: 18, fontWeight: 700, color: success }}>{formatPrice(2664000)}</Typography>
+            <Typography sx={{ fontSize: 18, fontWeight: 700, color: success }}>
+              {formatPrice(2664000)}
+            </Typography>
           </Box>
         </Box>
 
@@ -658,7 +734,10 @@ const ReservationDetailPage: React.FC = () => {
         {/* Timeline */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <ScheduleIcon sx={{ fontSize: 16, color: primary }} />
-          <Typography sx={{ fontSize: 12, color: onSurfaceVariant }} dangerouslySetInnerHTML={{ __html: t('reservationDetail.cancelModal.estimatedTime') }} />
+          <Typography
+            sx={{ fontSize: 12, color: onSurfaceVariant }}
+            dangerouslySetInnerHTML={{ __html: t('reservationDetail.cancelModal.estimatedTime') }}
+          />
         </Box>
       </Box>
     </ModalOverlay>
@@ -666,10 +745,16 @@ const ReservationDetailPage: React.FC = () => {
 
   const roomAmenities = [
     { icon: <WifiIcon sx={{ fontSize: 12 }} />, label: t('reservationDetail.roomAmenities.wifi') },
-    { icon: <FreeBreakfastIcon sx={{ fontSize: 12 }} />, label: t('reservationDetail.roomAmenities.breakfast') },
+    {
+      icon: <FreeBreakfastIcon sx={{ fontSize: 12 }} />,
+      label: t('reservationDetail.roomAmenities.breakfast'),
+    },
     { icon: <AcUnitIcon sx={{ fontSize: 12 }} />, label: t('reservationDetail.roomAmenities.ac') },
     { icon: <TvIcon sx={{ fontSize: 12 }} />, label: t('reservationDetail.roomAmenities.smartTv') },
-    { icon: <LocalBarIcon sx={{ fontSize: 12 }} />, label: t('reservationDetail.roomAmenities.minibar') },
+    {
+      icon: <LocalBarIcon sx={{ fontSize: 12 }} />,
+      label: t('reservationDetail.roomAmenities.minibar'),
+    },
   ];
 
   return (
@@ -746,7 +831,10 @@ const ReservationDetailPage: React.FC = () => {
             </Box>
 
             {/* Hotel info section */}
-            <SectionCard icon={<HotelIcon sx={{ color: primary }} />} title={t('reservationDetail.accommodation')}>
+            <SectionCard
+              icon={<HotelIcon sx={{ color: primary }} />}
+              title={t('reservationDetail.accommodation')}
+            >
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {/* Hotel row */}
                 <Box sx={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
@@ -782,8 +870,12 @@ const ReservationDetailPage: React.FC = () => {
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <RatingBadge rating={4.8} />
-                      <Typography sx={{ color: star, fontSize: 13 }}>&#9733;&#9733;&#9733;&#9733;&#9733;</Typography>
-                      <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>312 {t('reservationDetail.reviews')}</Typography>
+                      <Typography sx={{ color: star, fontSize: 13 }}>
+                        &#9733;&#9733;&#9733;&#9733;&#9733;
+                      </Typography>
+                      <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
+                        312 {t('reservationDetail.reviews')}
+                      </Typography>
                     </Box>
                   </Box>
                 </Box>
@@ -794,10 +886,26 @@ const ReservationDetailPage: React.FC = () => {
                 <InfoGrid
                   columns={4}
                   items={[
-                    { label: t('reservationDetail.infoGrid.checkIn'), value: formatDate('2026-03-15', 'mediumWithDay'), sub: '3:00 PM' },
-                    { label: t('reservationDetail.infoGrid.checkOut'), value: formatDate('2026-03-20', 'mediumWithDay'), sub: '12:00 PM' },
-                    { label: t('reservationDetail.infoGrid.duration'), value: t('reservationDetail.infoGrid.durationValue'), sub: t('reservationDetail.infoGrid.durationSub') },
-                    { label: t('reservationDetail.infoGrid.guests'), value: t('reservationDetail.infoGrid.guestsValue'), sub: t('reservationDetail.infoGrid.guestsSub') },
+                    {
+                      label: t('reservationDetail.infoGrid.checkIn'),
+                      value: formatDate('2026-03-15', 'mediumWithDay'),
+                      sub: '3:00 PM',
+                    },
+                    {
+                      label: t('reservationDetail.infoGrid.checkOut'),
+                      value: formatDate('2026-03-20', 'mediumWithDay'),
+                      sub: '12:00 PM',
+                    },
+                    {
+                      label: t('reservationDetail.infoGrid.duration'),
+                      value: t('reservationDetail.infoGrid.durationValue'),
+                      sub: t('reservationDetail.infoGrid.durationSub'),
+                    },
+                    {
+                      label: t('reservationDetail.infoGrid.guests'),
+                      value: t('reservationDetail.infoGrid.guestsValue'),
+                      sub: t('reservationDetail.infoGrid.guestsSub'),
+                    },
                   ]}
                 />
 
@@ -829,7 +937,7 @@ const ReservationDetailPage: React.FC = () => {
                       {t('reservationDetail.roomFeatures')}
                     </Typography>
                     <Box sx={{ display: 'flex', gap: '8px', flexWrap: 'wrap', mt: '6px' }}>
-                      {roomAmenities.map((amenity) => (
+                      {roomAmenities.map(amenity => (
                         <Box
                           key={amenity.label}
                           sx={{
@@ -855,7 +963,10 @@ const ReservationDetailPage: React.FC = () => {
             </SectionCard>
 
             {/* Payment history section */}
-            <SectionCard icon={<ReceiptLongIcon sx={{ color: primary }} />} title={t('reservationDetail.paymentHistory.title')}>
+            <SectionCard
+              icon={<ReceiptLongIcon sx={{ color: primary }} />}
+              title={t('reservationDetail.paymentHistory.title')}
+            >
               {isPaymentsLoading ? (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '14px 0' }}>
                   <Skeleton animation="wave" variant="circular" width={40} height={40} />
@@ -866,74 +977,80 @@ const ReservationDetailPage: React.FC = () => {
                   </Box>
                   <Box sx={{ textAlign: 'right' }}>
                     <Skeleton animation="wave" variant="text" width={80} height={24} />
-                    <Skeleton animation="wave" variant="rounded" width={70} height={20} sx={{ borderRadius: '100px' }} />
+                    <Skeleton
+                      animation="wave"
+                      variant="rounded"
+                      width={70}
+                      height={20}
+                      sx={{ borderRadius: '100px' }}
+                    />
                   </Box>
                 </Box>
               ) : (
-              <Box sx={{ gap: 0, padding: '0' }}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '16px',
-                    padding: '14px 0',
-                  }}
-                >
+                <Box sx={{ gap: 0, padding: '0' }}>
                   <Box
                     sx={{
-                      width: 40,
-                      height: 40,
-                      borderRadius: '50%',
-                      background: successContainer,
                       display: 'flex',
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
+                      gap: '16px',
+                      padding: '14px 0',
                     }}
                   >
-                    <CheckCircleIcon sx={{ fontSize: 20, color: success }} />
-                  </Box>
-                  <Box sx={{ flex: 1 }}>
-                    <Typography sx={{ fontSize: 14, fontWeight: 500, color: onSurface }}>
-                      {t('reservationDetail.paymentHistory.bookingPayment')}
-                    </Typography>
-                    <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-                      {formatDate('2026-02-15', 'medium')} &middot; 10:34 a.m.
-                    </Typography>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <CreditCardIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
-                      <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-                        VISA &bull;&bull;&bull;&bull; 4242
-                      </Typography>
-                    </Box>
-                  </Box>
-                  <Box
-                    sx={{
-                      textAlign: 'right',
-                      display: 'flex',
-                      flexDirection: 'column',
-                      gap: '4px',
-                      alignItems: 'flex-end',
-                    }}
-                  >
-                    <Typography sx={{ fontSize: 16, fontWeight: 600, color: success }}>
-                      {formatPrice(2664000)}
-                    </Typography>
                     <Box
                       sx={{
-                        fontSize: 11,
-                        fontWeight: 600,
-                        padding: '2px 8px',
-                        borderRadius: '100px',
+                        width: 40,
+                        height: 40,
+                        borderRadius: '50%',
                         background: successContainer,
-                        color: success,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
                       }}
                     >
-                      {t('reservationDetail.paymentHistory.approved')}
+                      <CheckCircleIcon sx={{ fontSize: 20, color: success }} />
+                    </Box>
+                    <Box sx={{ flex: 1 }}>
+                      <Typography sx={{ fontSize: 14, fontWeight: 500, color: onSurface }}>
+                        {t('reservationDetail.paymentHistory.bookingPayment')}
+                      </Typography>
+                      <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
+                        {formatDate('2026-02-15', 'medium')} &middot; 10:34 a.m.
+                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <CreditCardIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
+                        <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
+                          VISA &bull;&bull;&bull;&bull; 4242
+                        </Typography>
+                      </Box>
+                    </Box>
+                    <Box
+                      sx={{
+                        textAlign: 'right',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '4px',
+                        alignItems: 'flex-end',
+                      }}
+                    >
+                      <Typography sx={{ fontSize: 16, fontWeight: 600, color: success }}>
+                        {formatPrice(2664000)}
+                      </Typography>
+                      <Box
+                        sx={{
+                          fontSize: 11,
+                          fontWeight: 600,
+                          padding: '2px 8px',
+                          borderRadius: '100px',
+                          background: successContainer,
+                          color: success,
+                        }}
+                      >
+                        {t('reservationDetail.paymentHistory.approved')}
+                      </Box>
                     </Box>
                   </Box>
                 </Box>
-              </Box>
               )}
             </SectionCard>
           </Box>

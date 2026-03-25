@@ -9,7 +9,11 @@ interface SearchFieldProps {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const SearchField: React.FC<SearchFieldProps> = ({ placeholder = 'Buscar...', value, onChange }) => {
+const SearchField: React.FC<SearchFieldProps> = ({
+  placeholder = 'Buscar...',
+  value,
+  onChange,
+}) => {
   return (
     <Box
       sx={{

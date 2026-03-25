@@ -11,8 +11,7 @@ export function useTariffs() {
 export function useCreateTariff() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: unknown) =>
-      httpClient.post('/bookings/tariffs', { body: data }),
+    mutationFn: (data: unknown) => httpClient.post('/bookings/tariffs', { body: data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tariffs'] });
     },
@@ -33,8 +32,7 @@ export function useUpdateTariff() {
 export function useDeleteTariff() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: number) =>
-      httpClient.delete(`/bookings/tariffs/${id}`),
+    mutationFn: (id: number) => httpClient.delete(`/bookings/tariffs/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['tariffs'] });
     },
