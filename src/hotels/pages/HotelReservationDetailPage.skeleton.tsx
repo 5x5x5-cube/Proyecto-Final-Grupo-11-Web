@@ -19,20 +19,44 @@ export default function HotelReservationDetailPageSkeleton() {
       >
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {/* Booking code badge */}
-          <Skeleton animation="wave" variant="rounded" width={148} height={40} sx={{ borderRadius: '10px' }} />
+          <Skeleton
+            animation="wave"
+            variant="rounded"
+            width={148}
+            height={40}
+            sx={{ borderRadius: '10px' }}
+          />
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <Skeleton animation="wave" variant="text" width={240} height={28} />
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Skeleton animation="wave" variant="text" width={180} height={18} />
-              <Skeleton animation="wave" variant="rounded" width={130} height={26} sx={{ borderRadius: '100px' }} />
+              <Skeleton
+                animation="wave"
+                variant="rounded"
+                width={130}
+                height={26}
+                sx={{ borderRadius: '100px' }}
+              />
             </Box>
           </Box>
         </Box>
 
         {/* Action buttons */}
         <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <Skeleton animation="wave" variant="rounded" width={110} height={42} sx={{ borderRadius: '100px' }} />
-          <Skeleton animation="wave" variant="rounded" width={160} height={42} sx={{ borderRadius: '100px' }} />
+          <Skeleton
+            animation="wave"
+            variant="rounded"
+            width={110}
+            height={42}
+            sx={{ borderRadius: '100px' }}
+          />
+          <Skeleton
+            animation="wave"
+            variant="rounded"
+            width={160}
+            height={42}
+            sx={{ borderRadius: '100px' }}
+          />
         </Box>
       </Box>
 
@@ -62,10 +86,22 @@ export default function HotelReservationDetailPageSkeleton() {
               <Skeleton animation="wave" variant="text" width={100} height={22} />
             </Box>
             <Box sx={{ padding: '20px', display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <Skeleton animation="wave" variant="circular" width={56} height={56} sx={{ flexShrink: 0 }} />
+              <Skeleton
+                animation="wave"
+                variant="circular"
+                width={56}
+                height={56}
+                sx={{ flexShrink: 0 }}
+              />
               <Box sx={{ flex: 1 }}>
                 <Skeleton animation="wave" variant="text" width={200} height={24} />
-                <Skeleton animation="wave" variant="text" width={150} height={18} sx={{ mb: '6px' }} />
+                <Skeleton
+                  animation="wave"
+                  variant="text"
+                  width={150}
+                  height={18}
+                  sx={{ mb: '6px' }}
+                />
                 <Box sx={{ display: 'flex', gap: '16px' }}>
                   <Skeleton animation="wave" variant="text" width={160} height={18} />
                   <Skeleton animation="wave" variant="text" width={130} height={18} />
@@ -98,7 +134,14 @@ export default function HotelReservationDetailPageSkeleton() {
 
             <Box sx={{ padding: '20px' }}>
               {/* InfoGrid — 4 columns */}
-              <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', mb: '16px' }}>
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(4, 1fr)',
+                  gap: '16px',
+                  mb: '16px',
+                }}
+              >
                 {Array.from({ length: 4 }).map((_, i) => (
                   <Box key={i}>
                     <Skeleton animation="wave" variant="text" width={60} height={16} />
@@ -186,7 +229,10 @@ export default function HotelReservationDetailPageSkeleton() {
             <Box sx={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {/* Price line items */}
               {Array.from({ length: 4 }).map((_, i) => (
-                <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box
+                  key={i}
+                  sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                >
                   <Skeleton animation="wave" variant="text" width={120} height={18} />
                   <Skeleton animation="wave" variant="text" width={80} height={18} />
                 </Box>
@@ -212,13 +258,25 @@ export default function HotelReservationDetailPageSkeleton() {
                   mt: '2px',
                 }}
               >
-                <Skeleton animation="wave" variant="rounded" width={32} height={32} sx={{ borderRadius: '8px', flexShrink: 0 }} />
+                <Skeleton
+                  animation="wave"
+                  variant="rounded"
+                  width={32}
+                  height={32}
+                  sx={{ borderRadius: '8px', flexShrink: 0 }}
+                />
                 <Box>
                   <Skeleton animation="wave" variant="text" width={80} height={18} />
                   <Skeleton animation="wave" variant="text" width={100} height={16} />
                 </Box>
                 <Box sx={{ marginLeft: 'auto' }}>
-                  <Skeleton animation="wave" variant="rounded" width={70} height={22} sx={{ borderRadius: '100px' }} />
+                  <Skeleton
+                    animation="wave"
+                    variant="rounded"
+                    width={70}
+                    height={22}
+                    sx={{ borderRadius: '100px' }}
+                  />
                 </Box>
               </Box>
             </Box>
@@ -248,7 +306,10 @@ export default function HotelReservationDetailPageSkeleton() {
 
             <Box sx={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {Array.from({ length: 3 }).map((_, i) => (
-                <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box
+                  key={i}
+                  sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                >
                   <Skeleton animation="wave" variant="text" width={140} height={18} />
                   <Skeleton animation="wave" variant="text" width={70} height={18} />
                 </Box>

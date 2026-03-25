@@ -18,8 +18,7 @@ export function useHotelBookingDetail(bookingId: string) {
 export function useConfirmBooking() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (bookingId: string) =>
-      httpClient.post(`/bookings/hotel/${bookingId}/confirm`),
+    mutationFn: (bookingId: string) => httpClient.post(`/bookings/hotel/${bookingId}/confirm`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['hotelBookings'] });
     },
@@ -29,8 +28,7 @@ export function useConfirmBooking() {
 export function useRejectBooking() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (bookingId: string) =>
-      httpClient.post(`/bookings/hotel/${bookingId}/reject`),
+    mutationFn: (bookingId: string) => httpClient.post(`/bookings/hotel/${bookingId}/reject`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['hotelBookings'] });
     },

@@ -28,9 +28,7 @@ const SectionCard: React.FC<SectionCardProps> = ({ icon, title, children }) => {
           borderBottom: `1px solid ${outlineVariant}`,
         }}
       >
-        <Box sx={{ display: 'flex', alignItems: 'center', color: onSurface }}>
-          {icon}
-        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', color: onSurface }}>{icon}</Box>
         <Typography
           sx={{
             fontSize: '16px',
@@ -43,9 +41,7 @@ const SectionCard: React.FC<SectionCardProps> = ({ icon, title, children }) => {
       </Box>
 
       {/* Body */}
-      <Box sx={{ padding: '24px' }}>
-        {children}
-      </Box>
+      <Box sx={{ padding: '24px' }}>{children}</Box>
     </Box>
   );
 };

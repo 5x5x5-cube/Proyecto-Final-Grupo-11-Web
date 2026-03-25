@@ -11,8 +11,7 @@ export function useDiscounts() {
 export function useCreateDiscount() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: unknown) =>
-      httpClient.post('/bookings/discounts', { body: data }),
+    mutationFn: (data: unknown) => httpClient.post('/bookings/discounts', { body: data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['discounts'] });
     },
@@ -33,8 +32,7 @@ export function useUpdateDiscount() {
 export function useDeleteDiscount() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (id: number) =>
-      httpClient.delete(`/bookings/discounts/${id}`),
+    mutationFn: (id: number) => httpClient.delete(`/bookings/discounts/${id}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['discounts'] });
     },

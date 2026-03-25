@@ -4,7 +4,10 @@ import { httpClient } from '../httpClient';
 export function useDestinations() {
   return useQuery({
     queryKey: ['destinations'],
-    queryFn: () => httpClient.get<Array<{ name: string; country: string; hotelCount: number; gradient: string }>>('/search/destinations'),
+    queryFn: () =>
+      httpClient.get<
+        Array<{ name: string; country: string; hotelCount: number; gradient: string }>
+      >('/search/destinations'),
   });
 }
 

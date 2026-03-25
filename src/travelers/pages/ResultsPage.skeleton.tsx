@@ -35,7 +35,14 @@ const FilterSidebarSkeleton = () => (
       <Skeleton animation="wave" variant="text" width={110} height={18} />
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
         {[60, 52, 80, 56, 50].map((w, i) => (
-          <Skeleton key={i} animation="wave" variant="rounded" width={w} height={32} sx={{ borderRadius: '8px' }} />
+          <Skeleton
+            key={i}
+            animation="wave"
+            variant="rounded"
+            width={w}
+            height={32}
+            sx={{ borderRadius: '8px' }}
+          />
         ))}
       </Box>
     </Box>
@@ -45,7 +52,14 @@ const FilterSidebarSkeleton = () => (
       <Skeleton animation="wave" variant="text" width={90} height={18} />
       <Box sx={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
         {[44, 48, 48, 44].map((w, i) => (
-          <Skeleton key={i} animation="wave" variant="rounded" width={w} height={32} sx={{ borderRadius: '8px' }} />
+          <Skeleton
+            key={i}
+            animation="wave"
+            variant="rounded"
+            width={w}
+            height={32}
+            sx={{ borderRadius: '8px' }}
+          />
         ))}
       </Box>
     </Box>
@@ -53,7 +67,7 @@ const FilterSidebarSkeleton = () => (
     {/* Amenities section */}
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       <Skeleton animation="wave" variant="text" width={80} height={18} />
-      {[0, 1, 2, 3, 4, 5].map((i) => (
+      {[0, 1, 2, 3, 4, 5].map(i => (
         <Skeleton key={i} animation="wave" variant="text" height={20} />
       ))}
     </Box>
@@ -72,7 +86,13 @@ const HotelCardSkeleton = () => (
     }}
   >
     {/* Image area */}
-    <Skeleton animation="wave" variant="rectangular" width={240} height={180} sx={{ flexShrink: 0 }} />
+    <Skeleton
+      animation="wave"
+      variant="rectangular"
+      width={240}
+      height={180}
+      sx={{ flexShrink: 0 }}
+    />
 
     {/* Info section */}
     <Box
@@ -89,12 +109,25 @@ const HotelCardSkeleton = () => (
       <Skeleton animation="wave" variant="text" width="70%" height={24} />
       <Skeleton animation="wave" variant="text" width="50%" height={18} />
       <Box sx={{ display: 'flex', gap: '6px', mt: '4px' }}>
-        <Skeleton animation="wave" variant="rounded" width={40} height={24} sx={{ borderRadius: '6px' }} />
+        <Skeleton
+          animation="wave"
+          variant="rounded"
+          width={40}
+          height={24}
+          sx={{ borderRadius: '6px' }}
+        />
         <Skeleton animation="wave" variant="text" width={80} height={20} />
       </Box>
       <Box sx={{ display: 'flex', gap: '8px', mt: '4px' }}>
         {[70, 80, 60].map((w, i) => (
-          <Skeleton key={i} animation="wave" variant="rounded" width={w} height={24} sx={{ borderRadius: '100px' }} />
+          <Skeleton
+            key={i}
+            animation="wave"
+            variant="rounded"
+            width={w}
+            height={24}
+            sx={{ borderRadius: '100px' }}
+          />
         ))}
       </Box>
     </Box>
@@ -118,7 +151,13 @@ const HotelCardSkeleton = () => (
         <Skeleton animation="wave" variant="text" width={60} height={16} />
       </Box>
       <Skeleton animation="wave" variant="text" width={100} height={16} />
-      <Skeleton animation="wave" variant="rounded" width={152} height={40} sx={{ borderRadius: '100px' }} />
+      <Skeleton
+        animation="wave"
+        variant="rounded"
+        width={152}
+        height={40}
+        sx={{ borderRadius: '100px' }}
+      />
     </Box>
   </Box>
 );
@@ -136,7 +175,14 @@ export default function ResultsPageSkeleton() {
       }}
     >
       {/* PAGE BODY — nav is rendered by the page, we only render the body area */}
-      <Box sx={{ display: 'flex', minHeight: 'calc(100vh - 72px)', overflow: 'hidden', maxWidth: '100vw' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          minHeight: 'calc(100vh - 72px)',
+          overflow: 'hidden',
+          maxWidth: '100vw',
+        }}
+      >
         {/* Sidebar skeleton */}
         <FilterSidebarSkeleton />
 
@@ -154,11 +200,17 @@ export default function ResultsPageSkeleton() {
           {/* Results header row */}
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <Skeleton animation="wave" variant="text" width={260} height={24} />
-            <Skeleton animation="wave" variant="rounded" width={180} height={40} sx={{ borderRadius: '8px' }} />
+            <Skeleton
+              animation="wave"
+              variant="rounded"
+              width={180}
+              height={40}
+              sx={{ borderRadius: '8px' }}
+            />
           </Box>
 
           {/* Hotel card skeletons */}
-          {[0, 1, 2, 3].map((i) => (
+          {[0, 1, 2, 3].map(i => (
             <HotelCardSkeleton key={i} />
           ))}
         </Box>

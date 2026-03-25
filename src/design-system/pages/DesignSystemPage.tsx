@@ -52,10 +52,14 @@ function Swatch({ name, hex }: { name: string; hex: string }) {
     >
       <Box sx={{ height: 56, backgroundColor: hex }} />
       <Box sx={{ padding: '8px 10px', backgroundColor: '#fff' }}>
-        <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurface, lineHeight: 1.3 }}>
+        <Typography
+          sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurface, lineHeight: 1.3 }}
+        >
           {name}
         </Typography>
-        <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant, mt: '2px' }}>{hex}</Typography>
+        <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant, mt: '2px' }}>
+          {hex}
+        </Typography>
       </Box>
     </Box>
   );
@@ -150,10 +154,12 @@ export default function DesignSystemPage() {
         <Typography sx={{ fontSize: 28, fontWeight: 800, color: palette.onSurface, mb: '4px' }}>
           Design System
         </Typography>
-        <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant, mb: '32px', maxWidth: 720 }}>
-          Sistema de diseño de TravelHub basado en Material Design 3 (M3) de Google. Los tokens de color,
-          tipografía y componentes siguen los lineamientos de M3 adaptados a la identidad visual de la
-          plataforma.
+        <Typography
+          sx={{ fontSize: 14, color: palette.onSurfaceVariant, mb: '32px', maxWidth: 720 }}
+        >
+          Sistema de diseño de TravelHub basado en Material Design 3 (M3) de Google. Los tokens de
+          color, tipografía y componentes siguen los lineamientos de M3 adaptados a la identidad
+          visual de la plataforma.
         </Typography>
 
         {/* 1. Color Palette */}
@@ -306,7 +312,7 @@ export default function DesignSystemPage() {
         {/* 6. AmenityTag */}
         <Section title="AmenityTag">
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-            {amenityKeys.map((a) => (
+            {amenityKeys.map(a => (
               <AmenityTag key={a.icon} icon={a.icon} label={a.label} />
             ))}
           </Box>
@@ -316,8 +322,8 @@ export default function DesignSystemPage() {
         <Section title="SectionCard">
           <SectionCard icon={<InfoOutlinedIcon sx={{ fontSize: 20 }} />} title="Detalles del hotel">
             <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-              Este es un ejemplo de contenido dentro de un SectionCard. Puede contener cualquier elemento
-              React como texto, grids, formularios, etc.
+              Este es un ejemplo de contenido dentro de un SectionCard. Puede contener cualquier
+              elemento React como texto, grids, formularios, etc.
             </Typography>
           </SectionCard>
         </Section>
@@ -355,23 +361,23 @@ export default function DesignSystemPage() {
               label="Precio"
               selected={filterSelected.price}
               icon={<SortIcon sx={{ fontSize: 16 }} />}
-              onClick={() => setFilterSelected((s) => ({ ...s, price: !s.price }))}
+              onClick={() => setFilterSelected(s => ({ ...s, price: !s.price }))}
             />
             <FilterChip
               label="Rating"
               selected={filterSelected.rating}
               icon={<StarIcon sx={{ fontSize: 16 }} />}
-              onClick={() => setFilterSelected((s) => ({ ...s, rating: !s.rating }))}
+              onClick={() => setFilterSelected(s => ({ ...s, rating: !s.rating }))}
             />
             <FilterChip
               label="WiFi"
               selected={filterSelected.wifi}
-              onClick={() => setFilterSelected((s) => ({ ...s, wifi: !s.wifi }))}
+              onClick={() => setFilterSelected(s => ({ ...s, wifi: !s.wifi }))}
             />
             <FilterChip
               label="Piscina"
               selected={filterSelected.pool}
-              onClick={() => setFilterSelected((s) => ({ ...s, pool: !s.pool }))}
+              onClick={() => setFilterSelected(s => ({ ...s, pool: !s.pool }))}
             />
           </Box>
         </Section>
@@ -467,14 +473,25 @@ export default function DesignSystemPage() {
 
         {/* 14. ProfileMenuRow */}
         <Section title="ProfileMenuRow">
-          <Box sx={{ maxWidth: 400, background: '#fff', borderRadius: '12px', border: `1px solid ${palette.outlineVariant}`, px: '16px' }}>
+          <Box
+            sx={{
+              maxWidth: 400,
+              background: '#fff',
+              borderRadius: '12px',
+              border: `1px solid ${palette.outlineVariant}`,
+              px: '16px',
+            }}
+          >
             <ProfileMenuRow icon={<PersonOutlineIcon sx={{ fontSize: 20 }} />} label="Nombre" />
             <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
             <ProfileMenuRow icon={<EmailOutlinedIcon sx={{ fontSize: 20 }} />} label="Correo" />
             <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
             <ProfileMenuRow icon={<CreditCardIcon sx={{ fontSize: 20 }} />} label="VISA ****4242" />
             <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
-            <ProfileMenuRow icon={<HelpOutlineIcon sx={{ fontSize: 20 }} />} label="Centro de ayuda" />
+            <ProfileMenuRow
+              icon={<HelpOutlineIcon sx={{ fontSize: 20 }} />}
+              label="Centro de ayuda"
+            />
           </Box>
         </Section>
 
@@ -497,8 +514,8 @@ export default function DesignSystemPage() {
             }
           >
             <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-              Recibirás un correo electrónico con los detalles de tu reserva. Puedes consultar el estado
-              en la sección "Mis Reservas".
+              Recibirás un correo electrónico con los detalles de tu reserva. Puedes consultar el
+              estado en la sección "Mis Reservas".
             </Typography>
           </ModalOverlay>
         </Section>

@@ -56,35 +56,19 @@ const CheckoutStepper: React.FC<CheckoutStepperProps> = ({ currentStep }) => {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: isDone
-                    ? successContainer
-                    : isActive
-                      ? primary
-                      : outlineVariant,
-                  color: isDone
-                    ? success
-                    : isActive
-                      ? onPrimary
-                      : onSurfaceVariant,
+                  backgroundColor: isDone ? successContainer : isActive ? primary : outlineVariant,
+                  color: isDone ? success : isActive ? onPrimary : onSurfaceVariant,
                   fontSize: '12px',
                   fontWeight: 600,
                 }}
               >
-                {isDone ? (
-                  <CheckIcon sx={{ fontSize: '16px' }} />
-                ) : (
-                  stepNumber
-                )}
+                {isDone ? <CheckIcon sx={{ fontSize: '16px' }} /> : stepNumber}
               </Box>
               <Typography
                 sx={{
                   fontSize: '13px',
                   fontWeight: isActive ? 600 : 400,
-                  color: isDone
-                    ? success
-                    : isActive
-                      ? onSurface
-                      : onSurfaceVariant,
+                  color: isDone ? success : isActive ? onSurface : onSurfaceVariant,
                   whiteSpace: 'nowrap',
                 }}
               >

@@ -1,10 +1,6 @@
 import React from 'react';
 import { Box, Skeleton } from '@mui/material';
-import {
-  outlineVariant,
-  background,
-  secondaryContainer,
-} from '../../design-system/theme/palette';
+import { outlineVariant, background, secondaryContainer } from '../../design-system/theme/palette';
 import TravelerLayout from '../../design-system/layouts/TravelerLayout';
 
 const UserSidebarSkeleton: React.FC = () => (
@@ -40,13 +36,34 @@ const UserSidebarSkeleton: React.FC = () => (
     </Box>
 
     {/* Section label */}
-    <Skeleton animation="wave" variant="text" width={90} height={16} sx={{ mb: '8px', ml: '12px' }} />
+    <Skeleton
+      animation="wave"
+      variant="text"
+      width={90}
+      height={16}
+      sx={{ mb: '8px', ml: '12px' }}
+    />
 
     {/* Menu item */}
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '100px', background: secondaryContainer }}>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '12px',
+        borderRadius: '100px',
+        background: secondaryContainer,
+      }}
+    >
       <Skeleton animation="wave" variant="circular" width={20} height={20} />
       <Skeleton animation="wave" variant="text" width={110} height={20} />
-      <Skeleton animation="wave" variant="rounded" width={24} height={20} sx={{ ml: 'auto', borderRadius: '100px' }} />
+      <Skeleton
+        animation="wave"
+        variant="rounded"
+        width={24}
+        height={20}
+        sx={{ ml: 'auto', borderRadius: '100px' }}
+      />
     </Box>
 
     {/* Divider */}
@@ -91,7 +108,7 @@ const ReservationCardSkeleton: React.FC = () => (
       </Box>
 
       <Box sx={{ display: 'flex', gap: '24px' }}>
-        {[0, 1, 2].map((i) => (
+        {[0, 1, 2].map(i => (
           <Box key={i}>
             <Skeleton animation="wave" variant="text" width={60} height={14} />
             <Skeleton animation="wave" variant="text" width={80} height={20} />
@@ -119,7 +136,13 @@ const ReservationCardSkeleton: React.FC = () => (
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '6px' }}>
-        <Skeleton animation="wave" variant="rounded" width={80} height={24} sx={{ borderRadius: '100px' }} />
+        <Skeleton
+          animation="wave"
+          variant="rounded"
+          width={80}
+          height={24}
+          sx={{ borderRadius: '100px' }}
+        />
         <Skeleton animation="wave" variant="text" width={110} height={16} />
       </Box>
 
@@ -128,7 +151,13 @@ const ReservationCardSkeleton: React.FC = () => (
         <Skeleton animation="wave" variant="text" width={120} height={30} />
       </Box>
 
-      <Skeleton animation="wave" variant="rounded" width={120} height={36} sx={{ borderRadius: '100px' }} />
+      <Skeleton
+        animation="wave"
+        variant="rounded"
+        width={120}
+        height={36}
+        sx={{ borderRadius: '100px' }}
+      />
     </Box>
   </Box>
 );
@@ -163,15 +192,28 @@ const MyReservationsPageSkeleton: React.FC = () => (
 
         {/* Filters row */}
         <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-          <Skeleton animation="wave" variant="rounded" width={400} height={40} sx={{ borderRadius: '8px' }} />
+          <Skeleton
+            animation="wave"
+            variant="rounded"
+            width={400}
+            height={40}
+            sx={{ borderRadius: '8px' }}
+          />
           {[70, 90, 80, 70].map((w, i) => (
-            <Skeleton key={i} animation="wave" variant="rounded" width={w} height={36} sx={{ borderRadius: '100px' }} />
+            <Skeleton
+              key={i}
+              animation="wave"
+              variant="rounded"
+              width={w}
+              height={36}
+              sx={{ borderRadius: '100px' }}
+            />
           ))}
         </Box>
 
         {/* Reservation card skeletons */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          {[0, 1, 2, 3].map((i) => (
+          {[0, 1, 2, 3].map(i => (
             <ReservationCardSkeleton key={i} />
           ))}
         </Box>

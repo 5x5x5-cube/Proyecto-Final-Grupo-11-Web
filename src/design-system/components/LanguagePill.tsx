@@ -9,8 +9,15 @@ export default function LanguagePill() {
   const { language, setLanguage } = useLocale();
 
   return (
-    <Box sx={{ display: 'flex', borderRadius: '100px', border: `1px solid ${palette.outlineVariant}`, overflow: 'hidden' }}>
-      {languages.map((lang) => (
+    <Box
+      sx={{
+        display: 'flex',
+        borderRadius: '100px',
+        border: `1px solid ${palette.outlineVariant}`,
+        overflow: 'hidden',
+      }}
+    >
+      {languages.map(lang => (
         <Box
           key={lang}
           onClick={() => setLanguage(lang)}

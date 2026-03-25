@@ -136,7 +136,7 @@ export default function LoginPage() {
               placeholder={t('login.emailPlaceholder')}
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               onBlur={() => setEmailTouched(true)}
               error={emailError}
               helperText={emailError ? t('login.emailInvalid', 'Invalid email address') : undefined}
@@ -184,7 +184,7 @@ export default function LoginPage() {
               placeholder={t('login.passwordPlaceholder')}
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   height: 56,
@@ -243,7 +243,11 @@ export default function LoginPage() {
               },
             }}
           >
-            {login.isPending ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : t('login.submitButton')}
+            {login.isPending ? (
+              <CircularProgress size={20} sx={{ color: '#fff' }} />
+            ) : (
+              t('login.submitButton')
+            )}
           </Button>
 
           {/* Footer link */}

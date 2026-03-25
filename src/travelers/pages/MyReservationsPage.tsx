@@ -31,6 +31,7 @@ const MyReservationsPage: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [activeFilter, setActiveFilter] = useState(0);
   const { t } = useTranslation('travelers');
+  const { formatPrice, formatDate } = useLocale();
 
   if (isLoading || !bookingsData) return <MyReservationsPageSkeleton />;
 
@@ -49,11 +50,18 @@ const MyReservationsPage: React.FC = () => {
     code: string;
     totalPriceCop: number;
   }>;
-  const { formatPrice, formatDate } = useLocale();
 
-  const tabs = [t('myReservations.tabs.active'), t('myReservations.tabs.past'), t('myReservations.tabs.cancelled')];
+  const tabs = [
+    t('myReservations.tabs.active'),
+    t('myReservations.tabs.past'),
+    t('myReservations.tabs.cancelled'),
+  ];
   const filters = [
-    { label: t('myReservations.filters.all'), icon: <CheckCircleOutlineIcon sx={{ fontSize: 16 }} />, selected: true },
+    {
+      label: t('myReservations.filters.all'),
+      icon: <CheckCircleOutlineIcon sx={{ fontSize: 16 }} />,
+      selected: true,
+    },
     { label: t('myReservations.filters.confirmed') },
     { label: t('myReservations.filters.pending') },
     { label: t('myReservations.filters.date'), icon: <CalendarTodayIcon sx={{ fontSize: 16 }} /> },
@@ -62,7 +70,12 @@ const MyReservationsPage: React.FC = () => {
   /* ─── Sidebar (left, 280px) ─── */
   const UserSidebar: React.FC = () => {
     const menuItems = [
-      { icon: <LuggageIcon sx={{ fontSize: 20 }} />, label: t('myReservations.sidebar.myReservations'), active: true, badge: '3' },
+      {
+        icon: <LuggageIcon sx={{ fontSize: 20 }} />,
+        label: t('myReservations.sidebar.myReservations'),
+        active: true,
+        badge: '3',
+      },
     ];
 
     const bottomItems = [
@@ -115,7 +128,9 @@ const MyReservationsPage: React.FC = () => {
             <Typography sx={{ fontSize: 14, fontWeight: 600, color: onSurface }}>
               Carlos Mart&iacute;nez
             </Typography>
-            <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>carlos.m@email.com</Typography>
+            <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
+              carlos.m@email.com
+            </Typography>
           </Box>
         </Box>
 
@@ -135,7 +150,7 @@ const MyReservationsPage: React.FC = () => {
         </Typography>
 
         {/* Menu items */}
-        {menuItems.map((item) => (
+        {menuItems.map(item => (
           <Box
             key={item.label}
             sx={{
@@ -180,7 +195,7 @@ const MyReservationsPage: React.FC = () => {
         <Box sx={{ height: 1, background: outlineVariant, my: '12px' }} />
 
         {/* Bottom items */}
-        {bottomItems.map((item) => (
+        {bottomItems.map(item => (
           <Box
             key={item.label}
             sx={{
@@ -273,7 +288,7 @@ const MyReservationsPage: React.FC = () => {
 
           {/* Reservation cards */}
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {mockReservations.map((res) => (
+            {mockReservations.map(res => (
               <Box
                 key={res.id}
                 sx={{
@@ -343,7 +358,11 @@ const MyReservationsPage: React.FC = () => {
                         {formatDate(res.checkIn, 'mediumWithDay')}
                       </Typography>
                       <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-                        Check-in {new Date(res.checkIn).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        Check-in{' '}
+                        {new Date(res.checkIn).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                       </Typography>
                     </Box>
                     <Box>
@@ -362,7 +381,11 @@ const MyReservationsPage: React.FC = () => {
                         {formatDate(res.checkOut, 'mediumWithDay')}
                       </Typography>
                       <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-                        Check-out {new Date(res.checkOut).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        Check-out{' '}
+                        {new Date(res.checkOut).toLocaleTimeString([], {
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
                       </Typography>
                     </Box>
                     <Box>
@@ -389,7 +412,9 @@ const MyReservationsPage: React.FC = () => {
                   {/* Room meta */}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px', mt: '4px' }}>
                     <BedIcon sx={{ fontSize: 15, color: onSurfaceVariant }} />
-                    <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>{res.room}</Typography>
+                    <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>
+                      {res.room}
+                    </Typography>
                   </Box>
                 </Box>
 
@@ -415,11 +440,15 @@ const MyReservationsPage: React.FC = () => {
                     }}
                   >
                     <StatusChip status={res.status} />
-                    <Typography sx={{ fontSize: 11, color: onSurfaceVariant }}>{res.code}</Typography>
+                    <Typography sx={{ fontSize: 11, color: onSurfaceVariant }}>
+                      {res.code}
+                    </Typography>
                   </Box>
 
                   <Box sx={{ textAlign: 'right' }}>
-                    <Typography sx={{ fontSize: 11, color: onSurfaceVariant }}>{t('myReservations.card.totalPaid')}</Typography>
+                    <Typography sx={{ fontSize: 11, color: onSurfaceVariant }}>
+                      {t('myReservations.card.totalPaid')}
+                    </Typography>
                     <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>
                       {formatPrice(res.totalPriceCop)}
                     </Typography>
