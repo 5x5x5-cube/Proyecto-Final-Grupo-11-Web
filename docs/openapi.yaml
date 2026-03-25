@@ -1,0 +1,2364 @@
+openapi: 3.1.0
+info:
+  title: TravelHub API
+  version: 1.1.0
+  description: |
+    TravelHub platform API — a single API Gateway routing to 8 microservices
+    (Auth, Search, Booking, Cart, Payment, Reports, Notifications, Monitor).
+  contact:
+    name: TravelHub Team
+servers:
+  - url: https://api.travelhub.com/api/v1
+    description: Production
+  - url: http://localhost:3000/api/v1
+    description: Local development
+
+tags:
+  - name: Auth
+    description: Authentication and user management
+  - name: Search
+    description: Destination and hotel search
+  - name: Bookings
+    description: Reservation management (traveler and hotel admin)
+  - name: Tariffs
+    description: Room tariff management (hotel admin)
+  - name: Discounts
+    description: Discount and promotion management (hotel admin)
+  - name: Cart
+    description: Shopping cart operations
+  - name: Payments
+    description: Payment processing
+  - name: Reports
+    description: Hotel dashboard and revenue reports
+  - name: Notifications
+    description: Push notifications and in-app messages
+  - name: Monitor
+    description: System health monitoring
+
+security:
+  - BearerAuth: []
+
+paths:
+  # ──────────────────────────────────────────────
+  # Auth Service
+  # ──────────────────────────────────────────────
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new user
+      security: []
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '409':
+          description: Email already registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Login with email and password
+      security: []
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh access token
+      security: []
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefreshRequest'
+      responses:
+        '200':
+          description: Token refreshed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Invalid or expired refresh token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Request password reset email
+      security: []
+      operationId: forgotPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: Reset email sent (always returns 200 to prevent email enumeration)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+  /auth/reset-password:
+    post:
+      tags: [Auth]
+      summary: Reset password using token from email
+      security: []
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, newPassword]
+              properties:
+                token:
+                  type: string
+                newPassword:
+                  type: string
+                  minLength: 6
+      responses:
+        '200':
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Invalid or expired token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current user profile
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: Current user profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags: [Auth]
+      summary: Update current user profile
+      operationId: updateCurrentUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProfileRequest'
+      responses:
+        '200':
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Invalid profile data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ──────────────────────────────────────────────
+  # Search Service
+  # ──────────────────────────────────────────────
+  /search/destinations:
+    get:
+      tags: [Search]
+      summary: List available destinations
+      security: []
+      operationId: listDestinations
+      responses:
+        '200':
+          description: List of destinations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Destination'
+
+  /search/hotels:
+    get:
+      tags: [Search]
+      summary: Search hotels with filters
+      security: []
+      operationId: searchHotels
+      parameters:
+        - name: destination
+          in: query
+          schema:
+            type: string
+          description: City or destination name
+        - name: checkIn
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Check-in date (YYYY-MM-DD)
+        - name: checkOut
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Check-out date (YYYY-MM-DD)
+        - name: guests
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10
+          description: Number of guests
+        - name: minPrice
+          in: query
+          schema:
+            type: number
+          description: Minimum price per night (COP)
+        - name: maxPrice
+          in: query
+          schema:
+            type: number
+          description: Maximum price per night (COP)
+        - name: propertyTypes
+          in: query
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/PropertyType'
+          style: form
+          explode: true
+          description: Filter by property type
+        - name: rating
+          in: query
+          schema:
+            type: number
+            minimum: 1
+            maximum: 5
+          description: Minimum rating
+        - name: amenities
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+          style: form
+          explode: true
+          description: Required amenities (e.g. wifi, pool, spa)
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [recommended, price, rating, reviewCount, popularity]
+            default: recommended
+          description: Sort field — recommended uses internal relevance scoring, popularity sorts by reviewCount
+        - name: sortOrder
+          in: query
+          schema:
+            type: string
+            enum: [asc, desc]
+            default: desc
+          description: Sort direction
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Paginated hotel search results
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationMeta'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/HotelSearchResult'
+
+  /search/hotels/{hotelId}:
+    get:
+      tags: [Search]
+      summary: Get hotel detail
+      security: []
+      operationId: getHotelDetail
+      parameters:
+        - $ref: '#/components/parameters/HotelId'
+      responses:
+        '200':
+          description: Hotel detail with rooms, reviews summary, tariffs, and cancellation policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelDetail'
+        '404':
+          description: Hotel not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /search/hotels/{hotelId}/reviews:
+    get:
+      tags: [Search]
+      summary: Get paginated reviews for a hotel
+      security: []
+      operationId: getHotelReviews
+      parameters:
+        - $ref: '#/components/parameters/HotelId'
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Paginated reviews
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationMeta'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Review'
+
+  # ──────────────────────────────────────────────
+  # Booking Service — Traveler
+  # ──────────────────────────────────────────────
+  /bookings:
+    post:
+      tags: [Bookings]
+      summary: Create a reservation
+      operationId: createBooking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBookingRequest'
+      responses:
+        '201':
+          description: Reservation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '400':
+          description: Invalid booking request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    get:
+      tags: [Bookings]
+      summary: List traveler reservations
+      operationId: listTravelerBookings
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/BookingStatus'
+          description: Filter by booking status
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Paginated list of traveler reservations
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationMeta'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Booking'
+
+  /bookings/{bookingId}:
+    get:
+      tags: [Bookings]
+      summary: Get reservation detail
+      operationId: getBookingDetail
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+      responses:
+        '200':
+          description: Reservation detail with price breakdown and cancellation policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /bookings/{bookingId}/cancel:
+    post:
+      tags: [Bookings]
+      summary: Cancel a reservation
+      operationId: cancelBooking
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+      responses:
+        '200':
+          description: Reservation cancelled with refund details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancellationResponse'
+        '400':
+          description: Booking cannot be cancelled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /bookings/{bookingId}/qr:
+    get:
+      tags: [Bookings]
+      summary: Get QR code data for check-in
+      operationId: getBookingQR
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+      responses:
+        '200':
+          description: QR code payload with booking context
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [bookingId, code, qrData, format]
+                properties:
+                  bookingId:
+                    type: integer
+                  code:
+                    type: string
+                    description: Booking code (e.g. "TH-2026-48291")
+                  qrData:
+                    type: string
+                    description: Base64-encoded PNG image (data URI format)
+                  format:
+                    type: string
+                    enum: [png_base64]
+                    description: Format of the qrData field
+                  hotelName:
+                    type: string
+                  checkIn:
+                    type: string
+                    format: date-time
+                  checkOut:
+                    type: string
+                    format: date-time
+                  roomName:
+                    type: string
+                  guests:
+                    type: string
+
+  /bookings/{bookingId}/payments:
+    get:
+      tags: [Bookings]
+      summary: Get payment history for a booking
+      operationId: getBookingPayments
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+      responses:
+        '200':
+          description: List of payments for this booking
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Payment'
+
+  # ──────────────────────────────────────────────
+  # Booking Service — Hotel Admin
+  # ──────────────────────────────────────────────
+  /bookings/hotel:
+    get:
+      tags: [Bookings]
+      summary: List hotel reservations (hotel admin)
+      operationId: listHotelBookings
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/BookingStatus'
+          description: Filter by booking status
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter from date
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date
+          description: Filter to date
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by guest name, email, or booking code
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Paginated hotel reservations with summary
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationMeta'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/HotelBooking'
+                      summary:
+                        $ref: '#/components/schemas/ReservationSummary'
+
+  /bookings/hotel/{bookingId}:
+    get:
+      tags: [Bookings]
+      summary: Get hotel-view reservation detail (hotel admin)
+      operationId: getHotelBookingDetail
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+      responses:
+        '200':
+          description: Full reservation detail with guest info, payment breakdown, and cancellation policy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelBookingDetail'
+        '404':
+          description: Booking not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /bookings/hotel/{bookingId}/confirm:
+    post:
+      tags: [Bookings]
+      summary: Confirm a pending reservation (hotel admin)
+      operationId: confirmBooking
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+      responses:
+        '200':
+          description: Reservation confirmed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelBookingDetail'
+        '400':
+          description: Booking cannot be confirmed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /bookings/hotel/{bookingId}/reject:
+    post:
+      tags: [Bookings]
+      summary: Reject a pending reservation (hotel admin)
+      operationId: rejectBooking
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Rejection reason
+      responses:
+        '200':
+          description: Reservation rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HotelBookingDetail'
+        '400':
+          description: Booking cannot be rejected
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ──────────────────────────────────────────────
+  # Booking Service — Tariffs (Hotel Admin)
+  # ──────────────────────────────────────────────
+  /bookings/tariffs:
+    get:
+      tags: [Tariffs]
+      summary: List tariffs for hotel rooms
+      operationId: listTariffs
+      responses:
+        '200':
+          description: List of room tariffs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tariff'
+    post:
+      tags: [Tariffs]
+      summary: Create a tariff
+      operationId: createTariff
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTariffRequest'
+      responses:
+        '201':
+          description: Tariff created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tariff'
+
+  /bookings/tariffs/{tariffId}:
+    put:
+      tags: [Tariffs]
+      summary: Update a tariff
+      operationId: updateTariff
+      parameters:
+        - $ref: '#/components/parameters/TariffId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTariffRequest'
+      responses:
+        '200':
+          description: Tariff updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tariff'
+        '404':
+          description: Tariff not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [Tariffs]
+      summary: Delete a tariff
+      operationId: deleteTariff
+      parameters:
+        - $ref: '#/components/parameters/TariffId'
+      responses:
+        '204':
+          description: Tariff deleted
+        '404':
+          description: Tariff not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ──────────────────────────────────────────────
+  # Booking Service — Discounts (Hotel Admin)
+  # ──────────────────────────────────────────────
+  /bookings/discounts:
+    get:
+      tags: [Discounts]
+      summary: List discounts
+      operationId: listDiscounts
+      responses:
+        '200':
+          description: List of discounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Discount'
+    post:
+      tags: [Discounts]
+      summary: Create a discount
+      operationId: createDiscount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDiscountRequest'
+      responses:
+        '201':
+          description: Discount created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Discount'
+
+  /bookings/discounts/{discountId}:
+    put:
+      tags: [Discounts]
+      summary: Update a discount
+      operationId: updateDiscount
+      parameters:
+        - $ref: '#/components/parameters/DiscountId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDiscountRequest'
+      responses:
+        '200':
+          description: Discount updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Discount'
+        '404':
+          description: Discount not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags: [Discounts]
+      summary: Delete a discount
+      operationId: deleteDiscount
+      parameters:
+        - $ref: '#/components/parameters/DiscountId'
+      responses:
+        '204':
+          description: Discount deleted
+        '404':
+          description: Discount not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ──────────────────────────────────────────────
+  # Cart Service
+  # ──────────────────────────────────────────────
+  /cart:
+    get:
+      tags: [Cart]
+      summary: Get current cart
+      operationId: getCart
+      responses:
+        '200':
+          description: Current user cart with price breakdown
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+    delete:
+      tags: [Cart]
+      summary: Clear cart
+      operationId: clearCart
+      responses:
+        '204':
+          description: Cart cleared
+
+  /cart/items:
+    post:
+      tags: [Cart]
+      summary: Add room to cart
+      operationId: addCartItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCartItemRequest'
+      responses:
+        '200':
+          description: Item added to cart
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: Invalid item or room unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /cart/items/{itemId}:
+    delete:
+      tags: [Cart]
+      summary: Remove item from cart
+      operationId: removeCartItem
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Item removed, updated cart returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '404':
+          description: Cart item not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ──────────────────────────────────────────────
+  # Payment Service
+  # ──────────────────────────────────────────────
+  /payments:
+    post:
+      tags: [Payments]
+      summary: Initiate payment (async via PaymentQueue)
+      operationId: initiatePayment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitiatePaymentRequest'
+      responses:
+        '202':
+          description: Payment accepted for processing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          description: Invalid payment request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /payments/{paymentId}:
+    get:
+      tags: [Payments]
+      summary: Get payment status
+      operationId: getPaymentStatus
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+      responses:
+        '200':
+          description: Payment details and current status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '404':
+          description: Payment not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /payments/{paymentId}/refund:
+    post:
+      tags: [Payments]
+      summary: Request a refund
+      operationId: requestRefund
+      parameters:
+        - $ref: '#/components/parameters/PaymentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RefundRequest'
+      responses:
+        '200':
+          description: Refund initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '400':
+          description: Payment not eligible for refund
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ──────────────────────────────────────────────
+  # Reports Service
+  # ──────────────────────────────────────────────
+  /reports/dashboard:
+    get:
+      tags: [Reports]
+      summary: Hotel dashboard KPIs (hotel admin)
+      operationId: getDashboard
+      responses:
+        '200':
+          description: Dashboard stats, recent reservations, revenue mini-chart, and quick access items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardResponse'
+
+  /reports/revenue:
+    get:
+      tags: [Reports]
+      summary: Revenue data (hotel admin)
+      operationId: getRevenue
+      parameters:
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: integer
+          description: Year for revenue data
+        - name: monthFrom
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+          description: Start month (1-12)
+        - name: monthTo
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+          description: End month (1-12)
+        - name: granularity
+          in: query
+          schema:
+            type: string
+            enum: [weekly, monthly]
+            default: monthly
+          description: Data point granularity
+      responses:
+        '200':
+          description: Revenue data points
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RevenueDataPoint'
+
+  /reports/kpis:
+    get:
+      tags: [Reports]
+      summary: Report page KPIs (hotel admin)
+      operationId: getReportKpis
+      parameters:
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: month
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+      responses:
+        '200':
+          description: Report KPI cards
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ReportKPI'
+
+  /reports/transactions:
+    get:
+      tags: [Reports]
+      summary: Transaction list for reports page (hotel admin)
+      operationId: getReportTransactions
+      parameters:
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+            format: date
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Paginated transaction list
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationMeta'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ReportTransaction'
+
+  # ──────────────────────────────────────────────
+  # Notification Service
+  # ──────────────────────────────────────────────
+  /notifications/devices:
+    post:
+      tags: [Notifications]
+      summary: Register device for push notifications
+      operationId: registerDevice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterDeviceRequest'
+      responses:
+        '201':
+          description: Device registered
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [deviceId]
+                properties:
+                  deviceId:
+                    type: string
+
+  /notifications/devices/{deviceId}:
+    delete:
+      tags: [Notifications]
+      summary: Unregister device
+      operationId: unregisterDevice
+      parameters:
+        - name: deviceId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Device unregistered
+
+  /notifications:
+    get:
+      tags: [Notifications]
+      summary: List user notifications
+      operationId: listNotifications
+      parameters:
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Paginated notifications
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationMeta'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Notification'
+
+  /notifications/{notificationId}/read:
+    patch:
+      tags: [Notifications]
+      summary: Mark notification as read
+      operationId: markNotificationRead
+      parameters:
+        - name: notificationId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Notification marked as read
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+
+  # ──────────────────────────────────────────────
+  # Monitor Service
+  # ──────────────────────────────────────────────
+  /monitor/health:
+    get:
+      tags: [Monitor]
+      summary: Overall system health
+      security: []
+      operationId: getHealth
+      responses:
+        '200':
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, timestamp]
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded, unhealthy]
+                  timestamp:
+                    type: string
+                    format: date-time
+
+  /monitor/services:
+    get:
+      tags: [Monitor]
+      summary: Individual service health statuses
+      operationId: getServiceStatuses
+      responses:
+        '200':
+          description: Per-service health
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required: [service, status, latencyMs]
+                  properties:
+                    service:
+                      type: string
+                    status:
+                      type: string
+                      enum: [healthy, degraded, unhealthy]
+                    latencyMs:
+                      type: integer
+                    lastChecked:
+                      type: string
+                      format: date-time
+
+# ════════════════════════════════════════════════
+# Components
+# ════════════════════════════════════════════════
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token with claims — sub (userId), role (traveler | hotel_admin), hotelId (for hotel_admin)
+
+  parameters:
+    Page:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: Page number
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      description: Items per page
+    HotelId:
+      name: hotelId
+      in: path
+      required: true
+      schema:
+        type: integer
+    BookingId:
+      name: bookingId
+      in: path
+      required: true
+      schema:
+        type: integer
+    TariffId:
+      name: tariffId
+      in: path
+      required: true
+      schema:
+        type: integer
+    DiscountId:
+      name: discountId
+      in: path
+      required: true
+      schema:
+        type: integer
+    PaymentId:
+      name: paymentId
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  schemas:
+    # ── Enums ──────────────────────────────────
+    Currency:
+      type: string
+      enum: [COP, USD, MXN, ARS, CLP, PEN]
+
+    Language:
+      type: string
+      enum: [ES, EN]
+
+    BookingStatus:
+      type: string
+      enum: [pending, confirmed, rejected, cancelled, past]
+      description: '"past" indicates a completed stay (checkOut date has passed)'
+
+    PaymentStatus:
+      type: string
+      enum: [pending, processing, approved, declined, refunded]
+
+    PaymentMethod:
+      type: string
+      enum: [credit_card, debit_card, transfer, digital_wallet]
+
+    RateType:
+      type: string
+      enum: [standard, weekend, season, promotional]
+
+    PropertyType:
+      type: string
+      enum: [Hotel, Hostal, Resort, Apartamento, Cabaña, Villa]
+
+    UserRole:
+      type: string
+      enum: [traveler, hotel_admin]
+
+    DiscountType:
+      type: string
+      enum: [percentage, fixed]
+      description: Whether the discount value is a percentage or a fixed COP amount
+
+    DiscountCategory:
+      type: string
+      enum: [early_bird, last_minute, promo_code, seasonal]
+      description: Business category of the discount
+
+    TariffStatus:
+      type: string
+      enum: [active, inactive]
+
+    DiscountStatus:
+      type: string
+      enum: [active, expired, scheduled]
+
+    # ── Auth ───────────────────────────────────
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+
+    RegisterRequest:
+      type: object
+      required: [email, password, fullName, phone, role]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 6
+        fullName:
+          type: string
+        phone:
+          type: string
+        role:
+          $ref: '#/components/schemas/UserRole'
+
+    RefreshRequest:
+      type: object
+      required: [refreshToken]
+      properties:
+        refreshToken:
+          type: string
+
+    AuthResponse:
+      type: object
+      required: [accessToken, refreshToken, expiresIn, user]
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+        expiresIn:
+          type: integer
+          description: Token TTL in seconds
+        user:
+          $ref: '#/components/schemas/User'
+
+    UpdateProfileRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+        phone:
+          type: string
+        preferredLanguage:
+          $ref: '#/components/schemas/Language'
+        preferredCurrency:
+          $ref: '#/components/schemas/Currency'
+
+    # ── Core Entities ──────────────────────────
+    User:
+      type: object
+      required: [id, email, fullName, role, createdAt]
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+          format: email
+        fullName:
+          type: string
+        phone:
+          type: string
+        role:
+          $ref: '#/components/schemas/UserRole'
+        preferredLanguage:
+          $ref: '#/components/schemas/Language'
+        preferredCurrency:
+          $ref: '#/components/schemas/Currency'
+        createdAt:
+          type: string
+          format: date-time
+
+    Destination:
+      type: object
+      required: [name, country, hotelCount, gradient]
+      properties:
+        name:
+          type: string
+        country:
+          type: string
+        hotelCount:
+          type: integer
+        gradient:
+          type: string
+          description: CSS gradient for UI card background
+
+    Amenity:
+      type: object
+      required: [icon, label]
+      properties:
+        icon:
+          type: string
+          description: Material icon name
+        label:
+          type: string
+
+    Hotel:
+      type: object
+      required: [id, type, name, location, rating, reviewCount, pricePerNight, gradient, amenities]
+      properties:
+        id:
+          type: integer
+        type:
+          $ref: '#/components/schemas/PropertyType'
+        name:
+          type: string
+        description:
+          type: string
+        country:
+          type: string
+        location:
+          type: string
+        rating:
+          type: number
+          format: float
+        reviewCount:
+          type: integer
+        pricePerNight:
+          type: number
+          description: Base price per night in COP
+        gradient:
+          type: string
+          description: CSS gradient for UI card background
+        amenities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Amenity'
+        photoCount:
+          type: integer
+        status:
+          type: string
+          enum: [active, inactive]
+
+    HotelSearchResult:
+      type: object
+      required: [hotel, bestPrice]
+      properties:
+        hotel:
+          $ref: '#/components/schemas/Hotel'
+        bestPrice:
+          type: number
+          description: Best available price per night in COP
+
+    Room:
+      type: object
+      required: [id, hotelId, name, type, capacity, amenities]
+      properties:
+        id:
+          type: integer
+        hotelId:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          description: Room type description (e.g. "1 cama King", "Vista al mar")
+        capacity:
+          type: integer
+        amenities:
+          type: array
+          items:
+            type: string
+        photoCount:
+          type: integer
+
+    Address:
+      type: object
+      required: [id, hotelId, city, address]
+      properties:
+        id:
+          type: integer
+        hotelId:
+          type: integer
+        city:
+          type: string
+        address:
+          type: string
+        postalCode:
+          type: string
+        latitude:
+          type: number
+          format: double
+        longitude:
+          type: number
+          format: double
+
+    Review:
+      type: object
+      required: [id, hotelId, userId, score, comment, createdAt]
+      properties:
+        id:
+          type: integer
+        hotelId:
+          type: integer
+        userId:
+          type: integer
+        userName:
+          type: string
+        score:
+          type: number
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+
+    CancellationPolicy:
+      type: object
+      required: [freeCancellationUntil, penaltyPercentage]
+      properties:
+        freeCancellationUntil:
+          type: string
+          format: date
+          description: Date until which cancellation is free
+        penaltyPercentage:
+          type: number
+          description: Penalty percentage after free cancellation deadline (0-100)
+        noShowPenaltyPercentage:
+          type: number
+          description: Penalty percentage for no-show (0-100)
+        refundTimeBusinessDays:
+          type: integer
+          description: Estimated business days for refund processing
+
+    HotelDetail:
+      type: object
+      required: [hotel, rooms, reviewsSummary, address]
+      properties:
+        hotel:
+          $ref: '#/components/schemas/Hotel'
+        rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoomWithTariff'
+        reviewsSummary:
+          type: object
+          required: [averageScore, totalReviews]
+          properties:
+            averageScore:
+              type: number
+            totalReviews:
+              type: integer
+            recentReviews:
+              type: array
+              items:
+                $ref: '#/components/schemas/Review'
+        address:
+          $ref: '#/components/schemas/Address'
+        cancellationPolicy:
+          $ref: '#/components/schemas/CancellationPolicy'
+
+    RoomWithTariff:
+      type: object
+      required: [room, tariffs]
+      properties:
+        room:
+          $ref: '#/components/schemas/Room'
+        tariffs:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tariff'
+
+    # ── Tariffs & Discounts ────────────────────
+    Tariff:
+      type: object
+      required: [id, roomId, name, type, basePrice, weekendPrice, capacity, amenities, status]
+      properties:
+        id:
+          type: integer
+        roomId:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+          description: Room type description (e.g. "1 cama King")
+        basePrice:
+          type: number
+          description: Base price per night in COP
+        weekendPrice:
+          type: number
+          description: Weekend price per night in COP
+        capacity:
+          type: integer
+        amenities:
+          type: array
+          items:
+            type: string
+        rateType:
+          $ref: '#/components/schemas/RateType'
+        validityStart:
+          type: string
+          format: date
+        validityEnd:
+          type: string
+          format: date
+        status:
+          $ref: '#/components/schemas/TariffStatus'
+
+    CreateTariffRequest:
+      type: object
+      required: [roomId, name, type, basePrice, weekendPrice, capacity]
+      properties:
+        roomId:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+        basePrice:
+          type: number
+        weekendPrice:
+          type: number
+        capacity:
+          type: integer
+        amenities:
+          type: array
+          items:
+            type: string
+        rateType:
+          $ref: '#/components/schemas/RateType'
+        validityStart:
+          type: string
+          format: date
+        validityEnd:
+          type: string
+          format: date
+        status:
+          $ref: '#/components/schemas/TariffStatus'
+
+    Discount:
+      type: object
+      required: [id, name, type, value, startDate, endDate, status, usageCount, usageLimit]
+      properties:
+        id:
+          type: integer
+        tariffId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+          description: Human-readable description of the discount
+        type:
+          $ref: '#/components/schemas/DiscountType'
+        category:
+          $ref: '#/components/schemas/DiscountCategory'
+        value:
+          type: number
+          description: Percentage (0-100) or fixed amount in COP
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        applicableRoomIds:
+          type: array
+          items:
+            type: integer
+          description: Room IDs this discount applies to (empty means all rooms)
+        status:
+          $ref: '#/components/schemas/DiscountStatus'
+        usageCount:
+          type: integer
+        usageLimit:
+          type: integer
+
+    CreateDiscountRequest:
+      type: object
+      required: [name, type, value, startDate, endDate, usageLimit]
+      properties:
+        tariffId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        type:
+          $ref: '#/components/schemas/DiscountType'
+        category:
+          $ref: '#/components/schemas/DiscountCategory'
+        value:
+          type: number
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        applicableRoomIds:
+          type: array
+          items:
+            type: integer
+        usageLimit:
+          type: integer
+
+    # ── Inventory ──────────────────────────────
+    Inventory:
+      type: object
+      required: [id, roomId, date, totalAvailable, availability]
+      properties:
+        id:
+          type: integer
+        roomId:
+          type: integer
+        date:
+          type: string
+          format: date
+        totalAvailable:
+          type: integer
+        availability:
+          type: integer
+
+    # ── Bookings ───────────────────────────────
+    PriceBreakdown:
+      type: object
+      required: [basePrice, nights, subtotal, tourismTax, vat, serviceFee, totalPrice]
+      properties:
+        basePrice:
+          type: number
+          description: Price per night in COP
+        nights:
+          type: integer
+        subtotal:
+          type: number
+          description: basePrice × nights
+        tourismTax:
+          type: number
+          description: Tourism tax amount in COP
+        vat:
+          type: number
+          description: VAT/IVA amount in COP
+        serviceFee:
+          type: number
+          description: Service fee in COP
+        discountAmount:
+          type: number
+          description: Discount applied in COP (0 if none)
+        discountName:
+          type: string
+          description: Name of the discount applied
+        totalPrice:
+          type: number
+          description: Final total in COP
+
+    CreateBookingRequest:
+      type: object
+      required: [roomId, hotelId, checkIn, checkOut, guests]
+      properties:
+        roomId:
+          type: integer
+        hotelId:
+          type: integer
+        checkIn:
+          type: string
+          format: date
+        checkOut:
+          type: string
+          format: date
+        guests:
+          type: integer
+          minimum: 1
+          maximum: 10
+
+    Booking:
+      type: object
+      required: [id, code, userId, hotelId, roomId, checkIn, checkOut, nights, guests, status, totalPrice, createdAt]
+      properties:
+        id:
+          type: integer
+        code:
+          type: string
+          description: 'Human-readable booking code, format: TH-YYYY-XXXXX (e.g. "TH-2026-48291")'
+        userId:
+          type: integer
+        hotelId:
+          type: integer
+        roomId:
+          type: integer
+        hotelName:
+          type: string
+        hotelType:
+          type: string
+        location:
+          type: string
+        roomName:
+          type: string
+        checkIn:
+          type: string
+          format: date-time
+        checkOut:
+          type: string
+          format: date-time
+        nights:
+          type: integer
+        guests:
+          type: string
+          description: Guest description (e.g. "2 adultos")
+        status:
+          $ref: '#/components/schemas/BookingStatus'
+        totalPrice:
+          type: number
+          description: Total price in COP
+        priceBreakdown:
+          $ref: '#/components/schemas/PriceBreakdown'
+        cancellationPolicy:
+          $ref: '#/components/schemas/CancellationPolicy'
+        gradient:
+          type: string
+          description: CSS gradient for UI card
+        createdAt:
+          type: string
+          format: date-time
+
+    CancellationResponse:
+      type: object
+      required: [booking, refundDetails]
+      properties:
+        booking:
+          $ref: '#/components/schemas/Booking'
+        refundDetails:
+          type: object
+          required: [originalAmount, penaltyAmount, refundAmount, refundMethod, estimatedBusinessDays]
+          properties:
+            originalAmount:
+              type: number
+              description: Original booking total in COP
+            penaltyAmount:
+              type: number
+              description: Cancellation penalty in COP (0 if free cancellation)
+            refundAmount:
+              type: number
+              description: Amount to be refunded in COP
+            refundPercentage:
+              type: number
+              description: Refund percentage (0-100)
+            refundMethod:
+              type: string
+              description: Refund destination (e.g. "Same payment method")
+            estimatedBusinessDays:
+              type: integer
+              description: Estimated business days for refund processing
+
+    HotelBooking:
+      type: object
+      required: [id, guest, email, room, roomType, checkIn, checkOut, nights, status, totalCop, paymentMethod]
+      properties:
+        id:
+          type: string
+          description: Short booking code (e.g. "TH-48291")
+        guest:
+          type: string
+        email:
+          type: string
+          format: email
+        initials:
+          type: string
+          maxLength: 2
+        avatarColor:
+          type: string
+        room:
+          type: string
+        roomType:
+          type: string
+        checkIn:
+          type: string
+          format: date
+        checkOut:
+          type: string
+          format: date
+        nights:
+          type: integer
+        status:
+          $ref: '#/components/schemas/BookingStatus'
+        totalCop:
+          type: number
+          description: Total in COP
+        paymentMethod:
+          type: string
+          description: Payment method description (e.g. "Visa ****4821")
+
+    HotelBookingDetail:
+      type: object
+      description: Extended booking detail for hotel admin reservation detail page
+      required: [id, guest, email, room, roomType, checkIn, checkOut, nights, status, totalCop, paymentMethod]
+      properties:
+        id:
+          type: string
+          description: Short booking code (e.g. "TH-48291")
+        receivedAt:
+          type: string
+          format: date-time
+          description: When the reservation was received
+        status:
+          $ref: '#/components/schemas/BookingStatus'
+        # Guest info
+        guest:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        nationality:
+          type: string
+        idType:
+          type: string
+          description: ID document type (e.g. "Cedula", "Pasaporte")
+        idNumber:
+          type: string
+        initials:
+          type: string
+          maxLength: 2
+        avatarColor:
+          type: string
+        # Booking details
+        room:
+          type: string
+        roomType:
+          type: string
+        roomAmenities:
+          type: array
+          items:
+            type: string
+        checkIn:
+          type: string
+          format: date-time
+          description: Check-in date and time
+        checkOut:
+          type: string
+          format: date-time
+          description: Check-out date and time
+        nights:
+          type: integer
+        guests:
+          type: integer
+        pricePerNight:
+          type: number
+          description: Price per night in COP
+        totalCop:
+          type: number
+          description: Total in COP
+        # Payment summary
+        paymentMethod:
+          type: string
+          description: Payment method description (e.g. "Visa ****4821")
+        paymentStatus:
+          $ref: '#/components/schemas/PaymentStatus'
+        priceBreakdown:
+          $ref: '#/components/schemas/PriceBreakdown'
+        # Cancellation policy
+        cancellationPolicy:
+          $ref: '#/components/schemas/CancellationPolicy'
+
+    ReservationSummary:
+      type: object
+      required: [total, confirmed, pending, cancelled]
+      properties:
+        total:
+          type: integer
+        confirmed:
+          type: integer
+        pending:
+          type: integer
+        cancelled:
+          type: integer
+
+    # ── Cart ───────────────────────────────────
+    CartItem:
+      type: object
+      required: [id, roomId, hotelId, hotelName, roomName, checkIn, checkOut, guests, pricePerNight, nights]
+      properties:
+        id:
+          type: integer
+        roomId:
+          type: integer
+        hotelId:
+          type: integer
+        hotelName:
+          type: string
+        roomName:
+          type: string
+        checkIn:
+          type: string
+          format: date
+        checkOut:
+          type: string
+          format: date
+        guests:
+          type: integer
+        pricePerNight:
+          type: number
+          description: Price per night in COP
+        nights:
+          type: integer
+
+    Cart:
+      type: object
+      required: [id, userId, items, subtotal, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItem'
+        subtotal:
+          type: number
+          description: Sum of (pricePerNight × nights) for all items, in COP
+        tourismTax:
+          type: number
+          description: Tourism tax in COP
+        vat:
+          type: number
+          description: VAT/IVA in COP
+        serviceFee:
+          type: number
+          description: Service fee in COP
+        total:
+          type: number
+          description: Final total (subtotal + taxes + fees) in COP
+        createdAt:
+          type: string
+          format: date-time
+
+    AddCartItemRequest:
+      type: object
+      required: [roomId, hotelId, checkIn, checkOut, guests]
+      properties:
+        roomId:
+          type: integer
+        hotelId:
+          type: integer
+        checkIn:
+          type: string
+          format: date
+        checkOut:
+          type: string
+          format: date
+        guests:
+          type: integer
+          minimum: 1
+          maximum: 10
+
+    # ── Payments ───────────────────────────────
+    InitiatePaymentRequest:
+      type: object
+      required: [bookingId, method, currency]
+      properties:
+        bookingId:
+          type: integer
+        method:
+          $ref: '#/components/schemas/PaymentMethod'
+        currency:
+          $ref: '#/components/schemas/Currency'
+        cardToken:
+          type: string
+          description: |
+            Tokenized card data (required when method is credit_card or debit_card).
+            Card details (number, holder, expiry, CVV) are collected client-side and
+            tokenized via a PCI-compliant payment gateway SDK before sending to this API.
+
+    Payment:
+      type: object
+      required: [id, bookingId, amount, currency, method, status]
+      properties:
+        id:
+          type: integer
+        bookingId:
+          type: integer
+        amount:
+          type: number
+          description: Amount in the specified currency
+        currency:
+          $ref: '#/components/schemas/Currency'
+        method:
+          $ref: '#/components/schemas/PaymentMethod'
+        status:
+          $ref: '#/components/schemas/PaymentStatus'
+        cardLast4:
+          type: string
+          maxLength: 4
+        cardBrand:
+          type: string
+          description: Card brand (e.g. "Visa", "Mastercard")
+        transactionId:
+          type: string
+        processedAt:
+          type: string
+          format: date-time
+
+    RefundRequest:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string
+
+    # ── Reports ────────────────────────────────
+    DashboardStat:
+      type: object
+      required: [label, value, change, changeType, icon, iconColor]
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+        change:
+          type: string
+          description: Percentage change (e.g. "+12%")
+        changeType:
+          type: string
+          enum: [up, down, neutral]
+        icon:
+          type: string
+          description: Material icon name
+        iconColor:
+          type: string
+
+    RecentReservation:
+      type: object
+      required: [id, guest, initials, room, checkIn, checkOut, status, totalCop]
+      properties:
+        id:
+          type: string
+        guest:
+          type: string
+        initials:
+          type: string
+        room:
+          type: string
+        checkIn:
+          type: string
+          format: date
+        checkOut:
+          type: string
+          format: date
+        status:
+          $ref: '#/components/schemas/BookingStatus'
+        totalCop:
+          type: number
+
+    QuickAccessItem:
+      type: object
+      required: [icon, label, description, iconColor]
+      properties:
+        icon:
+          type: string
+          description: Material icon name
+        label:
+          type: string
+        description:
+          type: string
+        iconColor:
+          type: string
+
+    DashboardResponse:
+      type: object
+      required: [stats, recentReservations, revenueChart, quickAccess]
+      properties:
+        stats:
+          type: array
+          items:
+            $ref: '#/components/schemas/DashboardStat'
+        recentReservations:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecentReservation'
+        revenueChart:
+          type: array
+          items:
+            $ref: '#/components/schemas/RevenueDataPoint'
+        quickAccess:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuickAccessItem'
+
+    RevenueDataPoint:
+      type: object
+      required: [period, value]
+      properties:
+        period:
+          type: string
+          format: date
+          description: First day of the period (month or week depending on granularity)
+        value:
+          type: number
+          description: Revenue value (in millions COP)
+        highlight:
+          type: boolean
+          description: Whether this data point should be visually highlighted
+
+    ReportKPI:
+      type: object
+      required: [label, value, trend, trendUp, icon, iconColor, iconBg]
+      properties:
+        label:
+          type: string
+        value:
+          type: string
+          description: Formatted value (e.g. "COP 94.2M", "127")
+        trend:
+          type: string
+          description: Trend percentage (e.g. "+18%")
+        trendUp:
+          type: boolean
+        icon:
+          type: string
+          description: Material icon name
+        iconColor:
+          type: string
+        iconBg:
+          type: string
+          description: Background color for the icon
+
+    ReportTransaction:
+      type: object
+      required: [id, guest, initials, avatarColor, room, checkIn, nights, totalCop, status]
+      properties:
+        id:
+          type: string
+          description: Booking code
+        guest:
+          type: string
+        initials:
+          type: string
+        avatarColor:
+          type: string
+        room:
+          type: string
+        checkIn:
+          type: string
+          format: date
+        nights:
+          type: integer
+        totalCop:
+          type: number
+        status:
+          $ref: '#/components/schemas/BookingStatus'
+
+    # ── Notifications ──────────────────────────
+    Notification:
+      type: object
+      required: [id, userId, type, title, body, read, createdAt]
+      properties:
+        id:
+          type: integer
+        userId:
+          type: integer
+        type:
+          type: string
+          enum: [booking_confirmed, booking_cancelled, payment_approved, payment_declined, promotion, reminder]
+        title:
+          type: string
+        body:
+          type: string
+        bookingId:
+          type: integer
+        read:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    RegisterDeviceRequest:
+      type: object
+      required: [token, platform]
+      properties:
+        token:
+          type: string
+          description: FCM or APNs device token
+        platform:
+          type: string
+          enum: [ios, android, web]
+
+    # ── Common ─────────────────────────────────
+    PaginationMeta:
+      type: object
+      required: [total, page, limit, totalPages]
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalPages:
+          type: integer
+
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: Machine-readable error code
+        message:
+          type: string
+          description: Human-readable error message
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
