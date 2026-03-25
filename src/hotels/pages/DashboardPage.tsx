@@ -12,6 +12,8 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import SellIcon from '@mui/icons-material/Sell';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import AppsIcon from '@mui/icons-material/Apps';
+import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import StatusChip from '../../design-system/components/StatusChip';
 import { palette } from '../../design-system/theme/palette';
@@ -42,6 +44,9 @@ const iconColorMap = {
 } as const;
 
 export default function DashboardPage() {
+  const { t } = useTranslation('hotels');
+  const { formatPrice, formatDate } = useLocale();
+
   const topbarActions = (
     <>
       <Button
@@ -62,7 +67,7 @@ export default function DashboardPage() {
           '& .MuiButton-startIcon .MuiSvgIcon-root': { color: palette.primary },
         }}
       >
-        Exportar
+        {t('dashboard.export')}
       </Button>
       <Button
         variant="contained"
@@ -81,7 +86,7 @@ export default function DashboardPage() {
           '&:hover': { backgroundColor: palette.primary },
         }}
       >
-        Nueva tarifa
+        {t('dashboard.newRate')}
       </Button>
     </>
   );
@@ -89,8 +94,8 @@ export default function DashboardPage() {
   return (
     <HotelAdminLayout
       activeNav="dashboard"
-      title="Dashboard"
-      subtitle="Jueves, 27 de febrero de 2026 · Hotel Santa Clara Sofitel"
+      title={t('dashboard.title')}
+      subtitle={`${formatDate('2026-02-27', 'mediumWithDay')} · Hotel Santa Clara Sofitel`}
       topbarActions={topbarActions}
     >
 
@@ -184,13 +189,13 @@ export default function DashboardPage() {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <EventAvailableIcon sx={{ fontSize: 18, color: palette.primary }} />
               <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface }}>
-                Reservas recientes
+                {t('dashboard.recentReservations')}
               </Typography>
             </Box>
             <Typography
               sx={{ fontSize: 13, fontWeight: 500, color: palette.primary, cursor: 'pointer' }}
             >
-              Ver todas →
+              {t('dashboard.viewAll')}
             </Typography>
           </Box>
 
@@ -198,7 +203,7 @@ export default function DashboardPage() {
           <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse' }}>
             <Box component="thead">
               <Box component="tr">
-                {['Huesped', 'Habitacion', 'Llegada', 'Salida', 'Total', 'Estado'].map((col) => (
+                {[t('dashboard.tableHeaders.guest'), t('dashboard.tableHeaders.room'), t('dashboard.tableHeaders.checkIn'), t('dashboard.tableHeaders.checkOut'), t('dashboard.tableHeaders.total'), t('dashboard.tableHeaders.status')].map((col) => (
                   <Box
                     component="th"
                     key={col}
@@ -278,7 +283,7 @@ export default function DashboardPage() {
                       borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
                     }}
                   >
-                    {res.checkIn}
+                    {formatDate(res.checkIn, 'medium')}
                   </Box>
                   <Box
                     component="td"
@@ -289,7 +294,7 @@ export default function DashboardPage() {
                       borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
                     }}
                   >
-                    {res.checkOut}
+                    {formatDate(res.checkOut, 'medium')}
                   </Box>
                   <Box
                     component="td"
@@ -300,7 +305,7 @@ export default function DashboardPage() {
                       borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
                     }}
                   >
-                    {res.total}
+                    {formatPrice(res.totalCop)}
                   </Box>
                   <Box
                     component="td"
@@ -340,13 +345,13 @@ export default function DashboardPage() {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <BarChartIcon sx={{ fontSize: 18, color: palette.primary }} />
                 <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface }}>
-                  Ingresos 2026
+                  {t('dashboard.revenue2026')}
                 </Typography>
               </Box>
               <Typography
                 sx={{ fontSize: 13, fontWeight: 500, color: palette.primary, cursor: 'pointer' }}
               >
-                Ver reporte →
+                {t('dashboard.viewReport')}
               </Typography>
             </Box>
 
@@ -378,14 +383,14 @@ export default function DashboardPage() {
                     fontWeight: d.highlight ? 600 : 400,
                   }}
                 >
-                  {d.month}
+                  {formatDate(d.month, 'monthOnly')}
                 </Typography>
               ))}
             </Box>
             <Typography sx={{ padding: '0 24px 16px', fontSize: 13, color: palette.onSurfaceVariant }}>
-              Febrero 2026:{' '}
+              {formatDate('2026-02-01', 'monthYear')}:{' '}
               <Box component="span" sx={{ color: palette.primary, fontSize: 18, fontWeight: 700 }}>
-                COP 94.2M
+                {formatPrice(94200000)}
               </Box>
             </Typography>
           </Box>
@@ -410,7 +415,7 @@ export default function DashboardPage() {
             >
               <AppsIcon sx={{ fontSize: 18, color: palette.primary }} />
               <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface }}>
-                Acceso rapido
+                {t('dashboard.quickAccess')}
               </Typography>
             </Box>
             <Box

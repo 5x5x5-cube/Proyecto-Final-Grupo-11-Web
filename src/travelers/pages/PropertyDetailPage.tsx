@@ -17,38 +17,11 @@ import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
+import { useTranslation } from 'react-i18next';
+import { useLocale } from '../../contexts/LocaleContext';
 import TravelerLayout from '../../design-system/layouts/TravelerLayout';
 import RatingBadge from '../../design-system/components/RatingBadge';
 import { palette } from '../../design-system/theme/palette';
-
-const amenities = [
-  { icon: <WifiIcon sx={{ fontSize: 16, color: palette.primary }} />, label: 'Wi-Fi gratuito' },
-  { icon: <PoolIcon sx={{ fontSize: 16, color: palette.primary }} />, label: 'Piscina' },
-  { icon: <FreeBreakfastIcon sx={{ fontSize: 16, color: palette.primary }} />, label: 'Desayuno incluido' },
-  { icon: <SpaIcon sx={{ fontSize: 16, color: palette.primary }} />, label: 'Spa y bienestar' },
-  { icon: <FitnessCenterIcon sx={{ fontSize: 16, color: palette.primary }} />, label: 'Gimnasio' },
-  { icon: <LocalParkingIcon sx={{ fontSize: 16, color: palette.primary }} />, label: 'Estacionamiento' },
-  { icon: <AcUnitIcon sx={{ fontSize: 16, color: palette.primary }} />, label: 'Aire acondicionado' },
-  { icon: <RestaurantIcon sx={{ fontSize: 16, color: palette.primary }} />, label: 'Restaurante' },
-  { icon: <LocalBarIcon sx={{ fontSize: 16, color: palette.primary }} />, label: 'Bar' },
-];
-
-const rooms = [
-  {
-    name: 'Habitacion Superior',
-    features: '1 cama King · 32 m2 · Vista al jardin · Max. 2 personas',
-    price: 'COP 480k',
-    gradient: 'linear-gradient(135deg, #006874, #4A9FAA)',
-    active: true,
-  },
-  {
-    name: 'Suite Junior',
-    features: '1 cama King + sofa · 48 m2 · Vista al mar · Max. 2 personas',
-    price: 'COP 680k',
-    gradient: 'linear-gradient(135deg, #1A6B4F, #4A9F7E)',
-    active: false,
-  },
-];
 
 const reviews = [
   {
@@ -74,212 +47,244 @@ const reviews = [
   },
 ];
 
-const BookingSidebar = () => (
-  <Box sx={{ padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
-    {/* Price card */}
-    <Box
-      sx={{
-        backgroundColor: palette.background,
-        borderRadius: '16px',
-        padding: '24px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '16px',
-      }}
-    >
-      {/* Price */}
-      <Box>
-        <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>desde</Typography>
-        <Typography sx={{ fontSize: 32, fontWeight: 700, color: palette.primary }}>
-          COP 480.000{' '}
-          <Typography component="span" sx={{ fontSize: 16, fontWeight: 400, color: palette.onSurfaceVariant }}>
-            / noche
-          </Typography>
-        </Typography>
-      </Box>
+export default function PropertyDetailPage() {
+  const { t } = useTranslation('travelers');
+  const { formatPrice, formatDate } = useLocale();
 
-      {/* Date fields */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-        <Box
-          sx={{
-            border: `1px solid ${palette.outline}`,
-            borderRadius: '8px',
-            padding: '10px 14px',
-            cursor: 'pointer',
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: 10,
-              fontWeight: 500,
-              color: palette.primary,
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
-              mb: '2px',
-            }}
-          >
-            Llegada
-          </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>Sab, 15 mar</Typography>
-        </Box>
-        <Box
-          sx={{
-            border: `1px solid ${palette.outline}`,
-            borderRadius: '8px',
-            padding: '10px 14px',
-            cursor: 'pointer',
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: 10,
-              fontWeight: 500,
-              color: palette.primary,
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
-              mb: '2px',
-            }}
-          >
-            Salida
-          </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>Jue, 20 mar</Typography>
-        </Box>
-      </Box>
+  const amenities = [
+    { icon: <WifiIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.freeWifi') },
+    { icon: <PoolIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.pool') },
+    { icon: <FreeBreakfastIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.breakfastIncluded') },
+    { icon: <SpaIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.spaWellness') },
+    { icon: <FitnessCenterIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.gym') },
+    { icon: <LocalParkingIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.parking') },
+    { icon: <AcUnitIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.airConditioning') },
+    { icon: <RestaurantIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.restaurant') },
+    { icon: <LocalBarIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.bar') },
+  ];
 
-      {/* Guests */}
+  const rooms = [
+    {
+      name: t('propertyDetail.rooms.superiorRoom'),
+      features: t('propertyDetail.rooms.superiorFeatures'),
+      price: formatPrice(480000),
+      gradient: 'linear-gradient(135deg, #006874, #4A9FAA)',
+      active: true,
+    },
+    {
+      name: t('propertyDetail.rooms.juniorSuite'),
+      features: t('propertyDetail.rooms.juniorFeatures'),
+      price: formatPrice(680000),
+      gradient: 'linear-gradient(135deg, #1A6B4F, #4A9F7E)',
+      active: false,
+    },
+  ];
+
+  const BookingSidebar = () => (
+    <Box sx={{ padding: '32px 28px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      {/* Price card */}
       <Box
         sx={{
-          border: `1px solid ${palette.outline}`,
-          borderRadius: '8px',
-          padding: '10px 14px',
+          backgroundColor: palette.background,
+          borderRadius: '16px',
+          padding: '24px',
           display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          cursor: 'pointer',
+          flexDirection: 'column',
+          gap: '16px',
         }}
       >
+        {/* Price */}
         <Box>
-          <Typography
+          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>{t('propertyDetail.booking.from')}</Typography>
+          <Typography sx={{ fontSize: 32, fontWeight: 700, color: palette.primary }}>
+            {formatPrice(480000)}{' '}
+            <Typography component="span" sx={{ fontSize: 16, fontWeight: 400, color: palette.onSurfaceVariant }}>
+              {t('propertyDetail.booking.perNight')}
+            </Typography>
+          </Typography>
+        </Box>
+
+        {/* Date fields */}
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+          <Box
             sx={{
-              fontSize: 10,
-              fontWeight: 500,
-              color: palette.primary,
-              letterSpacing: '0.5px',
-              textTransform: 'uppercase',
-              mb: '2px',
+              border: `1px solid ${palette.outline}`,
+              borderRadius: '8px',
+              padding: '10px 14px',
+              cursor: 'pointer',
             }}
           >
-            Huespedes
-          </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>2 adultos</Typography>
+            <Typography
+              sx={{
+                fontSize: 10,
+                fontWeight: 500,
+                color: palette.primary,
+                letterSpacing: '0.5px',
+                textTransform: 'uppercase',
+                mb: '2px',
+              }}
+            >
+              {t('propertyDetail.booking.checkIn')}
+            </Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatDate('2026-03-15', 'shortWithDay')}</Typography>
+          </Box>
+          <Box
+            sx={{
+              border: `1px solid ${palette.outline}`,
+              borderRadius: '8px',
+              padding: '10px 14px',
+              cursor: 'pointer',
+            }}
+          >
+            <Typography
+              sx={{
+                fontSize: 10,
+                fontWeight: 500,
+                color: palette.primary,
+                letterSpacing: '0.5px',
+                textTransform: 'uppercase',
+                mb: '2px',
+              }}
+            >
+              {t('propertyDetail.booking.checkOut')}
+            </Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatDate('2026-03-20', 'shortWithDay')}</Typography>
+          </Box>
         </Box>
-        <ExpandMoreIcon sx={{ color: palette.onSurfaceVariant, fontSize: 20 }} />
-      </Box>
 
-      {/* Price breakdown */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: palette.onSurfaceVariant }}>
-          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>COP 480.000 x 5 noches</Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>COP 2.400.000</Typography>
+        {/* Guests */}
+        <Box
+          sx={{
+            border: `1px solid ${palette.outline}`,
+            borderRadius: '8px',
+            padding: '10px 14px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            cursor: 'pointer',
+          }}
+        >
+          <Box>
+            <Typography
+              sx={{
+                fontSize: 10,
+                fontWeight: 500,
+                color: palette.primary,
+                letterSpacing: '0.5px',
+                textTransform: 'uppercase',
+                mb: '2px',
+              }}
+            >
+              {t('propertyDetail.booking.guests')}
+            </Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{t('propertyDetail.booking.defaultGuests')}</Typography>
+          </Box>
+          <ExpandMoreIcon sx={{ color: palette.onSurfaceVariant, fontSize: 20 }} />
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: palette.onSurfaceVariant }}>
-          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>Impuestos y tasas</Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>COP 264.000</Typography>
+
+        {/* Price breakdown */}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: palette.onSurfaceVariant }}>
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{formatPrice(480000)} x 5 {t('propertyDetail.booking.nights')}</Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{formatPrice(2400000)}</Typography>
+          </Box>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: palette.onSurfaceVariant }}>
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{t('propertyDetail.booking.taxesAndFees')}</Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{formatPrice(264000)}</Typography>
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              fontWeight: 600,
+              color: palette.onSurface,
+              borderTop: `1px solid ${palette.outlineVariant}`,
+              pt: '10px',
+              mt: '4px',
+            }}
+          >
+            <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>{t('propertyDetail.booking.total')}</Typography>
+            <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>{formatPrice(2664000)}</Typography>
+          </Box>
         </Box>
+
+        {/* Reserve button */}
+        <Link to="/checkout/cart" style={{ textDecoration: 'none' }}>
+          <Button
+            variant="contained"
+            disableElevation
+            fullWidth
+            sx={{
+              height: 52,
+              backgroundColor: palette.primary,
+              borderRadius: '100px',
+              fontFamily: "'Roboto', sans-serif",
+              fontSize: 16,
+              fontWeight: 600,
+              color: '#fff',
+              textTransform: 'none',
+              '&:hover': { backgroundColor: palette.primary },
+            }}
+          >
+            {t('propertyDetail.booking.reserveNow')}
+          </Button>
+        </Link>
+
+        {/* Secure badge */}
         <Box
           sx={{
             display: 'flex',
-            justifyContent: 'space-between',
-            fontWeight: 600,
-            color: palette.onSurface,
-            borderTop: `1px solid ${palette.outlineVariant}`,
-            pt: '10px',
-            mt: '4px',
+            alignItems: 'center',
+            gap: '6px',
+            justifyContent: 'center',
           }}
         >
-          <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>Total</Typography>
-          <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>COP 2.664.000</Typography>
+          <LockIcon sx={{ fontSize: 16, color: palette.primary }} />
+          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
+            {t('propertyDetail.booking.securePayment')}
+          </Typography>
         </Box>
       </Box>
 
-      {/* Reserve button */}
-      <Link to="/checkout/cart" style={{ textDecoration: 'none' }}>
-        <Button
-          variant="contained"
-          disableElevation
-          fullWidth
-          sx={{
-            height: 52,
-            backgroundColor: palette.primary,
-            borderRadius: '100px',
-            fontFamily: "'Roboto', sans-serif",
-            fontSize: 16,
-            fontWeight: 600,
-            color: '#fff',
-            textTransform: 'none',
-            '&:hover': { backgroundColor: palette.primary },
-          }}
-        >
-          Reservar ahora
-        </Button>
-      </Link>
-
-      {/* Secure badge */}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          justifyContent: 'center',
-        }}
-      >
-        <LockIcon sx={{ fontSize: 16, color: palette.primary }} />
-        <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-          Pago seguro · Sin cargos adicionales
+      {/* Cancellation policy */}
+      <Box>
+        <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
+          {t('propertyDetail.cancellation.title')}
         </Typography>
-      </Box>
-    </Box>
-
-    {/* Cancellation policy */}
-    <Box>
-      <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
-        Politica de cancelacion
-      </Typography>
-      <Box
-        sx={{
-          backgroundColor: '#fff',
-          borderRadius: '12px',
-          padding: '16px',
-          border: `1px solid ${palette.outlineVariant}`,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '8px',
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <CheckCircleIcon sx={{ color: '#1A6B4F', fontSize: 18 }} />
-          <Typography sx={{ fontSize: 13, color: palette.onSurface }}>
-            Cancelacion gratuita hasta el 12 mar
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <InfoIcon sx={{ color: palette.star, fontSize: 18 }} />
-          <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-            Cargo del 50% entre 12--14 mar
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <CancelIcon sx={{ color: '#B5451B', fontSize: 18 }} />
-          <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-            Sin reembolso desde el 15 mar
-          </Typography>
+        <Box
+          sx={{
+            backgroundColor: '#fff',
+            borderRadius: '12px',
+            padding: '16px',
+            border: `1px solid ${palette.outlineVariant}`,
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '8px',
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <CheckCircleIcon sx={{ color: '#1A6B4F', fontSize: 18 }} />
+            <Typography sx={{ fontSize: 13, color: palette.onSurface }}>
+              {t('propertyDetail.cancellation.freeCancellation')}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <InfoIcon sx={{ color: palette.star, fontSize: 18 }} />
+            <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
+              {t('propertyDetail.cancellation.halfCharge')}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <CancelIcon sx={{ color: '#B5451B', fontSize: 18 }} />
+            <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
+              {t('propertyDetail.cancellation.noRefund')}
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </Box>
-  </Box>
-);
+  );
 
-export default function PropertyDetailPage() {
   return (
     <TravelerLayout
       variant="detail"
@@ -312,7 +317,7 @@ export default function PropertyDetailPage() {
               background: 'linear-gradient(135deg, #7B4F00, #C89030)',
               position: 'relative',
               '&::after': {
-                content: '"+12 fotos"',
+                content: `"${t('propertyDetail.morePhotos')}"`,
                 position: 'absolute',
                 top: 0,
                 left: 0,
@@ -349,7 +354,7 @@ export default function PropertyDetailPage() {
                 textTransform: 'uppercase',
               }}
             >
-              Hotel · 5 estrellas
+              {t('propertyDetail.hotelType')}
             </Typography>
             <Typography
               component="h1"
@@ -373,7 +378,7 @@ export default function PropertyDetailPage() {
               <RatingBadge rating={4.8} />
               <Typography sx={{ color: palette.star, fontSize: 16 }}>★★★★★</Typography>
               <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-                312 resenas
+                312 {t('propertyDetail.reviews')}
               </Typography>
             </Box>
           </Box>
@@ -404,7 +409,7 @@ export default function PropertyDetailPage() {
         {/* Description */}
         <Box>
           <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
-            Descripcion
+            {t('propertyDetail.description')}
           </Typography>
           <Typography
             sx={{
@@ -414,18 +419,14 @@ export default function PropertyDetailPage() {
               maxWidth: 860,
             }}
           >
-            El Hotel Santa Clara es un joya historica en el corazon de Cartagena de Indias. Ubicado en
-            un antiguo convento del siglo XVII, ofrece una experiencia unica que combina la riqueza
-            del patrimonio cultural colombiano con los mas altos estandares de lujo y confort. Sus
-            habitaciones, restaurantes y espacios de bienestar hacen de cada visita una experiencia
-            inolvidable.
+            {t('propertyDetail.descriptionText')}
           </Typography>
         </Box>
 
         {/* Amenities */}
         <Box>
           <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
-            Servicios incluidos
+            {t('propertyDetail.amenities.title')}
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
             {amenities.map((amenity) => (
@@ -453,7 +454,7 @@ export default function PropertyDetailPage() {
         {/* Rooms */}
         <Box>
           <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
-            Habitaciones disponibles
+            {t('propertyDetail.rooms.title')}
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {rooms.map((room) => (
@@ -491,7 +492,7 @@ export default function PropertyDetailPage() {
                     {room.price}
                   </Typography>
                   <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                    por noche
+                    {t('propertyDetail.rooms.perNight')}
                   </Typography>
                 </Box>
                 <Button
@@ -518,7 +519,7 @@ export default function PropertyDetailPage() {
                         }),
                   }}
                 >
-                  Seleccionar
+                  {t('propertyDetail.rooms.select')}
                 </Button>
               </Box>
             ))}
@@ -528,7 +529,7 @@ export default function PropertyDetailPage() {
         {/* Reviews */}
         <Box>
           <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
-            Resenas de huespedes
+            {t('propertyDetail.guestReviews')}
           </Typography>
           <Box sx={{ display: 'flex', gap: '16px', overflow: 'hidden' }}>
             {reviews.map((review) => (

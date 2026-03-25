@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
+import { useTranslation } from 'react-i18next';
 import {
   primary,
   onPrimary,
@@ -15,9 +16,16 @@ interface CheckoutStepperProps {
   currentStep: number; // 1-4
 }
 
-const steps = ['Alojamiento', 'Confirmar', 'Pago', 'Confirmación'];
-
 const CheckoutStepper: React.FC<CheckoutStepperProps> = ({ currentStep }) => {
+  const { t } = useTranslation('common');
+
+  const steps = [
+    t('checkout.accommodation'),
+    t('checkout.confirm'),
+    t('checkout.payment'),
+    t('checkout.confirmation'),
+  ];
+
   return (
     <Box
       sx={{
