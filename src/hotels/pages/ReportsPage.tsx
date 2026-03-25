@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
@@ -15,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocale } from '../../contexts/LocaleContext';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import { palette } from '../../design-system/theme/palette';
+import ReportsPageSkeleton from './ReportsPage.skeleton';
 
 const barData = [
   { week: 1, month: '2026-01-01', height: 90 },
@@ -36,6 +38,12 @@ const statusChipStyles: Record<string, { bg: string; color: string }> = {
 export default function ReportsPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1200);
+    return () => clearTimeout(timer);
+  }, []);
 
   const kpiCards = [
     {
@@ -126,6 +134,18 @@ export default function ReportsPage() {
   ];
 
   const chartFilters = [t('reports.revenueFilter')];
+
+  if (loading) {
+    return (
+      <HotelAdminLayout
+        activeNav="reportes"
+        title={t('reports.title')}
+        subtitle={`Hotel Boutique El Patio · Periodo: ${formatDate('2026-01-01', 'monthOnly')} - ${formatDate('2026-02-01', 'monthYear')}`}
+      >
+        <ReportsPageSkeleton />
+      </HotelAdminLayout>
+    );
+  }
 
   return (
     <HotelAdminLayout
