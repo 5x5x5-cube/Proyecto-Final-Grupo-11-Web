@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import TravelerNav from '../../design-system/layouts/TravelerNav';
 import { palette } from '../../design-system/theme/palette';
-import { mockDestinations } from '../data/mockDestinations';
+import { useDestinations } from '../../api/hooks/useSearch';
 import { useLocale } from '../../contexts/LocaleContext';
 
 const basePrices = [120000, 95000, 85000, 110000, 78000];
@@ -57,6 +57,8 @@ export default function HomePage() {
   const navigate = useNavigate();
   const { formatPrice } = useLocale();
   const { t } = useTranslation('travelers');
+  const { data: destinationsData, isLoading: isLoadingDestinations } = useDestinations();
+  const mockDestinations = (isLoadingDestinations ? [] : (destinationsData ?? [])) as Array<{ name: string; country: string; hotelCount: number; gradient: string }>;
 
   // Search state
   const [destination, setDestination] = useState<string | null>(null);

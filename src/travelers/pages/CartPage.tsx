@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import HotelIcon from '@mui/icons-material/Hotel';
@@ -17,18 +16,15 @@ import InfoGrid from '../../design-system/components/InfoGrid';
 import RatingBadge from '../../design-system/components/RatingBadge';
 import { palette } from '../../design-system/theme/palette';
 import CartPageSkeleton from './CartPage.skeleton';
+import { useCart } from '../../api/hooks/useCart';
 
 export default function CartPage() {
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: cart, isLoading } = useCart();
 
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
 
-  if (loading) return <CartPageSkeleton />;
+  if (isLoading || !cart) return <CartPageSkeleton />;
 
   const CartSidebar = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>

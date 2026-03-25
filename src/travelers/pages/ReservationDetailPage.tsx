@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button, Divider } from '@mui/material';
+import { useBookingDetail, useBookingPayments } from '../../api/hooks/useBookings';
+import { Box, Typography, Button, Divider, Skeleton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HotelIcon from '@mui/icons-material/Hotel';
@@ -47,11 +48,8 @@ import {
 
 /* ─── Main Page ─── */
 const ReservationDetailPage: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  const { isLoading: isBookingLoading } = useBookingDetail(1);
+  const { isLoading: isPaymentsLoading } = useBookingPayments(1);
 
   const [confirmedOpen, setConfirmedOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -65,7 +63,7 @@ const ReservationDetailPage: React.FC = () => {
     if (modal === 'cancel') setCancelOpen(true);
   }, []);
 
-  if (loading) return <ReservationDetailPageSkeleton />;
+  if (isBookingLoading) return <ReservationDetailPageSkeleton />;
 
   /* ─── Left Sidebar ─── */
   const UserSidebar: React.FC = () => {
@@ -858,6 +856,20 @@ const ReservationDetailPage: React.FC = () => {
 
             {/* Payment history section */}
             <SectionCard icon={<ReceiptLongIcon sx={{ color: primary }} />} title={t('reservationDetail.paymentHistory.title')}>
+              {isPaymentsLoading ? (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '14px 0' }}>
+                  <Skeleton animation="wave" variant="circular" width={40} height={40} />
+                  <Box sx={{ flex: 1 }}>
+                    <Skeleton animation="wave" variant="text" width={200} height={20} />
+                    <Skeleton animation="wave" variant="text" width={140} height={16} />
+                    <Skeleton animation="wave" variant="text" width={100} height={16} />
+                  </Box>
+                  <Box sx={{ textAlign: 'right' }}>
+                    <Skeleton animation="wave" variant="text" width={80} height={24} />
+                    <Skeleton animation="wave" variant="rounded" width={70} height={20} sx={{ borderRadius: '100px' }} />
+                  </Box>
+                </Box>
+              ) : (
               <Box sx={{ gap: 0, padding: '0' }}>
                 <Box
                   sx={{
@@ -922,6 +934,7 @@ const ReservationDetailPage: React.FC = () => {
                   </Box>
                 </Box>
               </Box>
+              )}
             </SectionCard>
           </Box>
 

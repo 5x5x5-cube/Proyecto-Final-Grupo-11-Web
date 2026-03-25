@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Box, Typography, Button, Divider, Icon } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
@@ -16,24 +15,24 @@ import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import SectionCard from '../../design-system/components/SectionCard';
 import InfoGrid from '../../design-system/components/InfoGrid';
 import { palette } from '../../design-system/theme/palette';
+import { useHotelBookingDetail, useConfirmBooking, useRejectBooking } from '../../api/hooks/useHotelBookings';
 import HotelReservationDetailPageSkeleton from './HotelReservationDetailPage.skeleton';
 
 export default function HotelReservationDetailPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
 
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: booking, isLoading } = useHotelBookingDetail('TH-48291');
+  const confirmBooking = useConfirmBooking();
+  const rejectBooking = useRejectBooking();
 
   const breadcrumbs = [
     { label: t('reservationDetail.breadcrumbs.dashboard'), href: '/hotel/dashboard' },
     { label: t('reservationDetail.breadcrumbs.reservations'), href: '/hotel/reservations' },
     { label: 'TH-2026-00483' },
   ];
-  if (loading) {
+
+  if (isLoading || !booking) {
     return (
       <HotelAdminLayout activeNav="reservas" breadcrumbs={breadcrumbs}>
         <HotelReservationDetailPageSkeleton />
@@ -104,6 +103,8 @@ export default function HotelReservationDetailPage() {
           <Button
             variant="outlined"
             startIcon={<CloseIcon sx={{ fontSize: 16 }} />}
+            disabled={rejectBooking.isPending}
+            onClick={() => rejectBooking.mutate('TH-48291')}
             sx={{
               padding: '10px 20px',
               borderRadius: '100px',
@@ -123,6 +124,8 @@ export default function HotelReservationDetailPage() {
             variant="contained"
             startIcon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
             disableElevation
+            disabled={confirmBooking.isPending}
+            onClick={() => confirmBooking.mutate('TH-48291')}
             sx={{
               padding: '10px 24px',
               borderRadius: '100px',

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import LuggageIcon from '@mui/icons-material/Luggage';
@@ -13,8 +13,8 @@ import TravelerLayout from '../../design-system/layouts/TravelerLayout';
 import StatusChip from '../../design-system/components/StatusChip';
 import FilterChip from '../../design-system/components/FilterChip';
 import SearchField from '../../design-system/components/SearchField';
-import { mockReservations } from '../data/mockReservations';
 import MyReservationsPageSkeleton from './MyReservationsPage.skeleton';
+import { useBookings } from '../../api/hooks/useBookings';
 import {
   primary,
   onSurface,
@@ -26,17 +26,29 @@ import {
 
 /* ─── Main ─── */
 const MyReservationsPage: React.FC = () => {
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: bookingsData, isLoading } = useBookings();
 
   const [activeTab, setActiveTab] = useState(0);
   const [activeFilter, setActiveFilter] = useState(0);
   const { t } = useTranslation('travelers');
 
-  if (loading) return <MyReservationsPageSkeleton />;
+  if (isLoading || !bookingsData) return <MyReservationsPageSkeleton />;
+
+  const mockReservations = bookingsData as Array<{
+    id: string | number;
+    gradient: string;
+    hotelType: string;
+    hotelName: string;
+    location: string;
+    checkIn: string;
+    checkOut: string;
+    nights: number;
+    guests: string;
+    room: string;
+    status: string;
+    code: string;
+    totalPriceCop: number;
+  }>;
   const { formatPrice, formatDate } = useLocale();
 
   const tabs = [t('myReservations.tabs.active'), t('myReservations.tabs.past'), t('myReservations.tabs.cancelled')];

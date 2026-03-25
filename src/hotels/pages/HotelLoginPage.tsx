@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { palette } from '../../design-system/theme/palette';
+import { useLogin } from '../../api/hooks/useAuth';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -22,18 +23,15 @@ export default function HotelLoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailTouched, setEmailTouched] = useState(false);
-  const [loading, setLoading] = useState(false);
+
+  const login = useLogin();
 
   const emailError = emailTouched && !EMAIL_REGEX.test(email);
   const isFormValid = EMAIL_REGEX.test(email) && password.length > 0;
 
   const handleSubmit = () => {
-    if (!isFormValid || loading) return;
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate('/hotel/dashboard');
-    }, 1500);
+    if (!isFormValid || login.isPending) return;
+    login.mutate({ email, password }, { onSuccess: () => navigate('/hotel/dashboard') });
   };
 
   const trustBadges = [
@@ -226,7 +224,7 @@ export default function HotelLoginPage() {
             fullWidth
             variant="contained"
             disableElevation
-            disabled={!isFormValid || loading}
+            disabled={!isFormValid || login.isPending}
             onClick={handleSubmit}
             sx={{
               height: 52,
@@ -241,7 +239,7 @@ export default function HotelLoginPage() {
               '&:hover': { backgroundColor: palette.primary },
             }}
           >
-            {loading ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : t('login.loginButton')}
+            {login.isPending ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : t('login.loginButton')}
           </Button>
 
           {/* Divider */}
