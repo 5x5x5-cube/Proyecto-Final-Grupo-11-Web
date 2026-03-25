@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import AddIcon from '@mui/icons-material/Add';
@@ -17,12 +17,7 @@ import { useLocale } from '../../contexts/LocaleContext';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import StatusChip from '../../design-system/components/StatusChip';
 import { palette } from '../../design-system/theme/palette';
-import {
-  dashboardStats,
-  recentReservations,
-  revenueData,
-  quickAccessItems,
-} from '../data/mockDashboard';
+import { useDashboard } from '../../api/hooks/useReports';
 import DashboardPageSkeleton from './DashboardPage.skeleton';
 
 const iconMap: Record<string, React.ElementType> = {
@@ -48,13 +43,9 @@ export default function DashboardPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
 
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: dashboard, isLoading } = useDashboard();
 
-  if (loading) {
+  if (isLoading || !dashboard) {
     return (
       <HotelAdminLayout
         activeNav="dashboard"
@@ -65,6 +56,8 @@ export default function DashboardPage() {
       </HotelAdminLayout>
     );
   }
+
+  const { stats: dashboardStats, recentReservations, revenueData, quickAccessItems } = dashboard as any;
 
   const topbarActions = (
     <>

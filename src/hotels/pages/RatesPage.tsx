@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import SellIcon from '@mui/icons-material/Sell';
 import KingBedIcon from '@mui/icons-material/KingBed';
 import HotelIcon from '@mui/icons-material/Hotel';
@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocale } from '../../contexts/LocaleContext';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import { palette } from '../../design-system/theme/palette';
+import { useTariffs } from '../../api/hooks/useTariffs';
 
 const typeChipStyles: Record<string, { bg: string; color: string }> = {
   standard: { bg: palette.primaryContainer, color: palette.primary },
@@ -30,6 +31,18 @@ const typeChipStyles: Record<string, { bg: string; color: string }> = {
 export default function RatesPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
+
+  const { isLoading } = useTariffs();
+
+  if (isLoading) {
+    return (
+      <HotelAdminLayout activeNav="tarifas" title={t('rates.title')} subtitle={t('rates.subtitle')}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200 }}>
+          <CircularProgress sx={{ color: palette.primary }} />
+        </Box>
+      </HotelAdminLayout>
+    );
+  }
 
   const rates = [
     {

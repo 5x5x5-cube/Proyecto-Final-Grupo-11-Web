@@ -1,4 +1,3 @@
-import { useState, useEffect } from 'react';
 import { Box, Typography, Button, Checkbox, FormControlLabel } from '@mui/material';
 import { Link } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
@@ -9,7 +8,7 @@ import TravelerNav from '../../design-system/layouts/TravelerNav';
 import AmenityTag from '../../design-system/components/AmenityTag';
 import RatingBadge from '../../design-system/components/RatingBadge';
 import { palette } from '../../design-system/theme/palette';
-import { mockHotels } from '../data/mockHotels';
+import { useSearchHotels } from '../../api/hooks/useSearch';
 import ResultsPageSkeleton from './ResultsPage.skeleton';
 
 const starOptions = [
@@ -19,16 +18,19 @@ const starOptions = [
 ];
 
 export default function ResultsPage() {
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(timer);
-  }, []);
+  const { data: hotels, isLoading } = useSearchHotels();
 
   const { t } = useTranslation('travelers');
   const { formatPrice } = useLocale();
 
-  if (loading) return <ResultsPageSkeleton />;
+  if (isLoading || !hotels) return <ResultsPageSkeleton />;
+
+  const mockHotels = hotels as Array<{
+    id: number; type: string; name: string; location: string;
+    rating: number; reviewCount: number; starsText: string;
+    pricePerNight: number; totalPrice: number; gradient: string;
+    amenities: Array<{ icon: string; label: string }>; photoCount: number;
+  }>;
 
   const propertyTypes = [
     t('results.filters.propertyTypes.hotel'),

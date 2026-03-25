@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocale } from '../../contexts/LocaleContext';
 import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
 import { palette } from '../../design-system/theme/palette';
+import { useDiscounts } from '../../api/hooks/useDiscounts';
 
 const typeChipStyles: Record<string, { bg: string; color: string }> = {
   early: { bg: '#E8F0FE', color: '#1A73E8' },
@@ -30,6 +31,18 @@ const typeChipStyles: Record<string, { bg: string; color: string }> = {
 export default function DiscountsPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
+
+  const { isLoading } = useDiscounts();
+
+  if (isLoading) {
+    return (
+      <HotelAdminLayout activeNav="descuentos" title={t('discounts.title')} subtitle={t('discounts.subtitle')}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 200 }}>
+          <CircularProgress sx={{ color: palette.primary }} />
+        </Box>
+      </HotelAdminLayout>
+    );
+  }
 
   const roomCheckboxes = [
     { name: 'Suite Deluxe King', sub: `Piso 4 · ${formatPrice(888000)}/noche`, checked: true },

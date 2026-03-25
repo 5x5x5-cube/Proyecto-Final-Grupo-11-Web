@@ -3,12 +3,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { palette } from '../../design-system/theme/palette';
+import { useRegister } from '../../api/hooks/useAuth';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function RegisterPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
+  const register = useRegister();
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -19,8 +21,6 @@ export default function RegisterPage() {
   const [emailTouched, setEmailTouched] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
   const [confirmPasswordTouched, setConfirmPasswordTouched] = useState(false);
-
-  const [loading, setLoading] = useState(false);
 
   const nameError = nameTouched && name.trim().length === 0;
   const emailError = emailTouched && !EMAIL_REGEX.test(email);
@@ -34,12 +34,8 @@ export default function RegisterPage() {
     confirmPassword === password;
 
   const handleSubmit = () => {
-    if (!isFormValid || loading) return;
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      navigate('/login');
-    }, 1500);
+    if (!isFormValid || register.isPending) return;
+    register.mutate({ name, email, password }, { onSuccess: () => navigate('/login') });
   };
 
   const inputSx = {
@@ -243,7 +239,7 @@ export default function RegisterPage() {
             fullWidth
             variant="contained"
             disableElevation
-            disabled={!isFormValid || loading}
+            disabled={!isFormValid || register.isPending}
             onClick={handleSubmit}
             sx={{
               height: 48,
@@ -259,7 +255,7 @@ export default function RegisterPage() {
               '&:hover': { backgroundColor: palette.primary },
             }}
           >
-            {loading ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : t('register.submitButton')}
+            {register.isPending ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : t('register.submitButton')}
           </Button>
 
           <Typography
