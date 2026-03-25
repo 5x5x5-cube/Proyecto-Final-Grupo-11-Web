@@ -4,13 +4,7 @@ import { Link } from 'react-router-dom';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import LanguageIcon from '@mui/icons-material/Language';
 import { useLocale } from '../../contexts/LocaleContext';
-import {
-  primary,
-  onSurface,
-  onSurfaceVariant,
-  outlineVariant,
-  onPrimary,
-} from '../theme/palette';
+import { primary, onSurface, onSurfaceVariant, outlineVariant, onPrimary } from '../theme/palette';
 
 interface Breadcrumb {
   label: string;
@@ -79,14 +73,10 @@ const HotelAdminTopbar: React.FC<HotelAdminTopbarProps> = ({
           </Box>
         )}
         {title && (
-          <Typography sx={{ fontSize: 26, fontWeight: 700, color: onSurface }}>
-            {title}
-          </Typography>
+          <Typography sx={{ fontSize: 26, fontWeight: 700, color: onSurface }}>{title}</Typography>
         )}
         {subtitle && (
-          <Typography sx={{ fontSize: 14, color: onSurfaceVariant }}>
-            {subtitle}
-          </Typography>
+          <Typography sx={{ fontSize: 14, color: onSurfaceVariant }}>{subtitle}</Typography>
         )}
       </Box>
 

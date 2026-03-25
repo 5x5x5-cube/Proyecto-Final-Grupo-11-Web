@@ -40,12 +40,33 @@ const UserSidebarSkeleton: React.FC = () => (
       </Box>
     </Box>
 
-    <Skeleton animation="wave" variant="text" width={90} height={16} sx={{ mb: '8px', ml: '12px' }} />
+    <Skeleton
+      animation="wave"
+      variant="text"
+      width={90}
+      height={16}
+      sx={{ mb: '8px', ml: '12px' }}
+    />
 
-    <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', borderRadius: '100px', background: secondaryContainer }}>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        padding: '12px',
+        borderRadius: '100px',
+        background: secondaryContainer,
+      }}
+    >
       <Skeleton animation="wave" variant="circular" width={20} height={20} />
       <Skeleton animation="wave" variant="text" width={110} height={20} />
-      <Skeleton animation="wave" variant="rounded" width={24} height={20} sx={{ ml: 'auto', borderRadius: '100px' }} />
+      <Skeleton
+        animation="wave"
+        variant="rounded"
+        width={24}
+        height={20}
+        sx={{ ml: 'auto', borderRadius: '100px' }}
+      />
     </Box>
 
     <Box sx={{ height: 1, background: outlineVariant, my: '12px' }} />
@@ -75,7 +96,7 @@ const RightSidebarSkeleton: React.FC = () => (
 
     {/* Price rows */}
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-      {[0, 1, 2].map((i) => (
+      {[0, 1, 2].map(i => (
         <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between' }}>
           <Skeleton animation="wave" variant="text" width="55%" height={20} />
           <Skeleton animation="wave" variant="text" width="28%" height={20} />
@@ -140,11 +161,23 @@ const ReservationDetailPageSkeleton: React.FC = () => (
             <Skeleton animation="wave" variant="text" width={160} height={20} />
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
               <Skeleton animation="wave" variant="text" width={260} height={38} />
-              <Skeleton animation="wave" variant="rounded" width={90} height={28} sx={{ borderRadius: '100px' }} />
+              <Skeleton
+                animation="wave"
+                variant="rounded"
+                width={90}
+                height={28}
+                sx={{ borderRadius: '100px' }}
+              />
             </Box>
             <Skeleton animation="wave" variant="text" width={220} height={20} />
             <Box sx={{ mt: '12px' }}>
-              <Skeleton animation="wave" variant="rounded" width={160} height={34} sx={{ borderRadius: '100px' }} />
+              <Skeleton
+                animation="wave"
+                variant="rounded"
+                width={160}
+                height={34}
+                sx={{ borderRadius: '100px' }}
+              />
             </Box>
           </Box>
 
@@ -168,13 +201,25 @@ const ReservationDetailPageSkeleton: React.FC = () => (
 
             {/* Hotel info row */}
             <Box sx={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-              <Skeleton animation="wave" variant="rounded" width={100} height={100} sx={{ borderRadius: '12px', flexShrink: 0 }} />
+              <Skeleton
+                animation="wave"
+                variant="rounded"
+                width={100}
+                height={100}
+                sx={{ borderRadius: '12px', flexShrink: 0 }}
+              />
               <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <Skeleton animation="wave" variant="text" width={60} height={16} />
                 <Skeleton animation="wave" variant="text" width="55%" height={28} />
                 <Skeleton animation="wave" variant="text" width="65%" height={18} />
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Skeleton animation="wave" variant="rounded" width={40} height={26} sx={{ borderRadius: '6px' }} />
+                  <Skeleton
+                    animation="wave"
+                    variant="rounded"
+                    width={40}
+                    height={26}
+                    sx={{ borderRadius: '6px' }}
+                  />
                   <Skeleton animation="wave" variant="text" width={80} height={18} />
                   <Skeleton animation="wave" variant="text" width={70} height={16} />
                 </Box>
@@ -185,7 +230,7 @@ const ReservationDetailPageSkeleton: React.FC = () => (
 
             {/* Info grid (4 columns) */}
             <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
-              {[0, 1, 2, 3].map((i) => (
+              {[0, 1, 2, 3].map(i => (
                 <Box key={i}>
                   <Skeleton animation="wave" variant="text" width="70%" height={14} />
                   <Skeleton animation="wave" variant="text" width="85%" height={22} />
@@ -205,13 +250,32 @@ const ReservationDetailPageSkeleton: React.FC = () => (
                 borderRadius: '12px',
               }}
             >
-              <Skeleton animation="wave" variant="rounded" width={56} height={56} sx={{ borderRadius: '10px', flexShrink: 0 }} />
+              <Skeleton
+                animation="wave"
+                variant="rounded"
+                width={56}
+                height={56}
+                sx={{ borderRadius: '10px', flexShrink: 0 }}
+              />
               <Box sx={{ flex: 1 }}>
-                <Skeleton animation="wave" variant="text" width="40%" height={22} sx={{ mb: '4px' }} />
+                <Skeleton
+                  animation="wave"
+                  variant="text"
+                  width="40%"
+                  height={22}
+                  sx={{ mb: '4px' }}
+                />
                 <Skeleton animation="wave" variant="text" width="65%" height={18} />
                 <Box sx={{ display: 'flex', gap: '8px', flexWrap: 'wrap', mt: '6px' }}>
                   {[70, 80, 60, 72, 65].map((w, i) => (
-                    <Skeleton key={i} animation="wave" variant="rounded" width={w} height={22} sx={{ borderRadius: '100px' }} />
+                    <Skeleton
+                      key={i}
+                      animation="wave"
+                      variant="rounded"
+                      width={w}
+                      height={22}
+                      sx={{ borderRadius: '100px' }}
+                    />
                   ))}
                 </Box>
               </Box>
@@ -236,7 +300,13 @@ const ReservationDetailPageSkeleton: React.FC = () => (
             </Box>
 
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '14px 0' }}>
-              <Skeleton animation="wave" variant="circular" width={40} height={40} sx={{ flexShrink: 0 }} />
+              <Skeleton
+                animation="wave"
+                variant="circular"
+                width={40}
+                height={40}
+                sx={{ flexShrink: 0 }}
+              />
               <Box sx={{ flex: 1 }}>
                 <Skeleton animation="wave" variant="text" width="45%" height={20} />
                 <Skeleton animation="wave" variant="text" width="35%" height={16} />
@@ -244,7 +314,13 @@ const ReservationDetailPageSkeleton: React.FC = () => (
               </Box>
               <Box sx={{ textAlign: 'right' }}>
                 <Skeleton animation="wave" variant="text" width={110} height={24} />
-                <Skeleton animation="wave" variant="rounded" width={70} height={22} sx={{ borderRadius: '100px', ml: 'auto' }} />
+                <Skeleton
+                  animation="wave"
+                  variant="rounded"
+                  width={70}
+                  height={22}
+                  sx={{ borderRadius: '100px', ml: 'auto' }}
+                />
               </Box>
             </Box>
           </Box>

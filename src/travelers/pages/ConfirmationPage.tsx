@@ -74,10 +74,26 @@ const ConfirmationPage: React.FC = () => {
       <InfoGrid
         columns={2}
         items={[
-          { label: t('confirmation.sidebar.checkIn'), value: formatDate('2026-03-15', 'mediumWithDay'), sub: '3:00 PM' },
-          { label: t('confirmation.sidebar.checkOut'), value: formatDate('2026-03-20', 'mediumWithDay'), sub: '12:00 PM' },
-          { label: t('confirmation.sidebar.room'), value: t('confirmation.sidebar.roomValue'), sub: t('confirmation.sidebar.roomSub') },
-          { label: t('confirmation.sidebar.guests'), value: t('confirmation.sidebar.guestsValue'), sub: t('confirmation.sidebar.guestsSub') },
+          {
+            label: t('confirmation.sidebar.checkIn'),
+            value: formatDate('2026-03-15', 'mediumWithDay'),
+            sub: '3:00 PM',
+          },
+          {
+            label: t('confirmation.sidebar.checkOut'),
+            value: formatDate('2026-03-20', 'mediumWithDay'),
+            sub: '12:00 PM',
+          },
+          {
+            label: t('confirmation.sidebar.room'),
+            value: t('confirmation.sidebar.roomValue'),
+            sub: t('confirmation.sidebar.roomSub'),
+          },
+          {
+            label: t('confirmation.sidebar.guests'),
+            value: t('confirmation.sidebar.guestsValue'),
+            sub: t('confirmation.sidebar.guestsSub'),
+          },
         ]}
       />
 
@@ -88,9 +104,13 @@ const ConfirmationPage: React.FC = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <CreditCardIcon sx={{ fontSize: 16, color: primary }} />
-            <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>VISA &bull;&bull;&bull;&bull; 4242</Typography>
+            <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>
+              VISA &bull;&bull;&bull;&bull; 4242
+            </Typography>
           </Box>
-          <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>{formatPrice(2664000)}</Typography>
+          <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>
+            {formatPrice(2664000)}
+          </Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           <Box
@@ -104,7 +124,9 @@ const ConfirmationPage: React.FC = () => {
             }}
           >
             <CheckCircleIcon sx={{ fontSize: 14, color: success }} />
-            <Typography sx={{ fontSize: 12, fontWeight: 600, color: success }}>{t('confirmation.sidebar.paymentSuccess')}</Typography>
+            <Typography sx={{ fontSize: 12, fontWeight: 600, color: success }}>
+              {t('confirmation.sidebar.paymentSuccess')}
+            </Typography>
           </Box>
         </Box>
       </Box>
@@ -121,7 +143,7 @@ const ConfirmationPage: React.FC = () => {
             { num: '1', text: t('confirmation.sidebar.step1') },
             { num: '2', text: t('confirmation.sidebar.step2') },
             { num: '3', text: t('confirmation.sidebar.step3') },
-          ].map((step) => (
+          ].map(step => (
             <Box key={step.num} sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <Box
                 sx={{
@@ -135,9 +157,14 @@ const ConfirmationPage: React.FC = () => {
                   flexShrink: 0,
                 }}
               >
-                <Typography sx={{ fontSize: 12, fontWeight: 700, color: primary }}>{step.num}</Typography>
+                <Typography sx={{ fontSize: 12, fontWeight: 700, color: primary }}>
+                  {step.num}
+                </Typography>
               </Box>
-              <Typography sx={{ fontSize: 13, color: onSurfaceVariant, lineHeight: 1.4 }} dangerouslySetInnerHTML={{ __html: step.text }} />
+              <Typography
+                sx={{ fontSize: 13, color: onSurfaceVariant, lineHeight: 1.4 }}
+                dangerouslySetInnerHTML={{ __html: step.text }}
+              />
             </Box>
           ))}
         </Box>

@@ -11,8 +11,7 @@ export function useCart() {
 export function useAddCartItem() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (item: unknown) =>
-      httpClient.post('/cart/items', { body: item }),
+    mutationFn: (item: unknown) => httpClient.post('/cart/items', { body: item }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
     },
@@ -22,8 +21,7 @@ export function useAddCartItem() {
 export function useRemoveCartItem() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (itemId: number) =>
-      httpClient.delete(`/cart/items/${itemId}`),
+    mutationFn: (itemId: number) => httpClient.delete(`/cart/items/${itemId}`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
     },

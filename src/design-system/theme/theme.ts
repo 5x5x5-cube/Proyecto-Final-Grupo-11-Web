@@ -3,7 +3,11 @@ import { palette } from './palette';
 
 export const theme = createTheme({
   palette: {
-    primary: { main: palette.primary, contrastText: palette.onPrimary, light: palette.primaryContainer },
+    primary: {
+      main: palette.primary,
+      contrastText: palette.onPrimary,
+      light: palette.primaryContainer,
+    },
     secondary: { main: palette.secondary, light: palette.secondaryContainer },
     error: { main: palette.error, light: palette.errorContainer },
     success: { main: palette.success, light: palette.successContainer },

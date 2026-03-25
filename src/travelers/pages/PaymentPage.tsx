@@ -51,7 +51,10 @@ export default function PaymentPage() {
 
   const handlePay = () => {
     if (!isFormValid || payment.isPending) return;
-    payment.mutate({ cardNumber, cardHolder, expiry, cvv }, { onSuccess: () => navigate('/checkout/confirmation') });
+    payment.mutate(
+      { cardNumber, cardHolder, expiry, cvv },
+      { onSuccess: () => navigate('/checkout/confirmation') }
+    );
   };
 
   const PaymentSidebar = () => (
@@ -81,9 +84,7 @@ export default function PaymentPage() {
           }}
         />
         <Box>
-          <Typography
-            sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface, mb: '4px' }}
-          >
+          <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface, mb: '4px' }}>
             Hotel Santa Clara Sofitel
           </Typography>
           <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant, mb: '2px' }}>
@@ -101,13 +102,17 @@ export default function PaymentPage() {
           <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
             {`${formatPrice(480000)} x 5 ${t('payment.sidebar.nightsLabel')}`}
           </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(2400000)}</Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
+            {formatPrice(2400000)}
+          </Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
             {t('payment.sidebar.taxesAndFees')}
           </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(264000)}</Typography>
+          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
+            {formatPrice(264000)}
+          </Typography>
         </Box>
         <Box sx={{ height: 1, backgroundColor: palette.outlineVariant }} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -249,7 +254,9 @@ export default function PaymentPage() {
                 justifyContent: 'space-between',
               }}
             >
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <Box
+                sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}
+              >
                 <Box
                   sx={{
                     width: 36,
@@ -279,7 +286,9 @@ export default function PaymentPage() {
               >
                 •••• •••• •••• 4242
               </Typography>
-              <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+              <Box
+                sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}
+              >
                 <Box>
                   <Typography
                     sx={{

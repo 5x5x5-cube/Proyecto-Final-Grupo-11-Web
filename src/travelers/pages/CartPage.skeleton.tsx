@@ -9,8 +9,11 @@ const CartSidebarSkeleton = () => (
 
     {/* Price breakdown rows */}
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      {[0, 1, 2, 3].map((i) => (
-        <Box key={i} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      {[0, 1, 2, 3].map(i => (
+        <Box
+          key={i}
+          sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+        >
           <Skeleton animation="wave" variant="text" width="55%" height={20} />
           <Skeleton animation="wave" variant="text" width="28%" height={20} />
         </Box>
@@ -56,13 +59,25 @@ export default function CartPageSkeleton() {
 
           {/* Hotel info row */}
           <Box sx={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-            <Skeleton animation="wave" variant="rounded" width={120} height={90} sx={{ borderRadius: '12px', flexShrink: 0 }} />
+            <Skeleton
+              animation="wave"
+              variant="rounded"
+              width={120}
+              height={90}
+              sx={{ borderRadius: '12px', flexShrink: 0 }}
+            />
             <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <Skeleton animation="wave" variant="text" width={60} height={16} />
               <Skeleton animation="wave" variant="text" width="55%" height={28} />
               <Skeleton animation="wave" variant="text" width="45%" height={18} />
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Skeleton animation="wave" variant="rounded" width={40} height={26} sx={{ borderRadius: '6px' }} />
+                <Skeleton
+                  animation="wave"
+                  variant="rounded"
+                  width={40}
+                  height={26}
+                  sx={{ borderRadius: '6px' }}
+                />
                 <Skeleton animation="wave" variant="text" width={80} height={18} />
                 <Skeleton animation="wave" variant="text" width={70} height={16} />
               </Box>
@@ -71,7 +86,7 @@ export default function CartPageSkeleton() {
 
           {/* Date/duration info grid (3 cols) */}
           <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
-            {[0, 1, 2].map((i) => (
+            {[0, 1, 2].map(i => (
               <Box key={i}>
                 <Skeleton animation="wave" variant="text" width="70%" height={14} />
                 <Skeleton animation="wave" variant="text" width="85%" height={22} />
@@ -91,9 +106,21 @@ export default function CartPageSkeleton() {
               borderRadius: '12px',
             }}
           >
-            <Skeleton animation="wave" variant="rounded" width={48} height={48} sx={{ borderRadius: '10px', flexShrink: 0 }} />
+            <Skeleton
+              animation="wave"
+              variant="rounded"
+              width={48}
+              height={48}
+              sx={{ borderRadius: '10px', flexShrink: 0 }}
+            />
             <Box sx={{ flex: 1 }}>
-              <Skeleton animation="wave" variant="text" width="40%" height={22} sx={{ mb: '4px' }} />
+              <Skeleton
+                animation="wave"
+                variant="text"
+                width="40%"
+                height={22}
+                sx={{ mb: '4px' }}
+              />
               <Skeleton animation="wave" variant="text" width="65%" height={18} />
             </Box>
             <Box sx={{ textAlign: 'right' }}>
@@ -130,7 +157,13 @@ export default function CartPageSkeleton() {
               borderRadius: '12px',
             }}
           >
-            <Skeleton animation="wave" variant="circular" width={40} height={40} sx={{ flexShrink: 0 }} />
+            <Skeleton
+              animation="wave"
+              variant="circular"
+              width={40}
+              height={40}
+              sx={{ flexShrink: 0 }}
+            />
             <Box>
               <Skeleton animation="wave" variant="text" width={130} height={20} />
               <Skeleton animation="wave" variant="text" width={200} height={16} />
@@ -155,7 +188,7 @@ export default function CartPageSkeleton() {
             <Skeleton animation="wave" variant="text" width={160} height={24} />
           </Box>
 
-          {[0, 1, 2].map((i) => (
+          {[0, 1, 2].map(i => (
             <Box key={i} sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <Skeleton animation="wave" variant="circular" width={18} height={18} />
               <Skeleton animation="wave" variant="text" width="75%" height={18} />

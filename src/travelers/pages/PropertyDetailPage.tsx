@@ -27,7 +27,7 @@ import PropertyDetailPageSkeleton from './PropertyDetailPage.skeleton';
 import { useHotelDetail, useHotelReviews } from '../../api/hooks/useSearch';
 
 export default function PropertyDetailPage() {
-  const { data: hotelDetail, isLoading: isHotelLoading } = useHotelDetail(1);
+  const { isLoading: isHotelLoading } = useHotelDetail(1);
   const { data: reviewsData, isLoading: isReviewsLoading } = useHotelReviews(1);
 
   const { t } = useTranslation('travelers');
@@ -35,18 +35,51 @@ export default function PropertyDetailPage() {
 
   if (isHotelLoading) return <PropertyDetailPageSkeleton />;
 
-  const reviews = (reviewsData ?? []) as Array<{ initial: string; name: string; date: string; stars: number; text: string }>;
+  const reviews = (reviewsData ?? []) as Array<{
+    initial: string;
+    name: string;
+    date: string;
+    stars: number;
+    text: string;
+  }>;
 
   const amenities = [
-    { icon: <WifiIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.freeWifi') },
-    { icon: <PoolIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.pool') },
-    { icon: <FreeBreakfastIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.breakfastIncluded') },
-    { icon: <SpaIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.spaWellness') },
-    { icon: <FitnessCenterIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.gym') },
-    { icon: <LocalParkingIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.parking') },
-    { icon: <AcUnitIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.airConditioning') },
-    { icon: <RestaurantIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.restaurant') },
-    { icon: <LocalBarIcon sx={{ fontSize: 16, color: palette.primary }} />, label: t('propertyDetail.amenities.bar') },
+    {
+      icon: <WifiIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      label: t('propertyDetail.amenities.freeWifi'),
+    },
+    {
+      icon: <PoolIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      label: t('propertyDetail.amenities.pool'),
+    },
+    {
+      icon: <FreeBreakfastIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      label: t('propertyDetail.amenities.breakfastIncluded'),
+    },
+    {
+      icon: <SpaIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      label: t('propertyDetail.amenities.spaWellness'),
+    },
+    {
+      icon: <FitnessCenterIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      label: t('propertyDetail.amenities.gym'),
+    },
+    {
+      icon: <LocalParkingIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      label: t('propertyDetail.amenities.parking'),
+    },
+    {
+      icon: <AcUnitIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      label: t('propertyDetail.amenities.airConditioning'),
+    },
+    {
+      icon: <RestaurantIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      label: t('propertyDetail.amenities.restaurant'),
+    },
+    {
+      icon: <LocalBarIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      label: t('propertyDetail.amenities.bar'),
+    },
   ];
 
   const rooms = [
@@ -81,10 +114,15 @@ export default function PropertyDetailPage() {
       >
         {/* Price */}
         <Box>
-          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>{t('propertyDetail.booking.from')}</Typography>
+          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
+            {t('propertyDetail.booking.from')}
+          </Typography>
           <Typography sx={{ fontSize: 32, fontWeight: 700, color: palette.primary }}>
             {formatPrice(480000)}{' '}
-            <Typography component="span" sx={{ fontSize: 16, fontWeight: 400, color: palette.onSurfaceVariant }}>
+            <Typography
+              component="span"
+              sx={{ fontSize: 16, fontWeight: 400, color: palette.onSurfaceVariant }}
+            >
               {t('propertyDetail.booking.perNight')}
             </Typography>
           </Typography>
@@ -112,7 +150,9 @@ export default function PropertyDetailPage() {
             >
               {t('propertyDetail.booking.checkIn')}
             </Typography>
-            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatDate('2026-03-15', 'shortWithDay')}</Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
+              {formatDate('2026-03-15', 'shortWithDay')}
+            </Typography>
           </Box>
           <Box
             sx={{
@@ -134,7 +174,9 @@ export default function PropertyDetailPage() {
             >
               {t('propertyDetail.booking.checkOut')}
             </Typography>
-            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatDate('2026-03-20', 'shortWithDay')}</Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
+              {formatDate('2026-03-20', 'shortWithDay')}
+            </Typography>
           </Box>
         </Box>
 
@@ -163,20 +205,44 @@ export default function PropertyDetailPage() {
             >
               {t('propertyDetail.booking.guests')}
             </Typography>
-            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{t('propertyDetail.booking.defaultGuests')}</Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
+              {t('propertyDetail.booking.defaultGuests')}
+            </Typography>
           </Box>
           <ExpandMoreIcon sx={{ color: palette.onSurfaceVariant, fontSize: 20 }} />
         </Box>
 
         {/* Price breakdown */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: palette.onSurfaceVariant }}>
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{formatPrice(480000)} x 5 {t('propertyDetail.booking.nights')}</Typography>
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{formatPrice(2400000)}</Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              fontSize: 14,
+              color: palette.onSurfaceVariant,
+            }}
+          >
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+              {formatPrice(480000)} x 5 {t('propertyDetail.booking.nights')}
+            </Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+              {formatPrice(2400000)}
+            </Typography>
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 14, color: palette.onSurfaceVariant }}>
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{t('propertyDetail.booking.taxesAndFees')}</Typography>
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>{formatPrice(264000)}</Typography>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              fontSize: 14,
+              color: palette.onSurfaceVariant,
+            }}
+          >
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+              {t('propertyDetail.booking.taxesAndFees')}
+            </Typography>
+            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+              {formatPrice(264000)}
+            </Typography>
           </Box>
           <Box
             sx={{
@@ -189,8 +255,12 @@ export default function PropertyDetailPage() {
               mt: '4px',
             }}
           >
-            <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>{t('propertyDetail.booking.total')}</Typography>
-            <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>{formatPrice(2664000)}</Typography>
+            <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>
+              {t('propertyDetail.booking.total')}
+            </Typography>
+            <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>
+              {formatPrice(2664000)}
+            </Typography>
           </Box>
         </Box>
 
@@ -272,10 +342,7 @@ export default function PropertyDetailPage() {
   );
 
   return (
-    <TravelerLayout
-      variant="detail"
-      sidebar={<BookingSidebar />}
-    >
+    <TravelerLayout variant="detail" sidebar={<BookingSidebar />}>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
         {/* Gallery */}
         <Box
@@ -415,7 +482,7 @@ export default function PropertyDetailPage() {
             {t('propertyDetail.amenities.title')}
           </Typography>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-            {amenities.map((amenity) => (
+            {amenities.map(amenity => (
               <Box
                 key={amenity.label}
                 sx={{
@@ -443,7 +510,7 @@ export default function PropertyDetailPage() {
             {t('propertyDetail.rooms.title')}
           </Typography>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            {rooms.map((room) => (
+            {rooms.map(room => (
               <Box
                 key={room.name}
                 sx={{
@@ -466,7 +533,9 @@ export default function PropertyDetailPage() {
                   }}
                 />
                 <Box sx={{ flex: 1 }}>
-                  <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface, mb: '4px' }}>
+                  <Typography
+                    sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface, mb: '4px' }}
+                  >
                     {room.name}
                   </Typography>
                   <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
@@ -519,8 +588,19 @@ export default function PropertyDetailPage() {
           </Typography>
           {isReviewsLoading ? (
             <Box sx={{ display: 'flex', gap: '16px', overflow: 'hidden' }}>
-              {[0, 1, 2].map((i) => (
-                <Box key={i} sx={{ flex: 1, border: `1px solid ${palette.outlineVariant}`, borderRadius: '12px', padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {[0, 1, 2].map(i => (
+                <Box
+                  key={i}
+                  sx={{
+                    flex: 1,
+                    border: `1px solid ${palette.outlineVariant}`,
+                    borderRadius: '12px',
+                    padding: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                  }}
+                >
                   <Skeleton animation="wave" variant="rounded" height={36} />
                   <Skeleton animation="wave" variant="text" width={80} />
                   <Skeleton animation="wave" variant="rounded" height={60} />
@@ -528,59 +608,59 @@ export default function PropertyDetailPage() {
               ))}
             </Box>
           ) : (
-          <Box sx={{ display: 'flex', gap: '16px', overflow: 'hidden' }}>
-            {reviews.map((review) => (
-              <Box
-                key={review.name}
-                sx={{
-                  flex: 1,
-                  backgroundColor: '#fff',
-                  border: `1px solid ${palette.outlineVariant}`,
-                  borderRadius: '12px',
-                  padding: '16px',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '8px',
-                }}
-              >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Box
-                    sx={{
-                      width: 36,
-                      height: 36,
-                      borderRadius: '50%',
-                      backgroundColor: palette.secondaryContainer,
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: 14,
-                      fontWeight: 600,
-                      color: palette.primary,
-                    }}
-                  >
-                    {review.initial}
-                  </Box>
-                  <Box>
-                    <Typography sx={{ fontSize: 14, fontWeight: 500, color: palette.onSurface }}>
-                      {review.name}
-                    </Typography>
-                    <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                      {review.date}
-                    </Typography>
-                  </Box>
-                </Box>
-                <Typography sx={{ color: palette.star, fontSize: 13 }}>
-                  {'★'.repeat(review.stars)}
-                  {'☆'.repeat(5 - review.stars)}
-                </Typography>
-                <Typography
-                  sx={{ fontSize: 13, color: palette.onSurfaceVariant, lineHeight: 1.5 }}
+            <Box sx={{ display: 'flex', gap: '16px', overflow: 'hidden' }}>
+              {reviews.map(review => (
+                <Box
+                  key={review.name}
+                  sx={{
+                    flex: 1,
+                    backgroundColor: '#fff',
+                    border: `1px solid ${palette.outlineVariant}`,
+                    borderRadius: '12px',
+                    padding: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                  }}
                 >
-                  {review.text}
-                </Typography>
-              </Box>
-            ))}
-          </Box>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <Box
+                      sx={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: '50%',
+                        backgroundColor: palette.secondaryContainer,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: 14,
+                        fontWeight: 600,
+                        color: palette.primary,
+                      }}
+                    >
+                      {review.initial}
+                    </Box>
+                    <Box>
+                      <Typography sx={{ fontSize: 14, fontWeight: 500, color: palette.onSurface }}>
+                        {review.name}
+                      </Typography>
+                      <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
+                        {review.date}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Typography sx={{ color: palette.star, fontSize: 13 }}>
+                    {'★'.repeat(review.stars)}
+                    {'☆'.repeat(5 - review.stars)}
+                  </Typography>
+                  <Typography
+                    sx={{ fontSize: 13, color: palette.onSurfaceVariant, lineHeight: 1.5 }}
+                  >
+                    {review.text}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
           )}
         </Box>
       </Box>

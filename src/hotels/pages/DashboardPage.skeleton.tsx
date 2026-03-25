@@ -26,8 +26,16 @@ export default function DashboardPageSkeleton() {
               gap: '12px',
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-              <Skeleton animation="wave" variant="rounded" width={44} height={44} sx={{ borderRadius: '12px' }} />
+            <Box
+              sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}
+            >
+              <Skeleton
+                animation="wave"
+                variant="rounded"
+                width={44}
+                height={44}
+                sx={{ borderRadius: '12px' }}
+              />
               <Skeleton animation="wave" variant="text" width={48} height={18} />
             </Box>
             <Box>
@@ -94,14 +102,26 @@ export default function DashboardPageSkeleton() {
             >
               {/* Guest with avatar */}
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <Skeleton animation="wave" variant="circular" width={32} height={32} sx={{ flexShrink: 0 }} />
+                <Skeleton
+                  animation="wave"
+                  variant="circular"
+                  width={32}
+                  height={32}
+                  sx={{ flexShrink: 0 }}
+                />
                 <Skeleton animation="wave" variant="text" width={110} height={20} />
               </Box>
               <Skeleton animation="wave" variant="text" width={70} height={20} />
               <Skeleton animation="wave" variant="text" width={80} height={20} />
               <Skeleton animation="wave" variant="text" width={80} height={20} />
               <Skeleton animation="wave" variant="text" width={90} height={20} />
-              <Skeleton animation="wave" variant="rounded" width={80} height={24} sx={{ borderRadius: '100px' }} />
+              <Skeleton
+                animation="wave"
+                variant="rounded"
+                width={80}
+                height={24}
+                sx={{ borderRadius: '100px' }}
+              />
             </Box>
           ))}
         </Box>
@@ -135,7 +155,15 @@ export default function DashboardPageSkeleton() {
             </Box>
 
             {/* Bar chart area */}
-            <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: '8px', height: 80, padding: '20px 24px 0' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                gap: '8px',
+                height: 80,
+                padding: '20px 24px 0',
+              }}
+            >
               {Array.from({ length: 7 }).map((_, i) => (
                 <Skeleton
                   key={i}
@@ -143,7 +171,7 @@ export default function DashboardPageSkeleton() {
                   variant="rounded"
                   sx={{
                     flex: 1,
-                    height: `${40 + Math.round(((i * 13) % 50))}%`,
+                    height: `${40 + Math.round((i * 13) % 50)}%`,
                     borderRadius: '4px 4px 0 0',
                     transform: 'none',
                   }}
@@ -207,7 +235,13 @@ export default function DashboardPageSkeleton() {
                     gap: '10px',
                   }}
                 >
-                  <Skeleton animation="wave" variant="rounded" width={48} height={48} sx={{ borderRadius: '12px' }} />
+                  <Skeleton
+                    animation="wave"
+                    variant="rounded"
+                    width={48}
+                    height={48}
+                    sx={{ borderRadius: '12px' }}
+                  />
                   <Skeleton animation="wave" variant="text" width={90} height={20} />
                   <Skeleton animation="wave" variant="text" width={110} height={16} />
                 </Box>

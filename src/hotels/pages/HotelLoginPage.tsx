@@ -35,10 +35,22 @@ export default function HotelLoginPage() {
   };
 
   const trustBadges = [
-    { icon: <LockIcon sx={{ fontSize: 16, color: palette.primary }} />, text: t('login.trustBadges.ssl') },
-    { icon: <VerifiedUserIcon sx={{ fontSize: 16, color: palette.primary }} />, text: t('login.trustBadges.secure') },
-    { icon: <SupportAgentIcon sx={{ fontSize: 16, color: palette.primary }} />, text: t('login.trustBadges.support') },
-    { icon: <LanguageIcon sx={{ fontSize: 16, color: palette.primary }} />, text: t('login.trustBadges.countries') },
+    {
+      icon: <LockIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      text: t('login.trustBadges.ssl'),
+    },
+    {
+      icon: <VerifiedUserIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      text: t('login.trustBadges.secure'),
+    },
+    {
+      icon: <SupportAgentIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      text: t('login.trustBadges.support'),
+    },
+    {
+      icon: <LanguageIcon sx={{ fontSize: 16, color: palette.primary }} />,
+      text: t('login.trustBadges.countries'),
+    },
   ];
 
   const stats = [
@@ -48,10 +60,22 @@ export default function HotelLoginPage() {
   ];
 
   const features = [
-    { icon: <DashboardIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: t('login.features.dashboard') },
-    { icon: <EventAvailableIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: t('login.features.reservations') },
-    { icon: <BarChartIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: t('login.features.reports') },
-    { icon: <SellIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />, text: t('login.features.rates') },
+    {
+      icon: <DashboardIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />,
+      text: t('login.features.dashboard'),
+    },
+    {
+      icon: <EventAvailableIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />,
+      text: t('login.features.reservations'),
+    },
+    {
+      icon: <BarChartIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />,
+      text: t('login.features.reports'),
+    },
+    {
+      icon: <SellIcon sx={{ fontSize: 18, color: palette.primaryContainer }} />,
+      text: t('login.features.rates'),
+    },
   ];
 
   return (
@@ -96,7 +120,10 @@ export default function HotelLoginPage() {
               letterSpacing: '-0.5px',
             }}
           >
-            <Box component="span" sx={{ fontWeight: 300 }}>Travel</Box>Hub
+            <Box component="span" sx={{ fontWeight: 300 }}>
+              Travel
+            </Box>
+            Hub
           </Typography>
           <Box
             sx={{
@@ -149,7 +176,7 @@ export default function HotelLoginPage() {
               placeholder={t('login.emailPlaceholder')}
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               onBlur={() => setEmailTouched(true)}
               error={emailError}
               helperText={emailError ? t('login.emailInvalid', 'Invalid email address') : undefined}
@@ -183,7 +210,7 @@ export default function HotelLoginPage() {
               placeholder="••••••••"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   height: 56,
@@ -239,13 +266,19 @@ export default function HotelLoginPage() {
               '&:hover': { backgroundColor: palette.primary },
             }}
           >
-            {login.isPending ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : t('login.loginButton')}
+            {login.isPending ? (
+              <CircularProgress size={20} sx={{ color: '#fff' }} />
+            ) : (
+              t('login.loginButton')
+            )}
           </Button>
 
           {/* Divider */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', my: '4px' }}>
             <Divider sx={{ flex: 1, borderColor: palette.outlineVariant }} />
-            <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant, whiteSpace: 'nowrap' }}>
+            <Typography
+              sx={{ fontSize: 12, color: palette.onSurfaceVariant, whiteSpace: 'nowrap' }}
+            >
               {t('login.newToTravelHub')}
             </Typography>
             <Divider sx={{ flex: 1, borderColor: palette.outlineVariant }} />
@@ -254,7 +287,10 @@ export default function HotelLoginPage() {
           {/* Help text */}
           <Typography sx={{ textAlign: 'center', fontSize: 13, color: palette.onSurfaceVariant }}>
             {t('login.contactUs')}{' '}
-            <Box component="span" sx={{ color: palette.primary, fontWeight: 500, cursor: 'pointer' }}>
+            <Box
+              component="span"
+              sx={{ color: palette.primary, fontWeight: 500, cursor: 'pointer' }}
+            >
               partners@travelhub.com
             </Box>{' '}
             {t('login.contactSuffix')}
@@ -274,7 +310,16 @@ export default function HotelLoginPage() {
           }}
         >
           {trustBadges.map((item, index) => (
-            <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 12, color: palette.onSurfaceVariant }}>
+            <Box
+              key={index}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: 12,
+                color: palette.onSurfaceVariant,
+              }}
+            >
               {item.icon}
               {item.text}
             </Box>

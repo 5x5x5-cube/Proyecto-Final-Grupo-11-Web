@@ -88,7 +88,7 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
       {/* Home variant: nav links */}
       {variant === 'home' && (
         <Box sx={{ display: 'flex', gap: '32px', flex: 1 }}>
-          {navLinks.map((link) => (
+          {navLinks.map(link => (
             <Link key={link.path + link.label} to={link.path} style={{ textDecoration: 'none' }}>
               <Typography
                 sx={{
@@ -133,7 +133,9 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
       {variant === 'detail' && (
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
           <Link to="/results" style={{ textDecoration: 'none' }}>
-            <Typography sx={{ fontSize: '13px', color: onSurfaceVariant }}>{t('nav.hotels')}</Typography>
+            <Typography sx={{ fontSize: '13px', color: onSurfaceVariant }}>
+              {t('nav.hotels')}
+            </Typography>
           </Link>
           <Typography sx={{ fontSize: '13px', color: onSurfaceVariant }}>/</Typography>
           <Typography sx={{ fontSize: '13px', color: onSurface, fontWeight: 500 }}>
@@ -150,7 +152,7 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
         {/* Language selector */}
         <Box
           ref={langBtnRef}
-          onClick={(e) => setLangAnchor(e.currentTarget)}
+          onClick={e => setLangAnchor(e.currentTarget)}
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -172,11 +174,14 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
           onClose={() => setLangAnchor(null)}
           slotProps={{ paper: { sx: { borderRadius: '12px', mt: '4px', minWidth: 180 } } }}
         >
-          {languages.map((lang) => (
+          {languages.map(lang => (
             <MenuItem
               key={lang}
               selected={lang === language}
-              onClick={() => { setLanguage(lang); setLangAnchor(null); }}
+              onClick={() => {
+                setLanguage(lang);
+                setLangAnchor(null);
+              }}
               sx={{ fontSize: 13 }}
             >
               {lang} — {languageNames[lang]}
@@ -187,7 +192,7 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
         {/* Currency selector */}
         <Box
           ref={curBtnRef}
-          onClick={(e) => setCurAnchor(e.currentTarget)}
+          onClick={e => setCurAnchor(e.currentTarget)}
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -208,11 +213,14 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
           onClose={() => setCurAnchor(null)}
           slotProps={{ paper: { sx: { borderRadius: '12px', mt: '4px', minWidth: 220 } } }}
         >
-          {currencies.map((cur) => (
+          {currencies.map(cur => (
             <MenuItem
               key={cur}
               selected={cur === currency}
-              onClick={() => { setCurrency(cur); setCurAnchor(null); }}
+              onClick={() => {
+                setCurrency(cur);
+                setCurAnchor(null);
+              }}
               sx={{ fontSize: 13 }}
             >
               {cur} — {currencyNames[cur]}
@@ -223,7 +231,9 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
 
       {/* Right actions */}
       {variant === 'reservations' ? (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', ml: 'auto' }}>
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', ml: 'auto' }}
+        >
           <Box
             sx={{
               width: 32,

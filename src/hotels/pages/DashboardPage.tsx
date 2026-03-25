@@ -57,7 +57,12 @@ export default function DashboardPage() {
     );
   }
 
-  const { stats: dashboardStats, recentReservations, revenueData, quickAccessItems } = dashboard as any;
+  const {
+    stats: dashboardStats,
+    recentReservations,
+    revenueData,
+    quickAccessItems,
+  } = dashboard as any;
 
   const topbarActions = (
     <>
@@ -110,7 +115,6 @@ export default function DashboardPage() {
       subtitle={`${formatDate('2026-02-27', 'mediumWithDay')} · Hotel Santa Clara Sofitel`}
       topbarActions={topbarActions}
     >
-
       {/* Stat cards */}
       <Box
         sx={{
@@ -135,7 +139,9 @@ export default function DashboardPage() {
                 gap: '12px',
               }}
             >
-              <Box sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+              <Box
+                sx={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}
+              >
                 <Box
                   sx={{
                     width: 44,
@@ -147,7 +153,9 @@ export default function DashboardPage() {
                     justifyContent: 'center',
                   }}
                 >
-                  {React.createElement(iconMap[stat.icon] || AppsIcon, { sx: { fontSize: 22, color: colors.color } })}
+                  {React.createElement(iconMap[stat.icon] || AppsIcon, {
+                    sx: { fontSize: 22, color: colors.color },
+                  })}
                 </Box>
                 <Box
                   sx={{
@@ -156,7 +164,12 @@ export default function DashboardPage() {
                     gap: '4px',
                     fontSize: 12,
                     fontWeight: 500,
-                    color: stat.changeType === 'up' ? palette.success : (stat.changeType as string) === 'down' ? palette.error : palette.onSurfaceVariant,
+                    color:
+                      stat.changeType === 'up'
+                        ? palette.success
+                        : (stat.changeType as string) === 'down'
+                          ? palette.error
+                          : palette.onSurfaceVariant,
                   }}
                 >
                   {stat.changeType === 'up' && <ArrowUpwardIcon sx={{ fontSize: 14 }} />}
@@ -215,7 +228,14 @@ export default function DashboardPage() {
           <Box component="table" sx={{ width: '100%', borderCollapse: 'collapse' }}>
             <Box component="thead">
               <Box component="tr">
-                {[t('dashboard.tableHeaders.guest'), t('dashboard.tableHeaders.room'), t('dashboard.tableHeaders.checkIn'), t('dashboard.tableHeaders.checkOut'), t('dashboard.tableHeaders.total'), t('dashboard.tableHeaders.status')].map((col) => (
+                {[
+                  t('dashboard.tableHeaders.guest'),
+                  t('dashboard.tableHeaders.room'),
+                  t('dashboard.tableHeaders.checkIn'),
+                  t('dashboard.tableHeaders.checkOut'),
+                  t('dashboard.tableHeaders.total'),
+                  t('dashboard.tableHeaders.status'),
+                ].map(col => (
                   <Box
                     component="th"
                     key={col}
@@ -251,7 +271,10 @@ export default function DashboardPage() {
                       padding: '14px 16px',
                       fontSize: 14,
                       color: palette.onSurface,
-                      borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
+                      borderBottom:
+                        index < recentReservations.length - 1
+                          ? `1px solid ${palette.outlineVariant}`
+                          : 'none',
                     }}
                   >
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -281,7 +304,10 @@ export default function DashboardPage() {
                       padding: '14px 16px',
                       fontSize: 14,
                       color: palette.onSurface,
-                      borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
+                      borderBottom:
+                        index < recentReservations.length - 1
+                          ? `1px solid ${palette.outlineVariant}`
+                          : 'none',
                     }}
                   >
                     {res.room}
@@ -292,7 +318,10 @@ export default function DashboardPage() {
                       padding: '14px 16px',
                       fontSize: 14,
                       color: palette.onSurface,
-                      borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
+                      borderBottom:
+                        index < recentReservations.length - 1
+                          ? `1px solid ${palette.outlineVariant}`
+                          : 'none',
                     }}
                   >
                     {formatDate(res.checkIn, 'medium')}
@@ -303,7 +332,10 @@ export default function DashboardPage() {
                       padding: '14px 16px',
                       fontSize: 14,
                       color: palette.onSurface,
-                      borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
+                      borderBottom:
+                        index < recentReservations.length - 1
+                          ? `1px solid ${palette.outlineVariant}`
+                          : 'none',
                     }}
                   >
                     {formatDate(res.checkOut, 'medium')}
@@ -314,7 +346,10 @@ export default function DashboardPage() {
                       padding: '14px 16px',
                       fontSize: 14,
                       color: palette.onSurface,
-                      borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
+                      borderBottom:
+                        index < recentReservations.length - 1
+                          ? `1px solid ${palette.outlineVariant}`
+                          : 'none',
                     }}
                   >
                     {formatPrice(res.totalCop)}
@@ -323,7 +358,10 @@ export default function DashboardPage() {
                     component="td"
                     sx={{
                       padding: '14px 16px',
-                      borderBottom: index < recentReservations.length - 1 ? `1px solid ${palette.outlineVariant}` : 'none',
+                      borderBottom:
+                        index < recentReservations.length - 1
+                          ? `1px solid ${palette.outlineVariant}`
+                          : 'none',
                     }}
                   >
                     <StatusChip status={res.status} />
@@ -368,7 +406,15 @@ export default function DashboardPage() {
             </Box>
 
             {/* CSS Bar chart */}
-            <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: '8px', height: 80, padding: '20px 24px 0' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'flex-end',
+                gap: '8px',
+                height: 80,
+                padding: '20px 24px 0',
+              }}
+            >
               {revenueData.map((d, i) => (
                 <Box
                   key={i}
@@ -399,7 +445,9 @@ export default function DashboardPage() {
                 </Typography>
               ))}
             </Box>
-            <Typography sx={{ padding: '0 24px 16px', fontSize: 13, color: palette.onSurfaceVariant }}>
+            <Typography
+              sx={{ padding: '0 24px 16px', fontSize: 13, color: palette.onSurfaceVariant }}
+            >
               {formatDate('2026-02-01', 'monthYear')}:{' '}
               <Box component="span" sx={{ color: palette.primary, fontSize: 18, fontWeight: 700 }}>
                 {formatPrice(94200000)}
@@ -468,7 +516,9 @@ export default function DashboardPage() {
                         justifyContent: 'center',
                       }}
                     >
-                      {React.createElement(iconMap[item.icon] || AppsIcon, { sx: { fontSize: 24, color: colors.color } })}
+                      {React.createElement(iconMap[item.icon] || AppsIcon, {
+                        sx: { fontSize: 24, color: colors.color },
+                      })}
                     </Box>
                     <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>
                       {item.label}

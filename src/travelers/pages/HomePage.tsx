@@ -29,7 +29,11 @@ function addDays(base: Date, days: number): Date {
 }
 
 function formatDisplayDate(date: Date): string {
-  return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(date);
 }
 
 const today = new Date();
@@ -58,7 +62,12 @@ export default function HomePage() {
   const { formatPrice } = useLocale();
   const { t } = useTranslation('travelers');
   const { data: destinationsData, isLoading: isLoadingDestinations } = useDestinations();
-  const mockDestinations = (isLoadingDestinations ? [] : (destinationsData ?? [])) as Array<{ name: string; country: string; hotelCount: number; gradient: string }>;
+  const mockDestinations = (isLoadingDestinations ? [] : (destinationsData ?? [])) as Array<{
+    name: string;
+    country: string;
+    hotelCount: number;
+    gradient: string;
+  }>;
 
   // Search state
   const [destination, setDestination] = useState<string | null>(null);
@@ -200,7 +209,7 @@ export default function HomePage() {
         >
           {/* Destino */}
           <Box
-            onClick={(e) => setDestAnchor(e.currentTarget)}
+            onClick={e => setDestAnchor(e.currentTarget)}
             sx={{
               flex: 1,
               display: 'flex',
@@ -244,7 +253,7 @@ export default function HomePage() {
             slotProps={{ paper: { sx: { mt: '4px', borderRadius: '12px', minWidth: 220 } } }}
           >
             <List dense disablePadding>
-              {mockDestinations.map((dest) => (
+              {mockDestinations.map(dest => (
                 <ListItem key={dest.name} disablePadding>
                   <ListItemButton onClick={() => handleSelectDestination(dest.name, dest.country)}>
                     <ListItemText
@@ -261,7 +270,7 @@ export default function HomePage() {
 
           {/* Llegada */}
           <Box
-            onClick={(e) => setCheckInAnchor(e.currentTarget)}
+            onClick={e => setCheckInAnchor(e.currentTarget)}
             sx={{
               flex: 1,
               display: 'flex',
@@ -305,7 +314,7 @@ export default function HomePage() {
             slotProps={{ paper: { sx: { mt: '4px', borderRadius: '12px', minWidth: 200 } } }}
           >
             <List dense disablePadding>
-              {CHECK_IN_OPTIONS.map((opt) => (
+              {CHECK_IN_OPTIONS.map(opt => (
                 <ListItem key={opt.label} disablePadding>
                   <ListItemButton onClick={() => handleSelectCheckIn(opt.date)}>
                     <ListItemText
@@ -322,7 +331,7 @@ export default function HomePage() {
 
           {/* Salida */}
           <Box
-            onClick={(e) => setCheckOutAnchor(e.currentTarget)}
+            onClick={e => setCheckOutAnchor(e.currentTarget)}
             sx={{
               flex: 1,
               display: 'flex',
@@ -366,7 +375,7 @@ export default function HomePage() {
             slotProps={{ paper: { sx: { mt: '4px', borderRadius: '12px', minWidth: 200 } } }}
           >
             <List dense disablePadding>
-              {checkOutOptions.map((opt) => (
+              {checkOutOptions.map(opt => (
                 <ListItem key={opt.label} disablePadding>
                   <ListItemButton onClick={() => handleSelectCheckOut(opt.date)}>
                     <ListItemText
@@ -383,7 +392,7 @@ export default function HomePage() {
 
           {/* Huespedes */}
           <Box
-            onClick={(e) => setGuestsAnchor(e.currentTarget)}
+            onClick={e => setGuestsAnchor(e.currentTarget)}
             sx={{
               flex: 1,
               display: 'flex',
@@ -430,7 +439,7 @@ export default function HomePage() {
             >
               <IconButton
                 size="small"
-                onClick={() => setGuests((g) => Math.max(1, g - 1))}
+                onClick={() => setGuests(g => Math.max(1, g - 1))}
                 disabled={guests <= 1}
                 sx={{
                   border: `1px solid ${palette.outlineVariant}`,
@@ -441,12 +450,20 @@ export default function HomePage() {
               >
                 <RemoveIcon fontSize="small" />
               </IconButton>
-              <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface, minWidth: 24, textAlign: 'center' }}>
+              <Typography
+                sx={{
+                  fontSize: 18,
+                  fontWeight: 600,
+                  color: palette.onSurface,
+                  minWidth: 24,
+                  textAlign: 'center',
+                }}
+              >
                 {guests}
               </Typography>
               <IconButton
                 size="small"
-                onClick={() => setGuests((g) => Math.min(10, g + 1))}
+                onClick={() => setGuests(g => Math.min(10, g + 1))}
                 disabled={guests >= 10}
                 sx={{
                   border: `1px solid ${palette.outlineVariant}`,
@@ -550,7 +567,8 @@ export default function HomePage() {
                     color: 'rgba(255,255,255,0.8)',
                   }}
                 >
-                  {dest.country} · {t('home.destinations.fromPerNight', { price: formatPrice(basePrices[idx]) })}
+                  {dest.country} ·{' '}
+                  {t('home.destinations.fromPerNight', { price: formatPrice(basePrices[idx]) })}
                 </Typography>
               </Box>
             </Box>

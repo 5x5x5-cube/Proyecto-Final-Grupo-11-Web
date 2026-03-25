@@ -35,18 +35,38 @@ const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => 
   const { t } = useTranslation('common');
 
   const mainNavItems: NavItem[] = [
-    { id: 'dashboard', label: t('sidebar.dashboard'), icon: DashboardIcon, path: '/hotel/dashboard' },
-    { id: 'reservas', label: t('sidebar.reservations'), icon: BookOnlineIcon, path: '/hotel/reservations' },
+    {
+      id: 'dashboard',
+      label: t('sidebar.dashboard'),
+      icon: DashboardIcon,
+      path: '/hotel/dashboard',
+    },
+    {
+      id: 'reservas',
+      label: t('sidebar.reservations'),
+      icon: BookOnlineIcon,
+      path: '/hotel/reservations',
+    },
     { id: 'reportes', label: t('sidebar.reports'), icon: AssessmentIcon, path: '/hotel/reports' },
   ];
 
   const managementNavItems: NavItem[] = [
     { id: 'tarifas', label: t('sidebar.rates'), icon: PriceChangeIcon, path: '/hotel/rates' },
-    { id: 'descuentos', label: t('sidebar.discounts'), icon: DiscountIcon, path: '/hotel/discounts' },
+    {
+      id: 'descuentos',
+      label: t('sidebar.discounts'),
+      icon: DiscountIcon,
+      path: '/hotel/discounts',
+    },
   ];
 
   const bottomNavItems: NavItem[] = [
-    { id: 'configuracion', label: t('sidebar.settings'), icon: SettingsIcon, path: '/hotel/settings' },
+    {
+      id: 'configuracion',
+      label: t('sidebar.settings'),
+      icon: SettingsIcon,
+      path: '/hotel/settings',
+    },
     { id: 'cerrar-sesion', label: t('sidebar.logout'), icon: LogoutIcon, path: '/hotel/login' },
   ];
 
@@ -55,11 +75,7 @@ const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => 
     const IconComp = item.icon;
 
     return (
-      <Link
-        key={item.id}
-        to={item.path}
-        style={{ textDecoration: 'none' }}
-      >
+      <Link key={item.id} to={item.path} style={{ textDecoration: 'none' }}>
         <Box
           sx={{
             display: 'flex',
@@ -115,7 +131,10 @@ const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => 
             letterSpacing: '-0.25px',
           }}
         >
-          <Box component="span" sx={{ fontWeight: 300 }}>Travel</Box>Hub
+          <Box component="span" sx={{ fontWeight: 300 }}>
+            Travel
+          </Box>
+          Hub
         </Typography>
         <Box
           sx={{

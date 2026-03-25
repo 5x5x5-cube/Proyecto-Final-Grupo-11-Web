@@ -89,9 +89,7 @@ const ModalOverlay: React.FC<ModalOverlayProps> = ({
       </Box>
 
       {/* Body */}
-      <Box sx={{ padding: '0 24px 24px' }}>
-        {children}
-      </Box>
+      <Box sx={{ padding: '0 24px 24px' }}>{children}</Box>
 
       {/* Footer */}
       {footer && (

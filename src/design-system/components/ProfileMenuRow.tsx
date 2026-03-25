@@ -25,13 +25,9 @@ export default function ProfileMenuRow({ icon, label, value, onClick }: ProfileM
       <Box sx={{ color: palette.onSurfaceVariant, display: 'flex', alignItems: 'center' }}>
         {icon}
       </Box>
-      <Typography sx={{ fontSize: 14, color: palette.onSurface, flex: 1 }}>
-        {label}
-      </Typography>
+      <Typography sx={{ fontSize: 14, color: palette.onSurface, flex: 1 }}>{label}</Typography>
       {value && (
-        <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-          {value}
-        </Typography>
+        <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>{value}</Typography>
       )}
       <ChevronRightIcon sx={{ fontSize: 20, color: palette.onSurfaceVariant }} />
     </Box>

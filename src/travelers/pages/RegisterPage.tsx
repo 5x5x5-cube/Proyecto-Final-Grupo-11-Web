@@ -168,7 +168,7 @@ export default function RegisterPage() {
               label={t('register.fullNameLabel')}
               placeholder={t('register.fullNamePlaceholder')}
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={e => setName(e.target.value)}
               onBlur={() => setNameTouched(true)}
               error={nameError}
               helperText={nameError ? t('register.nameRequired', 'Name is required') : undefined}
@@ -184,10 +184,12 @@ export default function RegisterPage() {
               placeholder={t('register.emailPlaceholder')}
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               onBlur={() => setEmailTouched(true)}
               error={emailError}
-              helperText={emailError ? t('register.emailInvalid', 'Invalid email address') : undefined}
+              helperText={
+                emailError ? t('register.emailInvalid', 'Invalid email address') : undefined
+              }
               sx={inputSx}
             />
           </Box>
@@ -211,10 +213,14 @@ export default function RegisterPage() {
               placeholder={t('register.passwordPlaceholder')}
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               onBlur={() => setPasswordTouched(true)}
               error={passwordError}
-              helperText={passwordError ? t('register.passwordMinLength', 'Password must be at least 6 characters') : undefined}
+              helperText={
+                passwordError
+                  ? t('register.passwordMinLength', 'Password must be at least 6 characters')
+                  : undefined
+              }
               sx={inputSx}
             />
           </Box>
@@ -227,10 +233,14 @@ export default function RegisterPage() {
               placeholder={t('register.confirmPasswordPlaceholder')}
               type="password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={e => setConfirmPassword(e.target.value)}
               onBlur={() => setConfirmPasswordTouched(true)}
               error={confirmPasswordError}
-              helperText={confirmPasswordError ? t('register.passwordMismatch', 'Passwords do not match') : undefined}
+              helperText={
+                confirmPasswordError
+                  ? t('register.passwordMismatch', 'Passwords do not match')
+                  : undefined
+              }
               sx={inputSx}
             />
           </Box>
@@ -255,7 +265,11 @@ export default function RegisterPage() {
               '&:hover': { backgroundColor: palette.primary },
             }}
           >
-            {register.isPending ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : t('register.submitButton')}
+            {register.isPending ? (
+              <CircularProgress size={20} sx={{ color: '#fff' }} />
+            ) : (
+              t('register.submitButton')
+            )}
           </Button>
 
           <Typography
