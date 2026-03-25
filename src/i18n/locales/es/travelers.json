@@ -1,0 +1,373 @@
+{
+  "home": {
+    "hero": {
+      "eyebrow": "6 paises · Hoteles y hospedajes",
+      "title": "Tu proxima aventura comienza aqui",
+      "subtitle": "Reserva hoteles y hostales en Colombia, Peru, Ecuador, Mexico, Chile y Argentina."
+    },
+    "search": {
+      "destination": "Destino",
+      "destinationPlaceholder": "Ciudad o hotel",
+      "checkIn": "Llegada",
+      "checkOut": "Salida",
+      "selectDate": "Selecciona fecha",
+      "guests": "Huespedes",
+      "defaultGuests": "1 adulto",
+      "searchButton": "Buscar"
+    },
+    "destinations": {
+      "title": "Destinos populares",
+      "fromPerNight": "desde {{price}}/noche"
+    }
+  },
+  "login": {
+    "title": "Iniciar sesion",
+    "emailLabel": "Correo electronico",
+    "emailPlaceholder": "ejemplo@correo.com",
+    "passwordLabel": "Contrasena",
+    "passwordPlaceholder": "Ingresa tu contrasena",
+    "submitButton": "Iniciar sesion",
+    "noAccount": "No tienes cuenta?",
+    "register": "Registrate"
+  },
+  "register": {
+    "title": "Crear cuenta",
+    "fullNameLabel": "Nombre completo",
+    "fullNamePlaceholder": "Juan Perez",
+    "emailLabel": "Correo electronico",
+    "emailPlaceholder": "ejemplo@correo.com",
+    "phoneLabel": "Telefono",
+    "phonePlaceholder": "+57 300 123 4567",
+    "passwordLabel": "Contrasena",
+    "passwordPlaceholder": "Crea una contrasena",
+    "confirmPasswordLabel": "Confirmar contrasena",
+    "confirmPasswordPlaceholder": "Repite tu contrasena",
+    "submitButton": "Crear cuenta",
+    "hasAccount": "\u00bfYa tienes cuenta?",
+    "login": "Inicia sesion"
+  },
+  "results": {
+    "filters": {
+      "title": "Filtros",
+      "pricePerNight": "Precio por noche",
+      "minimum": "Minimo",
+      "maximum": "Maximo",
+      "propertyType": "Tipo de alojamiento",
+      "propertyTypes": {
+        "hotel": "Hotel",
+        "hostel": "Hostal",
+        "apartment": "Apartamento",
+        "resort": "Resort",
+        "cabin": "Cabana"
+      },
+      "rating": "Calificacion",
+      "all": "Todos",
+      "amenities": "Servicios",
+      "freeWifi": "Wi-Fi gratuito",
+      "breakfastIncluded": "Desayuno incluido",
+      "pool": "Piscina",
+      "parking": "Estacionamiento",
+      "petsAllowed": "Mascotas permitidas",
+      "airConditioning": "Aire acondicionado"
+    },
+    "header": {
+      "accommodationsFound": "{{count}} alojamientos",
+      "foundIn": "encontrados en Cartagena · 15--20 mar · 2 huespedes",
+      "sortBy": "Ordenar por",
+      "recommended": "Recomendados",
+      "priceLowToHigh": "Precio: menor a mayor",
+      "priceHighToLow": "Precio: mayor a menor",
+      "ratingSort": "Calificacion",
+      "popularity": "Popularidad"
+    },
+    "card": {
+      "photos": "{{count}} fotos",
+      "reviews": "resenas",
+      "from": "desde",
+      "perNight": "por noche",
+      "viewRooms": "Ver habitaciones",
+      "total": "total"
+    },
+    "searchSummary": "Cartagena · 15 mar -- 20 mar · 2 huespedes"
+  },
+  "propertyDetail": {
+    "hotelType": "Hotel · 5 estrellas",
+    "reviews": "resenas",
+    "description": "Descripcion",
+    "descriptionText": "El Hotel Santa Clara es un joya historica en el corazon de Cartagena de Indias. Ubicado en un antiguo convento del siglo XVII, ofrece una experiencia unica que combina la riqueza del patrimonio cultural colombiano con los mas altos estandares de lujo y confort. Sus habitaciones, restaurantes y espacios de bienestar hacen de cada visita una experiencia inolvidable.",
+    "amenities": {
+      "title": "Servicios incluidos",
+      "freeWifi": "Wi-Fi gratuito",
+      "pool": "Piscina",
+      "breakfastIncluded": "Desayuno incluido",
+      "spaWellness": "Spa y bienestar",
+      "gym": "Gimnasio",
+      "parking": "Estacionamiento",
+      "airConditioning": "Aire acondicionado",
+      "restaurant": "Restaurante",
+      "bar": "Bar"
+    },
+    "rooms": {
+      "title": "Habitaciones disponibles",
+      "superiorRoom": "Habitacion Superior",
+      "superiorFeatures": "1 cama King · 32 m2 · Vista al jardin · Max. 2 personas",
+      "juniorSuite": "Suite Junior",
+      "juniorFeatures": "1 cama King + sofa · 48 m2 · Vista al mar · Max. 2 personas",
+      "perNight": "por noche",
+      "select": "Seleccionar"
+    },
+    "guestReviews": "Resenas de huespedes",
+    "booking": {
+      "from": "desde",
+      "perNight": "/ noche",
+      "checkIn": "Llegada",
+      "checkOut": "Salida",
+      "guests": "Huespedes",
+      "defaultGuests": "2 adultos",
+      "nights": "noches",
+      "taxesAndFees": "Impuestos y tasas",
+      "total": "Total",
+      "reserveNow": "Reservar ahora",
+      "securePayment": "Pago seguro · Sin cargos adicionales"
+    },
+    "cancellation": {
+      "title": "Politica de cancelacion",
+      "freeCancellation": "Cancelacion gratuita hasta el 12 mar",
+      "halfCharge": "Cargo del 50% entre 12--14 mar",
+      "noRefund": "Sin reembolso desde el 15 mar"
+    },
+    "morePhotos": "+12 fotos"
+  },
+  "cart": {
+    "accommodation": {
+      "title": "Tu alojamiento",
+      "hotelType": "Hotel · 5 estrellas",
+      "reviews": "resenas",
+      "checkIn": "Llegada",
+      "checkInDate": "Sab, 15 mar 2026",
+      "checkInSub": "Check-in desde las 15:00",
+      "checkOut": "Salida",
+      "checkOutDate": "Jue, 20 mar 2026",
+      "checkOutSub": "Check-out hasta las 12:00",
+      "duration": "Duracion",
+      "durationValue": "5 noches",
+      "durationSub": "2 adultos",
+      "roomName": "Habitacion Superior",
+      "roomFeatures": "1 cama King · 32 m2 · Vista al jardin",
+      "perNight": "por noche"
+    },
+    "guest": {
+      "title": "Datos del huesped principal"
+    },
+    "cancellation": {
+      "title": "Politica de cancelacion",
+      "free": "Cancelacion <strong>gratuita</strong> hasta el viernes 12 de marzo de 2026",
+      "halfCharge": "Cargo del <strong>50%</strong> (COP 1.200.000) si cancelas entre el 12--14 de marzo",
+      "noRefund": "<strong>Sin reembolso</strong> a partir del 15 de marzo (fecha de llegada)"
+    },
+    "sidebar": {
+      "title": "Resumen de pago",
+      "nightsPrice": "COP 480.000 x 5 noches",
+      "nightsTotal": "COP 2.400.000",
+      "tourismTax": "Impuesto al turismo (4%)",
+      "tourismTaxValue": "COP 96.000",
+      "vat": "IVA (19%)",
+      "vatValue": "COP 168.000",
+      "serviceFee": "Tarifa de servicio",
+      "serviceFeeValue": "COP 0",
+      "totalToPay": "Total a pagar",
+      "totalValue": "COP 2.664.000",
+      "nightsLabel": "noches",
+      "continueToPayment": "Continuar al pago",
+      "securePayment": "Pago 100% seguro · Cifrado SSL"
+    }
+  },
+  "payment": {
+    "method": {
+      "title": "Metodo de pago",
+      "card": "Tarjeta",
+      "digitalWallet": "Billetera digital",
+      "transfer": "Transferencia"
+    },
+    "cardPreview": {
+      "cardHolder": "TITULAR",
+      "expires": "VENCE"
+    },
+    "form": {
+      "cardNumber": "Numero de tarjeta",
+      "cardNumberPlaceholder": "1234 5678 9012 3456",
+      "cardHolderName": "Nombre del titular",
+      "expiryDate": "Fecha de vencimiento",
+      "expiryPlaceholder": "MM/AA",
+      "cvv": "CVV",
+      "currency": "Moneda",
+      "currencies": {
+        "cop": "COP -- Peso colombiano",
+        "usd": "USD -- Dolar americano",
+        "mxn": "MXN -- Peso mexicano",
+        "ars": "ARS -- Peso argentino",
+        "clp": "CLP -- Peso chileno",
+        "pen": "PEN -- Sol peruano"
+      }
+    },
+    "sidebar": {
+      "title": "Resumen de reserva",
+      "dates": "15 mar -- 20 mar 2026 · 5 noches",
+      "room": "Habitacion Superior · 2 adultos",
+      "nightsPrice": "COP 480.000 x 5 noches",
+      "nightsTotal": "COP 2.400.000",
+      "taxesAndFees": "Impuestos y tasas",
+      "taxesValue": "COP 264.000",
+      "totalToPay": "Total a pagar",
+      "totalValue": "COP 2.664.000",
+      "nightsLabel": "noches",
+      "payLabel": "Pagar",
+      "secureTransaction": "Transaccion protegida con cifrado SSL"
+    }
+  },
+  "confirmation": {
+    "title": "\u00a1Reserva confirmada!",
+    "subtitle": "Tu reserva ha sido procesada exitosamente. Recibiras todos los detalles en tu correo electronico.",
+    "bookingNumber": "Numero de reserva",
+    "emailSent": "Confirmacion enviada a carlos.martinez@email.com",
+    "viewReservations": "Ver mis reservas",
+    "downloadReceipt": "Descargar comprobante",
+    "sidebar": {
+      "title": "Detalle de tu reserva",
+      "hotelType": "Hotel · 5 estrellas",
+      "checkIn": "Llegada",
+      "checkInValue": "Sab, 15 mar 2026",
+      "checkInSub": "Check-in desde las 15:00",
+      "checkOut": "Salida",
+      "checkOutValue": "Jue, 20 mar 2026",
+      "checkOutSub": "Check-out hasta las 12:00",
+      "room": "Habitacion",
+      "roomValue": "Habitacion Superior",
+      "roomSub": "1 cama King · 32 m2",
+      "guests": "Huespedes",
+      "guestsValue": "2 adultos",
+      "guestsSub": "5 noches",
+      "paymentSuccess": "Pago exitoso",
+      "nextSteps": "Proximos pasos",
+      "step1": "Revisa tu correo para el <strong>voucher de confirmacion</strong> con todos los detalles.",
+      "step2": "El hotel confirmara tu reserva en las proximas <strong>24 horas</strong>.",
+      "step3": "Puedes gestionar tu reserva en <strong>\"Mis reservas\"</strong> en cualquier momento."
+    }
+  },
+  "myReservations": {
+    "title": "Mis reservas",
+    "sidebar": {
+      "myReservations": "Mis reservas",
+      "myAccount": "Mi cuenta",
+      "logout": "Cerrar sesion"
+    },
+    "tabs": {
+      "active": "Activas (2)",
+      "past": "Pasadas (4)",
+      "cancelled": "Canceladas (1)"
+    },
+    "filters": {
+      "all": "Todas",
+      "confirmed": "Confirmadas",
+      "pending": "Pendientes",
+      "date": "Fecha",
+      "searchPlaceholder": "Buscar por hotel o destino..."
+    },
+    "card": {
+      "checkIn": "Llegada",
+      "checkOut": "Salida",
+      "duration": "Duracion",
+      "nights": "noches",
+      "totalPaid": "Total pagado",
+      "viewDetail": "Ver detalle"
+    }
+  },
+  "reservationDetail": {
+    "backToReservations": "Volver a mis reservas",
+    "title": "Detalle de reserva",
+    "bookingCode": "Codigo de reserva:",
+    "viewConfirmation": "Ver confirmacion",
+    "accommodation": "Alojamiento",
+    "hotelType": "Hotel · 5 estrellas",
+    "reviews": "resenas",
+    "roomFeatures": "1 cama King · 32 m2 · Vista al jardin · Max. 2 personas",
+    "roomAmenities": {
+      "wifi": "Wi-Fi",
+      "breakfast": "Desayuno",
+      "ac": "A/C",
+      "smartTv": "Smart TV",
+      "minibar": "Minibar"
+    },
+    "infoGrid": {
+      "checkIn": "Check-in",
+      "checkInValue": "Sab, 15 mar 2026",
+      "checkInSub": "Desde las 15:00 h",
+      "checkOut": "Check-out",
+      "checkOutValue": "Jue, 20 mar 2026",
+      "checkOutSub": "Hasta las 12:00 h",
+      "duration": "Duracion",
+      "durationValue": "5 noches",
+      "durationSub": "15 -- 20 mar 2026",
+      "guests": "Huespedes",
+      "guestsValue": "2 adultos",
+      "guestsSub": "Carlos M. (titular)"
+    },
+    "paymentHistory": {
+      "title": "Historial de pagos",
+      "bookingPayment": "Pago de reserva",
+      "approved": "Aprobado"
+    },
+    "priceSummary": {
+      "title": "Resumen de pago",
+      "nightsLabel": "noches",
+      "tourismTax": "Impuesto al turismo",
+      "vat": "IVA (19%)",
+      "totalPaid": "Total pagado"
+    },
+    "cancelBox": {
+      "title": "Cancelar reserva",
+      "description": "Si cancelas antes del <strong>12 de marzo de 2026</strong>, recibiras un reembolso completo. Despues de esa fecha se aplicaran cargos segun la politica del hotel.",
+      "estimatedRefund": "Reembolso estimado:",
+      "cancelButton": "Cancelar reserva"
+    },
+    "downloadReceipt": "Descargar comprobante",
+    "confirmedModal": {
+      "title": "Reserva confirmada exitosamente",
+      "subtitle": "La reserva TH-2026-48291 ha sido confirmada",
+      "emailSent": "Correo de confirmacion enviado",
+      "bookingSummary": "Resumen de la reserva",
+      "hotel": "Hotel",
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "duration": "Duracion",
+      "room": "Habitacion",
+      "guests": "Huespedes",
+      "total": "Total",
+      "whatsNext": "\u00bfQue sigue?",
+      "voucherSent": "<strong>Voucher enviado por correo</strong> — Recibiras tu comprobante de reserva con todos los detalles de tu estadia.",
+      "roomReserved": "<strong>Habitacion reservada</strong> — Tu Habitacion Superior en Hotel Santa Clara Sofitel ha sido reservada para las fechas indicadas.",
+      "close": "Cerrar",
+      "viewReservations": "Ver mis reservas"
+    },
+    "cancelModal": {
+      "title": "Cancelar reserva TH-2026-48291",
+      "subtitle": "Esta accion cancelara la reserva y procesara el reembolso automaticamente",
+      "policyApplied": "Politica de cancelacion aplicada",
+      "cancellationType": "Tipo de cancelacion",
+      "cancellationTypeValue": "Cancelacion gratuita",
+      "deadlineLabel": "Fecha limite sin penalidad",
+      "currentDateLabel": "Fecha actual",
+      "penaltyApplied": "Penalidad aplicada",
+      "penaltyValue": "0% — Sin cargo",
+      "refundBreakdown": "Desglose del reembolso",
+      "originalAmount": "Monto original cobrado",
+      "cancellationPenalty": "Penalidad por cancelacion",
+      "totalRefund": "Total a reembolsar",
+      "refundMethod": "Reembolso a VISA ···· 4242",
+      "samePaymentMethod": "Mismo metodo de pago utilizado",
+      "estimatedTime": "Tiempo estimado de reembolso: <strong>5--10 dias habiles</strong>",
+      "goBack": "Volver",
+      "confirmCancellation": "Confirmar cancelacion"
+    }
+  }
+}

@@ -1,9 +1,11 @@
 import { Box, Typography, TextField, Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { palette } from '../../design-system/theme/palette';
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const { t } = useTranslation('travelers');
 
   return (
     <Box
@@ -105,7 +107,7 @@ export default function LoginPage() {
               mb: '16px',
             }}
           >
-            Iniciar sesion
+            {t('login.title')}
           </Typography>
 
           {/* Email field */}
@@ -113,8 +115,8 @@ export default function LoginPage() {
             <TextField
               fullWidth
               variant="outlined"
-              label="Correo electronico"
-              placeholder="ejemplo@correo.com"
+              label={t('login.emailLabel')}
+              placeholder={t('login.emailPlaceholder')}
               type="email"
               sx={{
                 '& .MuiOutlinedInput-root': {
@@ -156,8 +158,8 @@ export default function LoginPage() {
             <TextField
               fullWidth
               variant="outlined"
-              label="Contrasena"
-              placeholder="Ingresa tu contrasena"
+              label={t('login.passwordLabel')}
+              placeholder={t('login.passwordPlaceholder')}
               type="password"
               sx={{
                 '& .MuiOutlinedInput-root': {
@@ -216,7 +218,7 @@ export default function LoginPage() {
               },
             }}
           >
-            Iniciar sesion
+            {t('login.submitButton')}
           </Button>
 
           {/* Footer link */}
@@ -228,7 +230,7 @@ export default function LoginPage() {
               mt: '8px',
             }}
           >
-            No tienes cuenta?{' '}
+            {t('login.noAccount')}{' '}
             <Link
               to="/register"
               style={{
@@ -237,7 +239,7 @@ export default function LoginPage() {
                 textDecoration: 'none',
               }}
             >
-              Registrate
+              {t('login.register')}
             </Link>
           </Typography>
         </Box>

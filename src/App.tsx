@@ -1,3 +1,4 @@
+import './i18n';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { RouterProvider } from 'react-router-dom';
