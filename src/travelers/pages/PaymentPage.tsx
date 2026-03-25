@@ -1,8 +1,9 @@
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import LockIcon from '@mui/icons-material/Lock';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '../../contexts/LocaleContext';
 import CheckoutLayout from '../../design-system/layouts/CheckoutLayout';
@@ -13,6 +14,48 @@ export default function PaymentPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
+
+  const [cardNumber, setCardNumber] = useState('');
+  const [cardHolder, setCardHolder] = useState('');
+  const [expiry, setExpiry] = useState('');
+  const [cvv, setCvv] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const formatCardNumber = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 16);
+    return digits.replace(/(.{4})/g, '$1 ').trim();
+  };
+
+  const formatExpiry = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 4);
+    if (digits.length >= 3) {
+      const month = digits.slice(0, 2);
+      const year = digits.slice(2);
+      if (parseInt(month, 10) > 12) return expiry;
+      return `${month}/${year}`;
+    }
+    if (digits.length === 2) {
+      if (parseInt(digits, 10) > 12) return expiry;
+      return digits;
+    }
+    return digits;
+  };
+
+  const isCardNumberValid = cardNumber.replace(/\s/g, '').length === 16;
+  const isExpiryValid = /^\d{2}\/\d{2}$/.test(expiry);
+  const isCvvValid = cvv.length === 3;
+  const isCardHolderValid = cardHolder.trim().length > 0;
+
+  const isFormValid = isCardNumberValid && isExpiryValid && isCvvValid && isCardHolderValid;
+
+  const handlePay = () => {
+    if (!isFormValid || loading) return;
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      navigate('/checkout/confirmation');
+    }, 2000);
+  };
 
   const PaymentSidebar = () => (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -85,7 +128,8 @@ export default function PaymentPage() {
         variant="contained"
         disableElevation
         fullWidth
-        onClick={() => navigate('/checkout/confirmation')}
+        disabled={!isFormValid || loading}
+        onClick={handlePay}
         sx={{
           height: 56,
           backgroundColor: palette.primary,
@@ -101,8 +145,14 @@ export default function PaymentPage() {
           '&:hover': { backgroundColor: palette.primary },
         }}
       >
-        <LockIcon sx={{ fontSize: 20 }} />
-        {`${t('payment.sidebar.payLabel')} ${formatPrice(2664000)}`}
+        {loading ? (
+          <CircularProgress size={20} sx={{ color: '#fff' }} />
+        ) : (
+          <>
+            <LockIcon sx={{ fontSize: 20 }} />
+            {`${t('payment.sidebar.payLabel')} ${formatPrice(2664000)}`}
+          </>
+        )}
       </Button>
 
       {/* Secure note */}
@@ -284,7 +334,10 @@ export default function PaymentPage() {
                 </Typography>
                 <Box
                   component="input"
-                  defaultValue="•••• •••• •••• 4242"
+                  value={cardNumber}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setCardNumber(formatCardNumber(e.target.value))
+                  }
                   placeholder={t('payment.form.cardNumberPlaceholder')}
                   sx={{
                     width: '100%',
@@ -318,7 +371,10 @@ export default function PaymentPage() {
                 </Typography>
                 <Box
                   component="input"
-                  defaultValue="Carlos Martinez"
+                  value={cardHolder}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setCardHolder(e.target.value)
+                  }
                   sx={{
                     width: '100%',
                     height: 52,
@@ -352,7 +408,10 @@ export default function PaymentPage() {
                   </Typography>
                   <Box
                     component="input"
-                    defaultValue="12/28"
+                    value={expiry}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setExpiry(formatExpiry(e.target.value))
+                    }
                     placeholder={t('payment.form.expiryPlaceholder')}
                     sx={{
                       width: '100%',
@@ -384,7 +443,10 @@ export default function PaymentPage() {
                   </Typography>
                   <Box
                     component="input"
-                    defaultValue="•••"
+                    value={cvv}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      setCvv(e.target.value.replace(/\D/g, '').slice(0, 3))
+                    }
                     placeholder="•••"
                     sx={{
                       width: '100%',

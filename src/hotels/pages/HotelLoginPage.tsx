@@ -1,4 +1,4 @@
-import { Box, Typography, TextField, Button, Divider } from '@mui/material';
+import { Box, Typography, TextField, Button, Divider, CircularProgress } from '@mui/material';
 import HotelIcon from '@mui/icons-material/Hotel';
 import LockIcon from '@mui/icons-material/Lock';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
@@ -9,12 +9,32 @@ import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SellIcon from '@mui/icons-material/Sell';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { palette } from '../../design-system/theme/palette';
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function HotelLoginPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('hotels');
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const emailError = emailTouched && !EMAIL_REGEX.test(email);
+  const isFormValid = EMAIL_REGEX.test(email) && password.length > 0;
+
+  const handleSubmit = () => {
+    if (!isFormValid || loading) return;
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      navigate('/hotel/dashboard');
+    }, 1500);
+  };
 
   const trustBadges = [
     { icon: <LockIcon sx={{ fontSize: 16, color: palette.primary }} />, text: t('login.trustBadges.ssl') },
@@ -130,6 +150,11 @@ export default function HotelLoginPage() {
               label={t('login.emailLabel')}
               placeholder={t('login.emailPlaceholder')}
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={() => setEmailTouched(true)}
+              error={emailError}
+              helperText={emailError ? t('login.emailInvalid', 'Invalid email address') : undefined}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   height: 56,
@@ -159,6 +184,8 @@ export default function HotelLoginPage() {
               label={t('login.passwordLabel')}
               placeholder="••••••••"
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   height: 56,
@@ -199,7 +226,8 @@ export default function HotelLoginPage() {
             fullWidth
             variant="contained"
             disableElevation
-            onClick={() => navigate('/hotel/dashboard')}
+            disabled={!isFormValid || loading}
+            onClick={handleSubmit}
             sx={{
               height: 52,
               backgroundColor: palette.primary,
@@ -213,7 +241,7 @@ export default function HotelLoginPage() {
               '&:hover': { backgroundColor: palette.primary },
             }}
           >
-            {t('login.loginButton')}
+            {loading ? <CircularProgress size={20} sx={{ color: '#fff' }} /> : t('login.loginButton')}
           </Button>
 
           {/* Divider */}
