@@ -1,12 +1,14 @@
 import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import PhoneOutlinedIcon from '@mui/icons-material/PhoneOutlined';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import MobileShell from '../components/MobileShell';
 import Brand from '../../design-system/components/Brand';
 import { palette } from '../../design-system/theme/palette';
 
-export default function MobileLoginPage() {
+export default function MobileRegisterPage() {
   return (
     <MobileShell hideNav>
       <Box
@@ -15,18 +17,18 @@ export default function MobileLoginPage() {
           flexDirection: 'column',
           alignItems: 'center',
           px: '24px',
-          pt: '48px',
+          pt: '36px',
         }}
       >
         {/* Brand */}
         <Box sx={{ mb: '8px' }}>
           <Brand size={28} variant="nav" />
         </Box>
-        <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, mb: '40px' }}>
-          Inicia sesion para gestionar tus reservas
+        <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, mb: '32px' }}>
+          Crea tu cuenta para comenzar a reservar
         </Typography>
 
-        {/* Login Card */}
+        {/* Register Card */}
         <Box
           sx={{
             width: '100%',
@@ -37,8 +39,31 @@ export default function MobileLoginPage() {
           }}
         >
           <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.onSurface, mb: '20px' }}>
-            Iniciar sesion
+            Crear cuenta
           </Typography>
+
+          {/* Nombre completo */}
+          <Box sx={{ mb: '14px' }}>
+            <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurfaceVariant, mb: '6px' }}>
+              Nombre completo
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                border: `1px solid ${palette.outlineVariant}`,
+                borderRadius: '10px',
+                px: '12px',
+                py: '12px',
+              }}
+            >
+              <PersonOutlineIcon sx={{ fontSize: 18, color: palette.onSurfaceVariant }} />
+              <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+                Juan Perez
+              </Typography>
+            </Box>
+          </Box>
 
           {/* Email */}
           <Box sx={{ mb: '14px' }}>
@@ -63,8 +88,31 @@ export default function MobileLoginPage() {
             </Box>
           </Box>
 
-          {/* Password */}
-          <Box sx={{ mb: '24px' }}>
+          {/* Telefono */}
+          <Box sx={{ mb: '14px' }}>
+            <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurfaceVariant, mb: '6px' }}>
+              Telefono
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                border: `1px solid ${palette.outlineVariant}`,
+                borderRadius: '10px',
+                px: '12px',
+                py: '12px',
+              }}
+            >
+              <PhoneOutlinedIcon sx={{ fontSize: 18, color: palette.onSurfaceVariant }} />
+              <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+                +57 300 123 4567
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Contrasena */}
+          <Box sx={{ mb: '14px' }}>
             <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurfaceVariant, mb: '6px' }}>
               Contrasena
             </Typography>
@@ -86,10 +134,33 @@ export default function MobileLoginPage() {
             </Box>
           </Box>
 
-          {/* Login Button */}
+          {/* Confirmar contrasena */}
+          <Box sx={{ mb: '24px' }}>
+            <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurfaceVariant, mb: '6px' }}>
+              Confirmar contrasena
+            </Typography>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                border: `1px solid ${palette.outlineVariant}`,
+                borderRadius: '10px',
+                px: '12px',
+                py: '12px',
+              }}
+            >
+              <LockOutlinedIcon sx={{ fontSize: 18, color: palette.onSurfaceVariant }} />
+              <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+                ••••••••
+              </Typography>
+            </Box>
+          </Box>
+
+          {/* Register Button */}
           <Box
             component={Link}
-            to="/mobile/reservations"
+            to="/mobile/login"
             sx={{
               display: 'flex',
               alignItems: 'center',
@@ -105,13 +176,13 @@ export default function MobileLoginPage() {
               mb: '16px',
             }}
           >
-            Iniciar sesion
+            Crear cuenta
           </Box>
 
           <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, textAlign: 'center' }}>
-            ¿No tienes cuenta?{' '}
-            <Link to="/mobile/register" style={{ color: palette.primary, fontWeight: 600, fontSize: 13, textDecoration: 'none' }}>
-              Registrate
+            ¿Ya tienes cuenta?{' '}
+            <Link to="/mobile/login" style={{ color: palette.primary, fontWeight: 600, fontSize: 13, textDecoration: 'none' }}>
+              Inicia sesion
             </Link>
           </Typography>
         </Box>

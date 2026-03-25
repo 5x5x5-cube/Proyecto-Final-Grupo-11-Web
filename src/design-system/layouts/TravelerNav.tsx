@@ -1,8 +1,11 @@
-import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, Button, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
 import SearchIcon from '@mui/icons-material/Search';
 import LanguageIcon from '@mui/icons-material/Language';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { useLocale, currencyNames, languageNames } from '../../contexts/LocaleContext';
+import type { Language, Currency } from '../../contexts/LocaleContext';
 import {
   primary,
   onPrimary,
@@ -110,8 +113,14 @@ const UserAvatar = () => (
   </Box>
 );
 
+const languages: Language[] = ['ES', 'EN'];
+const currencies: Currency[] = ['COP', 'USD', 'MXN', 'ARS', 'CLP', 'PEN'];
+
 const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSummary }) => {
   const height = 72;
+  const { language, currency, setLanguage, setCurrency } = useLocale();
+  const [langAnchor, setLangAnchor] = useState<null | HTMLElement>(null);
+  const [curAnchor, setCurAnchor] = useState<null | HTMLElement>(null);
 
   return (
     <Box
@@ -195,7 +204,9 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
 
       {/* Language & Currency selectors */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {/* Language selector */}
         <Box
+          onClick={(e) => setLangAnchor(e.currentTarget)}
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -204,23 +215,65 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
             borderRadius: '8px',
             border: `1px solid ${outlineVariant}`,
             cursor: 'pointer',
+            '&:hover': { backgroundColor: surfaceContainer },
           }}
         >
           <LanguageIcon sx={{ fontSize: 16, color: onSurfaceVariant }} />
-          <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>ES</Typography>
+          <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>{language}</Typography>
+          <KeyboardArrowDownIcon sx={{ fontSize: 16, color: onSurfaceVariant }} />
         </Box>
+        <Menu
+          anchorEl={langAnchor}
+          open={Boolean(langAnchor)}
+          onClose={() => setLangAnchor(null)}
+          slotProps={{ paper: { sx: { borderRadius: '12px', mt: '4px', minWidth: 180 } } }}
+        >
+          {languages.map((lang) => (
+            <MenuItem
+              key={lang}
+              selected={lang === language}
+              onClick={() => { setLanguage(lang); setLangAnchor(null); }}
+              sx={{ fontSize: 13 }}
+            >
+              {lang} — {languageNames[lang]}
+            </MenuItem>
+          ))}
+        </Menu>
+
+        {/* Currency selector */}
         <Box
+          onClick={(e) => setCurAnchor(e.currentTarget)}
           sx={{
             display: 'flex',
             alignItems: 'center',
+            gap: '4px',
             padding: '4px 10px',
             borderRadius: '8px',
             border: `1px solid ${outlineVariant}`,
             cursor: 'pointer',
+            '&:hover': { backgroundColor: surfaceContainer },
           }}
         >
-          <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>COP</Typography>
+          <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>{currency}</Typography>
+          <KeyboardArrowDownIcon sx={{ fontSize: 16, color: onSurfaceVariant }} />
         </Box>
+        <Menu
+          anchorEl={curAnchor}
+          open={Boolean(curAnchor)}
+          onClose={() => setCurAnchor(null)}
+          slotProps={{ paper: { sx: { borderRadius: '12px', mt: '4px', minWidth: 220 } } }}
+        >
+          {currencies.map((cur) => (
+            <MenuItem
+              key={cur}
+              selected={cur === currency}
+              onClick={() => { setCurrency(cur); setCurAnchor(null); }}
+              sx={{ fontSize: 13 }}
+            >
+              {cur} — {currencyNames[cur]}
+            </MenuItem>
+          ))}
+        </Menu>
       </Box>
 
       {/* Right actions */}

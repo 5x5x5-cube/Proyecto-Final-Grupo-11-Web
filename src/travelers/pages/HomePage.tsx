@@ -4,9 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import TravelerNav from '../../design-system/layouts/TravelerNav';
 import { palette } from '../../design-system/theme/palette';
 import { mockDestinations } from '../data/mockDestinations';
+import { useLocale } from '../../contexts/LocaleContext';
+
+const basePrices = [120000, 95000, 85000, 110000, 78000];
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const { language, formatPrice } = useLocale();
 
   return (
     <Box
@@ -64,7 +68,7 @@ export default function HomePage() {
             textTransform: 'uppercase',
           }}
         >
-          6 paises · Hoteles y hospedajes
+          {language === 'ES' ? '6 paises · Hoteles y hospedajes' : '6 countries · Hotels & lodging'}
         </Typography>
 
         {/* Title */}
@@ -80,7 +84,7 @@ export default function HomePage() {
             maxWidth: 720,
           }}
         >
-          Tu proxima aventura comienza aqui
+          {language === 'ES' ? 'Tu proxima aventura comienza aqui' : 'Your next adventure starts here'}
         </Typography>
 
         {/* Subtitle */}
@@ -94,7 +98,9 @@ export default function HomePage() {
             lineHeight: 1.5,
           }}
         >
-          Reserva hoteles y hostales en Colombia, Peru, Ecuador, Mexico, Chile y Argentina.
+          {language === 'ES'
+            ? 'Reserva hoteles y hostales en Colombia, Peru, Ecuador, Mexico, Chile y Argentina.'
+            : 'Book hotels and hostels in Colombia, Peru, Ecuador, Mexico, Chile and Argentina.'}
         </Typography>
 
         {/* Search card */}
@@ -266,11 +272,11 @@ export default function HomePage() {
             mb: '20px',
           }}
         >
-          Destinos populares
+          {language === 'ES' ? 'Destinos populares' : 'Popular destinations'}
         </Typography>
 
         <Box sx={{ display: 'flex', gap: '16px' }}>
-          {mockDestinations.map((dest) => (
+          {mockDestinations.map((dest, idx) => (
             <Box
               key={dest.name}
               onClick={() => navigate('/results')}
@@ -318,7 +324,7 @@ export default function HomePage() {
                     color: 'rgba(255,255,255,0.8)',
                   }}
                 >
-                  {dest.country} - {dest.hotelCount} hoteles
+                  {dest.country} · {language === 'ES' ? `desde ${formatPrice(basePrices[idx])}/noche` : `from ${formatPrice(basePrices[idx])}/night`}
                 </Typography>
               </Box>
             </Box>

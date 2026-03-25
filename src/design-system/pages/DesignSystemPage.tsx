@@ -15,6 +15,11 @@ import PriceBreakdown from '../components/PriceBreakdown';
 import FilterChip from '../components/FilterChip';
 import SearchField from '../components/SearchField';
 import ModalOverlay from '../components/ModalOverlay';
+import ProfileMenuRow from '../components/ProfileMenuRow';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import CreditCardIcon from '@mui/icons-material/CreditCard';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 
 /* ── helpers ─────────────────────────────────────────────── */
 
@@ -460,7 +465,20 @@ export default function DesignSystemPage() {
           </Box>
         </Section>
 
-        {/* 14. ModalOverlay */}
+        {/* 14. ProfileMenuRow */}
+        <Section title="ProfileMenuRow">
+          <Box sx={{ maxWidth: 400, background: '#fff', borderRadius: '12px', border: `1px solid ${palette.outlineVariant}`, px: '16px' }}>
+            <ProfileMenuRow icon={<PersonOutlineIcon sx={{ fontSize: 20 }} />} label="Nombre" />
+            <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
+            <ProfileMenuRow icon={<EmailOutlinedIcon sx={{ fontSize: 20 }} />} label="Correo" />
+            <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
+            <ProfileMenuRow icon={<CreditCardIcon sx={{ fontSize: 20 }} />} label="VISA ****4242" />
+            <Box sx={{ borderTop: `1px solid ${palette.outlineVariant}` }} />
+            <ProfileMenuRow icon={<HelpOutlineIcon sx={{ fontSize: 20 }} />} label="Centro de ayuda" />
+          </Box>
+        </Section>
+
+        {/* 15. ModalOverlay */}
         <Section title="ModalOverlay">
           <Button variant="outlined" onClick={() => setModalOpen(true)}>
             Abrir Modal

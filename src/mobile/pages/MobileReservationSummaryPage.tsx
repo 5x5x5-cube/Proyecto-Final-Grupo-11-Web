@@ -117,7 +117,7 @@ export default function MobileReservationSummaryPage() {
       >
         <Box
           component={Link}
-          to="/mobile/success"
+          to="/mobile/checkout/payment"
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -132,7 +132,7 @@ export default function MobileReservationSummaryPage() {
             width: '100%',
           }}
         >
-          Confirmar reserva
+          Continuar al pago
         </Box>
       </Box>
     </MobileShell>

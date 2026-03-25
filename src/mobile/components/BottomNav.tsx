@@ -8,7 +8,7 @@ import { palette } from '../../design-system/theme/palette';
 const tabs = [
   { key: 'search', label: 'Buscar', icon: SearchIcon, to: '/mobile/search' },
   { key: 'reservations', label: 'Mis Reservas', icon: EventNoteIcon, to: '/mobile/reservations' },
-  { key: 'profile', label: 'Perfil', icon: PersonOutlineIcon, to: '/mobile/login' },
+  { key: 'profile', label: 'Perfil', icon: PersonOutlineIcon, to: '/mobile/profile' },
 ] as const;
 
 export default function BottomNav({ active }: { active: string }) {
