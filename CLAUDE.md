@@ -49,3 +49,13 @@
 - Always use `react-i18next` (`useTranslation` hook) for all user-facing strings — never hardcode text
 - Translation files: `src/i18n/locales/{es,en}/travelers.json`, `hotels.json`
 - Add new keys to both `es` and `en` locale files when introducing new strings
+
+## Pull Requests
+
+- All PRs must follow the template in `.github/PULL_REQUEST_TEMPLATE.md`
+- Every PR must include:
+  - **Ticket**: link to the related ticket/issue
+  - **Descripción**: brief description of the changes
+  - **Cambios realizados**: bullet list of specific changes made
+- Write PR descriptions in Spanish
+- Use conventional commit format for PR titles in English: `type(scope): description`
