@@ -63,8 +63,8 @@ Disponible en `/design-system`. Incluye:
 ## Instalación y Desarrollo
 
 ```bash
-npm install
-npm run dev
+yarn install
+yarn dev
 ```
 
 La aplicación estará disponible en `http://localhost:5173`.
@@ -72,5 +72,5 @@ La aplicación estará disponible en `http://localhost:5173`.
 ## Build
 
 ```bash
-npm run build
+yarn build
 ```

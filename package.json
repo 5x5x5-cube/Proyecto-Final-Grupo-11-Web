@@ -37,6 +37,9 @@
     "react-i18next": "^16.5.8",
     "react-router-dom": "^7.13.1"
   },
+  "resolutions": {
+    "vite": "^6.3.5"
+  },
   "devDependencies": {
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
@@ -47,6 +50,7 @@
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
+    "@vitest/coverage-v8": "^4.1.1",
     "eslint": "^9.25.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react-hooks": "^5.2.0",
