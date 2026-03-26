@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
-import { renderWithProviders } from '../../../test/renderWithProviders';
-import HotelSummaryCard from '../components/HotelSummaryCard';
+import { renderWithProviders } from '../../../../test/renderWithProviders';
+import HotelSummaryCard from './HotelSummaryCard';
 import type { CartItem } from '../types';
 
 const mockItem: CartItem = {

@@ -8,10 +8,10 @@ import { useCreateBooking } from '@/api/hooks/useBookings';
 import { getBookingErrorKey } from '@/api/errorMessages';
 import { useSnackbar } from '@/contexts/SnackbarContext';
 import { useDebouncedCallback } from '@/hooks/useDebouncedCallback';
-import HotelSummaryCard from '@/modules/checkout/components/HotelSummaryCard';
-import GuestInfoCard from '@/modules/checkout/components/GuestInfoCard';
-import CancellationPolicyCard from '@/modules/checkout/components/CancellationPolicyCard';
-import CartSidebar from '@/modules/checkout/components/CartSidebar';
+import HotelSummaryCard from '@/modules/checkout/components/HotelSummaryCard/HotelSummaryCard';
+import GuestInfoCard from '@/modules/checkout/components/GuestInfoCard/GuestInfoCard';
+import CancellationPolicyCard from '@/modules/checkout/components/CancellationPolicyCard/CancellationPolicyCard';
+import CartSidebar from '@/modules/checkout/components/CartSidebar/CartSidebar';
 import type { CartItem, CartPriceBreakdown, GuestInfo } from '@/modules/checkout/types';
 
 export default function CartPage() {

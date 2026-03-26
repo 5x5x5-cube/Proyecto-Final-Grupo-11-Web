@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { renderWithProviders } from '../../../test/renderWithProviders';
-import CartSidebar from '../components/CartSidebar';
+import { renderWithProviders } from '../../../../test/renderWithProviders';
+import CartSidebar from './CartSidebar';
 import type { CartPriceBreakdown } from '../types';
 
 const mockBreakdown: CartPriceBreakdown = {
