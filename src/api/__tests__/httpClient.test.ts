@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { httpClient } from '../httpClient';
 
 // Mock global fetch
@@ -23,7 +23,7 @@ describe('httpClient', () => {
 
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('/api/v1/bookings'),
-        expect.objectContaining({ method: 'GET' }),
+        expect.objectContaining({ method: 'GET' })
       );
     });
 
@@ -51,7 +51,13 @@ describe('httpClient', () => {
       });
 
       const result = await httpClient.post('/bookings', {
-        body: { roomId: '123', hotelId: '456', checkIn: '2026-04-01', checkOut: '2026-04-03', guests: 2 },
+        body: {
+          roomId: '123',
+          hotelId: '456',
+          checkIn: '2026-04-01',
+          checkOut: '2026-04-03',
+          guests: 2,
+        },
       });
 
       expect(result).toEqual({ id: 'new-booking', status: 'pending' });
