@@ -155,10 +155,10 @@
       "checkOutDate": "Thu, Mar 20 2026",
       "checkOutSub": "Check-out until 12:00 PM",
       "duration": "Duration",
-      "durationValue": "5 nights",
-      "durationSub": "2 adults",
-      "roomName": "Superior Room",
-      "roomFeatures": "1 King bed · 32 m2 · Garden view",
+      "nightsCount_one": "{{count}} night",
+      "nightsCount_other": "{{count}} nights",
+      "guestsCount_one": "{{count}} adult",
+      "guestsCount_other": "{{count}} adults",
       "perNight": "per night"
     },
     "guest": {

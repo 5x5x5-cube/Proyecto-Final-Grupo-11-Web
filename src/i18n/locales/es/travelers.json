@@ -155,10 +155,10 @@
       "checkOutDate": "Jue, 20 mar 2026",
       "checkOutSub": "Check-out hasta las 12:00",
       "duration": "Duracion",
-      "durationValue": "5 noches",
-      "durationSub": "2 adultos",
-      "roomName": "Habitacion Superior",
-      "roomFeatures": "1 cama King · 32 m2 · Vista al jardin",
+      "nightsCount_one": "{{count}} noche",
+      "nightsCount_other": "{{count}} noches",
+      "guestsCount_one": "{{count}} adulto",
+      "guestsCount_other": "{{count}} adultos",
       "perNight": "por noche"
     },
     "guest": {
