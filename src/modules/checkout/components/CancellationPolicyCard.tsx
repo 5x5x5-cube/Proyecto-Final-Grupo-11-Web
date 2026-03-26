@@ -4,8 +4,8 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useTranslation } from 'react-i18next';
-import SectionCard from '../../../design-system/components/SectionCard';
-import { palette } from '../../../design-system/theme/palette';
+import SectionCard from '@/design-system/components/SectionCard';
+import { palette } from '@/design-system/theme/palette';
 
 export default function CancellationPolicyCard() {
   const { t } = useTranslation('travelers');

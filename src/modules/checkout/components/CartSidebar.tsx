@@ -1,9 +1,9 @@
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '../../../contexts/LocaleContext';
-import { palette } from '../../../design-system/theme/palette';
-import { CartPriceBreakdown } from '../types';
+import { useLocale } from '@/contexts/LocaleContext';
+import { palette } from '@/design-system/theme/palette';
+import type { CartPriceBreakdown } from '../types';
 
 interface Props {
   priceBreakdown: CartPriceBreakdown;

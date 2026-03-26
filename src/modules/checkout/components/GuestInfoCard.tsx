@@ -1,9 +1,9 @@
 import { Box, Typography } from '@mui/material';
 import PersonIcon from '@mui/icons-material/Person';
 import { useTranslation } from 'react-i18next';
-import SectionCard from '../../../design-system/components/SectionCard';
-import { palette } from '../../../design-system/theme/palette';
-import { GuestInfo } from '../types';
+import SectionCard from '@/design-system/components/SectionCard';
+import { palette } from '@/design-system/theme/palette';
+import type { GuestInfo } from '../types';
 
 interface Props {
   guest: GuestInfo;

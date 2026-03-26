@@ -2,12 +2,12 @@ import { Box, Typography } from '@mui/material';
 import PlaceIcon from '@mui/icons-material/Place';
 import HotelIcon from '@mui/icons-material/Hotel';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '../../../contexts/LocaleContext';
-import SectionCard from '../../../design-system/components/SectionCard';
-import InfoGrid from '../../../design-system/components/InfoGrid';
-import RatingBadge from '../../../design-system/components/RatingBadge';
-import { palette } from '../../../design-system/theme/palette';
-import { CartItem } from '../types';
+import { useLocale } from '@/contexts/LocaleContext';
+import SectionCard from '@/design-system/components/SectionCard';
+import InfoGrid from '@/design-system/components/InfoGrid';
+import RatingBadge from '@/design-system/components/RatingBadge';
+import { palette } from '@/design-system/theme/palette';
+import type { CartItem } from '../types';
 
 interface Props {
   item: CartItem;

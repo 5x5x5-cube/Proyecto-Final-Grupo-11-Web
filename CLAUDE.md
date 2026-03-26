@@ -13,8 +13,16 @@
 - Web traveler pages: `src/travelers/pages/`
 - Mobile pages: `src/mobile/pages/`
 - Hotel admin pages: `src/hotels/pages/`
+- Feature modules: `src/modules/{feature}/` (components scoped to a feature, not shared)
 - Design system: `src/design-system/` (components, layouts, theme, pages)
 - Routes: `src/router.tsx`
+
+## Import Aliases
+
+- Use `@/` alias for all imports from `src/` — avoid relative paths like `../../` whenever possible
+- Example: `import { palette } from '@/design-system/theme/palette'`
+- Configured in `vite.config.ts` (resolve.alias) and `tsconfig.app.json` (paths)
+- Use `import type` for type-only imports (required by `verbatimModuleSyntax`)
 
 ## Loading States (Skeletons)
 
