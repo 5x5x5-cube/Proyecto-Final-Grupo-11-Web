@@ -1,6 +1,6 @@
 import { Box, Skeleton } from '@mui/material';
-import { palette } from '../../design-system/theme/palette';
-import CheckoutLayout from '../../design-system/layouts/CheckoutLayout';
+import { palette } from '@/design-system/theme/palette';
+import CheckoutLayout from '@/design-system/layouts/CheckoutLayout';
 
 const CartSidebarSkeleton = () => (
   <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>

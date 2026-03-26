@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import LuggageIcon from '@mui/icons-material/Luggage';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -15,6 +15,8 @@ import FilterChip from '../../design-system/components/FilterChip';
 import SearchField from '../../design-system/components/SearchField';
 import MyReservationsPageSkeleton from './MyReservationsPage.skeleton';
 import { useBookings } from '../../api/hooks/useBookings';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
+import Text from '@/design-system/components/Text';
 import {
   primary,
   onSurface,
@@ -125,12 +127,8 @@ const MyReservationsPage: React.FC = () => {
             C
           </Box>
           <Box>
-            <Typography sx={{ fontSize: 14, fontWeight: 600, color: onSurface }}>
-              Carlos Mart&iacute;nez
-            </Typography>
-            <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-              carlos.m@email.com
-            </Typography>
+            <Text textVariant="bodySemibold">Carlos Mart&iacute;nez</Text>
+            <Text textVariant="caption">carlos.m@email.com</Text>
           </Box>
         </Box>
 
@@ -318,103 +316,57 @@ const MyReservationsPage: React.FC = () => {
                   }}
                 >
                   <Box>
-                    <Typography
-                      sx={{
-                        fontSize: 11,
-                        fontWeight: 500,
-                        color: primary,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                      }}
-                    >
-                      {res.hotelType}
-                    </Typography>
+                    <Text textVariant="overline">{res.hotelType}</Text>
                     <Typography sx={{ fontSize: 18, fontWeight: 700, color: onSurface }}>
                       {res.hotelName}
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <PlaceIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
-                      <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>
-                        {res.location}
-                      </Typography>
+                      <Text textVariant="hint">{res.location}</Text>
                     </Box>
                   </Box>
 
                   {/* Dates */}
                   <Box sx={{ display: 'flex', gap: '24px', mt: '4px' }}>
                     <Box>
-                      <Typography
-                        sx={{
-                          fontSize: 11,
-                          fontWeight: 500,
-                          color: primary,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                        }}
-                      >
-                        {t('myReservations.card.checkIn')}
-                      </Typography>
-                      <Typography sx={{ fontSize: 14, fontWeight: 500, color: onSurface }}>
+                      <Text textVariant="overline">{t('myReservations.card.checkIn')}</Text>
+                      <Text textVariant="bodyMedium">
                         {formatDate(res.checkIn, 'mediumWithDay')}
-                      </Typography>
-                      <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
+                      </Text>
+                      <Text textVariant="caption">
                         Check-in{' '}
                         {new Date(res.checkIn).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit',
                         })}
-                      </Typography>
+                      </Text>
                     </Box>
                     <Box>
-                      <Typography
-                        sx={{
-                          fontSize: 11,
-                          fontWeight: 500,
-                          color: primary,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                        }}
-                      >
-                        {t('myReservations.card.checkOut')}
-                      </Typography>
-                      <Typography sx={{ fontSize: 14, fontWeight: 500, color: onSurface }}>
+                      <Text textVariant="overline">{t('myReservations.card.checkOut')}</Text>
+                      <Text textVariant="bodyMedium">
                         {formatDate(res.checkOut, 'mediumWithDay')}
-                      </Typography>
-                      <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
+                      </Text>
+                      <Text textVariant="caption">
                         Check-out{' '}
                         {new Date(res.checkOut).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit',
                         })}
-                      </Typography>
+                      </Text>
                     </Box>
                     <Box>
-                      <Typography
-                        sx={{
-                          fontSize: 11,
-                          fontWeight: 500,
-                          color: primary,
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.5px',
-                        }}
-                      >
-                        {t('myReservations.card.duration')}
-                      </Typography>
-                      <Typography sx={{ fontSize: 14, fontWeight: 500, color: onSurface }}>
+                      <Text textVariant="overline">{t('myReservations.card.duration')}</Text>
+                      <Text textVariant="bodyMedium">
                         {res.nights} {t('myReservations.card.nights')}
-                      </Typography>
-                      <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-                        {res.guests}
-                      </Typography>
+                      </Text>
+                      <Text textVariant="caption">{res.guests}</Text>
                     </Box>
                   </Box>
 
                   {/* Room meta */}
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px', mt: '4px' }}>
                     <BedIcon sx={{ fontSize: 15, color: onSurfaceVariant }} />
-                    <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>
-                      {res.room}
-                    </Typography>
+                    <Text textVariant="hint">{res.room}</Text>
                   </Box>
                 </Box>
 
@@ -449,29 +401,17 @@ const MyReservationsPage: React.FC = () => {
                     <Typography sx={{ fontSize: 11, color: onSurfaceVariant }}>
                       {t('myReservations.card.totalPaid')}
                     </Typography>
-                    <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>
-                      {formatPrice(res.totalPriceCop)}
-                    </Typography>
+                    <Text textVariant="price">{formatPrice(res.totalPriceCop)}</Text>
                   </Box>
 
-                  <Button
+                  <PrimaryPillButton
                     component={Link}
                     to={`/reservations/${res.id}`}
-                    sx={{
-                      height: 36,
-                      padding: '0 20px',
-                      background: primary,
-                      borderRadius: '100px',
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: '#fff',
-                      textTransform: 'none',
-                      whiteSpace: 'nowrap',
-                      '&:hover': { background: primary, opacity: 0.9 },
-                    }}
+                    pillSize="xs"
+                    sx={{ whiteSpace: 'nowrap' }}
                   >
                     {t('myReservations.card.viewDetail')}
-                  </Button>
+                  </PrimaryPillButton>
                 </Box>
               </Box>
             ))}

@@ -1,4 +1,6 @@
-import { Box, Typography, Button, Divider, Icon } from '@mui/material';
+import { Box, Typography, Divider, Icon } from '@mui/material';
+import Text from '@/design-system/components/Text';
+import { ErrorOutlinedPillButton, PrimaryPillButton } from '@/design-system/components/PillButton';
 import PersonIcon from '@mui/icons-material/Person';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
@@ -116,49 +118,26 @@ export default function HotelReservationDetailPage() {
 
         {/* Action buttons */}
         <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <Button
-            variant="outlined"
+          <ErrorOutlinedPillButton
+            pillSize="sm"
             startIcon={<CloseIcon sx={{ fontSize: 16 }} />}
             disabled={rejectBooking.isPending}
             onClick={() => rejectBooking.mutate('TH-48291')}
             sx={{
-              padding: '10px 20px',
-              borderRadius: '100px',
-              border: `1px solid ${palette.error}`,
               backgroundColor: palette.errorContainer,
-              color: palette.error,
-              fontFamily: "'Roboto', sans-serif",
-              fontSize: 13,
-              fontWeight: 600,
-              textTransform: 'none',
-              '&:hover': {
-                backgroundColor: palette.errorContainer,
-                border: `1px solid ${palette.error}`,
-              },
+              '&:hover': { backgroundColor: palette.errorContainer },
             }}
           >
             {t('reservationDetail.reject')}
-          </Button>
-          <Button
-            variant="contained"
+          </ErrorOutlinedPillButton>
+          <PrimaryPillButton
+            pillSize="sm"
             startIcon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
-            disableElevation
             disabled={confirmBooking.isPending}
             onClick={() => confirmBooking.mutate('TH-48291')}
-            sx={{
-              padding: '10px 24px',
-              borderRadius: '100px',
-              backgroundColor: palette.primary,
-              color: '#fff',
-              fontFamily: "'Roboto', sans-serif",
-              fontSize: 13,
-              fontWeight: 600,
-              textTransform: 'none',
-              '&:hover': { backgroundColor: palette.primary },
-            }}
           >
             {t('reservationDetail.confirmReservation')}
-          </Button>
+          </PrimaryPillButton>
         </Box>
       </Box>
 
@@ -190,9 +169,9 @@ export default function HotelReservationDetailPage() {
                 <Typography sx={{ fontSize: 16, fontWeight: 700, color: palette.onSurface }}>
                   Carlos Andres Mendoza Lopez
                 </Typography>
-                <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant, mb: '6px' }}>
+                <Text textVariant="caption" sx={{ mb: '6px' }}>
                   Colombia · CC 1020303040
-                </Typography>
+                </Text>
                 <Box sx={{ display: 'flex', gap: '16px' }}>
                   <Box
                     sx={{
@@ -316,13 +295,13 @@ export default function HotelReservationDetailPage() {
               </Box>
 
               <Box sx={{ marginLeft: 'auto', textAlign: 'right' }}>
-                <Typography sx={{ fontSize: 16, fontWeight: 700, color: palette.primary }}>
+                <Text textVariant="priceSmall">
                   {formatPrice(888000)}
                   {t('reservationDetail.perNight')}
-                </Typography>
-                <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
+                </Text>
+                <Text textVariant="caption">
                   {t('reservationDetail.nightsTotal', { nights: 3, total: formatPrice(2664000) })}
-                </Typography>
+                </Text>
               </Box>
             </Box>
           </SectionCard>
@@ -362,9 +341,7 @@ export default function HotelReservationDetailPage() {
                   key={index}
                   sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
                 >
-                  <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-                    {row.label}
-                  </Typography>
+                  <Text textVariant="hint">{row.label}</Text>
                   <Typography sx={{ fontSize: 13, fontWeight: 500, color: row.color }}>
                     {row.value}
                   </Typography>
@@ -377,9 +354,7 @@ export default function HotelReservationDetailPage() {
                 <Typography sx={{ fontWeight: 700, color: palette.onSurface, fontSize: 13 }}>
                   {t('reservationDetail.totalCharged')}
                 </Typography>
-                <Typography sx={{ fontSize: 16, fontWeight: 700, color: palette.primary }}>
-                  {formatPrice(3149160)}
-                </Typography>
+                <Text textVariant="priceSmall">{formatPrice(3149160)}</Text>
               </Box>
             </Box>
 
@@ -443,25 +418,19 @@ export default function HotelReservationDetailPage() {
           >
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                <Typography sx={{ color: palette.onSurfaceVariant, fontSize: 12 }}>
-                  {t('reservationDetail.freeCancellationUntil')}
-                </Typography>
+                <Text textVariant="caption">{t('reservationDetail.freeCancellationUntil')}</Text>
                 <Typography sx={{ fontWeight: 600, color: palette.success, fontSize: 12 }}>
                   {formatDate('2026-03-12', 'medium')}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                <Typography sx={{ color: palette.onSurfaceVariant, fontSize: 12 }}>
-                  {t('reservationDetail.penaltyAfter')}
-                </Typography>
+                <Text textVariant="caption">{t('reservationDetail.penaltyAfter')}</Text>
                 <Typography sx={{ fontWeight: 600, color: palette.warning, fontSize: 12 }}>
                   {t('reservationDetail.fiftyPercent')}
                 </Typography>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
-                <Typography sx={{ color: palette.onSurfaceVariant, fontSize: 12 }}>
-                  No-show
-                </Typography>
+                <Text textVariant="caption">No-show</Text>
                 <Typography sx={{ fontWeight: 600, color: palette.error, fontSize: 12 }}>
                   {t('reservationDetail.hundredPercent')}
                 </Typography>

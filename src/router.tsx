@@ -5,7 +5,7 @@ import LoginPage from './travelers/pages/LoginPage';
 import RegisterPage from './travelers/pages/RegisterPage';
 import ResultsPage from './travelers/pages/ResultsPage';
 import PropertyDetailPage from './travelers/pages/PropertyDetailPage';
-import CartPage from './travelers/pages/CartPage';
+import CartPage from './travelers/pages/CartPage/CartPage';
 import PaymentPage from './travelers/pages/PaymentPage';
 import ConfirmationPage from './travelers/pages/ConfirmationPage';
 import MyReservationsPage from './travelers/pages/MyReservationsPage';

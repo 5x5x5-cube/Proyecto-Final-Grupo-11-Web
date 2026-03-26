@@ -1,5 +1,7 @@
 import React from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
+import Text from '@/design-system/components/Text';
+import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import AddIcon from '@mui/icons-material/Add';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
@@ -147,24 +149,9 @@ export default function DiscountsPage() {
       title={t('discounts.title')}
       subtitle={t('discounts.subtitle')}
       topbarActions={
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '10px 20px',
-            borderRadius: '100px',
-            border: 'none',
-            background: palette.primary,
-            fontSize: 13,
-            fontWeight: 600,
-            color: '#fff',
-            cursor: 'pointer',
-          }}
-        >
-          <AddIcon sx={{ fontSize: 16 }} />
+        <PrimaryPillButton pillSize="sm" startIcon={<AddIcon sx={{ fontSize: 16 }} />}>
           {t('discounts.newDiscount')}
-        </Box>
+        </PrimaryPillButton>
       }
     >
       {/* Content layout: discount cards + form panel */}
@@ -267,11 +254,9 @@ export default function DiscountsPage() {
                     <Typography sx={{ fontSize: 14, fontWeight: 700, color: palette.onSurface }}>
                       {card.name}
                     </Typography>
-                    <Typography
-                      sx={{ fontSize: 12, color: palette.onSurfaceVariant, lineHeight: 1.4 }}
-                    >
+                    <Text textVariant="caption" sx={{ lineHeight: 1.4 }}>
                       {card.desc}
-                    </Typography>
+                    </Text>
 
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       <Box
@@ -506,18 +491,9 @@ export default function DiscountsPage() {
             </Box>
 
             {/* Discount value */}
-            <Typography
-              sx={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-                color: palette.outline,
-                mb: '-4px',
-              }}
-            >
+            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
               {t('discounts.discountValue')}
-            </Typography>
+            </Text>
             <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <Box
                 sx={{
@@ -590,18 +566,9 @@ export default function DiscountsPage() {
             </Box>
 
             {/* Validity */}
-            <Typography
-              sx={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-                color: palette.outline,
-                mb: '-4px',
-              }}
-            >
+            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
               {t('discounts.validityLabel')}
-            </Typography>
+            </Text>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <Box sx={{ position: 'relative' }}>
                 <Typography
@@ -674,18 +641,9 @@ export default function DiscountsPage() {
             </Box>
 
             {/* Applicable rooms */}
-            <Typography
-              sx={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-                color: palette.outline,
-                mb: '-4px',
-              }}
-            >
+            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
               {t('discounts.applicableRooms')}
-            </Typography>
+            </Text>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {roomCheckboxes.map(room => (
                 <Box
@@ -738,44 +696,14 @@ export default function DiscountsPage() {
               gap: '10px',
             }}
           >
-            <Box
-              sx={{
-                height: 44,
-                padding: '0 20px',
-                borderRadius: '100px',
-                border: `1px solid ${palette.outline}`,
-                background: 'transparent',
-                fontSize: 13,
-                fontWeight: 500,
-                color: palette.onSurfaceVariant,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+            <OutlinedPillButton pillSize="xs">{t('discounts.cancel')}</OutlinedPillButton>
+            <PrimaryPillButton
+              pillSize="xs"
+              startIcon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
+              sx={{ flex: 1 }}
             >
-              {t('discounts.cancel')}
-            </Box>
-            <Box
-              sx={{
-                flex: 1,
-                height: 44,
-                borderRadius: '100px',
-                border: 'none',
-                background: palette.primary,
-                fontSize: 13,
-                fontWeight: 600,
-                color: '#fff',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-              }}
-            >
-              <CheckCircleIcon sx={{ fontSize: 16 }} />
               {t('discounts.createDiscount')}
-            </Box>
+            </PrimaryPillButton>
           </Box>
         </Box>
       </Box>

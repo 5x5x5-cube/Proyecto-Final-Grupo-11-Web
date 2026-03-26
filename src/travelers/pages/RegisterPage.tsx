@@ -1,9 +1,11 @@
-import { Box, Typography, TextField, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, TextField, CircularProgress } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { palette } from '../../design-system/theme/palette';
-import { useRegister } from '../../api/hooks/useAuth';
+import { palette } from '@/design-system/theme/palette';
+import { useRegister } from '@/api/hooks/useAuth';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
+import Text from '@/design-system/components/Text';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -245,38 +247,24 @@ export default function RegisterPage() {
             />
           </Box>
 
-          <Button
+          <PrimaryPillButton
+            pillSize="md"
             fullWidth
-            variant="contained"
-            disableElevation
             disabled={!isFormValid || register.isPending}
             onClick={handleSubmit}
-            sx={{
-              height: 48,
-              backgroundColor: palette.primary,
-              color: palette.onPrimary,
-              borderRadius: '100px',
-              fontFamily: "'Roboto', sans-serif",
-              fontSize: 14,
-              fontWeight: 500,
-              letterSpacing: '0.1px',
-              textTransform: 'none',
-              mt: '8px',
-              '&:hover': { backgroundColor: palette.primary },
-            }}
+            sx={{ mt: '8px' }}
           >
             {register.isPending ? (
               <CircularProgress size={20} sx={{ color: '#fff' }} />
             ) : (
               t('register.submitButton')
             )}
-          </Button>
+          </PrimaryPillButton>
 
-          <Typography
+          <Text
+            textVariant="body"
             sx={{
               textAlign: 'center',
-              fontSize: 14,
-              color: palette.onSurfaceVariant,
               mt: '8px',
             }}
           >
@@ -291,7 +279,7 @@ export default function RegisterPage() {
             >
               {t('register.login')}
             </Link>
-          </Typography>
+          </Text>
         </Box>
       </Box>
     </Box>

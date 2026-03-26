@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Checkbox, FormControlLabel } from '@mui/material';
+import { Box, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import { Link } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
 import StarIcon from '@mui/icons-material/Star';
@@ -10,6 +10,8 @@ import RatingBadge from '../../design-system/components/RatingBadge';
 import { palette } from '../../design-system/theme/palette';
 import { useSearchHotels } from '../../api/hooks/useSearch';
 import ResultsPageSkeleton from './ResultsPage.skeleton';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
+import Text from '@/design-system/components/Text';
 
 const starOptions = [
   { label: '5', value: 5, selected: false },
@@ -78,9 +80,7 @@ export default function ResultsPage() {
         top: 0,
       }}
     >
-      <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface }}>
-        {t('results.filters.title')}
-      </Typography>
+      <Text textVariant="sectionTitle">{t('results.filters.title')}</Text>
 
       {/* Price range */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -96,9 +96,7 @@ export default function ResultsPage() {
           {t('results.filters.pricePerNight')}
         </Typography>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-            {t('results.filters.minimum')}
-          </Typography>
+          <Text textVariant="caption">{t('results.filters.minimum')}</Text>
           <Box
             component="input"
             defaultValue={formatPrice(0)}
@@ -115,9 +113,7 @@ export default function ResultsPage() {
               boxSizing: 'border-box',
             }}
           />
-          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-            {t('results.filters.maximum')}
-          </Typography>
+          <Text textVariant="caption">{t('results.filters.maximum')}</Text>
           <Box
             component="input"
             defaultValue={formatPrice(800000)}
@@ -325,9 +321,7 @@ export default function ResultsPage() {
               {t('results.header.foundIn')}
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-              <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-                {t('results.header.sortBy')}
-              </Typography>
+              <Text textVariant="body">{t('results.header.sortBy')}</Text>
               <Box
                 component="select"
                 defaultValue={t('results.header.recommended')}
@@ -407,17 +401,7 @@ export default function ResultsPage() {
                     gap: '6px',
                   }}
                 >
-                  <Typography
-                    sx={{
-                      fontSize: 11,
-                      fontWeight: 500,
-                      color: palette.primary,
-                      letterSpacing: '0.5px',
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    {hotel.type}
-                  </Typography>
+                  <Text textVariant="overline">{hotel.type}</Text>
                   <Typography sx={{ fontSize: 17, fontWeight: 600, color: palette.onSurface }}>
                     {hotel.name}
                   </Typography>
@@ -445,9 +429,9 @@ export default function ResultsPage() {
                     <Typography sx={{ color: palette.star, fontSize: 14, letterSpacing: '1px' }}>
                       {hotel.starsText}
                     </Typography>
-                    <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
+                    <Text textVariant="caption">
                       ({hotel.reviewCount} {t('results.card.reviews')})
-                    </Typography>
+                    </Text>
                   </Box>
                   <Box
                     sx={{
@@ -492,33 +476,16 @@ export default function ResultsPage() {
                     >
                       {formatPrice(hotel.pricePerNight)}
                     </Typography>
-                    <Typography
-                      sx={{ fontSize: 12, color: palette.onSurfaceVariant, textAlign: 'right' }}
-                    >
+                    <Text textVariant="caption" sx={{ textAlign: 'right' }}>
                       {t('results.card.perNight')}
-                    </Typography>
+                    </Text>
                   </Box>
-                  <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
+                  <Text textVariant="caption">
                     {`${formatPrice(hotel.totalPrice)} ${t('results.card.total')}`}
-                  </Typography>
-                  <Button
-                    variant="contained"
-                    disableElevation
-                    sx={{
-                      width: '100%',
-                      height: 40,
-                      backgroundColor: palette.primary,
-                      borderRadius: '100px',
-                      fontFamily: "'Roboto', sans-serif",
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: 'white',
-                      textTransform: 'none',
-                      '&:hover': { backgroundColor: palette.primary },
-                    }}
-                  >
+                  </Text>
+                  <PrimaryPillButton pillSize="sm" sx={{ width: '100%' }}>
                     {t('results.card.viewRooms')}
-                  </Button>
+                  </PrimaryPillButton>
                 </Box>
               </Box>
             </Link>

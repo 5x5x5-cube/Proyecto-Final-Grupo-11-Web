@@ -132,7 +132,8 @@
       "errors": {
         "roomUnavailable": "This room is no longer available for the selected dates",
         "serviceBusy": "The server is busy, please try again in a few seconds",
-        "generic": "Could not complete the reservation. Please try again"
+        "generic": "Could not complete the reservation. Please try again",
+        "cartFailed": "Could not add the room to the cart. Please try again"
       }
     },
     "cancellation": {

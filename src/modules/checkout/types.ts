@@ -1,36 +1,59 @@
-export interface CartHotel {
-  name: string;
-  location: string;
-  rating: number;
-  reviewCount: number;
-  type: string;
+/** Price breakdown returned by the backend (may contain string decimals) */
+export interface PriceBreakdown {
+  /** Backend sends pricePerNight; some callers may use basePrice */
+  pricePerNight?: number | string;
+  basePrice?: number | string;
+  nights: number;
+  subtotal: number | string;
+  tourismTax?: number | string;
+  vat?: number | string;
+  serviceFee?: number | string;
+  discountAmount?: number | string;
+  discountName?: string;
+  /** Backend sends total; some callers may use totalPrice */
+  total?: number | string;
+  totalPrice?: number | string;
+  currency?: string;
 }
 
-export interface CartRoom {
+/** Matches OpenAPI Cart schema (single-room) */
+export interface Cart {
   id: string;
-  name: string;
-  features: string;
-  pricePerNight: number;
-}
-
-export interface CartItem {
+  userId: string;
   roomId: string;
   hotelId: string;
-  hotel: CartHotel;
-  room: CartRoom;
+  hotelName: string;
+  hotelType?: string;
+  location?: string;
+  rating?: number;
+  reviewCount?: number;
+  roomName: string;
+  roomFeatures?: string;
   checkIn: string;
   checkOut: string;
   guests: number;
-  nights: number;
+  /** Top-level price fields (may be absent when backend nests them in priceBreakdown) */
+  pricePerNight?: number;
+  nights?: number;
+  subtotal?: number;
+  tourismTax?: number;
+  vat?: number;
+  serviceFee?: number;
+  total?: number;
+  /** Nested price breakdown from the backend */
+  priceBreakdown?: PriceBreakdown;
+  createdAt: string;
+  holdId?: string;
+  holdExpiresAt?: string; // ISO datetime
 }
 
-export interface CartPriceBreakdown {
-  pricePerNight: number;
-  nights: number;
-  basePrice: number;
-  vat: number;
-  serviceFee: number;
-  totalPrice: number;
+/** Matches OpenAPI CreateBookingRequest schema */
+export interface CreateBookingRequest {
+  roomId: string;
+  hotelId: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
 }
 
 export interface GuestInfo {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useBookingDetail, useBookingPayments } from '../../api/hooks/useBookings';
-import { Box, Typography, Button, Divider, Skeleton } from '@mui/material';
+import { Box, Typography, Divider, Skeleton } from '@mui/material';
+import Text from '@/design-system/components/Text';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HotelIcon from '@mui/icons-material/Hotel';
@@ -30,6 +31,14 @@ import SectionCard from '../../design-system/components/SectionCard';
 import InfoGrid from '../../design-system/components/InfoGrid';
 import RatingBadge from '../../design-system/components/RatingBadge';
 import ModalOverlay from '../../design-system/components/ModalOverlay';
+import {
+  PrimaryPillButton,
+  OutlinedPillButton,
+  ErrorOutlinedPillButton,
+  ErrorPillButton,
+  SuccessPillButton,
+  NeutralOutlinedPillButton,
+} from '@/design-system/components/PillButton';
 import {
   primary,
   onSurface,
@@ -123,12 +132,8 @@ const ReservationDetailPage: React.FC = () => {
             C
           </Box>
           <Box>
-            <Typography sx={{ fontSize: 14, fontWeight: 600, color: onSurface }}>
-              Carlos Mart&iacute;nez
-            </Typography>
-            <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-              carlos.m@email.com
-            </Typography>
+            <Text textVariant="bodySemibold">Carlos Mart&iacute;nez</Text>
+            <Text textVariant="caption">carlos.m@email.com</Text>
           </Box>
         </Box>
 
@@ -250,18 +255,14 @@ const ReservationDetailPage: React.FC = () => {
           { label: t('reservationDetail.priceSummary.vat'), value: formatPrice(168000) },
         ].map(row => (
           <Box key={row.label} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-            <Typography sx={{ fontSize: 14, color: onSurfaceVariant }}>{row.label}</Typography>
+            <Text textVariant="body">{row.label}</Text>
             <Typography sx={{ fontSize: 14, color: onSurface }}>{row.value}</Typography>
           </Box>
         ))}
         <Divider sx={{ borderColor: outlineVariant }} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Typography sx={{ fontSize: 16, fontWeight: 600, color: onSurface }}>
-            {t('reservationDetail.priceSummary.totalPaid')}
-          </Typography>
-          <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>
-            {formatPrice(2664000)}
-          </Typography>
+          <Text textVariant="panelTitle">{t('reservationDetail.priceSummary.totalPaid')}</Text>
+          <Text textVariant="price">{formatPrice(2664000)}</Text>
         </Box>
       </Box>
 
@@ -284,54 +285,32 @@ const ReservationDetailPage: React.FC = () => {
             {t('reservationDetail.cancelBox.title')}
           </Typography>
         </Box>
-        <Typography
-          sx={{ fontSize: 13, color: onSurfaceVariant, lineHeight: 1.5 }}
+        <Text
+          textVariant="hint"
+          sx={{ lineHeight: 1.5 }}
           dangerouslySetInnerHTML={{ __html: t('reservationDetail.cancelBox.description') }}
         />
-        <Typography sx={{ fontSize: 14, fontWeight: 500, color: onSurface }}>
+        <Text textVariant="bodyMedium">
           {t('reservationDetail.cancelBox.estimatedRefund')}{' '}
           <strong style={{ color: success }}>{formatPrice(2664000)}</strong>
-        </Typography>
-        <Button
+        </Text>
+        <ErrorOutlinedPillButton
           onClick={() => setCancelOpen(true)}
-          sx={{
-            width: '100%',
-            height: 44,
-            background: 'transparent',
-            border: `1.5px solid ${error}`,
-            borderRadius: '100px',
-            fontSize: 14,
-            fontWeight: 600,
-            color: error,
-            textTransform: 'none',
-            '&:hover': { background: 'rgba(179,38,30,0.04)' },
-          }}
+          pillSize="md"
+          sx={{ width: '100%' }}
         >
           {t('reservationDetail.cancelBox.cancelButton')}
-        </Button>
+        </ErrorOutlinedPillButton>
       </Box>
 
       {/* Download button */}
-      <Button
-        sx={{
-          width: '100%',
-          height: 40,
-          background: 'transparent',
-          border: `1px solid ${outline}`,
-          borderRadius: '100px',
-          fontSize: 13,
-          fontWeight: 500,
-          color: primary,
-          textTransform: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          '&:hover': { background: 'rgba(0,104,116,0.04)' },
-        }}
+      <OutlinedPillButton
+        pillSize="sm"
+        sx={{ width: '100%', display: 'flex', alignItems: 'center', gap: '6px' }}
       >
         <DownloadIcon sx={{ fontSize: 16 }} />
         {t('reservationDetail.downloadReceipt')}
-      </Button>
+      </OutlinedPillButton>
     </Box>
   );
 
@@ -349,41 +328,18 @@ const ReservationDetailPage: React.FC = () => {
       subtitle={t('reservationDetail.confirmedModal.subtitle')}
       footer={
         <>
-          <Button
-            onClick={onClose}
-            sx={{
-              padding: '10px 24px',
-              borderRadius: '100px',
-              border: `1px solid ${outline}`,
-              background: 'transparent',
-              fontSize: 13,
-              fontWeight: 600,
-              color: onSurfaceVariant,
-              textTransform: 'none',
-            }}
-          >
+          <NeutralOutlinedPillButton onClick={onClose} pillSize="xs">
             {t('reservationDetail.confirmedModal.close')}
-          </Button>
-          <Button
+          </NeutralOutlinedPillButton>
+          <PrimaryPillButton
             component={Link}
             to="/reservations"
-            sx={{
-              padding: '10px 24px',
-              borderRadius: '100px',
-              background: primary,
-              fontSize: 13,
-              fontWeight: 600,
-              color: '#fff',
-              textTransform: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              '&:hover': { background: primary, opacity: 0.9 },
-            }}
+            pillSize="xs"
+            sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}
           >
             <LuggageIcon sx={{ fontSize: 16 }} />
             {t('reservationDetail.confirmedModal.viewReservations')}
-          </Button>
+          </PrimaryPillButton>
         </>
       }
     >
@@ -404,9 +360,7 @@ const ReservationDetailPage: React.FC = () => {
             <Typography sx={{ fontSize: 13, fontWeight: 600, color: primary }}>
               {t('reservationDetail.confirmedModal.emailSent')}
             </Typography>
-            <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-              carlos.mendoza@email.com
-            </Typography>
+            <Text textVariant="caption">carlos.mendoza@email.com</Text>
           </Box>
         </Box>
 
@@ -453,7 +407,7 @@ const ReservationDetailPage: React.FC = () => {
                 padding: '4px 0',
               }}
             >
-              <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>{row.label}</Typography>
+              <Text textVariant="hint">{row.label}</Text>
               <Typography sx={{ fontSize: 13, fontWeight: 600, color: onSurface }}>
                 {row.value}
               </Typography>
@@ -519,8 +473,9 @@ const ReservationDetailPage: React.FC = () => {
               >
                 {step.icon}
               </Box>
-              <Typography
-                sx={{ fontSize: 13, color: onSurfaceVariant, lineHeight: 1.5 }}
+              <Text
+                textVariant="hint"
+                sx={{ lineHeight: 1.5 }}
                 dangerouslySetInnerHTML={{ __html: step.text }}
               />
             </Box>
@@ -544,39 +499,13 @@ const ReservationDetailPage: React.FC = () => {
       subtitle={t('reservationDetail.cancelModal.subtitle')}
       footer={
         <>
-          <Button
-            onClick={onClose}
-            sx={{
-              padding: '10px 24px',
-              borderRadius: '100px',
-              border: `1px solid ${outline}`,
-              background: 'transparent',
-              fontSize: 13,
-              fontWeight: 600,
-              color: onSurfaceVariant,
-              textTransform: 'none',
-            }}
-          >
+          <NeutralOutlinedPillButton onClick={onClose} pillSize="xs">
             {t('reservationDetail.cancelModal.goBack')}
-          </Button>
-          <Button
-            sx={{
-              padding: '10px 24px',
-              borderRadius: '100px',
-              background: error,
-              fontSize: 13,
-              fontWeight: 600,
-              color: '#fff',
-              textTransform: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              '&:hover': { background: error, opacity: 0.9 },
-            }}
-          >
+          </NeutralOutlinedPillButton>
+          <ErrorPillButton pillSize="xs" sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <CancelIcon sx={{ fontSize: 16 }} />
             {t('reservationDetail.cancelModal.confirmCancellation')}
-          </Button>
+          </ErrorPillButton>
         </>
       }
     >
@@ -626,7 +555,7 @@ const ReservationDetailPage: React.FC = () => {
                 padding: '4px 0',
               }}
             >
-              <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>{row.label}</Typography>
+              <Text textVariant="hint">{row.label}</Text>
               <Typography sx={{ fontSize: 13, fontWeight: 600, color: row.color }}>
                 {row.value}
               </Typography>
@@ -669,7 +598,7 @@ const ReservationDetailPage: React.FC = () => {
                 padding: '4px 0',
               }}
             >
-              <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>{row.label}</Typography>
+              <Text textVariant="hint">{row.label}</Text>
               <Typography sx={{ fontSize: 13, fontWeight: 600, color: row.color }}>
                 {row.value}
               </Typography>
@@ -734,8 +663,8 @@ const ReservationDetailPage: React.FC = () => {
         {/* Timeline */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <ScheduleIcon sx={{ fontSize: 16, color: primary }} />
-          <Typography
-            sx={{ fontSize: 12, color: onSurfaceVariant }}
+          <Text
+            textVariant="caption"
             dangerouslySetInnerHTML={{ __html: t('reservationDetail.cancelModal.estimatedTime') }}
           />
         </Box>
@@ -802,31 +731,18 @@ const ReservationDetailPage: React.FC = () => {
               </Box>
 
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Typography sx={{ fontSize: 14, color: onSurfaceVariant }}>
+                <Text textVariant="body">
                   {t('reservationDetail.bookingCode')}{' '}
                   <strong style={{ color: primary, fontWeight: 600 }}>TH-2026-48291</strong>
-                </Typography>
+                </Text>
               </Box>
 
               {/* Trigger buttons for modals */}
               <Box sx={{ display: 'flex', gap: '12px', mt: '12px' }}>
-                <Button
-                  onClick={() => setConfirmedOpen(true)}
-                  size="small"
-                  sx={{
-                    padding: '6px 16px',
-                    borderRadius: '100px',
-                    background: successContainer,
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: success,
-                    textTransform: 'none',
-                    '&:hover': { background: successContainer, opacity: 0.9 },
-                  }}
-                >
+                <SuccessPillButton onClick={() => setConfirmedOpen(true)} pillSize="xxs">
                   <CheckCircleIcon sx={{ fontSize: 14, mr: '4px' }} />
                   {t('reservationDetail.viewConfirmation')}
-                </Button>
+                </SuccessPillButton>
               </Box>
             </Box>
 
@@ -848,34 +764,20 @@ const ReservationDetailPage: React.FC = () => {
                     }}
                   />
                   <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                    <Typography
-                      sx={{
-                        fontSize: 11,
-                        fontWeight: 500,
-                        color: primary,
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                      }}
-                    >
-                      {t('reservationDetail.hotelType')}
-                    </Typography>
-                    <Typography sx={{ fontSize: 18, fontWeight: 700, color: onSurface }}>
-                      Hotel Santa Clara Sofitel
-                    </Typography>
+                    <Text textVariant="overline">{t('reservationDetail.hotelType')}</Text>
+                    <Text textVariant="sectionTitle">Hotel Santa Clara Sofitel</Text>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <PlaceIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
-                      <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>
+                      <Text textVariant="hint">
                         Calle del Torno #39-29, Centro Hist&oacute;rico, Cartagena
-                      </Typography>
+                      </Text>
                     </Box>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <RatingBadge rating={4.8} />
                       <Typography sx={{ color: star, fontSize: 13 }}>
                         &#9733;&#9733;&#9733;&#9733;&#9733;
                       </Typography>
-                      <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-                        312 {t('reservationDetail.reviews')}
-                      </Typography>
+                      <Text textVariant="caption">312 {t('reservationDetail.reviews')}</Text>
                     </Box>
                   </Box>
                 </Box>
@@ -930,12 +832,10 @@ const ReservationDetailPage: React.FC = () => {
                     }}
                   />
                   <Box sx={{ flex: 1 }}>
-                    <Typography sx={{ fontSize: 15, fontWeight: 600, color: onSurface, mb: '4px' }}>
+                    <Text textVariant="cardSubheading" sx={{ mb: '4px' }}>
                       Habitaci&oacute;n Superior
-                    </Typography>
-                    <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>
-                      {t('reservationDetail.roomFeatures')}
-                    </Typography>
+                    </Text>
+                    <Text textVariant="hint">{t('reservationDetail.roomFeatures')}</Text>
                     <Box sx={{ display: 'flex', gap: '8px', flexWrap: 'wrap', mt: '6px' }}>
                       {roomAmenities.map(amenity => (
                         <Box
@@ -1011,17 +911,15 @@ const ReservationDetailPage: React.FC = () => {
                       <CheckCircleIcon sx={{ fontSize: 20, color: success }} />
                     </Box>
                     <Box sx={{ flex: 1 }}>
-                      <Typography sx={{ fontSize: 14, fontWeight: 500, color: onSurface }}>
+                      <Text textVariant="bodyMedium">
                         {t('reservationDetail.paymentHistory.bookingPayment')}
-                      </Typography>
-                      <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
+                      </Text>
+                      <Text textVariant="caption">
                         {formatDate('2026-02-15', 'medium')} &middot; 10:34 a.m.
-                      </Typography>
+                      </Text>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <CreditCardIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
-                        <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>
-                          VISA &bull;&bull;&bull;&bull; 4242
-                        </Typography>
+                        <Text textVariant="caption">VISA &bull;&bull;&bull;&bull; 4242</Text>
                       </Box>
                     </Box>
                     <Box

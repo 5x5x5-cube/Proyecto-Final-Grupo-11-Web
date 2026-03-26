@@ -1,4 +1,4 @@
-import { styled, Box, Typography, Button } from '@mui/material';
+import { styled, Box, Typography } from '@mui/material';
 import { palette } from '@/design-system/theme/palette';
 
 export const SidebarContainer = styled(Box)({
@@ -50,18 +50,6 @@ export const TotalValue = styled(Typography)({
   fontSize: 22,
   fontWeight: 700,
   color: palette.primary,
-});
-
-export const ContinueButton = styled(Button)({
-  height: 52,
-  backgroundColor: palette.primary,
-  borderRadius: '100px',
-  fontFamily: "'Roboto', sans-serif",
-  fontSize: 16,
-  fontWeight: 600,
-  color: '#fff',
-  textTransform: 'none',
-  '&:hover': { backgroundColor: palette.primary },
 });
 
 export const SecureNote = styled(Box)({

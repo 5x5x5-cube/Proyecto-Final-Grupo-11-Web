@@ -1,4 +1,4 @@
-import { Box, Typography, TextField, Button, Divider, CircularProgress } from '@mui/material';
+import { Box, Typography, TextField, Divider, CircularProgress } from '@mui/material';
 import HotelIcon from '@mui/icons-material/Hotel';
 import LockIcon from '@mui/icons-material/Lock';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
@@ -11,8 +11,10 @@ import SellIcon from '@mui/icons-material/Sell';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { palette } from '../../design-system/theme/palette';
-import { useLogin } from '../../api/hooks/useAuth';
+import { palette } from '@/design-system/theme/palette';
+import { useLogin } from '@/api/hooks/useAuth';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
+import Text from '@/design-system/components/Text';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -247,45 +249,31 @@ export default function HotelLoginPage() {
           </Typography>
 
           {/* Login button */}
-          <Button
+          <PrimaryPillButton
+            pillSize="lg"
             fullWidth
-            variant="contained"
-            disableElevation
             disabled={!isFormValid || login.isPending}
             onClick={handleSubmit}
-            sx={{
-              height: 52,
-              backgroundColor: palette.primary,
-              color: '#fff',
-              borderRadius: '100px',
-              fontFamily: "'Roboto', sans-serif",
-              fontSize: 15,
-              fontWeight: 600,
-              textTransform: 'none',
-              mt: '8px',
-              '&:hover': { backgroundColor: palette.primary },
-            }}
+            sx={{ mt: '8px' }}
           >
             {login.isPending ? (
               <CircularProgress size={20} sx={{ color: '#fff' }} />
             ) : (
               t('login.loginButton')
             )}
-          </Button>
+          </PrimaryPillButton>
 
           {/* Divider */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', my: '4px' }}>
             <Divider sx={{ flex: 1, borderColor: palette.outlineVariant }} />
-            <Typography
-              sx={{ fontSize: 12, color: palette.onSurfaceVariant, whiteSpace: 'nowrap' }}
-            >
+            <Text textVariant="caption" sx={{ whiteSpace: 'nowrap' }}>
               {t('login.newToTravelHub')}
-            </Typography>
+            </Text>
             <Divider sx={{ flex: 1, borderColor: palette.outlineVariant }} />
           </Box>
 
           {/* Help text */}
-          <Typography sx={{ textAlign: 'center', fontSize: 13, color: palette.onSurfaceVariant }}>
+          <Text textVariant="hint" sx={{ textAlign: 'center' }}>
             {t('login.contactUs')}{' '}
             <Box
               component="span"
@@ -294,7 +282,7 @@ export default function HotelLoginPage() {
               partners@travelhub.com
             </Box>{' '}
             {t('login.contactSuffix')}
-          </Typography>
+          </Text>
         </Box>
 
         {/* Trust badges */}
