@@ -52,10 +52,10 @@ const hotelReviews = [
 
 // Cart mock data — matches OpenAPI Cart schema (single-room)
 const cartData = {
-  id: 1,
-  userId: 1,
-  roomId: 1,
-  hotelId: 1,
+  id: 'cart-mock-001',
+  userId: 'c1000000-0000-0000-0000-000000000001',
+  roomId: 'b1000000-0000-0000-0000-000000000001',
+  hotelId: 'a1000000-0000-0000-0000-000000000001',
   hotelName: 'Hotel Santa Clara Sofitel',
   hotelType: 'Hotel · 5 estrellas',
   location: 'Centro Historico, Cartagena',
@@ -74,6 +74,8 @@ const cartData = {
   serviceFee: 0,
   total: 2664000,
   createdAt: '2026-03-10T10:00:00Z',
+  holdId: 'hold-mock-001',
+  holdExpiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
 };
 
 // Hotel detail mock (enriched from mockHotels[0])
@@ -351,7 +353,12 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'PUT',
     pattern: /^\/cart$/,
-    handler: () => ok(cartData),
+    handler: () =>
+      ok({
+        ...cartData,
+        holdId: 'hold-mock-001',
+        holdExpiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+      }),
   },
   {
     method: 'DELETE',

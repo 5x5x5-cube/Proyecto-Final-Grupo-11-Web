@@ -35,6 +35,10 @@ export default function HotelSummaryCard({ cart }: Props) {
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
 
+  const pb = cart.priceBreakdown;
+  const nights = pb?.nights ?? cart.nights ?? 0;
+  const pricePerNight = Number(pb?.pricePerNight ?? pb?.basePrice ?? cart.pricePerNight) || 0;
+
   return (
     <SectionCard
       icon={<HotelIcon sx={{ color: palette.primary, fontSize: 20 }} />}
@@ -84,7 +88,7 @@ export default function HotelSummaryCard({ cart }: Props) {
             },
             {
               label: t('cart.accommodation.duration'),
-              value: t('cart.accommodation.nightsCount', { count: cart.nights }),
+              value: t('cart.accommodation.nightsCount', { count: nights }),
               sub: t('cart.accommodation.guestsCount', { count: cart.guests }),
             },
           ]}
@@ -97,7 +101,7 @@ export default function HotelSummaryCard({ cart }: Props) {
             {cart.roomFeatures && <RoomFeatures>{cart.roomFeatures}</RoomFeatures>}
           </Box>
           <Box sx={{ textAlign: 'right' }}>
-            <RoomPrice>{formatPrice(cart.pricePerNight)}</RoomPrice>
+            <RoomPrice>{formatPrice(pricePerNight)}</RoomPrice>
             <PerNightLabel>{t('cart.accommodation.perNight')}</PerNightLabel>
           </Box>
         </RoomRow>

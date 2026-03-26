@@ -22,11 +22,13 @@ const mockCart: Cart = {
   serviceFee: 0,
   total: 595000,
   createdAt: '2026-03-26T00:00:00Z',
+  holdId: 'hold-mock-001',
+  holdExpiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
 };
 
 describe('CartSidebar', () => {
   it('renders total from cart', () => {
-    renderWithProviders(<CartSidebar cart={mockCart} isPending={false} onContinue={() => {}} />);
+    renderWithProviders(<CartSidebar cart={mockCart} onContinue={() => {}} />);
 
     expect(screen.getByText(/595/)).toBeInTheDocument();
   });
@@ -35,7 +37,7 @@ describe('CartSidebar', () => {
     const onContinue = vi.fn();
     const user = userEvent.setup();
 
-    renderWithProviders(<CartSidebar cart={mockCart} isPending={false} onContinue={onContinue} />);
+    renderWithProviders(<CartSidebar cart={mockCart} onContinue={onContinue} />);
 
     const button = screen.getByRole('button');
     await user.click(button);
@@ -43,16 +45,15 @@ describe('CartSidebar', () => {
     expect(onContinue).toHaveBeenCalledOnce();
   });
 
-  it('disables button and shows spinner when isPending', () => {
-    renderWithProviders(<CartSidebar cart={mockCart} isPending={true} onContinue={() => {}} />);
+  it('button is enabled by default', () => {
+    renderWithProviders(<CartSidebar cart={mockCart} onContinue={() => {}} />);
 
     const button = screen.getByRole('button');
-    expect(button).toBeDisabled();
-    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+    expect(button).not.toBeDisabled();
   });
 
-  it('does not show spinner when not pending', () => {
-    renderWithProviders(<CartSidebar cart={mockCart} isPending={false} onContinue={() => {}} />);
+  it('does not show spinner', () => {
+    renderWithProviders(<CartSidebar cart={mockCart} onContinue={() => {}} />);
 
     expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
   });

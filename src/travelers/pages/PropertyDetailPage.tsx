@@ -22,7 +22,6 @@ import LocalBarIcon from '@mui/icons-material/LocalBar';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
-import { useSnackbar } from '@/contexts/SnackbarContext';
 import { useDebouncedCallback } from '@/hooks/useDebouncedCallback';
 import TravelerLayout from '@/design-system/layouts/TravelerLayout';
 import RatingBadge from '@/design-system/components/RatingBadge';
@@ -30,31 +29,33 @@ import { palette } from '@/design-system/theme/palette';
 import PropertyDetailPageSkeleton from './PropertyDetailPage.skeleton';
 import { useHotelDetail, useHotelReviews } from '@/api/hooks/useSearch';
 import { useSetCart } from '@/api/hooks/useCart';
+import { saveCartSelection } from '@/modules/checkout/cartStorage';
 
 export default function PropertyDetailPage() {
   const { isLoading: isHotelLoading } = useHotelDetail(1);
   const { data: reviewsData, isLoading: isReviewsLoading } = useHotelReviews(1);
   const setCart = useSetCart();
   const navigate = useNavigate();
-  const { showError } = useSnackbar();
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
 
   const handleReserve = useDebouncedCallback(() => {
     if (setCart.isPending) return;
-    setCart.mutate(
-      {
-        roomId: 1,
-        hotelId: 1,
-        checkIn: '2026-03-15',
-        checkOut: '2026-03-20',
-        guests: 2,
-      },
-      {
-        onSuccess: () => navigate('/checkout/cart'),
-        onError: () => showError(t('propertyDetail.booking.errors.cartFailed')),
-      }
-    );
+
+    const selection = {
+      roomId: 'b1000000-0000-0000-0000-000000000001',
+      hotelId: 'a1000000-0000-0000-0000-000000000001',
+      checkIn: '2026-03-15',
+      checkOut: '2026-03-20',
+      guests: 2,
+    };
+
+    // Optimistic: save locally and navigate immediately without waiting for server
+    saveCartSelection(selection);
+    navigate('/checkout/cart');
+
+    // Background sync: create the hold on the server — CartPage handles any failure
+    setCart.mutate(selection);
   });
 
   if (isHotelLoading) return <PropertyDetailPageSkeleton />;

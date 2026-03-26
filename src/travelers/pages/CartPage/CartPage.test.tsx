@@ -5,7 +5,6 @@ import { renderWithProviders } from '@/test/renderWithProviders';
 import CartPage from './CartPage';
 
 // Mock hooks
-const mockMutate = vi.fn();
 const mockNavigate = vi.fn();
 
 vi.mock('@/api/hooks/useCart', () => ({
@@ -32,15 +31,10 @@ vi.mock('@/api/hooks/useCart', () => ({
       serviceFee: 0,
       total: 714000,
       createdAt: '2026-03-26T00:00:00Z',
+      holdId: 'hold-mock-001',
+      holdExpiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
     },
     isLoading: false,
-  })),
-}));
-
-vi.mock('@/api/hooks/useBookings', () => ({
-  useCreateBooking: vi.fn(() => ({
-    mutate: mockMutate,
-    isPending: false,
   })),
 }));
 
@@ -83,7 +77,7 @@ describe('CartPage', () => {
     expect(screen.getByText(/714/)).toBeInTheDocument();
   });
 
-  it('calls createBooking.mutate with cart data on continue click', async () => {
+  it('navigates to /checkout/payment on continue click without calling createBooking', async () => {
     const user = userEvent.setup();
     renderWithProviders(<CartPage />);
 
@@ -94,19 +88,7 @@ describe('CartPage', () => {
     }
 
     await waitFor(() => {
-      expect(mockMutate).toHaveBeenCalledWith(
-        expect.objectContaining({
-          roomId: 1,
-          hotelId: 1,
-          checkIn: '2026-04-10',
-          checkOut: '2026-04-12',
-          guests: 2,
-        }),
-        expect.objectContaining({
-          onSuccess: expect.any(Function),
-          onError: expect.any(Function),
-        })
-      );
+      expect(mockNavigate).toHaveBeenCalledWith('/checkout/payment');
     });
   });
 

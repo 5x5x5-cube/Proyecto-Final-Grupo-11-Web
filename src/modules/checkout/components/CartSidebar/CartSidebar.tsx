@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import { palette } from '@/design-system/theme/palette';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
+import HoldCountdown from '../HoldCountdown/HoldCountdown';
 import type { Cart } from '../../types';
 import {
   SidebarContainer,
@@ -20,45 +21,64 @@ import {
 
 interface Props {
   cart: Cart;
-  isPending: boolean;
   onContinue: () => void;
+  onHoldExpired?: () => void;
 }
 
-export default function CartSidebar({ cart, isPending, onContinue }: Props) {
+export default function CartSidebar({ cart, onContinue, onHoldExpired }: Props) {
   const { t } = useTranslation('travelers');
   const { formatPrice } = useLocale();
 
+  // Parse a value that might be a string decimal (e.g. "250000.00") into a number
+  const num = (v: number | string | undefined | null): number => {
+    if (v == null) return 0;
+    return typeof v === 'string' ? parseFloat(v) || 0 : v;
+  };
+
+  // Read from priceBreakdown (backend) with fallback to top-level fields (mock)
+  const pb = cart.priceBreakdown;
+  const pricePerNight = num(pb?.pricePerNight ?? pb?.basePrice ?? cart.pricePerNight);
+  const nights = pb?.nights ?? cart.nights ?? 0;
+  const subtotal = num(pb?.subtotal ?? cart.subtotal);
+  const vat = num(pb?.vat ?? cart.vat);
+  const serviceFee = num(pb?.serviceFee ?? cart.serviceFee);
+  const total = num(pb?.total ?? pb?.totalPrice ?? cart.total);
+
   return (
     <SidebarContainer>
+      {cart.holdExpiresAt && onHoldExpired && (
+        <HoldCountdown expiresAt={cart.holdExpiresAt} onExpired={onHoldExpired} />
+      )}
+
       <SidebarTitle>{t('cart.sidebar.title')}</SidebarTitle>
 
       <BreakdownList>
         <BreakdownRow>
           <BreakdownLabel>
-            {`${formatPrice(cart.pricePerNight)} x ${cart.nights} ${t('cart.sidebar.nightsLabel')}`}
+            {`${formatPrice(pricePerNight)} x ${nights} ${t('cart.sidebar.nightsLabel')}`}
           </BreakdownLabel>
-          <BreakdownValue>{formatPrice(cart.subtotal)}</BreakdownValue>
+          <BreakdownValue>{formatPrice(subtotal)}</BreakdownValue>
         </BreakdownRow>
-        {cart.vat != null && (
+        {vat > 0 && (
           <BreakdownRow>
             <BreakdownLabel>{t('cart.sidebar.vat')}</BreakdownLabel>
-            <BreakdownValue>{formatPrice(cart.vat)}</BreakdownValue>
+            <BreakdownValue>{formatPrice(vat)}</BreakdownValue>
           </BreakdownRow>
         )}
-        {cart.serviceFee != null && (
+        {serviceFee > 0 && (
           <BreakdownRow>
             <BreakdownLabel>{t('cart.sidebar.serviceFee')}</BreakdownLabel>
-            <BreakdownValue>{formatPrice(cart.serviceFee)}</BreakdownValue>
+            <BreakdownValue>{formatPrice(serviceFee)}</BreakdownValue>
           </BreakdownRow>
         )}
         <Divider />
         <BreakdownRow>
           <TotalLabel>{t('cart.sidebar.totalToPay')}</TotalLabel>
-          <TotalValue>{formatPrice(cart.total)}</TotalValue>
+          <TotalValue>{formatPrice(total)}</TotalValue>
         </BreakdownRow>
       </BreakdownList>
 
-      <PrimaryPillButton pillSize="lg" fullWidth loading={isPending} onClick={onContinue}>
+      <PrimaryPillButton pillSize="lg" fullWidth onClick={onContinue}>
         {t('cart.sidebar.continueToPayment')}
       </PrimaryPillButton>
 

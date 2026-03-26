@@ -1,9 +1,27 @@
+/** Price breakdown returned by the backend (may contain string decimals) */
+export interface PriceBreakdown {
+  /** Backend sends pricePerNight; some callers may use basePrice */
+  pricePerNight?: number | string;
+  basePrice?: number | string;
+  nights: number;
+  subtotal: number | string;
+  tourismTax?: number | string;
+  vat?: number | string;
+  serviceFee?: number | string;
+  discountAmount?: number | string;
+  discountName?: string;
+  /** Backend sends total; some callers may use totalPrice */
+  total?: number | string;
+  totalPrice?: number | string;
+  currency?: string;
+}
+
 /** Matches OpenAPI Cart schema (single-room) */
 export interface Cart {
-  id: number;
-  userId: number;
-  roomId: number;
-  hotelId: number;
+  id: string;
+  userId: string;
+  roomId: string;
+  hotelId: string;
   hotelName: string;
   hotelType?: string;
   location?: string;
@@ -14,20 +32,25 @@ export interface Cart {
   checkIn: string;
   checkOut: string;
   guests: number;
-  pricePerNight: number;
-  nights: number;
-  subtotal: number;
+  /** Top-level price fields (may be absent when backend nests them in priceBreakdown) */
+  pricePerNight?: number;
+  nights?: number;
+  subtotal?: number;
   tourismTax?: number;
   vat?: number;
   serviceFee?: number;
-  total: number;
+  total?: number;
+  /** Nested price breakdown from the backend */
+  priceBreakdown?: PriceBreakdown;
   createdAt: string;
+  holdId?: string;
+  holdExpiresAt?: string; // ISO datetime
 }
 
 /** Matches OpenAPI CreateBookingRequest schema */
 export interface CreateBookingRequest {
-  roomId: number;
-  hotelId: number;
+  roomId: string;
+  hotelId: string;
   checkIn: string;
   checkOut: string;
   guests: number;

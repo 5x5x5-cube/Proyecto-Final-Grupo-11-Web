@@ -54,6 +54,9 @@ async function request<T>(method: Method, path: string, config?: RequestConfig):
     headers['Authorization'] = `Bearer ${token}`;
   }
 
+  const userId = localStorage.getItem('user_id');
+  if (userId) headers['X-User-Id'] = userId;
+
   const fetchOptions: RequestInit = {
     method,
     headers,
