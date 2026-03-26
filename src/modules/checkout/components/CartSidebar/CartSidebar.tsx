@@ -3,7 +3,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import { palette } from '@/design-system/theme/palette';
-import type { CartPriceBreakdown } from '../../types';
+import type { Cart } from '../../types';
 import {
   SidebarContainer,
   SidebarTitle,
@@ -20,12 +20,12 @@ import {
 } from './CartSidebar.styles';
 
 interface Props {
-  priceBreakdown: CartPriceBreakdown;
+  cart: Cart;
   isPending: boolean;
   onContinue: () => void;
 }
 
-export default function CartSidebar({ priceBreakdown, isPending, onContinue }: Props) {
+export default function CartSidebar({ cart, isPending, onContinue }: Props) {
   const { t } = useTranslation('travelers');
   const { formatPrice } = useLocale();
 
@@ -36,22 +36,26 @@ export default function CartSidebar({ priceBreakdown, isPending, onContinue }: P
       <BreakdownList>
         <BreakdownRow>
           <BreakdownLabel>
-            {`${formatPrice(priceBreakdown.pricePerNight)} x ${priceBreakdown.nights} ${t('cart.sidebar.nightsLabel')}`}
+            {`${formatPrice(cart.pricePerNight)} x ${cart.nights} ${t('cart.sidebar.nightsLabel')}`}
           </BreakdownLabel>
-          <BreakdownValue>{formatPrice(priceBreakdown.basePrice)}</BreakdownValue>
+          <BreakdownValue>{formatPrice(cart.subtotal)}</BreakdownValue>
         </BreakdownRow>
-        <BreakdownRow>
-          <BreakdownLabel>{t('cart.sidebar.vat')}</BreakdownLabel>
-          <BreakdownValue>{formatPrice(priceBreakdown.vat)}</BreakdownValue>
-        </BreakdownRow>
-        <BreakdownRow>
-          <BreakdownLabel>{t('cart.sidebar.serviceFee')}</BreakdownLabel>
-          <BreakdownValue>{formatPrice(priceBreakdown.serviceFee)}</BreakdownValue>
-        </BreakdownRow>
+        {cart.vat != null && (
+          <BreakdownRow>
+            <BreakdownLabel>{t('cart.sidebar.vat')}</BreakdownLabel>
+            <BreakdownValue>{formatPrice(cart.vat)}</BreakdownValue>
+          </BreakdownRow>
+        )}
+        {cart.serviceFee != null && (
+          <BreakdownRow>
+            <BreakdownLabel>{t('cart.sidebar.serviceFee')}</BreakdownLabel>
+            <BreakdownValue>{formatPrice(cart.serviceFee)}</BreakdownValue>
+          </BreakdownRow>
+        )}
         <Divider />
         <BreakdownRow>
           <TotalLabel>{t('cart.sidebar.totalToPay')}</TotalLabel>
-          <TotalValue>{formatPrice(priceBreakdown.totalPrice)}</TotalValue>
+          <TotalValue>{formatPrice(cart.total)}</TotalValue>
         </BreakdownRow>
       </BreakdownList>
 

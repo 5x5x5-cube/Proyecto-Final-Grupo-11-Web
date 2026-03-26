@@ -6,7 +6,7 @@
 - **Prefer creating reusable components** in `src/design-system/components/` — avoid duplicating UI patterns across pages
 - **Update the Design System showcase page** at `src/design-system/pages/DesignSystemPage.tsx` whenever a new reusable component is added to the design system
 - The MUI theme is configured at `src/design-system/theme/theme.ts` using our palette tokens (primary, surface, onSurface, etc.)
-- **Never use inline `style={}` props** — always use MUI's `sx` prop for styling. Inline styles bypass the theme and are harder to maintain
+- **Never use inline styles** — no `style={}` props, no inline `sx` with complex objects on every element. Use MUI `styled()` named components for reusable styling (see `*.styles.ts` files). Use `sx` only for simple one-off layout adjustments (e.g., gap, flex). Inline styles bypass the theme, are harder to maintain, and clutter component markup
 
 ## Project Structure
 

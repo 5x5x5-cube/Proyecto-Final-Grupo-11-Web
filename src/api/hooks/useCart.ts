@@ -1,27 +1,24 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { httpClient } from '../httpClient';
+import type { Cart } from '@/modules/checkout/types';
 
 export function useCart() {
-  return useQuery({
+  return useQuery<Cart>({
     queryKey: ['cart'],
-    queryFn: () => httpClient.get('/cart'),
+    queryFn: () => httpClient.get<Cart>('/cart'),
   });
 }
 
-export function useAddCartItem() {
+export function useSetCart() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (item: unknown) => httpClient.post('/cart/items', { body: item }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cart'] });
-    },
-  });
-}
-
-export function useRemoveCartItem() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (itemId: number) => httpClient.delete(`/cart/items/${itemId}`),
+    mutationFn: (data: {
+      roomId: number;
+      hotelId: number;
+      checkIn: string;
+      checkOut: string;
+      guests: number;
+    }) => httpClient.put<Cart>('/cart', { body: data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cart'] });
     },

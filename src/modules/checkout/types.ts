@@ -1,36 +1,36 @@
-export interface CartHotel {
-  name: string;
-  location: string;
-  rating: number;
-  reviewCount: number;
-  type: string;
-}
-
-export interface CartRoom {
-  id: string;
-  name: string;
-  features: string;
-  pricePerNight: number;
-}
-
-export interface CartItem {
-  roomId: string;
-  hotelId: string;
-  hotel: CartHotel;
-  room: CartRoom;
+/** Matches OpenAPI Cart schema (single-room) */
+export interface Cart {
+  id: number;
+  userId: number;
+  roomId: number;
+  hotelId: number;
+  hotelName: string;
+  hotelType?: string;
+  location?: string;
+  rating?: number;
+  reviewCount?: number;
+  roomName: string;
+  roomFeatures?: string;
   checkIn: string;
   checkOut: string;
   guests: number;
-  nights: number;
-}
-
-export interface CartPriceBreakdown {
   pricePerNight: number;
   nights: number;
-  basePrice: number;
-  vat: number;
-  serviceFee: number;
-  totalPrice: number;
+  subtotal: number;
+  tourismTax?: number;
+  vat?: number;
+  serviceFee?: number;
+  total: number;
+  createdAt: string;
+}
+
+/** Matches OpenAPI CreateBookingRequest schema */
+export interface CreateBookingRequest {
+  roomId: number;
+  hotelId: number;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
 }
 
 export interface GuestInfo {

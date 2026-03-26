@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { renderWithProviders } from '../../test/renderWithProviders';
+import { renderWithProviders } from '@/test/renderWithProviders';
 import CartPage from './CartPage';
 
 // Mock hooks
@@ -11,24 +11,27 @@ const mockNavigate = vi.fn();
 vi.mock('@/api/hooks/useCart', () => ({
   useCart: vi.fn(() => ({
     data: {
-      items: [
-        {
-          roomId: 'b1000000-0000-0000-0000-000000000001',
-          hotelId: 'a1000000-0000-0000-0000-000000000001',
-          hotelName: 'Hotel Test',
-          location: 'Cartagena, Colombia',
-          rating: 4.5,
-          reviewCount: 100,
-          hotelType: 'Hotel · 5 estrellas',
-          roomName: 'Suite',
-          roomFeatures: '1 cama King · Vista al mar',
-          pricePerNight: 300000,
-          checkIn: '2026-04-10',
-          checkOut: '2026-04-12',
-          guests: 2,
-          nights: 2,
-        },
-      ],
+      id: 1,
+      userId: 1,
+      roomId: 1,
+      hotelId: 1,
+      hotelName: 'Hotel Test',
+      hotelType: 'Hotel · 5 estrellas',
+      location: 'Cartagena, Colombia',
+      rating: 4.5,
+      reviewCount: 100,
+      roomName: 'Suite',
+      roomFeatures: '1 cama King · Vista al mar',
+      pricePerNight: 300000,
+      checkIn: '2026-04-10',
+      checkOut: '2026-04-12',
+      guests: 2,
+      nights: 2,
+      subtotal: 600000,
+      vat: 114000,
+      serviceFee: 0,
+      total: 714000,
+      createdAt: '2026-03-26T00:00:00Z',
     },
     isLoading: false,
   })),
@@ -46,7 +49,6 @@ vi.mock('react-router-dom', async () => {
   return { ...actual, useNavigate: () => mockNavigate };
 });
 
-// Mock the skeleton to avoid rendering complexities
 vi.mock('./CartPage.skeleton', () => ({
   default: () => <div data-testid="cart-skeleton" />,
 }));
@@ -75,10 +77,9 @@ describe('CartPage', () => {
     expect(screen.getByText('Cartagena, Colombia')).toBeInTheDocument();
   });
 
-  it('renders price breakdown with calculated values', () => {
+  it('renders total from API response', () => {
     renderWithProviders(<CartPage />);
 
-    // Total: 300000 * 2 * 1.19 = 714000
     expect(screen.getByText(/714/)).toBeInTheDocument();
   });
 
@@ -86,7 +87,6 @@ describe('CartPage', () => {
     const user = userEvent.setup();
     renderWithProviders(<CartPage />);
 
-    // Find the continue button (inside CartSidebar)
     const buttons = screen.getAllByRole('button');
     const continueButton = buttons.find(b => !b.hasAttribute('disabled') && b.textContent !== '');
     if (continueButton) {
@@ -96,8 +96,8 @@ describe('CartPage', () => {
     await waitFor(() => {
       expect(mockMutate).toHaveBeenCalledWith(
         expect.objectContaining({
-          roomId: 'b1000000-0000-0000-0000-000000000001',
-          hotelId: 'a1000000-0000-0000-0000-000000000001',
+          roomId: 1,
+          hotelId: 1,
           checkIn: '2026-04-10',
           checkOut: '2026-04-12',
           guests: 2,
@@ -113,7 +113,6 @@ describe('CartPage', () => {
   it('renders guest info section', () => {
     renderWithProviders(<CartPage />);
 
-    // TODO: hardcoded guest for now
     expect(screen.getByText('Carlos Martinez')).toBeInTheDocument();
   });
 

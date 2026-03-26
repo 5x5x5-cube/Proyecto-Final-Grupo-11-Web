@@ -50,8 +50,11 @@ const hotelReviews = [
   },
 ];
 
-// Cart mock data
+// Cart mock data — matches OpenAPI Cart schema (single-room)
 const cartData = {
+  id: 1,
+  userId: 1,
+  roomId: 1,
   hotelId: 1,
   hotelName: 'Hotel Santa Clara Sofitel',
   hotelType: 'Hotel · 5 estrellas',
@@ -62,14 +65,15 @@ const cartData = {
   roomFeatures: '1 cama King · Vista al jardín · 32 m²',
   checkIn: '2026-03-15',
   checkOut: '2026-03-20',
-  nights: 5,
-  guests: '2 adultos',
+  guests: 2,
   pricePerNight: 480000,
+  nights: 5,
   subtotal: 2400000,
   tourismTax: 96000,
   vat: 168000,
   serviceFee: 0,
   total: 2664000,
+  createdAt: '2026-03-10T10:00:00Z',
 };
 
 // Hotel detail mock (enriched from mockHotels[0])
@@ -338,21 +342,16 @@ export const mockHandlers: MockRoute[] = [
     handler: () => created(bookingDetail),
   },
 
-  // ─── Cart ───
+  // ─── Cart (single-room) ───
   {
     method: 'GET',
     pattern: /^\/cart$/,
     handler: () => ok(cartData),
   },
   {
-    method: 'POST',
-    pattern: /^\/cart\/items$/,
-    handler: _config => created(cartData),
-  },
-  {
-    method: 'DELETE',
-    pattern: /^\/cart\/items\/(\d+)$/,
-    handler: () => ok({ message: 'Item removed' }),
+    method: 'PUT',
+    pattern: /^\/cart$/,
+    handler: () => ok(cartData),
   },
   {
     method: 'DELETE',
