@@ -6,8 +6,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import LanguageIcon from '@mui/icons-material/Language';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useTranslation } from 'react-i18next';
-import { useLocale, currencyNames, languageNames } from '../../contexts/LocaleContext';
-import type { Language, Currency } from '../../contexts/LocaleContext';
+import { useLocale, currencyNames, languageNames } from '@/contexts/LocaleContext';
+import type { Language, Currency } from '@/contexts/LocaleContext';
 import {
   primary,
   onPrimary,

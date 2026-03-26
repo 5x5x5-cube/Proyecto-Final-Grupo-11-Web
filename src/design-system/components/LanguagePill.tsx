@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
-import { useLocale } from '../../contexts/LocaleContext';
-import type { Language } from '../../contexts/LocaleContext';
+import { useLocale } from '@/contexts/LocaleContext';
+import type { Language } from '@/contexts/LocaleContext';
 import { palette } from '../theme/palette';
 
 const languages: Language[] = ['ES', 'EN'];
