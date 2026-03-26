@@ -128,7 +128,12 @@
       "taxesAndFees": "Taxes and fees",
       "total": "Total",
       "reserveNow": "Reserve now",
-      "securePayment": "Secure payment · No additional charges"
+      "securePayment": "Secure payment · No additional charges",
+      "errors": {
+        "roomUnavailable": "This room is no longer available for the selected dates",
+        "serviceBusy": "The server is busy, please try again in a few seconds",
+        "generic": "Could not complete the reservation. Please try again"
+      }
     },
     "cancellation": {
       "title": "Cancellation policy",
@@ -150,10 +155,10 @@
       "checkOutDate": "Thu, Mar 20 2026",
       "checkOutSub": "Check-out until 12:00 PM",
       "duration": "Duration",
-      "durationValue": "5 nights",
-      "durationSub": "2 adults",
-      "roomName": "Superior Room",
-      "roomFeatures": "1 King bed · 32 m2 · Garden view",
+      "nightsCount_one": "{{count}} night",
+      "nightsCount_other": "{{count}} nights",
+      "guestsCount_one": "{{count}} adult",
+      "guestsCount_other": "{{count}} adults",
       "perNight": "per night"
     },
     "guest": {

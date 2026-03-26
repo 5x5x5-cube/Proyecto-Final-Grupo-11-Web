@@ -1,304 +1,105 @@
-import { Box, Typography, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
-import HotelIcon from '@mui/icons-material/Hotel';
-import PersonIcon from '@mui/icons-material/Person';
-import PolicyIcon from '@mui/icons-material/Policy';
-import PlaceIcon from '@mui/icons-material/Place';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import InfoIcon from '@mui/icons-material/Info';
-import CancelIcon from '@mui/icons-material/Cancel';
-import LockIcon from '@mui/icons-material/Lock';
+import { Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '../../contexts/LocaleContext';
-import CheckoutLayout from '../../design-system/layouts/CheckoutLayout';
-import SectionCard from '../../design-system/components/SectionCard';
-import InfoGrid from '../../design-system/components/InfoGrid';
-import RatingBadge from '../../design-system/components/RatingBadge';
-import { palette } from '../../design-system/theme/palette';
+import CheckoutLayout from '@/design-system/layouts/CheckoutLayout';
 import CartPageSkeleton from './CartPage.skeleton';
-import { useCart } from '../../api/hooks/useCart';
+import { useCart } from '@/api/hooks/useCart';
+import { useCreateBooking } from '@/api/hooks/useBookings';
+import { getBookingErrorKey } from '@/api/errorMessages';
+import { useSnackbar } from '@/contexts/SnackbarContext';
+import { useDebouncedCallback } from '@/hooks/useDebouncedCallback';
+import HotelSummaryCard from '@/modules/checkout/components/HotelSummaryCard/HotelSummaryCard';
+import GuestInfoCard from '@/modules/checkout/components/GuestInfoCard/GuestInfoCard';
+import CancellationPolicyCard from '@/modules/checkout/components/CancellationPolicyCard/CancellationPolicyCard';
+import CartSidebar from '@/modules/checkout/components/CartSidebar/CartSidebar';
+import type { CartItem, CartPriceBreakdown, GuestInfo } from '@/modules/checkout/types';
 
 export default function CartPage() {
   const { data: cart, isLoading } = useCart();
-
+  const createBooking = useCreateBooking();
+  const navigate = useNavigate();
+  const { showError } = useSnackbar();
   const { t } = useTranslation('travelers');
-  const { formatPrice, formatDate } = useLocale();
+
+  const handleContinueToPayment = useDebouncedCallback(() => {
+    if (createBooking.isPending) return;
+    createBooking.mutate(
+      {
+        roomId: cartItem.roomId,
+        hotelId: cartItem.hotelId,
+        checkIn: cartItem.checkIn,
+        checkOut: cartItem.checkOut,
+        guests: cartItem.guests,
+        userId: 'c1000000-0000-0000-0000-000000000001', // TODO: from auth context
+      },
+      {
+        onSuccess: () => navigate('/checkout/payment'),
+        onError: (error: unknown) => showError(t(getBookingErrorKey(error))),
+      }
+    );
+  });
 
   if (isLoading || !cart) return <CartPageSkeleton />;
 
-  const CartSidebar = () => (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-      <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.onSurface }}>
-        {t('cart.sidebar.title')}
-      </Typography>
+  // Map cart data to typed structures
+  const cartData = cart as Record<string, unknown>;
+  const items = (cartData.items as Record<string, unknown>[]) || [];
+  const firstItem = items[0] || {};
 
-      {/* Price breakdown */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-            {`${formatPrice(480000)} x 5 ${t('cart.sidebar.nightsLabel')}`}
-          </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
-            {formatPrice(2400000)}
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-            {t('cart.sidebar.tourismTax')}
-          </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
-            {formatPrice(96000)}
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-            {t('cart.sidebar.vat')}
-          </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
-            {formatPrice(168000)}
-          </Typography>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-            {t('cart.sidebar.serviceFee')}
-          </Typography>
-          <Typography sx={{ fontSize: 14, color: palette.onSurface }}>{formatPrice(0)}</Typography>
-        </Box>
-        <Box sx={{ height: 1, backgroundColor: palette.outlineVariant }} />
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: 16, fontWeight: 600, color: palette.onSurface }}>
-            {t('cart.sidebar.totalToPay')}
-          </Typography>
-          <Typography sx={{ fontSize: 22, fontWeight: 700, color: palette.primary }}>
-            {formatPrice(2664000)}
-          </Typography>
-        </Box>
-      </Box>
+  const cartItem: CartItem = {
+    roomId: (firstItem.roomId as string) || 'b1000000-0000-0000-0000-000000000001',
+    hotelId: (firstItem.hotelId as string) || 'a1000000-0000-0000-0000-000000000001',
+    hotel: {
+      name: (firstItem.hotelName as string) || 'Hotel Caribe Plaza',
+      location: (firstItem.location as string) || 'Centro Historico, Cartagena',
+      rating: (firstItem.rating as number) || 4.5,
+      reviewCount: (firstItem.reviewCount as number) || 312,
+      type: (firstItem.hotelType as string) || 'Hotel · 5 estrellas',
+    },
+    room: {
+      id: (firstItem.roomId as string) || 'b1000000-0000-0000-0000-000000000001',
+      name: (firstItem.roomName as string) || 'Standard',
+      features: (firstItem.roomFeatures as string) || '1 cama King · 32 m² · Vista al jardin',
+      pricePerNight: (firstItem.pricePerNight as number) || 250000,
+    },
+    checkIn: (firstItem.checkIn as string) || '2026-04-01',
+    checkOut: (firstItem.checkOut as string) || '2026-04-03',
+    guests: (firstItem.guests as number) || 2,
+    nights: (firstItem.nights as number) || 2,
+  };
 
-      {/* Continue button */}
-      <Link to="/checkout/payment" style={{ textDecoration: 'none' }}>
-        <Button
-          variant="contained"
-          disableElevation
-          fullWidth
-          sx={{
-            height: 52,
-            backgroundColor: palette.primary,
-            borderRadius: '100px',
-            fontFamily: "'Roboto', sans-serif",
-            fontSize: 16,
-            fontWeight: 600,
-            color: '#fff',
-            textTransform: 'none',
-            '&:hover': { backgroundColor: palette.primary },
-          }}
-        >
-          {t('cart.sidebar.continueToPayment')}
-        </Button>
-      </Link>
+  const priceBreakdown: CartPriceBreakdown = {
+    pricePerNight: cartItem.room.pricePerNight,
+    nights: cartItem.nights,
+    basePrice: cartItem.room.pricePerNight * cartItem.nights,
+    vat: Math.round(cartItem.room.pricePerNight * cartItem.nights * 0.19),
+    serviceFee: 0,
+    totalPrice: Math.round(cartItem.room.pricePerNight * cartItem.nights * 1.19),
+  };
 
-      {/* Secure note */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
-        <LockIcon sx={{ fontSize: 15, color: palette.primary }} />
-        <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-          {t('cart.sidebar.securePayment')}
-        </Typography>
-      </Box>
-    </Box>
-  );
+  // TODO: from auth context
+  const guest: GuestInfo = {
+    name: 'Carlos Martinez',
+    email: 'carlos.martinez@email.com',
+    phone: '+57 310 000 0000',
+    initials: 'CM',
+  };
 
   return (
-    <CheckoutLayout currentStep={2} sidebar={<CartSidebar />}>
+    <CheckoutLayout
+      currentStep={2}
+      sidebar={
+        <CartSidebar
+          priceBreakdown={priceBreakdown}
+          isPending={createBooking.isPending}
+          onContinue={handleContinueToPayment}
+        />
+      }
+    >
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-        {/* Hotel Summary */}
-        <SectionCard
-          icon={<HotelIcon sx={{ color: palette.primary, fontSize: 20 }} />}
-          title={t('cart.accommodation.title')}
-        >
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {/* Hotel info row */}
-            <Box sx={{ display: 'flex', gap: '20px', alignItems: 'flex-start' }}>
-              <Box
-                sx={{
-                  width: 120,
-                  height: 90,
-                  borderRadius: '12px',
-                  background: 'linear-gradient(135deg, #003740, #006874)',
-                  flexShrink: 0,
-                }}
-              />
-              <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <Typography
-                  sx={{
-                    fontSize: 11,
-                    fontWeight: 500,
-                    color: palette.primary,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px',
-                  }}
-                >
-                  {t('cart.accommodation.hotelType')}
-                </Typography>
-                <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.onSurface }}>
-                  Hotel Santa Clara Sofitel
-                </Typography>
-                <Box
-                  sx={{
-                    fontSize: 13,
-                    color: palette.onSurfaceVariant,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px',
-                  }}
-                >
-                  <PlaceIcon sx={{ fontSize: 14 }} />
-                  Centro Historico, Cartagena
-                </Box>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <RatingBadge rating={4.8} />
-                  <Typography sx={{ color: palette.star, fontSize: 13 }}>★★★★★</Typography>
-                  <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                    312 {t('cart.accommodation.reviews')}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-
-            {/* Date/duration info */}
-            <InfoGrid
-              columns={3}
-              items={[
-                {
-                  label: t('cart.accommodation.checkIn'),
-                  value: formatDate('2026-03-15', 'mediumWithDay'),
-                  sub: '3:00 PM',
-                },
-                {
-                  label: t('cart.accommodation.checkOut'),
-                  value: formatDate('2026-03-20', 'mediumWithDay'),
-                  sub: '12:00 PM',
-                },
-                {
-                  label: t('cart.accommodation.duration'),
-                  value: t('cart.accommodation.durationValue'),
-                  sub: t('cart.accommodation.durationSub'),
-                },
-              ]}
-            />
-
-            {/* Room row */}
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '16px',
-                padding: '16px',
-                backgroundColor: palette.background,
-                borderRadius: '12px',
-              }}
-            >
-              <Box
-                sx={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: '10px',
-                  background: 'linear-gradient(135deg, #006874, #4A9FAA)',
-                  flexShrink: 0,
-                }}
-              />
-              <Box sx={{ flex: 1 }}>
-                <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface }}>
-                  {t('cart.accommodation.roomName')}
-                </Typography>
-                <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-                  {t('cart.accommodation.roomFeatures')}
-                </Typography>
-              </Box>
-              <Box sx={{ textAlign: 'right' }}>
-                <Typography sx={{ fontSize: 18, fontWeight: 700, color: palette.primary }}>
-                  {formatPrice(480000)}
-                </Typography>
-                <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                  {t('cart.accommodation.perNight')}
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-        </SectionCard>
-
-        {/* Guest Info */}
-        <SectionCard
-          icon={<PersonIcon sx={{ color: palette.primary, fontSize: 20 }} />}
-          title={t('cart.guest.title')}
-        >
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '12px 16px',
-              backgroundColor: '#fff',
-              border: `1px solid ${palette.outlineVariant}`,
-              borderRadius: '12px',
-            }}
-          >
-            <Box
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                backgroundColor: palette.secondaryContainer,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: 16,
-                fontWeight: 600,
-                color: palette.primary,
-                flexShrink: 0,
-              }}
-            >
-              C
-            </Box>
-            <Box>
-              <Typography sx={{ fontSize: 14, fontWeight: 500, color: palette.onSurface }}>
-                Carlos Martinez
-              </Typography>
-              <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                carlos.martinez@email.com · +57 310 000 0000
-              </Typography>
-            </Box>
-          </Box>
-        </SectionCard>
-
-        {/* Cancellation Policy */}
-        <SectionCard
-          icon={<PolicyIcon sx={{ color: palette.primary, fontSize: 20 }} />}
-          title={t('cart.cancellation.title')}
-        >
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <CheckCircleIcon sx={{ color: '#1A6B4F', fontSize: 18 }} />
-              <Typography
-                sx={{ fontSize: 13, color: palette.onSurface }}
-                dangerouslySetInnerHTML={{ __html: t('cart.cancellation.free') }}
-              />
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <InfoIcon sx={{ color: '#F4A020', fontSize: 18 }} />
-              <Typography
-                sx={{ fontSize: 13, color: palette.onSurface }}
-                dangerouslySetInnerHTML={{ __html: t('cart.cancellation.halfCharge') }}
-              />
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <CancelIcon sx={{ color: '#B5451B', fontSize: 18 }} />
-              <Typography
-                sx={{ fontSize: 13, color: palette.onSurface }}
-                dangerouslySetInnerHTML={{ __html: t('cart.cancellation.noRefund') }}
-              />
-            </Box>
-          </Box>
-        </SectionCard>
+        <HotelSummaryCard item={cartItem} />
+        <GuestInfoCard guest={guest} />
+        <CancellationPolicyCard />
       </Box>
     </CheckoutLayout>
   );

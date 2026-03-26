@@ -1,6 +1,5 @@
 import { Skeleton } from '@mui/material';
 import { Box, Typography, Button, IconButton } from '@mui/material';
-import { Link } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
@@ -18,6 +17,7 @@ import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '../../contexts/LocaleContext';
 import TravelerLayout from '../../design-system/layouts/TravelerLayout';

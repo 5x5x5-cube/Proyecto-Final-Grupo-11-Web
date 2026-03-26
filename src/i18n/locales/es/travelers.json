@@ -128,7 +128,12 @@
       "taxesAndFees": "Impuestos y tasas",
       "total": "Total",
       "reserveNow": "Reservar ahora",
-      "securePayment": "Pago seguro · Sin cargos adicionales"
+      "securePayment": "Pago seguro · Sin cargos adicionales",
+      "errors": {
+        "roomUnavailable": "Esta habitacion ya no esta disponible para las fechas seleccionadas",
+        "serviceBusy": "El servidor esta ocupado, por favor intenta de nuevo en unos segundos",
+        "generic": "No se pudo completar la reserva. Por favor intenta de nuevo"
+      }
     },
     "cancellation": {
       "title": "Politica de cancelacion",
@@ -150,10 +155,10 @@
       "checkOutDate": "Jue, 20 mar 2026",
       "checkOutSub": "Check-out hasta las 12:00",
       "duration": "Duracion",
-      "durationValue": "5 noches",
-      "durationSub": "2 adultos",
-      "roomName": "Habitacion Superior",
-      "roomFeatures": "1 cama King · 32 m2 · Vista al jardin",
+      "nightsCount_one": "{{count}} noche",
+      "nightsCount_other": "{{count}} noches",
+      "guestsCount_one": "{{count}} adulto",
+      "guestsCount_other": "{{count}} adultos",
       "perNight": "por noche"
     },
     "guest": {
