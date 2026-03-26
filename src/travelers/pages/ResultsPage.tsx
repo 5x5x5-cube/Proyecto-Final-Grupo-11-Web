@@ -1,4 +1,4 @@
-import { Box, Typography, Button, Checkbox, FormControlLabel } from '@mui/material';
+import { Box, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import { Link } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
 import StarIcon from '@mui/icons-material/Star';
@@ -10,6 +10,7 @@ import RatingBadge from '../../design-system/components/RatingBadge';
 import { palette } from '../../design-system/theme/palette';
 import { useSearchHotels } from '../../api/hooks/useSearch';
 import ResultsPageSkeleton from './ResultsPage.skeleton';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
 
 const starOptions = [
   { label: '5', value: 5, selected: false },
@@ -501,24 +502,9 @@ export default function ResultsPage() {
                   <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
                     {`${formatPrice(hotel.totalPrice)} ${t('results.card.total')}`}
                   </Typography>
-                  <Button
-                    variant="contained"
-                    disableElevation
-                    sx={{
-                      width: '100%',
-                      height: 40,
-                      backgroundColor: palette.primary,
-                      borderRadius: '100px',
-                      fontFamily: "'Roboto', sans-serif",
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: 'white',
-                      textTransform: 'none',
-                      '&:hover': { backgroundColor: palette.primary },
-                    }}
-                  >
+                  <PrimaryPillButton pillSize="sm" sx={{ width: '100%' }}>
                     {t('results.card.viewRooms')}
-                  </Button>
+                  </PrimaryPillButton>
                 </Box>
               </Box>
             </Link>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useBookingDetail, useBookingPayments } from '../../api/hooks/useBookings';
-import { Box, Typography, Button, Divider, Skeleton } from '@mui/material';
+import { Box, Typography, Divider, Skeleton } from '@mui/material';
 import { Link } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HotelIcon from '@mui/icons-material/Hotel';
@@ -30,6 +30,14 @@ import SectionCard from '../../design-system/components/SectionCard';
 import InfoGrid from '../../design-system/components/InfoGrid';
 import RatingBadge from '../../design-system/components/RatingBadge';
 import ModalOverlay from '../../design-system/components/ModalOverlay';
+import {
+  PrimaryPillButton,
+  OutlinedPillButton,
+  ErrorOutlinedPillButton,
+  ErrorPillButton,
+  SuccessPillButton,
+  NeutralOutlinedPillButton,
+} from '@/design-system/components/PillButton';
 import {
   primary,
   onSurface,
@@ -292,46 +300,23 @@ const ReservationDetailPage: React.FC = () => {
           {t('reservationDetail.cancelBox.estimatedRefund')}{' '}
           <strong style={{ color: success }}>{formatPrice(2664000)}</strong>
         </Typography>
-        <Button
+        <ErrorOutlinedPillButton
           onClick={() => setCancelOpen(true)}
-          sx={{
-            width: '100%',
-            height: 44,
-            background: 'transparent',
-            border: `1.5px solid ${error}`,
-            borderRadius: '100px',
-            fontSize: 14,
-            fontWeight: 600,
-            color: error,
-            textTransform: 'none',
-            '&:hover': { background: 'rgba(179,38,30,0.04)' },
-          }}
+          pillSize="md"
+          sx={{ width: '100%' }}
         >
           {t('reservationDetail.cancelBox.cancelButton')}
-        </Button>
+        </ErrorOutlinedPillButton>
       </Box>
 
       {/* Download button */}
-      <Button
-        sx={{
-          width: '100%',
-          height: 40,
-          background: 'transparent',
-          border: `1px solid ${outline}`,
-          borderRadius: '100px',
-          fontSize: 13,
-          fontWeight: 500,
-          color: primary,
-          textTransform: 'none',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          '&:hover': { background: 'rgba(0,104,116,0.04)' },
-        }}
+      <OutlinedPillButton
+        pillSize="sm"
+        sx={{ width: '100%', display: 'flex', alignItems: 'center', gap: '6px' }}
       >
         <DownloadIcon sx={{ fontSize: 16 }} />
         {t('reservationDetail.downloadReceipt')}
-      </Button>
+      </OutlinedPillButton>
     </Box>
   );
 
@@ -349,41 +334,18 @@ const ReservationDetailPage: React.FC = () => {
       subtitle={t('reservationDetail.confirmedModal.subtitle')}
       footer={
         <>
-          <Button
-            onClick={onClose}
-            sx={{
-              padding: '10px 24px',
-              borderRadius: '100px',
-              border: `1px solid ${outline}`,
-              background: 'transparent',
-              fontSize: 13,
-              fontWeight: 600,
-              color: onSurfaceVariant,
-              textTransform: 'none',
-            }}
-          >
+          <NeutralOutlinedPillButton onClick={onClose} pillSize="xs">
             {t('reservationDetail.confirmedModal.close')}
-          </Button>
-          <Button
+          </NeutralOutlinedPillButton>
+          <PrimaryPillButton
             component={Link}
             to="/reservations"
-            sx={{
-              padding: '10px 24px',
-              borderRadius: '100px',
-              background: primary,
-              fontSize: 13,
-              fontWeight: 600,
-              color: '#fff',
-              textTransform: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              '&:hover': { background: primary, opacity: 0.9 },
-            }}
+            pillSize="xs"
+            sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}
           >
             <LuggageIcon sx={{ fontSize: 16 }} />
             {t('reservationDetail.confirmedModal.viewReservations')}
-          </Button>
+          </PrimaryPillButton>
         </>
       }
     >
@@ -544,39 +506,13 @@ const ReservationDetailPage: React.FC = () => {
       subtitle={t('reservationDetail.cancelModal.subtitle')}
       footer={
         <>
-          <Button
-            onClick={onClose}
-            sx={{
-              padding: '10px 24px',
-              borderRadius: '100px',
-              border: `1px solid ${outline}`,
-              background: 'transparent',
-              fontSize: 13,
-              fontWeight: 600,
-              color: onSurfaceVariant,
-              textTransform: 'none',
-            }}
-          >
+          <NeutralOutlinedPillButton onClick={onClose} pillSize="xs">
             {t('reservationDetail.cancelModal.goBack')}
-          </Button>
-          <Button
-            sx={{
-              padding: '10px 24px',
-              borderRadius: '100px',
-              background: error,
-              fontSize: 13,
-              fontWeight: 600,
-              color: '#fff',
-              textTransform: 'none',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              '&:hover': { background: error, opacity: 0.9 },
-            }}
-          >
+          </NeutralOutlinedPillButton>
+          <ErrorPillButton pillSize="xs" sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <CancelIcon sx={{ fontSize: 16 }} />
             {t('reservationDetail.cancelModal.confirmCancellation')}
-          </Button>
+          </ErrorPillButton>
         </>
       }
     >
@@ -810,23 +746,10 @@ const ReservationDetailPage: React.FC = () => {
 
               {/* Trigger buttons for modals */}
               <Box sx={{ display: 'flex', gap: '12px', mt: '12px' }}>
-                <Button
-                  onClick={() => setConfirmedOpen(true)}
-                  size="small"
-                  sx={{
-                    padding: '6px 16px',
-                    borderRadius: '100px',
-                    background: successContainer,
-                    fontSize: 12,
-                    fontWeight: 600,
-                    color: success,
-                    textTransform: 'none',
-                    '&:hover': { background: successContainer, opacity: 0.9 },
-                  }}
-                >
+                <SuccessPillButton onClick={() => setConfirmedOpen(true)} pillSize="xxs">
                   <CheckCircleIcon sx={{ fontSize: 14, mr: '4px' }} />
                   {t('reservationDetail.viewConfirmation')}
-                </Button>
+                </SuccessPillButton>
               </Box>
             </Box>
 

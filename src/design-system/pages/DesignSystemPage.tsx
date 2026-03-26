@@ -16,6 +16,15 @@ import FilterChip from '../components/FilterChip';
 import SearchField from '../components/SearchField';
 import ModalOverlay from '../components/ModalOverlay';
 import ProfileMenuRow from '../components/ProfileMenuRow';
+import {
+  PrimaryPillButton,
+  OutlinedPillButton,
+  ErrorPillButton,
+  ErrorOutlinedPillButton,
+  SuccessPillButton,
+  NeutralPillButton,
+  NeutralOutlinedPillButton,
+} from '../components/PillButton';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
@@ -460,7 +469,7 @@ export default function DesignSystemPage() {
         </Section>
 
         {/* 13. Buttons */}
-        <Section title="Buttons">
+        <Section title="Buttons (MUI default)">
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
             <Button variant="contained">Contained</Button>
             <Button variant="outlined">Outlined</Button>
@@ -468,6 +477,38 @@ export default function DesignSystemPage() {
             <Button variant="contained" disabled>
               Disabled
             </Button>
+          </Box>
+        </Section>
+
+        <Section title="PillButton (Design System)">
+          <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, mb: '12px' }}>
+            Pill-shaped buttons used across the app. Sizes: lg (52), md (48), sm (40), xs (36), xxs
+            (32).
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+              <PrimaryPillButton pillSize="lg">Large</PrimaryPillButton>
+              <PrimaryPillButton pillSize="md">Medium</PrimaryPillButton>
+              <PrimaryPillButton pillSize="sm">Small</PrimaryPillButton>
+              <PrimaryPillButton pillSize="xs">Extra Small</PrimaryPillButton>
+              <PrimaryPillButton pillSize="xxs">XXS</PrimaryPillButton>
+            </Box>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+              <OutlinedPillButton pillSize="sm">Outlined</OutlinedPillButton>
+              <ErrorPillButton pillSize="sm">Error</ErrorPillButton>
+              <ErrorOutlinedPillButton pillSize="sm">Error Outlined</ErrorOutlinedPillButton>
+              <SuccessPillButton pillSize="sm">Success</SuccessPillButton>
+              <NeutralPillButton pillSize="sm">Neutral</NeutralPillButton>
+              <NeutralOutlinedPillButton pillSize="sm">Neutral Outlined</NeutralOutlinedPillButton>
+            </Box>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+              <PrimaryPillButton pillSize="lg" loading>
+                Loading
+              </PrimaryPillButton>
+              <PrimaryPillButton pillSize="sm" disabled>
+                Disabled
+              </PrimaryPillButton>
+            </Box>
           </Box>
         </Section>
 

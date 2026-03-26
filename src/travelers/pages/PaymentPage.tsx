@@ -1,4 +1,4 @@
-import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import LockIcon from '@mui/icons-material/Lock';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
@@ -10,6 +10,7 @@ import CheckoutLayout from '../../design-system/layouts/CheckoutLayout';
 import SectionCard from '../../design-system/components/SectionCard';
 import { palette } from '../../design-system/theme/palette';
 import { useInitiatePayment } from '../../api/hooks/usePayments';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
 
 export default function PaymentPage() {
   const navigate = useNavigate();
@@ -126,25 +127,16 @@ export default function PaymentPage() {
       </Box>
 
       {/* Pay button */}
-      <Button
-        variant="contained"
-        disableElevation
+      <PrimaryPillButton
         fullWidth
+        pillSize="lg"
         disabled={!isFormValid || payment.isPending}
         onClick={handlePay}
         sx={{
           height: 56,
-          backgroundColor: palette.primary,
-          borderRadius: '100px',
-          fontFamily: "'Roboto', sans-serif",
-          fontSize: 16,
-          fontWeight: 600,
-          color: '#fff',
-          textTransform: 'none',
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          '&:hover': { backgroundColor: palette.primary },
         }}
       >
         {payment.isPending ? (
@@ -155,7 +147,7 @@ export default function PaymentPage() {
             {`${t('payment.sidebar.payLabel')} ${formatPrice(2664000)}`}
           </>
         )}
-      </Button>
+      </PrimaryPillButton>
 
       {/* Secure note */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>

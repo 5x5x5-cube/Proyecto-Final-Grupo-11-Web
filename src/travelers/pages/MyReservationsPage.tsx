@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import LuggageIcon from '@mui/icons-material/Luggage';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -15,6 +15,7 @@ import FilterChip from '../../design-system/components/FilterChip';
 import SearchField from '../../design-system/components/SearchField';
 import MyReservationsPageSkeleton from './MyReservationsPage.skeleton';
 import { useBookings } from '../../api/hooks/useBookings';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import {
   primary,
   onSurface,
@@ -454,24 +455,14 @@ const MyReservationsPage: React.FC = () => {
                     </Typography>
                   </Box>
 
-                  <Button
+                  <PrimaryPillButton
                     component={Link}
                     to={`/reservations/${res.id}`}
-                    sx={{
-                      height: 36,
-                      padding: '0 20px',
-                      background: primary,
-                      borderRadius: '100px',
-                      fontSize: 13,
-                      fontWeight: 500,
-                      color: '#fff',
-                      textTransform: 'none',
-                      whiteSpace: 'nowrap',
-                      '&:hover': { background: primary, opacity: 0.9 },
-                    }}
+                    pillSize="xs"
+                    sx={{ whiteSpace: 'nowrap' }}
                   >
                     {t('myReservations.card.viewDetail')}
-                  </Button>
+                  </PrimaryPillButton>
                 </Box>
               </Box>
             ))}

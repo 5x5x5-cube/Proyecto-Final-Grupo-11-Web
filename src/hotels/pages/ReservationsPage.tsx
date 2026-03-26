@@ -1,4 +1,9 @@
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import {
+  SuccessPillButton,
+  ErrorPillButton,
+  NeutralPillButton,
+} from '@/design-system/components/PillButton';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -443,59 +448,15 @@ export default function ReservationsPage() {
                   <Box sx={{ display: 'flex', gap: '8px' }}>
                     {res.status === 'pending' ? (
                       <>
-                        <Button
-                          size="small"
-                          disableElevation
-                          sx={{
-                            height: 32,
-                            padding: '0 14px',
-                            borderRadius: '100px',
-                            fontSize: 12,
-                            fontWeight: 500,
-                            textTransform: 'none',
-                            backgroundColor: palette.successContainer,
-                            color: palette.success,
-                            '&:hover': { backgroundColor: palette.successContainer },
-                          }}
-                        >
+                        <SuccessPillButton pillSize="xxs">
                           {t('reservations.confirm')}
-                        </Button>
-                        <Button
-                          size="small"
-                          disableElevation
-                          sx={{
-                            height: 32,
-                            padding: '0 14px',
-                            borderRadius: '100px',
-                            fontSize: 12,
-                            fontWeight: 500,
-                            textTransform: 'none',
-                            backgroundColor: palette.errorContainer,
-                            color: palette.error,
-                            '&:hover': { backgroundColor: palette.errorContainer },
-                          }}
-                        >
-                          {t('reservations.reject')}
-                        </Button>
+                        </SuccessPillButton>
+                        <ErrorPillButton pillSize="xxs">{t('reservations.reject')}</ErrorPillButton>
                       </>
                     ) : (
-                      <Button
-                        size="small"
-                        disableElevation
-                        sx={{
-                          height: 32,
-                          padding: '0 14px',
-                          borderRadius: '100px',
-                          fontSize: 12,
-                          fontWeight: 500,
-                          textTransform: 'none',
-                          backgroundColor: palette.background,
-                          color: palette.primary,
-                          '&:hover': { backgroundColor: palette.background },
-                        }}
-                      >
+                      <NeutralPillButton pillSize="xxs">
                         {t('reservations.viewDetail')}
-                      </Button>
+                      </NeutralPillButton>
                     )}
                   </Box>
                 </Box>

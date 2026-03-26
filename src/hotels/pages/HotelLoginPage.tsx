@@ -1,4 +1,4 @@
-import { Box, Typography, TextField, Button, Divider, CircularProgress } from '@mui/material';
+import { Box, Typography, TextField, Divider, CircularProgress } from '@mui/material';
 import HotelIcon from '@mui/icons-material/Hotel';
 import LockIcon from '@mui/icons-material/Lock';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
@@ -11,8 +11,9 @@ import SellIcon from '@mui/icons-material/Sell';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { palette } from '../../design-system/theme/palette';
-import { useLogin } from '../../api/hooks/useAuth';
+import { palette } from '@/design-system/theme/palette';
+import { useLogin } from '@/api/hooks/useAuth';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -247,31 +248,19 @@ export default function HotelLoginPage() {
           </Typography>
 
           {/* Login button */}
-          <Button
+          <PrimaryPillButton
+            pillSize="lg"
             fullWidth
-            variant="contained"
-            disableElevation
             disabled={!isFormValid || login.isPending}
             onClick={handleSubmit}
-            sx={{
-              height: 52,
-              backgroundColor: palette.primary,
-              color: '#fff',
-              borderRadius: '100px',
-              fontFamily: "'Roboto', sans-serif",
-              fontSize: 15,
-              fontWeight: 600,
-              textTransform: 'none',
-              mt: '8px',
-              '&:hover': { backgroundColor: palette.primary },
-            }}
+            sx={{ mt: '8px' }}
           >
             {login.isPending ? (
               <CircularProgress size={20} sx={{ color: '#fff' }} />
             ) : (
               t('login.loginButton')
             )}
-          </Button>
+          </PrimaryPillButton>
 
           {/* Divider */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', my: '4px' }}>

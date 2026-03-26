@@ -1,5 +1,6 @@
 import { Skeleton } from '@mui/material';
-import { Box, Typography, Button, IconButton } from '@mui/material';
+import { Box, Typography, IconButton } from '@mui/material';
+import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import PlaceIcon from '@mui/icons-material/Place';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
@@ -287,26 +288,14 @@ export default function PropertyDetailPage() {
         </Box>
 
         {/* Reserve button */}
-        <Button
-          variant="contained"
-          disableElevation
+        <PrimaryPillButton
+          pillSize="lg"
           fullWidth
           loading={setCart.isPending}
           onClick={handleReserve}
-          sx={{
-            height: 52,
-            backgroundColor: palette.primary,
-            borderRadius: '100px',
-            fontFamily: "'Roboto', sans-serif",
-            fontSize: 16,
-            fontWeight: 600,
-            color: '#fff',
-            textTransform: 'none',
-            '&:hover': { backgroundColor: palette.primary },
-          }}
         >
           {t('propertyDetail.booking.reserveNow')}
-        </Button>
+        </PrimaryPillButton>
 
         {/* Secure badge */}
         <Box
@@ -572,32 +561,19 @@ export default function PropertyDetailPage() {
                     {t('propertyDetail.rooms.perNight')}
                   </Typography>
                 </Box>
-                <Button
-                  variant={room.active ? 'contained' : 'outlined'}
-                  disableElevation
-                  sx={{
-                    height: 36,
-                    px: '20px',
-                    borderRadius: '100px',
-                    fontFamily: "'Roboto', sans-serif",
-                    fontSize: 13,
-                    fontWeight: 500,
-                    textTransform: 'none',
-                    whiteSpace: 'nowrap',
-                    ...(room.active
-                      ? {
-                          backgroundColor: palette.primary,
-                          color: '#fff',
-                          '&:hover': { backgroundColor: palette.primary },
-                        }
-                      : {
-                          borderColor: palette.primary,
-                          color: palette.primary,
-                        }),
-                  }}
-                >
-                  {t('propertyDetail.rooms.select')}
-                </Button>
+                {room.active ? (
+                  <PrimaryPillButton pillSize="xs" sx={{ whiteSpace: 'nowrap' }}>
+                    {t('propertyDetail.rooms.select')}
+                  </PrimaryPillButton>
+                ) : (
+                  <OutlinedPillButton
+                    pillSize="xs"
+                    variant="outlined"
+                    sx={{ whiteSpace: 'nowrap' }}
+                  >
+                    {t('propertyDetail.rooms.select')}
+                  </OutlinedPillButton>
+                )}
               </Box>
             ))}
           </Box>

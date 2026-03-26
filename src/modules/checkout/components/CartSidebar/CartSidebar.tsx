@@ -2,6 +2,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import { palette } from '@/design-system/theme/palette';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import type { Cart } from '../../types';
 import {
   SidebarContainer,
@@ -13,7 +14,6 @@ import {
   Divider,
   TotalLabel,
   TotalValue,
-  ContinueButton,
   SecureNote,
   SecureText,
 } from './CartSidebar.styles';
@@ -58,15 +58,9 @@ export default function CartSidebar({ cart, isPending, onContinue }: Props) {
         </BreakdownRow>
       </BreakdownList>
 
-      <ContinueButton
-        variant="contained"
-        disableElevation
-        fullWidth
-        loading={isPending}
-        onClick={onContinue}
-      >
+      <PrimaryPillButton pillSize="lg" fullWidth loading={isPending} onClick={onContinue}>
         {t('cart.sidebar.continueToPayment')}
-      </ContinueButton>
+      </PrimaryPillButton>
 
       <SecureNote>
         <LockIcon sx={{ fontSize: 15, color: palette.primary }} />

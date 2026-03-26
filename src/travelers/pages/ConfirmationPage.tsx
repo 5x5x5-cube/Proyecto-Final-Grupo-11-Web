@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Button, Divider } from '@mui/material';
+import { Box, Typography, Divider } from '@mui/material';
 import { Link } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
@@ -9,11 +9,11 @@ import { useTranslation } from 'react-i18next';
 import { useLocale } from '../../contexts/LocaleContext';
 import CheckoutLayout from '../../design-system/layouts/CheckoutLayout';
 import InfoGrid from '../../design-system/components/InfoGrid';
+import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import {
   primary,
   onSurface,
   onSurfaceVariant,
-  outline,
   outlineVariant,
   success,
   successContainer,
@@ -266,41 +266,12 @@ const ConfirmationPage: React.FC = () => {
 
         {/* Action buttons */}
         <Box sx={{ display: 'flex', gap: '12px', width: '100%' }}>
-          <Button
-            component={Link}
-            to="/reservations"
-            sx={{
-              flex: 1,
-              height: 48,
-              background: primary,
-              borderRadius: '100px',
-              fontSize: 15,
-              fontWeight: 600,
-              color: '#fff',
-              textTransform: 'none',
-              '&:hover': { background: primary, opacity: 0.9 },
-            }}
-          >
+          <PrimaryPillButton component={Link} to="/reservations" pillSize="md" sx={{ flex: 1 }}>
             {t('confirmation.viewReservations')}
-          </Button>
-          <Button
-            component={Link}
-            to="/"
-            sx={{
-              flex: 1,
-              height: 48,
-              background: 'transparent',
-              border: `1px solid ${outline}`,
-              borderRadius: '100px',
-              fontSize: 15,
-              fontWeight: 500,
-              color: primary,
-              textTransform: 'none',
-              '&:hover': { background: 'rgba(0,104,116,0.04)' },
-            }}
-          >
+          </PrimaryPillButton>
+          <OutlinedPillButton component={Link} to="/" pillSize="md" sx={{ flex: 1 }}>
             {t('confirmation.downloadReceipt')}
-          </Button>
+          </OutlinedPillButton>
         </Box>
       </Box>
     </CheckoutLayout>

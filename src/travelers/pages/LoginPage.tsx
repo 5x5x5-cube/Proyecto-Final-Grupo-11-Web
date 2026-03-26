@@ -1,9 +1,10 @@
-import { Box, Typography, TextField, Button, CircularProgress } from '@mui/material';
+import { Box, Typography, TextField, CircularProgress } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { palette } from '../../design-system/theme/palette';
-import { useLogin } from '../../api/hooks/useAuth';
+import { palette } from '@/design-system/theme/palette';
+import { useLogin } from '@/api/hooks/useAuth';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -221,34 +222,19 @@ export default function LoginPage() {
           </Box>
 
           {/* Iniciar sesion button */}
-          <Button
+          <PrimaryPillButton
+            pillSize="md"
             fullWidth
-            variant="contained"
-            disableElevation
             disabled={!isFormValid || login.isPending}
             onClick={handleSubmit}
-            sx={{
-              height: 48,
-              backgroundColor: palette.primary,
-              color: palette.onPrimary,
-              borderRadius: '100px',
-              fontFamily: "'Roboto', sans-serif",
-              fontSize: 14,
-              fontWeight: 500,
-              letterSpacing: '0.1px',
-              textTransform: 'none',
-              mt: '8px',
-              '&:hover': {
-                backgroundColor: palette.primary,
-              },
-            }}
+            sx={{ mt: '8px' }}
           >
             {login.isPending ? (
               <CircularProgress size={20} sx={{ color: '#fff' }} />
             ) : (
               t('login.submitButton')
             )}
-          </Button>
+          </PrimaryPillButton>
 
           {/* Footer link */}
           <Typography

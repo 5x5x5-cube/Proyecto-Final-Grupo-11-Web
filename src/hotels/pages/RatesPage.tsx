@@ -1,4 +1,5 @@
 import { Box, Typography, CircularProgress } from '@mui/material';
+import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import SellIcon from '@mui/icons-material/Sell';
 import KingBedIcon from '@mui/icons-material/KingBed';
 import HotelIcon from '@mui/icons-material/Hotel';
@@ -162,24 +163,9 @@ export default function RatesPage() {
       title={t('rates.title')}
       subtitle={t('rates.subtitle')}
       topbarActions={
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '10px 20px',
-            borderRadius: '100px',
-            border: 'none',
-            background: palette.primary,
-            fontSize: 13,
-            fontWeight: 600,
-            color: '#fff',
-            cursor: 'pointer',
-          }}
-        >
-          <AddIcon sx={{ fontSize: 16 }} />
+        <PrimaryPillButton pillSize="sm" startIcon={<AddIcon sx={{ fontSize: 16 }} />}>
           {t('rates.newRate')}
-        </Box>
+        </PrimaryPillButton>
       }
     >
       {/* Filter bar */}
@@ -873,44 +859,14 @@ export default function RatesPage() {
               gap: '10px',
             }}
           >
-            <Box
-              sx={{
-                height: 44,
-                padding: '0 20px',
-                borderRadius: '100px',
-                border: `1px solid ${palette.outline}`,
-                background: 'transparent',
-                fontSize: 13,
-                fontWeight: 500,
-                color: palette.onSurfaceVariant,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+            <OutlinedPillButton pillSize="xs">{t('rates.cancel')}</OutlinedPillButton>
+            <PrimaryPillButton
+              pillSize="xs"
+              startIcon={<SaveIcon sx={{ fontSize: 16 }} />}
+              sx={{ flex: 1 }}
             >
-              {t('rates.cancel')}
-            </Box>
-            <Box
-              sx={{
-                flex: 1,
-                height: 44,
-                borderRadius: '100px',
-                border: 'none',
-                background: palette.primary,
-                fontSize: 13,
-                fontWeight: 600,
-                color: '#fff',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-              }}
-            >
-              <SaveIcon sx={{ fontSize: 16 }} />
               {t('rates.saveRate')}
-            </Box>
+            </PrimaryPillButton>
           </Box>
         </Box>
       </Box>

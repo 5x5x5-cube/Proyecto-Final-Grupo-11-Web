@@ -1,4 +1,8 @@
 import { Box, Typography, Skeleton } from '@mui/material';
+import {
+  PrimaryPillButton,
+  NeutralOutlinedPillButton,
+} from '@/design-system/components/PillButton';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -38,43 +42,16 @@ export default function ReportsPage() {
       subtitle={`Hotel Boutique El Patio · Periodo: ${formatDate('2026-01-01', 'monthOnly')} - ${formatDate('2026-02-01', 'monthYear')}`}
       topbarActions={
         <>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '8px',
-              background: palette.surface,
-              border: `1px solid ${palette.outlineVariant}`,
-              borderRadius: '100px',
-              padding: '8px 16px',
-              cursor: 'pointer',
-              fontSize: 13,
-              fontWeight: 500,
-              color: palette.onSurface,
-            }}
+          <NeutralOutlinedPillButton
+            pillSize="sm"
+            startIcon={<CalendarMonthIcon sx={{ fontSize: 18, color: palette.primary }} />}
+            endIcon={<ExpandMoreIcon sx={{ fontSize: 18, color: palette.onSurfaceVariant }} />}
           >
-            <CalendarMonthIcon sx={{ fontSize: 18, color: palette.primary }} />
             {formatDate('2026-01-01', 'monthOnly')} - {formatDate('2026-02-01', 'monthYear')}
-            <ExpandMoreIcon sx={{ fontSize: 18, color: palette.onSurfaceVariant }} />
-          </Box>
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '10px 20px',
-              borderRadius: '100px',
-              border: 'none',
-              background: palette.primary,
-              fontSize: 13,
-              fontWeight: 600,
-              color: '#fff',
-              cursor: 'pointer',
-            }}
-          >
-            <DownloadIcon sx={{ fontSize: 16 }} />
+          </NeutralOutlinedPillButton>
+          <PrimaryPillButton pillSize="sm" startIcon={<DownloadIcon sx={{ fontSize: 16 }} />}>
             {t('reports.downloadPdf')}
-          </Box>
+          </PrimaryPillButton>
         </>
       }
     >

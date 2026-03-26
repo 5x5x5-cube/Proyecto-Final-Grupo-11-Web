@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
+import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import AddIcon from '@mui/icons-material/Add';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
@@ -147,24 +148,9 @@ export default function DiscountsPage() {
       title={t('discounts.title')}
       subtitle={t('discounts.subtitle')}
       topbarActions={
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '10px 20px',
-            borderRadius: '100px',
-            border: 'none',
-            background: palette.primary,
-            fontSize: 13,
-            fontWeight: 600,
-            color: '#fff',
-            cursor: 'pointer',
-          }}
-        >
-          <AddIcon sx={{ fontSize: 16 }} />
+        <PrimaryPillButton pillSize="sm" startIcon={<AddIcon sx={{ fontSize: 16 }} />}>
           {t('discounts.newDiscount')}
-        </Box>
+        </PrimaryPillButton>
       }
     >
       {/* Content layout: discount cards + form panel */}
@@ -738,44 +724,14 @@ export default function DiscountsPage() {
               gap: '10px',
             }}
           >
-            <Box
-              sx={{
-                height: 44,
-                padding: '0 20px',
-                borderRadius: '100px',
-                border: `1px solid ${palette.outline}`,
-                background: 'transparent',
-                fontSize: 13,
-                fontWeight: 500,
-                color: palette.onSurfaceVariant,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
+            <OutlinedPillButton pillSize="xs">{t('discounts.cancel')}</OutlinedPillButton>
+            <PrimaryPillButton
+              pillSize="xs"
+              startIcon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
+              sx={{ flex: 1 }}
             >
-              {t('discounts.cancel')}
-            </Box>
-            <Box
-              sx={{
-                flex: 1,
-                height: 44,
-                borderRadius: '100px',
-                border: 'none',
-                background: palette.primary,
-                fontSize: 13,
-                fontWeight: 600,
-                color: '#fff',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '6px',
-              }}
-            >
-              <CheckCircleIcon sx={{ fontSize: 16 }} />
               {t('discounts.createDiscount')}
-            </Box>
+            </PrimaryPillButton>
           </Box>
         </Box>
       </Box>

@@ -1,4 +1,5 @@
-import { Box, Typography, Button, Divider, Icon } from '@mui/material';
+import { Box, Typography, Divider, Icon } from '@mui/material';
+import { ErrorOutlinedPillButton, PrimaryPillButton } from '@/design-system/components/PillButton';
 import PersonIcon from '@mui/icons-material/Person';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
@@ -116,49 +117,26 @@ export default function HotelReservationDetailPage() {
 
         {/* Action buttons */}
         <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <Button
-            variant="outlined"
+          <ErrorOutlinedPillButton
+            pillSize="sm"
             startIcon={<CloseIcon sx={{ fontSize: 16 }} />}
             disabled={rejectBooking.isPending}
             onClick={() => rejectBooking.mutate('TH-48291')}
             sx={{
-              padding: '10px 20px',
-              borderRadius: '100px',
-              border: `1px solid ${palette.error}`,
               backgroundColor: palette.errorContainer,
-              color: palette.error,
-              fontFamily: "'Roboto', sans-serif",
-              fontSize: 13,
-              fontWeight: 600,
-              textTransform: 'none',
-              '&:hover': {
-                backgroundColor: palette.errorContainer,
-                border: `1px solid ${palette.error}`,
-              },
+              '&:hover': { backgroundColor: palette.errorContainer },
             }}
           >
             {t('reservationDetail.reject')}
-          </Button>
-          <Button
-            variant="contained"
+          </ErrorOutlinedPillButton>
+          <PrimaryPillButton
+            pillSize="sm"
             startIcon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
-            disableElevation
             disabled={confirmBooking.isPending}
             onClick={() => confirmBooking.mutate('TH-48291')}
-            sx={{
-              padding: '10px 24px',
-              borderRadius: '100px',
-              backgroundColor: palette.primary,
-              color: '#fff',
-              fontFamily: "'Roboto', sans-serif",
-              fontSize: 13,
-              fontWeight: 600,
-              textTransform: 'none',
-              '&:hover': { backgroundColor: palette.primary },
-            }}
           >
             {t('reservationDetail.confirmReservation')}
-          </Button>
+          </PrimaryPillButton>
         </Box>
       </Box>
 

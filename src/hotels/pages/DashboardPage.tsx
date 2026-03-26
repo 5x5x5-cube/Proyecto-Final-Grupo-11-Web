@@ -1,7 +1,11 @@
 import React from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import AddIcon from '@mui/icons-material/Add';
+import {
+  NeutralOutlinedPillButton,
+  PrimaryPillButton,
+} from '@/design-system/components/PillButton';
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import RemoveIcon from '@mui/icons-material/Remove';
 import LuggageIcon from '@mui/icons-material/Luggage';
@@ -66,45 +70,16 @@ export default function DashboardPage() {
 
   const topbarActions = (
     <>
-      <Button
-        variant="outlined"
-        size="small"
+      <NeutralOutlinedPillButton
+        pillSize="xxs"
         startIcon={<DownloadIcon sx={{ fontSize: 16 }} />}
-        sx={{
-          height: 38,
-          borderRadius: '100px',
-          borderColor: palette.outlineVariant,
-          color: palette.onSurface,
-          fontFamily: "'Roboto', sans-serif",
-          fontSize: 13,
-          fontWeight: 500,
-          textTransform: 'none',
-          backgroundColor: '#fff',
-          '&:hover': { borderColor: palette.outlineVariant, backgroundColor: '#fff' },
-          '& .MuiButton-startIcon .MuiSvgIcon-root': { color: palette.primary },
-        }}
+        sx={{ '& .MuiButton-startIcon .MuiSvgIcon-root': { color: palette.primary } }}
       >
         {t('dashboard.export')}
-      </Button>
-      <Button
-        variant="contained"
-        size="small"
-        startIcon={<AddIcon sx={{ fontSize: 16 }} />}
-        disableElevation
-        sx={{
-          height: 38,
-          borderRadius: '100px',
-          backgroundColor: palette.primary,
-          color: '#fff',
-          fontFamily: "'Roboto', sans-serif",
-          fontSize: 13,
-          fontWeight: 500,
-          textTransform: 'none',
-          '&:hover': { backgroundColor: palette.primary },
-        }}
-      >
+      </NeutralOutlinedPillButton>
+      <PrimaryPillButton pillSize="xxs" startIcon={<AddIcon sx={{ fontSize: 16 }} />}>
         {t('dashboard.newRate')}
-      </Button>
+      </PrimaryPillButton>
     </>
   );
 
