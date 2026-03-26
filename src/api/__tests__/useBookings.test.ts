@@ -2,7 +2,12 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React from 'react';
-import { useBookings, useBookingDetail, useCreateBooking, useCancelBooking } from '../hooks/useBookings';
+import {
+  useBookings,
+  useBookingDetail,
+  useCreateBooking,
+  useCancelBooking,
+} from '../hooks/useBookings';
 
 // Mock the httpClient module
 vi.mock('../httpClient', () => ({
