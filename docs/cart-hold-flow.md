@@ -1,4 +1,4 @@
-# Cart + Hold Flow — Findings & Future Implementation
+# Cart + Hold Flow — Implementation Plan
 
 ## Source
 
@@ -17,7 +17,7 @@ During checkout, we talk about **carts**, not bookings. A cart holds a listing (
 
 ## What the statement requires
 
-> El nuevo sistema implementará un **"carrito provisional" con un hold de 15 minutos**, lo que significa que tan pronto alguien selecciona una habitación, esa habitación se reserva temporalmente solo para ese usuario. Esto previene el problema actual de overbooking donde dos usuarios diferentes reservan la misma habitación simultáneamente.
+> El nuevo sistema implementará un **"carrito provisional" con un hold de 15 minutos**, lo que significa que tan pronto alguien selecciona una habitación, esa habitación se reserva temporalmente solo para ese usuario.
 
 Key points:
 
@@ -39,7 +39,7 @@ Problems:
 - No hold at cart time — another user could take the room while reviewing
 - Cart is just data storage, not tied to inventory
 
-## Target flow (per statement)
+## Target flow
 
 ```
 PropertyDetailPage → "Reservar" → PUT /cart (creates hold, 15-min timer starts)
@@ -60,30 +60,101 @@ PropertyDetailPage → "Reservar" → PUT /cart (creates hold, 15-min timer star
 | User leaves & returns, same listing | Creates duplicate booking (409)      | Idempotent: returns existing cart/hold      |
 | User selects different listing      | Orphaned pending booking             | Old hold released, new cart/hold created    |
 
-### Backend changes needed
+---
 
-1. **`PUT /cart`** — creates a hold in inventory service (room_id, user_id, 15-min TTL). If a previous hold exists for this user, release it first. Returns cart with `holdExpiresAt`.
-2. **`GET /cart`** — returns cart data + `holdExpiresAt` so frontend can show countdown. If hold expired, return 410 Gone or empty cart.
-3. **`POST /payments`** — processes payment against an active cart (not a booking). On success, creates the booking record and returns it.
-4. **Remove `POST /bookings` from checkout flow** — bookings are no longer created directly by the client. They are a side effect of successful payment.
-5. **Hold replacement** — if user calls `PUT /cart` with a different room, release old hold and create new one atomically.
-6. **Idempotency** — `PUT /cart` with same user + same room + same dates returns existing cart/hold without creating a new one.
+## Implementation Plan
 
-### Frontend changes needed
+### Phase 1 — cart_service: Cart + Hold integration
 
-1. **CartPage** — show hold countdown timer (e.g., "Tienes 12:34 para completar tu reserva")
-2. **CartPage** — handle hold expiry: show "tu reserva expiró" message + redirect to property detail
-3. **CartPage** — "Pagar" button triggers payment directly (no intermediate booking step)
-4. **Optimistic persistence** — save cart selection to localStorage immediately, sync to server in background (per statement requirement)
-5. **PropertyDetailPage** — "Reservar" button creates hold (loading state while hold is created)
-6. **ConfirmationPage** — receives booking data from payment response (booking now exists)
+**Service:** `services/cart_service/` (currently scaffold only — health endpoint)
 
-### Edge cases
+The cart_service owns the cart lifecycle and orchestrates holds via the inventory_service.
+
+| Task                  | Description                                                                                                                                                                                                                                                             |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cart model            | Create `Cart` SQLAlchemy model: `id`, `user_id`, `room_id`, `hotel_id`, `check_in`, `check_out`, `guests`, `hold_id` (from inventory), `hold_expires_at`, `created_at`, `updated_at`. Single active cart per user.                                                      |
+| `PUT /api/v1/cart`    | Upsert cart for authenticated user. Calls inventory_service `POST /holds` to create a 15-min hold. If user already has a cart with a different room, release old hold first. Stores `hold_id` + `hold_expires_at`. Returns cart with price breakdown + `holdExpiresAt`. |
+| `GET /api/v1/cart`    | Return current cart + `holdExpiresAt`. If hold expired, return `410 Gone` (or empty cart). Enrich response with hotel/room details from inventory.                                                                                                                      |
+| `DELETE /api/v1/cart` | Release hold in inventory_service, delete cart record.                                                                                                                                                                                                                  |
+| Idempotency           | `PUT /cart` with same user + same room + same dates → return existing cart/hold without creating a new one.                                                                                                                                                             |
+| Price calculation     | Cart response includes `subtotal`, `vat`, `tourismTax`, `serviceFee`, `total` — calculated server-side based on room price, nights, and country tax rules.                                                                                                              |
+| Inventory client      | HTTP client to call inventory_service: `POST /holds`, `DELETE /holds/{id}`, `GET /holds/check/{room_id}`.                                                                                                                                                               |
+| Tests                 | Cart creation, hold integration, idempotency, replacement, expiry handling.                                                                                                                                                                                             |
+
+### Phase 2 — inventory_service: Hold adjustments
+
+**Service:** `services/inventory_service/` (already implemented — holds, availability)
+
+| Task                 | Description                                                                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Hold-per-user upsert | If `POST /holds` is called and user already has a hold on a different room, release the old hold automatically before creating the new one. |
+| Hold expiry response | `GET /holds/check/{room_id}` should return `hold_expires_at` in the response so cart_service can store and forward it.                      |
+| Cleanup task         | Already exists — expires holds + associated bookings. Needs to also notify cart_service (or cart_service polls) when holds expire.          |
+
+### Phase 3 — payment_service: Payment creates booking
+
+**Service:** `services/payment_service/` (currently scaffold only — health endpoint)
+
+| Task                    | Description                                                                                                                                                                                                                                                |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POST /api/v1/payments` | Accepts `cart_id` + payment details (card token, method). Validates cart has active hold. Processes payment (Stripe/mock). On success: calls booking_service to create booking, clears cart, converts hold to confirmed reservation. Returns booking data. |
+| Payment failure         | Hold stays active — user can retry within the 15 min. Return error with `holdExpiresAt` so frontend knows how much time is left.                                                                                                                           |
+| Idempotency key         | Prevent double-charge on network retry. Use request idempotency key (header) to deduplicate.                                                                                                                                                               |
+| Tests                   | Payment success → booking created, payment failure → hold preserved, idempotency, expired hold rejection.                                                                                                                                                  |
+
+### Phase 4 — booking_service: Remove from checkout flow
+
+**Service:** `services/booking_service/` (currently creates hold + booking in one call)
+
+| Task                                   | Description                                                                                                                                        |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Internal-only booking creation         | `POST /bookings` is no longer called by clients during checkout. It becomes an internal API called by payment_service after successful payment.    |
+| Remove hold creation from booking flow | Booking_service no longer calls inventory_service to create holds — that's cart_service's job now. Booking just records the confirmed reservation. |
+| Booking status                         | Bookings are created with `status=confirmed` (not `pending`). No more pending bookings.                                                            |
+| Keep existing booking APIs             | `GET /bookings`, `GET /bookings/{id}`, `POST /bookings/{id}/cancel` remain as-is for post-checkout.                                                |
+
+### Phase 5 — gateway_service: Route cart + payment
+
+**Service:** `services/gateway_service/`
+
+| Task               | Description                                                                    |
+| ------------------ | ------------------------------------------------------------------------------ |
+| Add cart routes    | `/api/v1/cart` → `cart_service` (PUT, GET, DELETE)                             |
+| Add payment routes | `/api/v1/payments` → `payment_service` (POST)                                  |
+| Auth middleware    | Cart and payment endpoints require authenticated user (JWT from auth_service). |
+
+### Phase 6 — Web client changes
+
+**Repo:** `Proyecto-Final-Grupo-11-Web`
+
+| Task                   | Description                                                                                                                                                                                                  |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `useSetCart` hook      | Already exists (`PUT /cart`). Update to handle `holdExpiresAt` in response.                                                                                                                                  |
+| `useCart` hook         | Already exists (`GET /cart`). Update Cart type to include `holdExpiresAt`. Handle `410 Gone` (hold expired).                                                                                                 |
+| PropertyDetailPage     | "Reservar" already calls `PUT /cart`. No change needed — just benefits from backend now creating the hold.                                                                                                   |
+| CartPage               | Add countdown timer component showing time remaining (`holdExpiresAt - now`). On expiry, show modal "Tu reserva expiró" and redirect. Remove `useCreateBooking` call — "Pagar" goes directly to PaymentPage. |
+| PaymentPage            | Instead of paying against a booking, call `POST /payments` with `cartId` + card details. On success, receive booking data and navigate to ConfirmationPage.                                                  |
+| ConfirmationPage       | Receives booking from payment response (booking now exists). No changes to UI.                                                                                                                               |
+| Error handling         | Cart expired (410) → redirect to property detail with toast. Payment failed → stay on PaymentPage, show error, user retries. Room taken (409 on PUT /cart) → show "habitación no disponible" toast.          |
+| Optimistic persistence | Save cart selection to localStorage on "Reservar" click. On page load, check localStorage vs server cart. Sync in background.                                                                                |
+
+### Phase 7 — Mobile client changes
+
+**Repo:** `Proyecto-Final-Grupo-11-Mobile`
+
+| Task             | Description                                                                                                             |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Same flow as web | Mirror the web changes: `PUT /cart` on room selection, countdown timer, `POST /payments` on pay, booking from response. |
+| Offline cart     | Save cart to AsyncStorage. Sync when connection is available.                                                           |
+
+---
+
+## Edge cases
 
 - **User closes tab, comes back** → `GET /cart` checks if hold is still valid. If expired, show "tu reserva expiró" and clear cart.
 - **User picks different room** → `PUT /cart` releases old hold, creates new one. If new hold fails (room taken by someone else), show error, keep old cart.
-- **Same user, same room** → idempotent: return existing cart/hold (already implemented in inventory service).
+- **Same user, same room** → idempotent: return existing cart/hold.
 - **Two users, same room** → second `PUT /cart` gets 409 (room held by another user).
 - **Hold expires while on CartPage** → frontend countdown reaches 0, show expiry modal, redirect to property detail.
 - **Payment fails** → hold is still active (user can retry within the 15 min). Cart is not cleared.
-- **Payment succeeds** → booking is created, hold is converted to a confirmed reservation, cart is cleared.
+- **Payment succeeds** → booking is created, hold is converted to confirmed reservation, cart is cleared.
