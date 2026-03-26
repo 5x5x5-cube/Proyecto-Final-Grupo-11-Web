@@ -10,6 +10,7 @@ import { useLocale } from '../../contexts/LocaleContext';
 import CheckoutLayout from '../../design-system/layouts/CheckoutLayout';
 import InfoGrid from '../../design-system/components/InfoGrid';
 import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
+import Text from '@/design-system/components/Text';
 import {
   primary,
   onSurface,
@@ -61,9 +62,7 @@ const ConfirmationPage: React.FC = () => {
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             <PlaceIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
-            <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>
-              Centro Hist&oacute;rico, Cartagena
-            </Typography>
+            <Text textVariant="hint">Centro Hist&oacute;rico, Cartagena</Text>
           </Box>
         </Box>
       </Box>
@@ -104,9 +103,7 @@ const ConfirmationPage: React.FC = () => {
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <CreditCardIcon sx={{ fontSize: 16, color: primary }} />
-            <Typography sx={{ fontSize: 13, color: onSurfaceVariant }}>
-              VISA &bull;&bull;&bull;&bull; 4242
-            </Typography>
+            <Text textVariant="hint">VISA &bull;&bull;&bull;&bull; 4242</Text>
           </Box>
           <Typography sx={{ fontSize: 20, fontWeight: 700, color: primary }}>
             {formatPrice(2664000)}
@@ -135,9 +132,9 @@ const ConfirmationPage: React.FC = () => {
 
       {/* Next steps */}
       <Box>
-        <Typography sx={{ fontSize: 14, fontWeight: 600, color: onSurface, mb: '12px' }}>
+        <Text textVariant="bodySemibold" sx={{ mb: '12px' }}>
           {t('confirmation.sidebar.nextSteps')}
-        </Typography>
+        </Text>
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {[
             { num: '1', text: t('confirmation.sidebar.step1') },
@@ -161,8 +158,9 @@ const ConfirmationPage: React.FC = () => {
                   {step.num}
                 </Typography>
               </Box>
-              <Typography
-                sx={{ fontSize: 13, color: onSurfaceVariant, lineHeight: 1.4 }}
+              <Text
+                textVariant="hint"
+                sx={{ lineHeight: 1.4 }}
                 dangerouslySetInnerHTML={{ __html: step.text }}
               />
             </Box>

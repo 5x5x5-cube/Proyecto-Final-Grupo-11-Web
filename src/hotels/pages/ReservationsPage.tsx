@@ -4,6 +4,7 @@ import {
   ErrorPillButton,
   NeutralPillButton,
 } from '@/design-system/components/PillButton';
+import Text from '@/design-system/components/Text';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -198,13 +199,13 @@ export default function ReservationsPage() {
           </Typography>
           {t('reservations.cancelled')}
         </Box>
-        <Typography sx={{ marginLeft: 'auto', fontSize: 13, color: palette.onSurfaceVariant }}>
+        <Text textVariant="hint" sx={{ marginLeft: 'auto' }}>
           {t('reservations.showing', {
             from: 1,
             to: hotelReservations.length,
             total: reservationSummary.total,
           })}
-        </Typography>
+        </Text>
       </Box>
 
       {/* Table card */}
@@ -320,12 +321,8 @@ export default function ReservationsPage() {
                       {res.initials}
                     </Box>
                     <Box>
-                      <Typography sx={{ fontSize: 14, fontWeight: 500, color: palette.onSurface }}>
-                        {res.guest}
-                      </Typography>
-                      <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                        {res.email}
-                      </Typography>
+                      <Text textVariant="bodyMedium">{res.guest}</Text>
+                      <Text textVariant="caption">{res.email}</Text>
                     </Box>
                   </Box>
                 </Box>
@@ -342,12 +339,8 @@ export default function ReservationsPage() {
                     verticalAlign: 'middle',
                   }}
                 >
-                  <Typography sx={{ fontSize: 14, fontWeight: 500, color: palette.onSurface }}>
-                    {res.room}
-                  </Typography>
-                  <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                    {res.roomType}
-                  </Typography>
+                  <Text textVariant="bodyMedium">{res.room}</Text>
+                  <Text textVariant="caption">{res.roomType}</Text>
                 </Box>
 
                 {/* Check-in */}
@@ -396,9 +389,9 @@ export default function ReservationsPage() {
                     verticalAlign: 'middle',
                   }}
                 >
-                  <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
+                  <Text textVariant="hint">
                     {t('reservations.nightsCount', { count: res.nights })}
-                  </Typography>
+                  </Text>
                 </Box>
 
                 {/* Total */}
@@ -475,13 +468,13 @@ export default function ReservationsPage() {
             borderTop: `1px solid ${palette.outlineVariant}`,
           }}
         >
-          <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
+          <Text textVariant="hint">
             {t('reservations.showing', {
               from: 1,
               to: hotelReservations.length,
               total: reservationSummary.total,
             })}
-          </Typography>
+          </Text>
           <Box sx={{ display: 'flex', gap: '4px' }}>
             <Box
               sx={{

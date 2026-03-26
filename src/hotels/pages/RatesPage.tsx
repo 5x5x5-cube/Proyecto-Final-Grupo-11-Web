@@ -1,4 +1,5 @@
 import { Box, Typography, CircularProgress } from '@mui/material';
+import Text from '@/design-system/components/Text';
 import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import SellIcon from '@mui/icons-material/Sell';
 import KingBedIcon from '@mui/icons-material/KingBed';
@@ -274,9 +275,7 @@ export default function RatesPage() {
               <SellIcon sx={{ fontSize: 18, color: palette.primary }} />
               {t('rates.configuredRates')}
             </Box>
-            <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-              {t('rates.ratesSummary', { rates: 12, rooms: 4 })}
-            </Typography>
+            <Text textVariant="caption">{t('rates.ratesSummary', { rates: 12, rooms: 4 })}</Text>
           </Box>
 
           {/* Table */}
@@ -606,18 +605,9 @@ export default function RatesPage() {
             }}
           >
             {/* Room section */}
-            <Typography
-              sx={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-                color: palette.outline,
-                mb: '-4px',
-              }}
-            >
+            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
               {t('rates.roomLabel')}
-            </Typography>
+            </Text>
             <Box sx={{ position: 'relative' }}>
               <Typography
                 sx={{
@@ -656,18 +646,9 @@ export default function RatesPage() {
             </Box>
 
             {/* Rate type section */}
-            <Typography
-              sx={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-                color: palette.outline,
-                mb: '-4px',
-              }}
-            >
+            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
               {t('rates.rateTypeLabel')}
-            </Typography>
+            </Text>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
               {rateTypeOptions.map(opt => {
                 const OptIcon = opt.icon;
@@ -698,18 +679,9 @@ export default function RatesPage() {
             </Box>
 
             {/* Price section */}
-            <Typography
-              sx={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-                color: palette.outline,
-                mb: '-4px',
-              }}
-            >
+            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
               {t('rates.priceLabel')}
-            </Typography>
+            </Text>
             <Box sx={{ position: 'relative' }}>
               <Typography
                 sx={{
@@ -766,18 +738,9 @@ export default function RatesPage() {
             </Box>
 
             {/* Validity section */}
-            <Typography
-              sx={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-                color: palette.outline,
-                mb: '-4px',
-              }}
-            >
+            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
               {t('rates.validityLabel')}
-            </Typography>
+            </Text>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <Box sx={{ position: 'relative' }}>
                 <Typography

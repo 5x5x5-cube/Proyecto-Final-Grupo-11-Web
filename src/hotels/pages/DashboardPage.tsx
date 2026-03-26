@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
+import Text from '@/design-system/components/Text';
 import DownloadIcon from '@mui/icons-material/Download';
 import AddIcon from '@mui/icons-material/Add';
 import {
@@ -156,9 +157,7 @@ export default function DashboardPage() {
                 <Typography sx={{ fontSize: 28, fontWeight: 700, color: palette.onSurface }}>
                   {stat.value}
                 </Typography>
-                <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-                  {stat.label}
-                </Typography>
+                <Text textVariant="hint">{stat.label}</Text>
               </Box>
             </Box>
           );
@@ -188,9 +187,7 @@ export default function DashboardPage() {
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <EventAvailableIcon sx={{ fontSize: 18, color: palette.primary }} />
-              <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface }}>
-                {t('dashboard.recentReservations')}
-              </Typography>
+              <Text textVariant="cardSubheading">{t('dashboard.recentReservations')}</Text>
             </Box>
             <Typography
               sx={{ fontSize: 13, fontWeight: 500, color: palette.primary, cursor: 'pointer' }}
@@ -369,9 +366,7 @@ export default function DashboardPage() {
             >
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <BarChartIcon sx={{ fontSize: 18, color: palette.primary }} />
-                <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface }}>
-                  {t('dashboard.revenue2026')}
-                </Typography>
+                <Text textVariant="cardSubheading">{t('dashboard.revenue2026')}</Text>
               </Box>
               <Typography
                 sx={{ fontSize: 13, fontWeight: 500, color: palette.primary, cursor: 'pointer' }}
@@ -420,14 +415,12 @@ export default function DashboardPage() {
                 </Typography>
               ))}
             </Box>
-            <Typography
-              sx={{ padding: '0 24px 16px', fontSize: 13, color: palette.onSurfaceVariant }}
-            >
+            <Text textVariant="hint" sx={{ padding: '0 24px 16px' }}>
               {formatDate('2026-02-01', 'monthYear')}:{' '}
               <Box component="span" sx={{ color: palette.primary, fontSize: 18, fontWeight: 700 }}>
                 {formatPrice(94200000)}
               </Box>
-            </Typography>
+            </Text>
           </Box>
 
           {/* Quick access */}
@@ -449,9 +442,7 @@ export default function DashboardPage() {
               }}
             >
               <AppsIcon sx={{ fontSize: 18, color: palette.primary }} />
-              <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface }}>
-                {t('dashboard.quickAccess')}
-              </Typography>
+              <Text textVariant="cardSubheading">{t('dashboard.quickAccess')}</Text>
             </Box>
             <Box
               sx={{
@@ -495,12 +486,8 @@ export default function DashboardPage() {
                         sx: { fontSize: 24, color: colors.color },
                       })}
                     </Box>
-                    <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>
-                      {item.label}
-                    </Typography>
-                    <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                      {item.description}
-                    </Typography>
+                    <Text textVariant="bodySemibold">{item.label}</Text>
+                    <Text textVariant="caption">{item.description}</Text>
                   </Box>
                 );
               })}

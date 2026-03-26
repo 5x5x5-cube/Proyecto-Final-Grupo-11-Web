@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { palette } from '@/design-system/theme/palette';
 import { useLogin } from '@/api/hooks/useAuth';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
+import Text from '@/design-system/components/Text';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -265,16 +266,14 @@ export default function HotelLoginPage() {
           {/* Divider */}
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px', my: '4px' }}>
             <Divider sx={{ flex: 1, borderColor: palette.outlineVariant }} />
-            <Typography
-              sx={{ fontSize: 12, color: palette.onSurfaceVariant, whiteSpace: 'nowrap' }}
-            >
+            <Text textVariant="caption" sx={{ whiteSpace: 'nowrap' }}>
               {t('login.newToTravelHub')}
-            </Typography>
+            </Text>
             <Divider sx={{ flex: 1, borderColor: palette.outlineVariant }} />
           </Box>
 
           {/* Help text */}
-          <Typography sx={{ textAlign: 'center', fontSize: 13, color: palette.onSurfaceVariant }}>
+          <Text textVariant="hint" sx={{ textAlign: 'center' }}>
             {t('login.contactUs')}{' '}
             <Box
               component="span"
@@ -283,7 +282,7 @@ export default function HotelLoginPage() {
               partners@travelhub.com
             </Box>{' '}
             {t('login.contactSuffix')}
-          </Typography>
+          </Text>
         </Box>
 
         {/* Trust badges */}

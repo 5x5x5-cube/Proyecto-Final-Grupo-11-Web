@@ -16,6 +16,7 @@ import FilterChip from '../components/FilterChip';
 import SearchField from '../components/SearchField';
 import ModalOverlay from '../components/ModalOverlay';
 import ProfileMenuRow from '../components/ProfileMenuRow';
+import Text from '../components/Text';
 import {
   PrimaryPillButton,
   OutlinedPillButton,
@@ -509,6 +510,23 @@ export default function DesignSystemPage() {
                 Disabled
               </PrimaryPillButton>
             </Box>
+          </Box>
+        </Section>
+
+        <Section title="Text (Design System)">
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Text textVariant="sectionTitle">sectionTitle — Section Heading (18/600)</Text>
+            <Text textVariant="panelTitle">panelTitle — Panel Title (16/600)</Text>
+            <Text textVariant="cardSubheading">cardSubheading — Card Title (15/600)</Text>
+            <Text textVariant="bodyMedium">bodyMedium — Emphasized body (14/500)</Text>
+            <Text textVariant="bodySemibold">bodySemibold — Bold value (14/600)</Text>
+            <Text textVariant="body">body — Secondary body text (14)</Text>
+            <Text textVariant="hint">hint — Descriptive hint (13)</Text>
+            <Text textVariant="caption">caption — Small label (12)</Text>
+            <Text textVariant="overline">overline — Category Label (11/500 uppercase)</Text>
+            <Text textVariant="miniLabel">miniLabel — Section Divider (11/600 uppercase)</Text>
+            <Text textVariant="price">price — $250,000 (20/700)</Text>
+            <Text textVariant="priceSmall">priceSmall — $250,000 (16/700)</Text>
           </Box>
         </Section>
 

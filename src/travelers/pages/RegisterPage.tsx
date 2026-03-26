@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { palette } from '@/design-system/theme/palette';
 import { useRegister } from '@/api/hooks/useAuth';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
+import Text from '@/design-system/components/Text';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -260,11 +261,10 @@ export default function RegisterPage() {
             )}
           </PrimaryPillButton>
 
-          <Typography
+          <Text
+            textVariant="body"
             sx={{
               textAlign: 'center',
-              fontSize: 14,
-              color: palette.onSurfaceVariant,
               mt: '8px',
             }}
           >
@@ -279,7 +279,7 @@ export default function RegisterPage() {
             >
               {t('register.login')}
             </Link>
-          </Typography>
+          </Text>
         </Box>
       </Box>
     </Box>

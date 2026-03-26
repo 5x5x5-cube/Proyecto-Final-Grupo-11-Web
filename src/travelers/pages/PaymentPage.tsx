@@ -11,6 +11,7 @@ import SectionCard from '../../design-system/components/SectionCard';
 import { palette } from '../../design-system/theme/palette';
 import { useInitiatePayment } from '../../api/hooks/usePayments';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
+import Text from '@/design-system/components/Text';
 
 export default function PaymentPage() {
   const navigate = useNavigate();
@@ -85,41 +86,35 @@ export default function PaymentPage() {
           }}
         />
         <Box>
-          <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface, mb: '4px' }}>
+          <Text textVariant="bodySemibold" sx={{ mb: '4px' }}>
             Hotel Santa Clara Sofitel
-          </Typography>
-          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant, mb: '2px' }}>
+          </Text>
+          <Text textVariant="caption" sx={{ mb: '2px' }}>
             {`${formatDate('2026-03-15', 'short')} – ${formatDate('2026-03-20', 'medium')} · 5 ${t('payment.sidebar.nightsLabel')}`}
-          </Typography>
-          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-            {t('payment.sidebar.room')}
-          </Typography>
+          </Text>
+          <Text textVariant="caption">{t('payment.sidebar.room')}</Text>
         </Box>
       </Box>
 
       {/* Price breakdown */}
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+          <Text textVariant="body">
             {`${formatPrice(480000)} x 5 ${t('payment.sidebar.nightsLabel')}`}
-          </Typography>
+          </Text>
           <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
             {formatPrice(2400000)}
           </Typography>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-            {t('payment.sidebar.taxesAndFees')}
-          </Typography>
+          <Text textVariant="body">{t('payment.sidebar.taxesAndFees')}</Text>
           <Typography sx={{ fontSize: 14, color: palette.onSurface }}>
             {formatPrice(264000)}
           </Typography>
         </Box>
         <Box sx={{ height: 1, backgroundColor: palette.outlineVariant }} />
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Typography sx={{ fontSize: 16, fontWeight: 600, color: palette.onSurface }}>
-            {t('payment.sidebar.totalToPay')}
-          </Typography>
+          <Text textVariant="panelTitle">{t('payment.sidebar.totalToPay')}</Text>
           <Typography sx={{ fontSize: 24, fontWeight: 700, color: palette.primary }}>
             {formatPrice(2664000)}
           </Typography>
@@ -152,9 +147,7 @@ export default function PaymentPage() {
       {/* Secure note */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
         <VerifiedUserIcon sx={{ fontSize: 15, color: palette.primary }} />
-        <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-          {t('payment.sidebar.secureTransaction')}
-        </Typography>
+        <Text textVariant="caption">{t('payment.sidebar.secureTransaction')}</Text>
       </Box>
     </Box>
   );
@@ -319,17 +312,12 @@ export default function PaymentPage() {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {/* Card number */}
               <Box>
-                <Typography
-                  sx={{
-                    fontSize: 12,
-                    fontWeight: 500,
-                    color: palette.onSurfaceVariant,
-                    mb: '6px',
-                    letterSpacing: '0.4px',
-                  }}
+                <Text
+                  textVariant="caption"
+                  sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}
                 >
                   {t('payment.form.cardNumber')}
-                </Typography>
+                </Text>
                 <Box
                   component="input"
                   value={cardNumber}
@@ -356,17 +344,12 @@ export default function PaymentPage() {
 
               {/* Card holder name */}
               <Box>
-                <Typography
-                  sx={{
-                    fontSize: 12,
-                    fontWeight: 500,
-                    color: palette.onSurfaceVariant,
-                    mb: '6px',
-                    letterSpacing: '0.4px',
-                  }}
+                <Text
+                  textVariant="caption"
+                  sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}
                 >
                   {t('payment.form.cardHolderName')}
-                </Typography>
+                </Text>
                 <Box
                   component="input"
                   value={cardHolder}
@@ -393,17 +376,12 @@ export default function PaymentPage() {
               {/* Row: Expiry, CVV, Currency */}
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
                 <Box>
-                  <Typography
-                    sx={{
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: palette.onSurfaceVariant,
-                      mb: '6px',
-                      letterSpacing: '0.4px',
-                    }}
+                  <Text
+                    textVariant="caption"
+                    sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}
                   >
                     {t('payment.form.expiryDate')}
-                  </Typography>
+                  </Text>
                   <Box
                     component="input"
                     value={expiry}
@@ -428,17 +406,12 @@ export default function PaymentPage() {
                   />
                 </Box>
                 <Box>
-                  <Typography
-                    sx={{
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: palette.onSurfaceVariant,
-                      mb: '6px',
-                      letterSpacing: '0.4px',
-                    }}
+                  <Text
+                    textVariant="caption"
+                    sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}
                   >
                     {t('payment.form.cvv')}
-                  </Typography>
+                  </Text>
                   <Box
                     component="input"
                     value={cvv}
@@ -463,17 +436,12 @@ export default function PaymentPage() {
                   />
                 </Box>
                 <Box>
-                  <Typography
-                    sx={{
-                      fontSize: 12,
-                      fontWeight: 500,
-                      color: palette.onSurfaceVariant,
-                      mb: '6px',
-                      letterSpacing: '0.4px',
-                    }}
+                  <Text
+                    textVariant="caption"
+                    sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}
                   >
                     {t('payment.form.currency')}
-                  </Typography>
+                  </Text>
                   <Box
                     component="select"
                     defaultValue={t('payment.form.currencies.cop')}

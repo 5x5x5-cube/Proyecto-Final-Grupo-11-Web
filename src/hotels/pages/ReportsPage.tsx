@@ -1,4 +1,5 @@
 import { Box, Typography, Skeleton } from '@mui/material';
+import Text from '@/design-system/components/Text';
 import {
   PrimaryPillButton,
   NeutralOutlinedPillButton,
@@ -144,9 +145,7 @@ export default function ReportsPage() {
                   <Typography sx={{ fontSize: 24, fontWeight: 700, color: palette.onSurface }}>
                     {kpi.value}
                   </Typography>
-                  <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                    {kpi.label}
-                  </Typography>
+                  <Text textVariant="caption">{kpi.label}</Text>
                 </Box>
               );
             })}

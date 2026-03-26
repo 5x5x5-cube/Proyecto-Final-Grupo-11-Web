@@ -1,5 +1,6 @@
 import { Skeleton } from '@mui/material';
 import { Box, Typography, IconButton } from '@mui/material';
+import Text from '@/design-system/components/Text';
 import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import PlaceIcon from '@mui/icons-material/Place';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -137,9 +138,7 @@ export default function PropertyDetailPage() {
       >
         {/* Price */}
         <Box>
-          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-            {t('propertyDetail.booking.from')}
-          </Typography>
+          <Text textVariant="caption">{t('propertyDetail.booking.from')}</Text>
           <Typography sx={{ fontSize: 32, fontWeight: 700, color: palette.primary }}>
             {formatPrice(480000)}{' '}
             <Typography
@@ -245,12 +244,10 @@ export default function PropertyDetailPage() {
               color: palette.onSurfaceVariant,
             }}
           >
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
+            <Text textVariant="body">
               {formatPrice(480000)} x 5 {t('propertyDetail.booking.nights')}
-            </Typography>
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-              {formatPrice(2400000)}
-            </Typography>
+            </Text>
+            <Text textVariant="body">{formatPrice(2400000)}</Text>
           </Box>
           <Box
             sx={{
@@ -260,12 +257,8 @@ export default function PropertyDetailPage() {
               color: palette.onSurfaceVariant,
             }}
           >
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-              {t('propertyDetail.booking.taxesAndFees')}
-            </Typography>
-            <Typography sx={{ fontSize: 14, color: palette.onSurfaceVariant }}>
-              {formatPrice(264000)}
-            </Typography>
+            <Text textVariant="body">{t('propertyDetail.booking.taxesAndFees')}</Text>
+            <Text textVariant="body">{formatPrice(264000)}</Text>
           </Box>
           <Box
             sx={{
@@ -278,12 +271,8 @@ export default function PropertyDetailPage() {
               mt: '4px',
             }}
           >
-            <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>
-              {t('propertyDetail.booking.total')}
-            </Typography>
-            <Typography sx={{ fontSize: 14, fontWeight: 600, color: palette.onSurface }}>
-              {formatPrice(2664000)}
-            </Typography>
+            <Text textVariant="bodySemibold">{t('propertyDetail.booking.total')}</Text>
+            <Text textVariant="bodySemibold">{formatPrice(2664000)}</Text>
           </Box>
         </Box>
 
@@ -307,17 +296,15 @@ export default function PropertyDetailPage() {
           }}
         >
           <LockIcon sx={{ fontSize: 16, color: palette.primary }} />
-          <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-            {t('propertyDetail.booking.securePayment')}
-          </Typography>
+          <Text textVariant="caption">{t('propertyDetail.booking.securePayment')}</Text>
         </Box>
       </Box>
 
       {/* Cancellation policy */}
       <Box>
-        <Typography sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
+        <Text textVariant="cardSubheading" sx={{ mb: '12px' }}>
           {t('propertyDetail.cancellation.title')}
-        </Typography>
+        </Text>
         <Box
           sx={{
             backgroundColor: '#fff',
@@ -337,15 +324,11 @@ export default function PropertyDetailPage() {
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <InfoIcon sx={{ color: palette.star, fontSize: 18 }} />
-            <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-              {t('propertyDetail.cancellation.halfCharge')}
-            </Typography>
+            <Text textVariant="hint">{t('propertyDetail.cancellation.halfCharge')}</Text>
           </Box>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <CancelIcon sx={{ color: '#B5451B', fontSize: 18 }} />
-            <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-              {t('propertyDetail.cancellation.noRefund')}
-            </Typography>
+            <Text textVariant="hint">{t('propertyDetail.cancellation.noRefund')}</Text>
           </Box>
         </Box>
       </Box>
@@ -441,9 +424,7 @@ export default function PropertyDetailPage() {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <RatingBadge rating={4.8} />
               <Typography sx={{ color: palette.star, fontSize: 16 }}>★★★★★</Typography>
-              <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-                312 {t('propertyDetail.reviews')}
-              </Typography>
+              <Text textVariant="hint">312 {t('propertyDetail.reviews')}</Text>
             </Box>
           </Box>
           <Box sx={{ display: 'flex', gap: '10px' }}>
@@ -472,26 +453,19 @@ export default function PropertyDetailPage() {
 
         {/* Description */}
         <Box>
-          <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
+          <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
             {t('propertyDetail.description')}
-          </Typography>
-          <Typography
-            sx={{
-              fontSize: 14,
-              color: palette.onSurfaceVariant,
-              lineHeight: 1.6,
-              maxWidth: 860,
-            }}
-          >
+          </Text>
+          <Text textVariant="body" sx={{ lineHeight: 1.6, maxWidth: 860 }}>
             {t('propertyDetail.descriptionText')}
-          </Typography>
+          </Text>
         </Box>
 
         {/* Amenities */}
         <Box>
-          <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
+          <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
             {t('propertyDetail.amenities.title')}
-          </Typography>
+          </Text>
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
             {amenities.map(amenity => (
               <Box
@@ -517,9 +491,9 @@ export default function PropertyDetailPage() {
 
         {/* Rooms */}
         <Box>
-          <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
+          <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
             {t('propertyDetail.rooms.title')}
-          </Typography>
+          </Text>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {rooms.map(room => (
               <Box
@@ -544,22 +518,14 @@ export default function PropertyDetailPage() {
                   }}
                 />
                 <Box sx={{ flex: 1 }}>
-                  <Typography
-                    sx={{ fontSize: 15, fontWeight: 600, color: palette.onSurface, mb: '4px' }}
-                  >
+                  <Text textVariant="cardSubheading" sx={{ mb: '4px' }}>
                     {room.name}
-                  </Typography>
-                  <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant }}>
-                    {room.features}
-                  </Typography>
+                  </Text>
+                  <Text textVariant="hint">{room.features}</Text>
                 </Box>
                 <Box sx={{ textAlign: 'right' }}>
-                  <Typography sx={{ fontSize: 20, fontWeight: 700, color: palette.primary }}>
-                    {room.price}
-                  </Typography>
-                  <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                    {t('propertyDetail.rooms.perNight')}
-                  </Typography>
+                  <Text textVariant="price">{room.price}</Text>
+                  <Text textVariant="caption">{t('propertyDetail.rooms.perNight')}</Text>
                 </Box>
                 {room.active ? (
                   <PrimaryPillButton pillSize="xs" sx={{ whiteSpace: 'nowrap' }}>
@@ -581,9 +547,9 @@ export default function PropertyDetailPage() {
 
         {/* Reviews */}
         <Box>
-          <Typography sx={{ fontSize: 18, fontWeight: 600, color: palette.onSurface, mb: '12px' }}>
+          <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
             {t('propertyDetail.guestReviews')}
-          </Typography>
+          </Text>
           {isReviewsLoading ? (
             <Box sx={{ display: 'flex', gap: '16px', overflow: 'hidden' }}>
               {[0, 1, 2].map(i => (
@@ -639,23 +605,17 @@ export default function PropertyDetailPage() {
                       {review.initial}
                     </Box>
                     <Box>
-                      <Typography sx={{ fontSize: 14, fontWeight: 500, color: palette.onSurface }}>
-                        {review.name}
-                      </Typography>
-                      <Typography sx={{ fontSize: 12, color: palette.onSurfaceVariant }}>
-                        {review.date}
-                      </Typography>
+                      <Text textVariant="bodyMedium">{review.name}</Text>
+                      <Text textVariant="caption">{review.date}</Text>
                     </Box>
                   </Box>
                   <Typography sx={{ color: palette.star, fontSize: 13 }}>
                     {'★'.repeat(review.stars)}
                     {'☆'.repeat(5 - review.stars)}
                   </Typography>
-                  <Typography
-                    sx={{ fontSize: 13, color: palette.onSurfaceVariant, lineHeight: 1.5 }}
-                  >
+                  <Text textVariant="hint" sx={{ lineHeight: 1.5 }}>
                     {review.text}
-                  </Typography>
+                  </Text>
                 </Box>
               ))}
             </Box>

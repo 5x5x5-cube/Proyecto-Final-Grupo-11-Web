@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
+import Text from '@/design-system/components/Text';
 import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import AddIcon from '@mui/icons-material/Add';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -253,11 +254,9 @@ export default function DiscountsPage() {
                     <Typography sx={{ fontSize: 14, fontWeight: 700, color: palette.onSurface }}>
                       {card.name}
                     </Typography>
-                    <Typography
-                      sx={{ fontSize: 12, color: palette.onSurfaceVariant, lineHeight: 1.4 }}
-                    >
+                    <Text textVariant="caption" sx={{ lineHeight: 1.4 }}>
                       {card.desc}
-                    </Typography>
+                    </Text>
 
                     <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                       <Box
@@ -492,18 +491,9 @@ export default function DiscountsPage() {
             </Box>
 
             {/* Discount value */}
-            <Typography
-              sx={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-                color: palette.outline,
-                mb: '-4px',
-              }}
-            >
+            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
               {t('discounts.discountValue')}
-            </Typography>
+            </Text>
             <Box sx={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
               <Box
                 sx={{
@@ -576,18 +566,9 @@ export default function DiscountsPage() {
             </Box>
 
             {/* Validity */}
-            <Typography
-              sx={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-                color: palette.outline,
-                mb: '-4px',
-              }}
-            >
+            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
               {t('discounts.validityLabel')}
-            </Typography>
+            </Text>
             <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <Box sx={{ position: 'relative' }}>
                 <Typography
@@ -660,18 +641,9 @@ export default function DiscountsPage() {
             </Box>
 
             {/* Applicable rooms */}
-            <Typography
-              sx={{
-                fontSize: 11,
-                fontWeight: 600,
-                letterSpacing: '1px',
-                textTransform: 'uppercase',
-                color: palette.outline,
-                mb: '-4px',
-              }}
-            >
+            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
               {t('discounts.applicableRooms')}
-            </Typography>
+            </Text>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {roomCheckboxes.map(room => (
                 <Box
