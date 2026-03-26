@@ -132,7 +132,8 @@
       "errors": {
         "roomUnavailable": "Esta habitacion ya no esta disponible para las fechas seleccionadas",
         "serviceBusy": "El servidor esta ocupado, por favor intenta de nuevo en unos segundos",
-        "generic": "No se pudo completar la reserva. Por favor intenta de nuevo"
+        "generic": "No se pudo completar la reserva. Por favor intenta de nuevo",
+        "cartFailed": "No se pudo agregar la habitación al carrito. Por favor intenta de nuevo"
       }
     },
     "cancellation": {

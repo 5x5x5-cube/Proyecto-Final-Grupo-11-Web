@@ -17,21 +17,43 @@ import LocalParkingIcon from '@mui/icons-material/LocalParking';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '../../contexts/LocaleContext';
-import TravelerLayout from '../../design-system/layouts/TravelerLayout';
-import RatingBadge from '../../design-system/components/RatingBadge';
-import { palette } from '../../design-system/theme/palette';
+import { useLocale } from '@/contexts/LocaleContext';
+import { useSnackbar } from '@/contexts/SnackbarContext';
+import { useDebouncedCallback } from '@/hooks/useDebouncedCallback';
+import TravelerLayout from '@/design-system/layouts/TravelerLayout';
+import RatingBadge from '@/design-system/components/RatingBadge';
+import { palette } from '@/design-system/theme/palette';
 import PropertyDetailPageSkeleton from './PropertyDetailPage.skeleton';
-import { useHotelDetail, useHotelReviews } from '../../api/hooks/useSearch';
+import { useHotelDetail, useHotelReviews } from '@/api/hooks/useSearch';
+import { useSetCart } from '@/api/hooks/useCart';
 
 export default function PropertyDetailPage() {
   const { isLoading: isHotelLoading } = useHotelDetail(1);
   const { data: reviewsData, isLoading: isReviewsLoading } = useHotelReviews(1);
-
+  const setCart = useSetCart();
+  const navigate = useNavigate();
+  const { showError } = useSnackbar();
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
+
+  const handleReserve = useDebouncedCallback(() => {
+    if (setCart.isPending) return;
+    setCart.mutate(
+      {
+        roomId: 1,
+        hotelId: 1,
+        checkIn: '2026-03-15',
+        checkOut: '2026-03-20',
+        guests: 2,
+      },
+      {
+        onSuccess: () => navigate('/checkout/cart'),
+        onError: () => showError(t('propertyDetail.booking.errors.cartFailed')),
+      }
+    );
+  });
 
   if (isHotelLoading) return <PropertyDetailPageSkeleton />;
 
@@ -265,26 +287,26 @@ export default function PropertyDetailPage() {
         </Box>
 
         {/* Reserve button */}
-        <Link to="/checkout/cart" style={{ textDecoration: 'none' }}>
-          <Button
-            variant="contained"
-            disableElevation
-            fullWidth
-            sx={{
-              height: 52,
-              backgroundColor: palette.primary,
-              borderRadius: '100px',
-              fontFamily: "'Roboto', sans-serif",
-              fontSize: 16,
-              fontWeight: 600,
-              color: '#fff',
-              textTransform: 'none',
-              '&:hover': { backgroundColor: palette.primary },
-            }}
-          >
-            {t('propertyDetail.booking.reserveNow')}
-          </Button>
-        </Link>
+        <Button
+          variant="contained"
+          disableElevation
+          fullWidth
+          loading={setCart.isPending}
+          onClick={handleReserve}
+          sx={{
+            height: 52,
+            backgroundColor: palette.primary,
+            borderRadius: '100px',
+            fontFamily: "'Roboto', sans-serif",
+            fontSize: 16,
+            fontWeight: 600,
+            color: '#fff',
+            textTransform: 'none',
+            '&:hover': { backgroundColor: palette.primary },
+          }}
+        >
+          {t('propertyDetail.booking.reserveNow')}
+        </Button>
 
         {/* Secure badge */}
         <Box

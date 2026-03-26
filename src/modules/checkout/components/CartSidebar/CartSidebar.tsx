@@ -1,4 +1,3 @@
-import { CircularProgress } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
@@ -63,14 +62,10 @@ export default function CartSidebar({ cart, isPending, onContinue }: Props) {
         variant="contained"
         disableElevation
         fullWidth
+        loading={isPending}
         onClick={onContinue}
-        disabled={isPending}
       >
-        {isPending ? (
-          <CircularProgress size={24} sx={{ color: '#fff' }} />
-        ) : (
-          t('cart.sidebar.continueToPayment')
-        )}
+        {t('cart.sidebar.continueToPayment')}
       </ContinueButton>
 
       <SecureNote>
