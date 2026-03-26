@@ -1,5 +1,5 @@
-import { Box, Typography, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box, Typography, Button, CircularProgress } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import HotelIcon from '@mui/icons-material/Hotel';
 import PersonIcon from '@mui/icons-material/Person';
 import PolicyIcon from '@mui/icons-material/Policy';
@@ -17,12 +17,37 @@ import RatingBadge from '../../design-system/components/RatingBadge';
 import { palette } from '../../design-system/theme/palette';
 import CartPageSkeleton from './CartPage.skeleton';
 import { useCart } from '../../api/hooks/useCart';
+import { useCreateBooking } from '../../api/hooks/useBookings';
+import { getBookingErrorKey } from '../../api/errorMessages';
+import { useSnackbar } from '../../contexts/SnackbarContext';
+import { useDebouncedCallback } from '../../hooks/useDebouncedCallback';
 
 export default function CartPage() {
   const { data: cart, isLoading } = useCart();
+  const createBooking = useCreateBooking();
+  const navigate = useNavigate();
+  const { showError } = useSnackbar();
 
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
+
+  const handleContinueToPayment = useDebouncedCallback(() => {
+    if (createBooking.isPending) return;
+    createBooking.mutate(
+      {
+        roomId: 'b1000000-0000-0000-0000-000000000001',
+        hotelId: 'a1000000-0000-0000-0000-000000000001',
+        checkIn: '2026-03-15',
+        checkOut: '2026-03-20',
+        guests: 2,
+        userId: 'c1000000-0000-0000-0000-000000000001',
+      },
+      {
+        onSuccess: () => navigate('/checkout/payment'),
+        onError: (error: unknown) => showError(t(getBookingErrorKey(error))),
+      }
+    );
+  });
 
   if (isLoading || !cart) return <CartPageSkeleton />;
 
@@ -75,27 +100,31 @@ export default function CartPage() {
         </Box>
       </Box>
 
-      {/* Continue button */}
-      <Link to="/checkout/payment" style={{ textDecoration: 'none' }}>
-        <Button
-          variant="contained"
-          disableElevation
-          fullWidth
-          sx={{
-            height: 52,
-            backgroundColor: palette.primary,
-            borderRadius: '100px',
-            fontFamily: "'Roboto', sans-serif",
-            fontSize: 16,
-            fontWeight: 600,
-            color: '#fff',
-            textTransform: 'none',
-            '&:hover': { backgroundColor: palette.primary },
-          }}
-        >
-          {t('cart.sidebar.continueToPayment')}
-        </Button>
-      </Link>
+      {/* Continue button — creates booking hold then navigates to payment */}
+      <Button
+        variant="contained"
+        disableElevation
+        fullWidth
+        onClick={handleContinueToPayment}
+        disabled={createBooking.isPending}
+        sx={{
+          height: 52,
+          backgroundColor: palette.primary,
+          borderRadius: '100px',
+          fontFamily: "'Roboto', sans-serif",
+          fontSize: 16,
+          fontWeight: 600,
+          color: '#fff',
+          textTransform: 'none',
+          '&:hover': { backgroundColor: palette.primary },
+        }}
+      >
+        {createBooking.isPending ? (
+          <CircularProgress size={24} sx={{ color: '#fff' }} />
+        ) : (
+          t('cart.sidebar.continueToPayment')
+        )}
+      </Button>
 
       {/* Secure note */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>

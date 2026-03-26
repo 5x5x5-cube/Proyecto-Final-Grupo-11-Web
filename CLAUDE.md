@@ -6,6 +6,7 @@
 - **Prefer creating reusable components** in `src/design-system/components/` — avoid duplicating UI patterns across pages
 - **Update the Design System showcase page** at `src/design-system/pages/DesignSystemPage.tsx` whenever a new reusable component is added to the design system
 - The MUI theme is configured at `src/design-system/theme/theme.ts` using our palette tokens (primary, surface, onSurface, etc.)
+- **Never use inline `style={}` props** — always use MUI's `sx` prop for styling. Inline styles bypass the theme and are harder to maintain
 
 ## Project Structure
 
@@ -46,9 +47,16 @@
 
 ## Internationalization (i18n)
 
-- Always use `react-i18next` (`useTranslation` hook) for all user-facing strings — never hardcode text
+- **NEVER hardcode user-facing strings** — all visible text (labels, errors, toasts, placeholders, button text) must use `t()` from `react-i18next`
 - Translation files: `src/i18n/locales/{es,en}/travelers.json`, `hotels.json`
 - Add new keys to both `es` and `en` locale files when introducing new strings
+- **API error messages must NOT be displayed directly to users** — map error codes/status to i18n keys instead (e.g., `409` → `t('errors.roomUnavailable')`, not the raw backend message)
+
+## Error Handling & Toasts
+
+- Use the `useSnackbar()` hook from `src/contexts/SnackbarContext.tsx` for all toast notifications — never add `<Snackbar>` or `<Alert>` directly in pages
+- Available methods: `showError(message)`, `showSuccess(message)`, `showSnackbar({ message, severity, duration })`
+- All error messages shown to users must come from i18n translation keys
 
 ## Pull Requests
 

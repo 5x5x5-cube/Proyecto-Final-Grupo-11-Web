@@ -128,7 +128,12 @@
       "taxesAndFees": "Impuestos y tasas",
       "total": "Total",
       "reserveNow": "Reservar ahora",
-      "securePayment": "Pago seguro · Sin cargos adicionales"
+      "securePayment": "Pago seguro · Sin cargos adicionales",
+      "errors": {
+        "roomUnavailable": "Esta habitacion ya no esta disponible para las fechas seleccionadas",
+        "serviceBusy": "El servidor esta ocupado, por favor intenta de nuevo en unos segundos",
+        "generic": "No se pudo completar la reserva. Por favor intenta de nuevo"
+      }
     },
     "cancellation": {
       "title": "Politica de cancelacion",
