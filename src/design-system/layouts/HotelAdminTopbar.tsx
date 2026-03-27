@@ -3,7 +3,7 @@ import { Box, Typography, IconButton, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import LanguageIcon from '@mui/icons-material/Language';
-import { useLocale } from '../../contexts/LocaleContext';
+import { useLocale } from '@/contexts/LocaleContext';
 import { primary, onSurface, onSurfaceVariant, outlineVariant, onPrimary } from '../theme/palette';
 
 interface Breadcrumb {

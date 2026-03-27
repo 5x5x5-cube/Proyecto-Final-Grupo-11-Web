@@ -3,13 +3,13 @@ import { createBrowserRouter } from 'react-router-dom';
 import HomePage from './travelers/pages/HomePage';
 import LoginPage from './travelers/pages/LoginPage';
 import RegisterPage from './travelers/pages/RegisterPage';
-import ResultsPage from './travelers/pages/ResultsPage';
-import PropertyDetailPage from './travelers/pages/PropertyDetailPage';
+import ResultsPage from './travelers/pages/ResultsPage/ResultsPage';
+import PropertyDetailPage from './travelers/pages/PropertyDetailPage/PropertyDetailPage';
 import CartPage from './travelers/pages/CartPage/CartPage';
-import PaymentPage from './travelers/pages/PaymentPage';
+import PaymentPage from './travelers/pages/PaymentPage/PaymentPage';
 import ConfirmationPage from './travelers/pages/ConfirmationPage';
 import MyReservationsPage from './travelers/pages/MyReservationsPage';
-import ReservationDetailPage from './travelers/pages/ReservationDetailPage';
+import ReservationDetailPage from './travelers/pages/ReservationDetailPage/ReservationDetailPage';
 
 import DesignSystemPage from './design-system/pages/DesignSystemPage';
 import HotelLoginPage from './hotels/pages/HotelLoginPage';
