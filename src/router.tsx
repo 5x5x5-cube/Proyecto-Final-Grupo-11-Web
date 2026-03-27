@@ -12,10 +12,10 @@ import MyReservationsPage from './travelers/pages/MyReservationsPage';
 import ReservationDetailPage from './travelers/pages/ReservationDetailPage/ReservationDetailPage';
 
 import DesignSystemPage from './design-system/pages/DesignSystemPage';
-import HotelLoginPage from './hotels/pages/HotelLoginPage';
-import DashboardPage from './hotels/pages/DashboardPage';
-import ReservationsPage from './hotels/pages/ReservationsPage';
-import HotelReservationDetailPage from './hotels/pages/HotelReservationDetailPage';
+import HotelLoginPage from './hotels/pages/HotelLoginPage/HotelLoginPage';
+import DashboardPage from './hotels/pages/DashboardPage/DashboardPage';
+import ReservationsPage from './hotels/pages/ReservationsPage/ReservationsPage';
+import HotelReservationDetailPage from './hotels/pages/HotelReservationDetailPage/HotelReservationDetailPage';
 import RatesPage from './hotels/pages/RatesPage';
 import DiscountsPage from './hotels/pages/DiscountsPage';
 import ReportsPage from './hotels/pages/ReportsPage';

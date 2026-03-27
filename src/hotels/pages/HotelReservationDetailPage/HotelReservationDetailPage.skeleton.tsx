@@ -1,5 +1,5 @@
 import { Box, Skeleton, Divider } from '@mui/material';
-import { palette } from '../../design-system/theme/palette';
+import { palette } from '@/design-system/theme/palette';
 
 export default function HotelReservationDetailPageSkeleton() {
   return (

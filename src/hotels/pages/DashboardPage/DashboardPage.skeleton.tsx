@@ -1,5 +1,5 @@
 import { Box, Skeleton } from '@mui/material';
-import { palette } from '../../design-system/theme/palette';
+import { palette } from '@/design-system/theme/palette';
 
 export default function DashboardPageSkeleton() {
   return (
@@ -17,7 +17,7 @@ export default function DashboardPageSkeleton() {
           <Box
             key={i}
             sx={{
-              backgroundColor: '#fff',
+              backgroundColor: palette.surface,
               border: `1px solid ${palette.outlineVariant}`,
               borderRadius: '16px',
               padding: '20px 24px',
@@ -51,7 +51,7 @@ export default function DashboardPageSkeleton() {
         {/* Recent reservations table */}
         <Box
           sx={{
-            backgroundColor: '#fff',
+            backgroundColor: palette.surface,
             border: `1px solid ${palette.outlineVariant}`,
             borderRadius: '16px',
             overflow: 'hidden',
@@ -131,7 +131,7 @@ export default function DashboardPageSkeleton() {
           {/* Revenue mini chart */}
           <Box
             sx={{
-              backgroundColor: '#fff',
+              backgroundColor: palette.surface,
               border: `1px solid ${palette.outlineVariant}`,
               borderRadius: '16px',
               overflow: 'hidden',
@@ -196,7 +196,7 @@ export default function DashboardPageSkeleton() {
           {/* Quick access grid */}
           <Box
             sx={{
-              backgroundColor: '#fff',
+              backgroundColor: palette.surface,
               border: `1px solid ${palette.outlineVariant}`,
               borderRadius: '16px',
               overflow: 'hidden',

@@ -1,4 +1,4 @@
-import { Box, Typography, Divider, Icon } from '@mui/material';
+import { Box, Divider, Icon } from '@mui/material';
 import Text from '@/design-system/components/Text';
 import { ErrorOutlinedPillButton, PrimaryPillButton } from '@/design-system/components/PillButton';
 import PersonIcon from '@mui/icons-material/Person';
@@ -12,17 +12,41 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import KingBedIcon from '@mui/icons-material/KingBed';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '../../contexts/LocaleContext';
-import HotelAdminLayout from '../../design-system/layouts/HotelAdminLayout';
-import SectionCard from '../../design-system/components/SectionCard';
-import InfoGrid from '../../design-system/components/InfoGrid';
-import { palette } from '../../design-system/theme/palette';
+import { useLocale } from '@/contexts/LocaleContext';
+import HotelAdminLayout from '@/design-system/layouts/HotelAdminLayout';
+import SectionCard from '@/design-system/components/SectionCard';
+import InfoGrid from '@/design-system/components/InfoGrid';
+import { palette } from '@/design-system/theme/palette';
 import {
   useHotelBookingDetail,
   useConfirmBooking,
   useRejectBooking,
-} from '../../api/hooks/useHotelBookings';
+} from '@/api/hooks/useHotelBookings';
 import HotelReservationDetailPageSkeleton from './HotelReservationDetailPage.skeleton';
+import {
+  HeaderCard,
+  BookingCodeBadge,
+  HeaderTitle,
+  HeaderMeta,
+  PendingBadge,
+  ContentGrid,
+  GuestAvatar,
+  GuestName,
+  ContactRow,
+  RoomSectionLabel,
+  RoomRow,
+  RoomImage,
+  RoomTitle,
+  RoomSubtitle,
+  AmenityChip,
+  PriceLineLabel,
+  PaymentMethodRow,
+  PaymentMethodIcon,
+  PaymentMethodName,
+  PaymentMethodNumber,
+  ApprovedBadge,
+  PolicyValue,
+} from './HotelReservationDetailPage.styles';
 
 export default function HotelReservationDetailPage() {
   const { t } = useTranslation('hotels');
@@ -49,46 +73,15 @@ export default function HotelReservationDetailPage() {
   return (
     <HotelAdminLayout activeNav="reservas" breadcrumbs={breadcrumbs}>
       {/* Page header card */}
-      <Box
-        sx={{
-          backgroundColor: palette.surface,
-          borderRadius: '16px',
-          padding: '20px 24px',
-          border: `1px solid ${palette.outlineVariant}`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          mb: '20px',
-        }}
-      >
+      <HeaderCard>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {/* Booking code badge */}
-          <Box
-            sx={{
-              backgroundColor: palette.primaryContainer,
-              color: palette.primary,
-              fontSize: 15,
-              fontWeight: 700,
-              letterSpacing: '1px',
-              padding: '8px 16px',
-              borderRadius: '10px',
-            }}
-          >
-            TH-2026-00483
-          </Box>
+          <BookingCodeBadge>TH-2026-00483</BookingCodeBadge>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <Typography sx={{ fontSize: 20, fontWeight: 700, color: palette.onSurface }}>
+            <HeaderTitle>
               {t('reservationDetail.reservationOf', { name: 'Carlos Mendoza' })}
-            </Typography>
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
-                fontSize: 13,
-                color: palette.onSurfaceVariant,
-              }}
-            >
+            </HeaderTitle>
+            <HeaderMeta>
               <Icon sx={{ fontSize: 14 }}>calendar_today</Icon>
               {t('reservationDetail.receivedOn', {
                 date: `${formatDate('2026-02-24', 'medium')}, 10:32 am`,
@@ -96,23 +89,11 @@ export default function HotelReservationDetailPage() {
               <Box component="span" sx={{ mx: '4px' }}>
                 &middot;
               </Box>
-              <Box
-                sx={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  fontSize: 12,
-                  fontWeight: 600,
-                  padding: '4px 12px',
-                  borderRadius: '100px',
-                  backgroundColor: palette.warningContainer,
-                  color: palette.warning,
-                }}
-              >
+              <PendingBadge>
                 <Icon sx={{ fontSize: 14 }}>schedule</Icon>
                 {t('reservationDetail.pendingConfirmation')}
-              </Box>
-            </Box>
+              </PendingBadge>
+            </HeaderMeta>
           </Box>
         </Box>
 
@@ -139,10 +120,10 @@ export default function HotelReservationDetailPage() {
             {t('reservationDetail.confirmReservation')}
           </PrimaryPillButton>
         </Box>
-      </Box>
+      </HeaderCard>
 
       {/* Content grid */}
-      <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '20px' }}>
+      <ContentGrid>
         {/* Left column */}
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           {/* Guest info card */}
@@ -151,52 +132,23 @@ export default function HotelReservationDetailPage() {
             title={t('reservationDetail.guestInfo')}
           >
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <Box
-                sx={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: '50%',
-                  background: `linear-gradient(135deg, ${palette.primaryContainer}, ${palette.secondaryContainer})`,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
+              <GuestAvatar>
                 <PersonIcon sx={{ fontSize: 28, color: palette.primary }} />
-              </Box>
+              </GuestAvatar>
               <Box>
-                <Typography sx={{ fontSize: 16, fontWeight: 700, color: palette.onSurface }}>
-                  Carlos Andres Mendoza Lopez
-                </Typography>
+                <GuestName>Carlos Andres Mendoza Lopez</GuestName>
                 <Text textVariant="caption" sx={{ mb: '6px' }}>
                   Colombia · CC 1020303040
                 </Text>
                 <Box sx={{ display: 'flex', gap: '16px' }}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      fontSize: 12,
-                      color: palette.onSurfaceVariant,
-                    }}
-                  >
+                  <ContactRow>
                     <EmailIcon sx={{ fontSize: 14, color: palette.primary }} />
                     carlos.mendoza@email.com
-                  </Box>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px',
-                      fontSize: 12,
-                      color: palette.onSurfaceVariant,
-                    }}
-                  >
+                  </ContactRow>
+                  <ContactRow>
                     <PhoneIcon sx={{ fontSize: 14, color: palette.primary }} />
                     +57 310 456 7890
-                  </Box>
+                  </ContactRow>
                 </Box>
               </Box>
             </Box>
@@ -238,58 +190,21 @@ export default function HotelReservationDetailPage() {
             {/* Room info */}
             <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', mb: '10px' }}>
               <Icon sx={{ fontSize: 18, color: palette.primary }}>bed</Icon>
-              <Typography sx={{ fontSize: 13, fontWeight: 700, color: palette.onSurface }}>
-                {t('reservationDetail.reservedRoom')}
-              </Typography>
+              <RoomSectionLabel>{t('reservationDetail.reservedRoom')}</RoomSectionLabel>
             </Box>
 
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '16px',
-                padding: '12px',
-                backgroundColor: palette.background,
-                borderRadius: '12px',
-              }}
-            >
+            <RoomRow>
               {/* Room image placeholder */}
-              <Box
-                sx={{
-                  width: 80,
-                  height: 56,
-                  borderRadius: '8px',
-                  background: `linear-gradient(135deg, ${palette.primary} 0%, #4A6267 100%)`,
-                  flexShrink: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
+              <RoomImage>
                 <KingBedIcon sx={{ fontSize: 24, color: 'rgba(255,255,255,0.7)' }} />
-              </Box>
+              </RoomImage>
 
               <Box>
-                <Typography sx={{ fontSize: 13, fontWeight: 600, color: palette.onSurface }}>
-                  Suite Deluxe King — Piso 4
-                </Typography>
-                <Typography sx={{ fontSize: 11, color: palette.onSurfaceVariant }}>
-                  1 cama King · Vista al mar · 45 m2
-                </Typography>
+                <RoomTitle>Suite Deluxe King — Piso 4</RoomTitle>
+                <RoomSubtitle>1 cama King · Vista al mar · 45 m2</RoomSubtitle>
                 <Box sx={{ display: 'flex', gap: '6px', mt: '4px' }}>
                   {['WiFi', 'A/C', 'Desayuno', 'Jacuzzi', 'Cancelacion gratuita'].map(amenity => (
-                    <Box
-                      key={amenity}
-                      sx={{
-                        fontSize: 10,
-                        color: palette.onSurfaceVariant,
-                        backgroundColor: palette.surfaceVariant,
-                        padding: '2px 8px',
-                        borderRadius: '100px',
-                      }}
-                    >
-                      {amenity}
-                    </Box>
+                    <AmenityChip key={amenity}>{amenity}</AmenityChip>
                   ))}
                 </Box>
               </Box>
@@ -303,7 +218,7 @@ export default function HotelReservationDetailPage() {
                   {t('reservationDetail.nightsTotal', { nights: 3, total: formatPrice(2664000) })}
                 </Text>
               </Box>
-            </Box>
+            </RoomRow>
           </SectionCard>
         </Box>
 
@@ -342,73 +257,34 @@ export default function HotelReservationDetailPage() {
                   sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
                 >
                   <Text textVariant="hint">{row.label}</Text>
-                  <Typography sx={{ fontSize: 13, fontWeight: 500, color: row.color }}>
-                    {row.value}
-                  </Typography>
+                  <PriceLineLabel sx={{ color: row.color }}>{row.value}</PriceLineLabel>
                 </Box>
               ))}
 
               <Divider sx={{ borderColor: palette.outlineVariant, my: '4px' }} />
 
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography sx={{ fontWeight: 700, color: palette.onSurface, fontSize: 13 }}>
+                <PriceLineLabel sx={{ fontWeight: 700, color: palette.onSurface }}>
                   {t('reservationDetail.totalCharged')}
-                </Typography>
+                </PriceLineLabel>
                 <Text textVariant="priceSmall">{formatPrice(3149160)}</Text>
               </Box>
             </Box>
 
             {/* Payment method */}
-            <Box
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                padding: '10px 12px',
-                backgroundColor: palette.background,
-                borderRadius: '10px',
-                mt: '12px',
-              }}
-            >
-              <Box
-                sx={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: '8px',
-                  background: 'linear-gradient(135deg, #006874, #004F58)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <CreditCardIcon sx={{ fontSize: 16, color: '#fff' }} />
-              </Box>
+            <PaymentMethodRow>
+              <PaymentMethodIcon>
+                <CreditCardIcon sx={{ fontSize: 16, color: palette.onPrimary }} />
+              </PaymentMethodIcon>
               <Box>
-                <Typography sx={{ fontSize: 12, fontWeight: 600, color: palette.onSurface }}>
-                  Visa Credito
-                </Typography>
-                <Typography sx={{ fontSize: 11, color: palette.outline }}>
-                  **** **** **** 4821
-                </Typography>
+                <PaymentMethodName>Visa Credito</PaymentMethodName>
+                <PaymentMethodNumber>**** **** **** 4821</PaymentMethodNumber>
               </Box>
-              <Box
-                sx={{
-                  marginLeft: 'auto',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  backgroundColor: palette.successContainer,
-                  color: palette.success,
-                  fontSize: 11,
-                  fontWeight: 600,
-                  padding: '3px 8px',
-                  borderRadius: '100px',
-                }}
-              >
+              <ApprovedBadge>
                 <CheckCircleIcon sx={{ fontSize: 13 }} />
                 {t('reservationDetail.approved')}
-              </Box>
-            </Box>
+              </ApprovedBadge>
+            </PaymentMethodRow>
           </SectionCard>
 
           {/* Cancellation policy card */}
@@ -419,26 +295,26 @@ export default function HotelReservationDetailPage() {
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
                 <Text textVariant="caption">{t('reservationDetail.freeCancellationUntil')}</Text>
-                <Typography sx={{ fontWeight: 600, color: palette.success, fontSize: 12 }}>
+                <PolicyValue valueColor={palette.success}>
                   {formatDate('2026-03-12', 'medium')}
-                </Typography>
+                </PolicyValue>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
                 <Text textVariant="caption">{t('reservationDetail.penaltyAfter')}</Text>
-                <Typography sx={{ fontWeight: 600, color: palette.warning, fontSize: 12 }}>
+                <PolicyValue valueColor={palette.warning}>
                   {t('reservationDetail.fiftyPercent')}
-                </Typography>
+                </PolicyValue>
               </Box>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', fontSize: 12 }}>
                 <Text textVariant="caption">No-show</Text>
-                <Typography sx={{ fontWeight: 600, color: palette.error, fontSize: 12 }}>
+                <PolicyValue valueColor={palette.error}>
                   {t('reservationDetail.hundredPercent')}
-                </Typography>
+                </PolicyValue>
               </Box>
             </Box>
           </SectionCard>
         </Box>
-      </Box>
+      </ContentGrid>
     </HotelAdminLayout>
   );
 }
