@@ -2,10 +2,10 @@ import { Box, Skeleton } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '../../contexts/LocaleContext';
-import SearchField from '../../design-system/components/SearchField';
-import FilterChip from '../../design-system/components/FilterChip';
-import { palette } from '../../design-system/theme/palette';
+import { useLocale } from '@/contexts/LocaleContext';
+import SearchField from '@/design-system/components/SearchField';
+import FilterChip from '@/design-system/components/FilterChip';
+import { palette } from '@/design-system/theme/palette';
 
 export default function ReservationsPageSkeleton() {
   const { t } = useTranslation('hotels');
@@ -16,7 +16,7 @@ export default function ReservationsPageSkeleton() {
       {/* Filter bar — always visible, no skeletons */}
       <Box
         sx={{
-          backgroundColor: '#fff',
+          backgroundColor: palette.surface,
           border: `1px solid ${palette.outlineVariant}`,
           borderRadius: '16px',
           padding: '16px 20px',
@@ -56,7 +56,7 @@ export default function ReservationsPageSkeleton() {
             border: `1px solid ${palette.outlineVariant}`,
             borderRadius: '100px',
             padding: '0 16px',
-            backgroundColor: '#fff',
+            backgroundColor: palette.surface,
             fontSize: 13,
             color: palette.onSurfaceVariant,
             flexShrink: 0,
@@ -91,7 +91,7 @@ export default function ReservationsPageSkeleton() {
       {/* Table card */}
       <Box
         sx={{
-          backgroundColor: '#fff',
+          backgroundColor: palette.surface,
           border: `1px solid ${palette.outlineVariant}`,
           borderRadius: '16px',
           overflow: 'hidden',
