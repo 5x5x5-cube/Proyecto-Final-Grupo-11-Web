@@ -1,8 +1,8 @@
-import { Typography } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 import ModalOverlay from '@/design-system/components/ModalOverlay';
+import Text from '@/design-system/components/Text';
 import {
   PrimaryPillButton,
   ErrorOutlinedPillButton,
@@ -73,9 +73,7 @@ export default function StatusConfirmDialog({
       title={t(`reservationDetail.${key}.title`)}
       footer={footer}
     >
-      <Typography sx={{ fontSize: '14px', color: palette.onSurfaceVariant }}>
-        {t(`reservationDetail.${key}.message`, { code: bookingCode })}
-      </Typography>
+      <Text textVariant="body">{t(`reservationDetail.${key}.message`, { code: bookingCode })}</Text>
     </ModalOverlay>
   );
 }
