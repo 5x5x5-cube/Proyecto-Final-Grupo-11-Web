@@ -392,13 +392,12 @@ export const mockHandlers: MockRoute[] = [
   },
   {
     method: 'POST',
-    pattern: /^\/bookings\/hotel\/([^/]+)\/confirm$/,
-    handler: () => ok({ message: 'Booking confirmed' }),
-  },
-  {
-    method: 'POST',
-    pattern: /^\/bookings\/hotel\/([^/]+)\/reject$/,
-    handler: () => ok({ message: 'Booking rejected' }),
+    pattern: /^\/bookings\/hotel\/([^/]+)\/status$/,
+    handler: (config: RequestConfig | undefined) => {
+      const action = (config?.body as { action?: string })?.action;
+      const status = action === 'confirm' ? 'confirmed' : 'rejected';
+      return ok({ ...hotelReservationDetail, status: status as 'confirmed' | 'rejected' });
+    },
   },
 
   // ─── Tariffs ───

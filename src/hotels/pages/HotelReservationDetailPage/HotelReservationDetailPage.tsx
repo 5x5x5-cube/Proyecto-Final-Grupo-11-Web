@@ -12,16 +12,13 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import KingBedIcon from '@mui/icons-material/KingBed';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
 import { useLocale } from '@/contexts/LocaleContext';
 import HotelAdminLayout from '@/design-system/layouts/HotelAdminLayout';
 import SectionCard from '@/design-system/components/SectionCard';
 import InfoGrid from '@/design-system/components/InfoGrid';
 import { palette } from '@/design-system/theme/palette';
-import {
-  useHotelBookingDetail,
-  useConfirmBooking,
-  useRejectBooking,
-} from '@/api/hooks/useHotelBookings';
+import { useHotelBookingDetail, useUpdateBookingStatus } from '@/api/hooks/useHotelBookings';
 import HotelReservationDetailPageSkeleton from './HotelReservationDetailPage.skeleton';
 import {
   HeaderCard,
@@ -51,15 +48,15 @@ import {
 export default function HotelReservationDetailPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
+  const { id } = useParams<{ id: string }>();
 
-  const { data: booking, isLoading } = useHotelBookingDetail('TH-48291');
-  const confirmBooking = useConfirmBooking();
-  const rejectBooking = useRejectBooking();
+  const { data: booking, isLoading } = useHotelBookingDetail(id!);
+  const updateStatus = useUpdateBookingStatus();
 
   const breadcrumbs = [
     { label: t('reservationDetail.breadcrumbs.dashboard'), href: '/hotel/dashboard' },
     { label: t('reservationDetail.breadcrumbs.reservations'), href: '/hotel/reservations' },
-    { label: 'TH-2026-00483' },
+    { label: booking?.id ?? id },
   ];
 
   if (isLoading || !booking) {
@@ -76,7 +73,7 @@ export default function HotelReservationDetailPage() {
       <HeaderCard>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {/* Booking code badge */}
-          <BookingCodeBadge>TH-2026-00483</BookingCodeBadge>
+          <BookingCodeBadge>{booking?.id ?? id}</BookingCodeBadge>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <HeaderTitle>
               {t('reservationDetail.reservationOf', { name: 'Carlos Mendoza' })}
@@ -98,28 +95,30 @@ export default function HotelReservationDetailPage() {
         </Box>
 
         {/* Action buttons */}
-        <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <ErrorOutlinedPillButton
-            pillSize="sm"
-            startIcon={<CloseIcon sx={{ fontSize: 16 }} />}
-            disabled={rejectBooking.isPending}
-            onClick={() => rejectBooking.mutate('TH-48291')}
-            sx={{
-              backgroundColor: palette.errorContainer,
-              '&:hover': { backgroundColor: palette.errorContainer },
-            }}
-          >
-            {t('reservationDetail.reject')}
-          </ErrorOutlinedPillButton>
-          <PrimaryPillButton
-            pillSize="sm"
-            startIcon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
-            disabled={confirmBooking.isPending}
-            onClick={() => confirmBooking.mutate('TH-48291')}
-          >
-            {t('reservationDetail.confirmReservation')}
-          </PrimaryPillButton>
-        </Box>
+        {booking?.status === 'pending' && (
+          <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <ErrorOutlinedPillButton
+              pillSize="sm"
+              startIcon={<CloseIcon sx={{ fontSize: 16 }} />}
+              disabled={updateStatus.isPending}
+              onClick={() => updateStatus.mutate({ bookingId: id!, action: 'reject' })}
+              sx={{
+                backgroundColor: palette.errorContainer,
+                '&:hover': { backgroundColor: palette.errorContainer },
+              }}
+            >
+              {t('reservationDetail.reject')}
+            </ErrorOutlinedPillButton>
+            <PrimaryPillButton
+              pillSize="sm"
+              startIcon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
+              disabled={updateStatus.isPending}
+              onClick={() => updateStatus.mutate({ bookingId: id!, action: 'confirm' })}
+            >
+              {t('reservationDetail.confirmReservation')}
+            </PrimaryPillButton>
+          </Box>
+        )}
       </HeaderCard>
 
       {/* Content grid */}

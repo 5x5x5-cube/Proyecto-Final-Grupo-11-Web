@@ -13,11 +13,7 @@ vi.mock('@/api/hooks/useHotelBookings', () => ({
     data: null,
     isLoading: true,
   })),
-  useConfirmBooking: vi.fn(() => ({
-    mutate: vi.fn(),
-    isPending: false,
-  })),
-  useRejectBooking: vi.fn(() => ({
+  useUpdateBookingStatus: vi.fn(() => ({
     mutate: vi.fn(),
     isPending: false,
   })),

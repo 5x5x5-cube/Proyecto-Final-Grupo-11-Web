@@ -12,6 +12,10 @@ vi.mock('@/api/hooks/useHotelBookings', () => ({
     data: null,
     isLoading: true,
   })),
+  useUpdateBookingStatus: vi.fn(() => ({
+    mutate: vi.fn(),
+    isPending: false,
+  })),
 }));
 
 describe('ReservationsPage', () => {

@@ -15,20 +15,13 @@ export function useHotelBookingDetail(bookingId: string) {
   });
 }
 
-export function useConfirmBooking() {
+export function useUpdateBookingStatus() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (bookingId: string) => httpClient.post(`/bookings/hotel/${bookingId}/confirm`),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['hotelBookings'] });
-    },
-  });
-}
-
-export function useRejectBooking() {
-  const queryClient = useQueryClient();
-  return useMutation({
-    mutationFn: (bookingId: string) => httpClient.post(`/bookings/hotel/${bookingId}/reject`),
+    mutationFn: ({ bookingId, action }: { bookingId: string; action: 'confirm' | 'reject' }) =>
+      httpClient.post(`/bookings/hotel/${bookingId}/status`, {
+        body: { action },
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['hotelBookings'] });
     },
