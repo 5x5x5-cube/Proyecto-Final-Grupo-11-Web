@@ -1,15 +1,12 @@
 import { Box } from '@mui/material';
-import {
-  SuccessPillButton,
-  ErrorPillButton,
-  NeutralPillButton,
-} from '@/design-system/components/PillButton';
+import { NeutralPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { useLocale } from '@/contexts/LocaleContext';
 import HotelAdminLayout from '@/design-system/layouts/HotelAdminLayout';
 import StatusChip from '@/design-system/components/StatusChip';
@@ -49,6 +46,7 @@ const avatarColorMap = {
 export default function ReservationsPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
+  const navigate = useNavigate();
 
   const { data, isLoading } = useHotelBookings();
 
@@ -169,7 +167,7 @@ export default function ReservationsPage() {
               <TableRow component="tr" key={res.id}>
                 {/* Code */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
-                  <CodeBadge>{res.id}</CodeBadge>
+                  <CodeBadge>{res.code}</CodeBadge>
                 </TableCell>
 
                 {/* Guest */}
@@ -222,20 +220,12 @@ export default function ReservationsPage() {
 
                 {/* Actions */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
-                  <Box sx={{ display: 'flex', gap: '8px' }}>
-                    {res.status === 'pending' ? (
-                      <>
-                        <SuccessPillButton pillSize="xxs">
-                          {t('reservations.confirm')}
-                        </SuccessPillButton>
-                        <ErrorPillButton pillSize="xxs">{t('reservations.reject')}</ErrorPillButton>
-                      </>
-                    ) : (
-                      <NeutralPillButton pillSize="xxs">
-                        {t('reservations.viewDetail')}
-                      </NeutralPillButton>
-                    )}
-                  </Box>
+                  <NeutralPillButton
+                    pillSize="xxs"
+                    onClick={() => navigate(`/hotel/reservations/${res.id}`)}
+                  >
+                    {t('reservations.viewDetail')}
+                  </NeutralPillButton>
                 </TableCell>
               </TableRow>
             ))}

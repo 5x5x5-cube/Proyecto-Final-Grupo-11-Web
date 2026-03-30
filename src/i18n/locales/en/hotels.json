@@ -116,6 +116,18 @@
     "breadcrumbs": {
       "dashboard": "Dashboard",
       "reservations": "Reservations"
+    },
+    "confirmDialog": {
+      "title": "Confirm reservation",
+      "message": "Do you want to confirm reservation {{code}}? The guest will be notified.",
+      "cancel": "Cancel",
+      "confirm": "Confirm reservation"
+    },
+    "rejectDialog": {
+      "title": "Reject reservation",
+      "message": "Are you sure you want to reject reservation {{code}}? This action cannot be undone.",
+      "cancel": "Cancel",
+      "confirm": "Reject reservation"
     }
   },
   "rates": {
