@@ -151,7 +151,7 @@ const bookingPayments = [
 
 // Hotel reservation detail mock
 const hotelReservationDetail = {
-  id: 'TH-48291',
+  id: 'd1000000-0000-0000-0000-000000000001',
   guest: 'Carlos Martinez',
   email: 'carlos.m@email.com',
   phone: '+57 310 000 0000',
