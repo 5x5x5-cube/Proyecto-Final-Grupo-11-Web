@@ -178,3 +178,80 @@ export const PolicyValue = styled(Typography)<{ valueColor: string }>(({ valueCo
   color: valueColor,
   fontSize: 12,
 }));
+
+export const HeaderRow = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '16px',
+});
+
+export const HeaderInfo = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '4px',
+});
+
+export const ActionButtons = styled(Box)({
+  display: 'flex',
+  gap: '12px',
+  alignItems: 'center',
+});
+
+export const ColumnStack = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
+});
+
+export const GuestRow = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '16px',
+});
+
+export const ContactsRow = styled(Box)({
+  display: 'flex',
+  gap: '16px',
+});
+
+export const RoomLabelRow = styled(Box)({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '8px',
+  marginBottom: '10px',
+});
+
+export const AmenitiesRow = styled(Box)({
+  display: 'flex',
+  gap: '6px',
+  marginTop: '4px',
+});
+
+export const RoomPriceBox = styled(Box)({
+  marginLeft: 'auto',
+  textAlign: 'right',
+});
+
+export const PriceBreakdownStack = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '10px',
+});
+
+export const PriceRow = styled(Box)({
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+});
+
+export const PolicyRow = styled(Box)({
+  display: 'flex',
+  justifyContent: 'space-between',
+  fontSize: 12,
+});
+
+export const PolicyStack = styled(Box)({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '8px',
+});
