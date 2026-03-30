@@ -1,12 +1,14 @@
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
-} from '@mui/material';
+import { Typography } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
+import ModalOverlay from '@/design-system/components/ModalOverlay';
+import {
+  PrimaryPillButton,
+  ErrorOutlinedPillButton,
+  NeutralPillButton,
+} from '@/design-system/components/PillButton';
+import { palette } from '@/design-system/theme/palette';
 
 interface Props {
   open: boolean;
@@ -28,27 +30,52 @@ export default function StatusConfirmDialog({
   const { t } = useTranslation('hotels');
   const key = action === 'confirm' ? 'confirmDialog' : 'rejectDialog';
 
-  return (
-    <Dialog open={open} onClose={onCancel}>
-      <DialogTitle>{t(`reservationDetail.${key}.title`)}</DialogTitle>
-      <DialogContent>
-        <DialogContentText>
-          {t(`reservationDetail.${key}.message`, { code: bookingCode })}
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={onCancel} disabled={loading}>
-          {t(`reservationDetail.${key}.cancel`)}
-        </Button>
-        <Button
+  const icon =
+    action === 'confirm' ? (
+      <CheckCircleIcon sx={{ fontSize: 20, color: palette.success }} />
+    ) : (
+      <CloseIcon sx={{ fontSize: 20, color: palette.error }} />
+    );
+
+  const iconBg = action === 'confirm' ? palette.successContainer : palette.errorContainer;
+
+  const footer = (
+    <>
+      <NeutralPillButton pillSize="sm" onClick={onCancel} disabled={loading}>
+        {t(`reservationDetail.${key}.cancel`)}
+      </NeutralPillButton>
+      {action === 'confirm' ? (
+        <PrimaryPillButton pillSize="sm" onClick={onConfirm} disabled={loading}>
+          {t(`reservationDetail.${key}.confirm`)}
+        </PrimaryPillButton>
+      ) : (
+        <ErrorOutlinedPillButton
+          pillSize="sm"
           onClick={onConfirm}
-          color={action === 'confirm' ? 'primary' : 'error'}
-          variant="contained"
           disabled={loading}
+          sx={{
+            backgroundColor: palette.errorContainer,
+            '&:hover': { backgroundColor: palette.errorContainer },
+          }}
         >
           {t(`reservationDetail.${key}.confirm`)}
-        </Button>
-      </DialogActions>
-    </Dialog>
+        </ErrorOutlinedPillButton>
+      )}
+    </>
+  );
+
+  return (
+    <ModalOverlay
+      open={open}
+      onClose={onCancel}
+      icon={icon}
+      iconBg={iconBg}
+      title={t(`reservationDetail.${key}.title`)}
+      footer={footer}
+    >
+      <Typography sx={{ fontSize: '14px', color: palette.onSurfaceVariant }}>
+        {t(`reservationDetail.${key}.message`, { code: bookingCode })}
+      </Typography>
+    </ModalOverlay>
   );
 }
