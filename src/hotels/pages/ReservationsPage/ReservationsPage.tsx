@@ -172,7 +172,7 @@ export default function ReservationsPage() {
               <TableRow component="tr" key={res.id}>
                 {/* Code */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
-                  <CodeBadge>{res.id}</CodeBadge>
+                  <CodeBadge>{res.code}</CodeBadge>
                 </TableCell>
 
                 {/* Guest */}

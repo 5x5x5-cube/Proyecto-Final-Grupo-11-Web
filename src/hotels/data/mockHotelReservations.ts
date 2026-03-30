@@ -1,6 +1,7 @@
 export const hotelReservations = [
   {
     id: 'd1000000-0000-0000-0000-000000000001',
+    code: 'BK-48291001',
     guest: 'Carlos Martinez',
     email: 'carlos.m@email.com',
     initials: 'C',
@@ -17,6 +18,7 @@ export const hotelReservations = [
   },
   {
     id: 'd1000000-0000-0000-0000-000000000002',
+    code: 'BK-48305002',
     guest: 'Laura Sanchez',
     email: 'l.sanchez@email.com',
     initials: 'L',
@@ -33,6 +35,7 @@ export const hotelReservations = [
   },
   {
     id: 'd1000000-0000-0000-0000-000000000003',
+    code: 'BK-48312003',
     guest: 'Miguel Torres',
     email: 'm.torres@email.com',
     initials: 'M',
@@ -49,6 +52,7 @@ export const hotelReservations = [
   },
   {
     id: 'd1000000-0000-0000-0000-000000000004',
+    code: 'BK-48320004',
     guest: 'Ana Ramirez',
     email: 'ana.r@email.com',
     initials: 'A',
@@ -65,6 +69,7 @@ export const hotelReservations = [
   },
   {
     id: 'd1000000-0000-0000-0000-000000000005',
+    code: 'BK-48331005',
     guest: 'Julian Lopez',
     email: 'j.lopez@email.com',
     initials: 'J',
@@ -81,6 +86,7 @@ export const hotelReservations = [
   },
   {
     id: 'd1000000-0000-0000-0000-000000000006',
+    code: 'BK-48344006',
     guest: 'Sofia Herrera',
     email: 's.herrera@email.com',
     initials: 'S',
@@ -97,6 +103,7 @@ export const hotelReservations = [
   },
   {
     id: 'd1000000-0000-0000-0000-000000000007',
+    code: 'BK-48356007',
     guest: 'Roberto Diaz',
     email: 'r.diaz@email.com',
     initials: 'R',
@@ -113,6 +120,7 @@ export const hotelReservations = [
   },
   {
     id: 'd1000000-0000-0000-0000-000000000008',
+    code: 'BK-48370008',
     guest: 'Valentina Castro',
     email: 'v.castro@email.com',
     initials: 'V',

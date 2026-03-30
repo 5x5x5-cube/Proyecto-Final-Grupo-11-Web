@@ -56,7 +56,7 @@ export default function HotelReservationDetailPage() {
   const breadcrumbs = [
     { label: t('reservationDetail.breadcrumbs.dashboard'), href: '/hotel/dashboard' },
     { label: t('reservationDetail.breadcrumbs.reservations'), href: '/hotel/reservations' },
-    { label: booking?.id ?? id },
+    { label: booking?.code ?? id },
   ];
 
   if (isLoading || !booking) {
@@ -73,7 +73,7 @@ export default function HotelReservationDetailPage() {
       <HeaderCard>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           {/* Booking code badge */}
-          <BookingCodeBadge>{booking?.id ?? id}</BookingCodeBadge>
+          <BookingCodeBadge>{booking?.code ?? id}</BookingCodeBadge>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
             <HeaderTitle>
               {t('reservationDetail.reservationOf', { name: 'Carlos Mendoza' })}
