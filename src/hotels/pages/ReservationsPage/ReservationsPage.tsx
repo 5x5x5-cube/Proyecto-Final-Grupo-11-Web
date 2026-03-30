@@ -1,9 +1,5 @@
 import { Box } from '@mui/material';
-import {
-  SuccessPillButton,
-  ErrorPillButton,
-  NeutralPillButton,
-} from '@/design-system/components/PillButton';
+import { NeutralPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -17,7 +13,7 @@ import StatusChip from '@/design-system/components/StatusChip';
 import SearchField from '@/design-system/components/SearchField';
 import FilterChip from '@/design-system/components/FilterChip';
 import { palette } from '@/design-system/theme/palette';
-import { useHotelBookings, useUpdateBookingStatus } from '@/api/hooks/useHotelBookings';
+import { useHotelBookings } from '@/api/hooks/useHotelBookings';
 import ReservationsPageSkeleton from './ReservationsPage.skeleton';
 import {
   FilterBar,
@@ -51,7 +47,6 @@ export default function ReservationsPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
   const navigate = useNavigate();
-  const updateStatus = useUpdateBookingStatus();
 
   const { data, isLoading } = useHotelBookings();
 
@@ -225,35 +220,12 @@ export default function ReservationsPage() {
 
                 {/* Actions */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
-                  <Box sx={{ display: 'flex', gap: '8px' }}>
-                    {res.status === 'pending' ? (
-                      <>
-                        <SuccessPillButton
-                          pillSize="xxs"
-                          onClick={() =>
-                            updateStatus.mutate({ bookingId: res.id, action: 'confirm' })
-                          }
-                        >
-                          {t('reservations.confirm')}
-                        </SuccessPillButton>
-                        <ErrorPillButton
-                          pillSize="xxs"
-                          onClick={() =>
-                            updateStatus.mutate({ bookingId: res.id, action: 'reject' })
-                          }
-                        >
-                          {t('reservations.reject')}
-                        </ErrorPillButton>
-                      </>
-                    ) : (
-                      <NeutralPillButton
-                        pillSize="xxs"
-                        onClick={() => navigate(`/hotel/reservations/${res.id}`)}
-                      >
-                        {t('reservations.viewDetail')}
-                      </NeutralPillButton>
-                    )}
-                  </Box>
+                  <NeutralPillButton
+                    pillSize="xxs"
+                    onClick={() => navigate(`/hotel/reservations/${res.id}`)}
+                  >
+                    {t('reservations.viewDetail')}
+                  </NeutralPillButton>
                 </TableCell>
               </TableRow>
             ))}

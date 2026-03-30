@@ -116,6 +116,18 @@
     "breadcrumbs": {
       "dashboard": "Dashboard",
       "reservations": "Reservas"
+    },
+    "confirmDialog": {
+      "title": "Confirmar reserva",
+      "message": "Desea confirmar la reserva {{code}}? El huesped sera notificado.",
+      "cancel": "Cancelar",
+      "confirm": "Confirmar reserva"
+    },
+    "rejectDialog": {
+      "title": "Rechazar reserva",
+      "message": "Esta seguro que desea rechazar la reserva {{code}}? Esta accion no se puede deshacer.",
+      "cancel": "Cancelar",
+      "confirm": "Rechazar reserva"
     }
   },
   "rates": {

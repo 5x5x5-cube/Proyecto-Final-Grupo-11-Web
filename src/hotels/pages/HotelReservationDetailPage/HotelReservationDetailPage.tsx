@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { Box, Divider, Icon } from '@mui/material';
+import StatusConfirmDialog from '@/modules/hotel-reservations/components/StatusConfirmDialog/StatusConfirmDialog';
 import Text from '@/design-system/components/Text';
 import { ErrorOutlinedPillButton, PrimaryPillButton } from '@/design-system/components/PillButton';
 import PersonIcon from '@mui/icons-material/Person';
@@ -52,6 +54,14 @@ export default function HotelReservationDetailPage() {
 
   const { data: booking, isLoading } = useHotelBookingDetail(id!);
   const updateStatus = useUpdateBookingStatus();
+  const [dialogAction, setDialogAction] = useState<'confirm' | 'reject' | null>(null);
+
+  const handleDialogConfirm = () => {
+    if (dialogAction) {
+      updateStatus.mutate({ bookingId: id!, action: dialogAction });
+    }
+    setDialogAction(null);
+  };
 
   const breadcrumbs = [
     { label: t('reservationDetail.breadcrumbs.dashboard'), href: '/hotel/dashboard' },
@@ -94,14 +104,14 @@ export default function HotelReservationDetailPage() {
           </Box>
         </Box>
 
-        {/* Action buttons */}
+        {/* Action buttons — only for pending bookings */}
         {booking?.status === 'pending' && (
           <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
             <ErrorOutlinedPillButton
               pillSize="sm"
               startIcon={<CloseIcon sx={{ fontSize: 16 }} />}
               disabled={updateStatus.isPending}
-              onClick={() => updateStatus.mutate({ bookingId: id!, action: 'reject' })}
+              onClick={() => setDialogAction('reject')}
               sx={{
                 backgroundColor: palette.errorContainer,
                 '&:hover': { backgroundColor: palette.errorContainer },
@@ -113,7 +123,7 @@ export default function HotelReservationDetailPage() {
               pillSize="sm"
               startIcon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
               disabled={updateStatus.isPending}
-              onClick={() => updateStatus.mutate({ bookingId: id!, action: 'confirm' })}
+              onClick={() => setDialogAction('confirm')}
             >
               {t('reservationDetail.confirmReservation')}
             </PrimaryPillButton>
@@ -314,6 +324,15 @@ export default function HotelReservationDetailPage() {
           </SectionCard>
         </Box>
       </ContentGrid>
+
+      <StatusConfirmDialog
+        open={dialogAction !== null}
+        action={dialogAction ?? 'confirm'}
+        bookingCode={booking?.code ?? id!}
+        loading={updateStatus.isPending}
+        onConfirm={handleDialogConfirm}
+        onCancel={() => setDialogAction(null)}
+      />
     </HotelAdminLayout>
   );
 }
