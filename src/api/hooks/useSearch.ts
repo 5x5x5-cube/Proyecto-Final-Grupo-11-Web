@@ -205,11 +205,11 @@ const AMENITY_MAP: Record<string, { icon: string; label: string }> = {
 
 function mapAmenities(
   amenities: Record<string, boolean> | undefined
-): Array<{ icon: string; label: string }> {
+): Array<{ key: string; icon: string; label: string }> {
   if (!amenities) return [];
   return Object.entries(amenities)
     .filter(([, value]) => value)
-    .map(([key]) => AMENITY_MAP[key] ?? { icon: 'check_circle', label: key })
+    .map(([key]) => ({ key, ...(AMENITY_MAP[key] ?? { icon: 'check_circle', label: key }) }))
     .slice(0, 4);
 }
 

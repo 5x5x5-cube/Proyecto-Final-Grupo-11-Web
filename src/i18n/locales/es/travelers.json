@@ -70,12 +70,16 @@
       "rating": "Calificacion",
       "all": "Todos",
       "amenities": "Servicios",
-      "freeWifi": "Wi-Fi gratuito",
-      "breakfastIncluded": "Desayuno incluido",
-      "pool": "Piscina",
-      "parking": "Estacionamiento",
-      "petsAllowed": "Mascotas permitidas",
-      "airConditioning": "Aire acondicionado"
+      "wifi": "Wi-Fi",
+      "ac": "Aire acondicionado",
+      "tv": "TV",
+      "minibar": "Minibar",
+      "balcony": "Balcon",
+      "jacuzzi": "Jacuzzi",
+      "desk": "Escritorio",
+      "kitchen": "Cocina",
+      "private_pool": "Piscina privada",
+      "garden_view": "Vista al jardin"
     },
     "header": {
       "accommodationsFound": "{{count}} alojamientos",
@@ -125,7 +129,10 @@
       "juniorSuite": "Suite Junior",
       "juniorFeatures": "1 cama King + sofa · 48 m2 · Vista al mar · Max. 2 personas",
       "perNight": "por noche",
-      "select": "Seleccionar"
+      "select": "Seleccionar",
+      "capacity_one": "{{count}} persona",
+      "capacity_other": "{{count}} personas",
+      "noRooms": "No hay habitaciones disponibles para las fechas y numero de huespedes seleccionados"
     },
     "guestReviews": "Resenas de huespedes",
     "booking": {
