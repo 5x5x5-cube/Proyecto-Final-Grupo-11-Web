@@ -83,7 +83,9 @@ export const SearchCard = styled(Box)({
   marginTop: '16px',
 });
 
-export const SearchField = styled(Box)({
+export const SearchField = styled(Box, {
+  shouldForwardProp: prop => prop !== 'error',
+})<{ error?: boolean }>(({ error }) => ({
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
@@ -91,7 +93,15 @@ export const SearchField = styled(Box)({
   borderRight: `1px solid ${palette.outlineVariant}`,
   cursor: 'pointer',
   borderRadius: '12px',
-  '&:hover': { backgroundColor: 'rgba(0,104,116,0.04)' },
+  '&:hover': { backgroundColor: error ? 'rgba(179,38,30,0.04)' : 'rgba(0,104,116,0.04)' },
+  ...(error && { boxShadow: `inset 0 0 0 1.5px ${palette.error}` }),
+}));
+
+export const SearchErrorHint = styled(Typography)({
+  fontSize: 12,
+  color: palette.error,
+  marginTop: '6px',
+  textAlign: 'center',
 });
 
 export const SearchFieldNoBorder = styled(SearchField)({

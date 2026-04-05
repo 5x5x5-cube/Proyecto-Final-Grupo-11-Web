@@ -74,7 +74,7 @@ const filterInputBase = {
   boxSizing: 'border-box' as const,
 };
 
-export const FilterInput = styled(Box)(filterInputBase);
+export const FilterInput = styled('input')(filterInputBase);
 
 export const PropertyTypeTags = styled(Box)({
   display: 'flex',
@@ -154,7 +154,7 @@ export const SortRow = styled(Box)({
   flexShrink: 0,
 });
 
-export const SortSelect = styled(Box)({
+export const SortSelect = styled('select')({
   fontFamily: "'Roboto', sans-serif",
   fontSize: 14,
   color: palette.onSurface,
@@ -262,4 +262,17 @@ export const HotelCardPrice = styled(Typography)({
   fontWeight: 700,
   color: palette.primary,
   whiteSpace: 'nowrap',
+});
+
+/* ─── Empty State ─── */
+
+export const EmptyStateBox = styled(Box)({
+  flex: 1,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '12px',
+  padding: '80px 24px',
+  textAlign: 'center',
 });

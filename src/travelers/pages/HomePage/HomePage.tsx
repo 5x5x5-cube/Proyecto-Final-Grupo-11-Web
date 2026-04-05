@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Typography, Popover, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { Popover, List, ListItem, ListItemButton, ListItemText } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -20,6 +20,7 @@ import {
   SearchFieldLabel,
   SearchFieldValue,
   SearchButton,
+  SearchErrorHint,
   GuestCounterBox,
   GuestCounterButton,
   GuestCountText,
@@ -32,8 +33,6 @@ import {
   DestinationName,
   DestinationMeta,
 } from './HomePage.styles';
-
-const basePrices = [120000, 95000, 85000, 110000, 78000];
 
 function addDays(base: Date, days: number): Date {
   const d = new Date(base);
@@ -75,18 +74,25 @@ export default function HomePage() {
   const { formatPrice } = useLocale();
   const { t } = useTranslation('travelers');
   const { data: destinationsData, isLoading: isLoadingDestinations } = useDestinations();
-  const mockDestinations = (isLoadingDestinations ? [] : (destinationsData ?? [])) as Array<{
+  const mockDestinations = (
+    isLoadingDestinations || !Array.isArray(destinationsData) ? [] : destinationsData
+  ) as Array<{
     name: string;
     country: string;
     hotelCount: number;
     gradient: string;
+    minPrice?: number;
   }>;
 
   // Search state
   const [destination, setDestination] = useState<string | null>(null);
+  const [destinationName, setDestinationName] = useState<string | null>(null);
   const [checkIn, setCheckIn] = useState<Date | null>(null);
   const [checkOut, setCheckOut] = useState<Date | null>(null);
   const [guests, setGuests] = useState(1);
+
+  // Validation errors
+  const [errors, setErrors] = useState({ destination: false, checkIn: false, checkOut: false });
 
   // Popover anchors
   const [destAnchor, setDestAnchor] = useState<HTMLElement | null>(null);
@@ -96,11 +102,14 @@ export default function HomePage() {
 
   const handleSelectDestination = (name: string, country: string) => {
     setDestination(`${name}, ${country}`);
+    setDestinationName(name);
+    setErrors(e => ({ ...e, destination: false }));
     setDestAnchor(null);
   };
 
   const handleSelectCheckIn = (date: Date) => {
     setCheckIn(date);
+    setErrors(e => ({ ...e, checkIn: false }));
     if (checkOut && checkOut <= date) {
       setCheckOut(null);
     }
@@ -109,10 +118,30 @@ export default function HomePage() {
 
   const handleSelectCheckOut = (date: Date) => {
     setCheckOut(date);
+    setErrors(e => ({ ...e, checkOut: false }));
     setCheckOutAnchor(null);
   };
 
+  const handleSearch = () => {
+    const nextErrors = {
+      destination: !destination,
+      checkIn: !checkIn,
+      checkOut: !checkOut,
+    };
+    setErrors(nextErrors);
+    if (nextErrors.destination || nextErrors.checkIn || nextErrors.checkOut) return;
+
+    const params = new URLSearchParams({
+      destination: destinationName ?? '',
+      checkIn: checkIn!.toISOString().split('T')[0],
+      checkOut: checkOut!.toISOString().split('T')[0],
+      guests: String(guests),
+    });
+    navigate(`/results?${params.toString()}`);
+  };
+
   const checkOutOptions = checkIn ? getCheckOutOptions(checkIn) : getCheckOutOptions(today);
+  const hasErrors = errors.destination || errors.checkIn || errors.checkOut;
 
   return (
     <PageRoot>
@@ -129,7 +158,7 @@ export default function HomePage() {
         {/* Search card */}
         <SearchCard>
           {/* Destino */}
-          <SearchField onClick={e => setDestAnchor(e.currentTarget)}>
+          <SearchField onClick={e => setDestAnchor(e.currentTarget)} error={errors.destination}>
             <SearchFieldLabel>{t('home.search.destination')}</SearchFieldLabel>
             <SearchFieldValue hasValue={!!destination}>
               {destination ?? t('home.search.destinationPlaceholder')}
@@ -161,7 +190,7 @@ export default function HomePage() {
           </Popover>
 
           {/* Llegada */}
-          <SearchField onClick={e => setCheckInAnchor(e.currentTarget)}>
+          <SearchField onClick={e => setCheckInAnchor(e.currentTarget)} error={errors.checkIn}>
             <SearchFieldLabel>{t('home.search.checkIn')}</SearchFieldLabel>
             <SearchFieldValue hasValue={!!checkIn}>
               {checkIn ? formatDisplayDate(checkIn) : t('home.search.selectDate')}
@@ -193,7 +222,7 @@ export default function HomePage() {
           </Popover>
 
           {/* Salida */}
-          <SearchField onClick={e => setCheckOutAnchor(e.currentTarget)}>
+          <SearchField onClick={e => setCheckOutAnchor(e.currentTarget)} error={errors.checkOut}>
             <SearchFieldLabel>{t('home.search.checkOut')}</SearchFieldLabel>
             <SearchFieldValue hasValue={!!checkOut}>
               {checkOut ? formatDisplayDate(checkOut) : t('home.search.selectDate')}
@@ -227,9 +256,9 @@ export default function HomePage() {
           {/* Huespedes */}
           <SearchFieldNoBorder onClick={e => setGuestsAnchor(e.currentTarget)}>
             <SearchFieldLabel>{t('home.search.guests')}</SearchFieldLabel>
-            <Typography sx={{ fontSize: 15, fontWeight: 500 }}>
-              {t('home.search.defaultGuests', { count: guests })}
-            </Typography>
+            <SearchFieldValue hasValue>
+              {t('home.search.guestsCount', { count: guests })}
+            </SearchFieldValue>
           </SearchFieldNoBorder>
 
           <Popover
@@ -264,11 +293,21 @@ export default function HomePage() {
             variant="contained"
             disableElevation
             startIcon={<SearchIcon sx={{ fontSize: '20px !important' }} />}
-            onClick={() => navigate('/results')}
+            onClick={handleSearch}
           >
             {t('home.search.searchButton')}
           </SearchButton>
         </SearchCard>
+
+        {hasErrors && (
+          <SearchErrorHint>
+            {errors.destination
+              ? t('home.search.errors.destination')
+              : errors.checkIn
+                ? t('home.search.errors.checkIn')
+                : t('home.search.errors.checkOut')}
+          </SearchErrorHint>
+        )}
       </HeroSection>
 
       {/* POPULAR DESTINATIONS */}
@@ -276,14 +315,19 @@ export default function HomePage() {
         <DestinationsTitle>{t('home.destinations.title')}</DestinationsTitle>
 
         <DestinationsGrid>
-          {mockDestinations.map((dest, idx) => (
-            <DestinationCard key={dest.name} onClick={() => navigate('/results')}>
+          {mockDestinations.map(dest => (
+            <DestinationCard
+              key={dest.name}
+              onClick={() => navigate(`/results?destination=${encodeURIComponent(dest.name)}`)}
+            >
               <DestinationGradient sx={{ background: dest.gradient }} />
               <DestinationOverlay>
                 <DestinationName>{dest.name}</DestinationName>
                 <DestinationMeta>
                   {dest.country} ·{' '}
-                  {t('home.destinations.fromPerNight', { price: formatPrice(basePrices[idx]) })}
+                  {dest.minPrice
+                    ? t('home.destinations.fromPerNight', { price: formatPrice(dest.minPrice) })
+                    : null}
                 </DestinationMeta>
               </DestinationOverlay>
             </DestinationCard>

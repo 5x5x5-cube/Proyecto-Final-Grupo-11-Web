@@ -78,38 +78,47 @@ const cartData = {
   holdExpiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
 };
 
-// Hotel detail mock (enriched from mockHotels[0])
+// Hotel detail mock — backend format (flat, matching search_service.get_hotel_by_id)
 const hotelDetail = {
-  ...mockHotels[0],
-  address: 'Calle del Torno #39-29, Centro Histórico, Cartagena',
-  description: 'propertyDetail.descriptionText',
-  amenities: [
-    { icon: 'wifi', label: 'Wi-Fi gratis' },
-    { icon: 'pool', label: 'Piscina' },
-    { icon: 'free_breakfast', label: 'Desayuno incluido' },
-    { icon: 'spa', label: 'Spa & Bienestar' },
-    { icon: 'fitness_center', label: 'Gimnasio' },
-    { icon: 'local_parking', label: 'Parqueadero' },
-    { icon: 'ac_unit', label: 'Aire acondicionado' },
-    { icon: 'restaurant', label: 'Restaurante' },
-    { icon: 'local_bar', label: 'Bar' },
-  ],
+  id: 'a1000000-0000-0000-0000-000000000001',
+  name: 'Hotel Santa Clara Sofitel',
+  description:
+    "Luxury colonial hotel in the heart of Cartagena's historic district, surrounded by centuries-old architecture and minutes from the walled city.",
+  city: 'Cartagena',
+  country: 'Colombia',
+  rating: 4.8,
+};
+
+// Rooms mock — backend format (matching search_service.get_hotel_rooms)
+const hotelRooms = {
+  hotel_id: 'a1000000-0000-0000-0000-000000000001',
   rooms: [
     {
-      name: 'Habitación Superior',
-      features: '1 cama King · Vista al jardín · 32 m²',
-      price: 480000,
-      gradient: 'linear-gradient(135deg, #006874, #4A9FAA)',
-      active: true,
+      id: 'b1000000-0000-0000-0000-000000000001',
+      hotel_id: 'a1000000-0000-0000-0000-000000000001',
+      room_type: 'Superior',
+      room_number: '101',
+      capacity: 2,
+      price_per_night: 480000,
+      tax_rate: 0.19,
+      description: '1 cama King · Vista al jardín · 32 m²',
+      amenities: { wifi: true, ac: true, tv: true },
+      total_quantity: 5,
     },
     {
-      name: 'Suite Junior',
-      features: 'Vista al mar · Jacuzzi · 48 m²',
-      price: 680000,
-      gradient: 'linear-gradient(135deg, #1A6B4F, #4A9F7E)',
-      active: false,
+      id: 'b1000000-0000-0000-0000-000000000002',
+      hotel_id: 'a1000000-0000-0000-0000-000000000001',
+      room_type: 'Suite Junior',
+      room_number: '201',
+      capacity: 2,
+      price_per_night: 680000,
+      tax_rate: 0.19,
+      description: 'Vista al mar · Jacuzzi · 48 m²',
+      amenities: { wifi: true, ac: true, tv: true, minibar: true, balcony: true, jacuzzi: true },
+      total_quantity: 3,
     },
   ],
+  total: 2,
 };
 
 // Booking detail mock
@@ -300,16 +309,38 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'GET',
     pattern: /^\/search\/hotels$/,
-    handler: () => ok(mockHotels),
+    handler: () =>
+      ok({
+        results: mockHotels.map(h => ({
+          id: h.id,
+          name: h.name,
+          description: '',
+          city: h.location.split(', ').pop() ?? h.location,
+          country: '',
+          address: h.location,
+          rating: h.rating,
+          available_rooms_count: 5,
+          min_price: h.pricePerNight,
+        })),
+        total: mockHotels.length,
+        page: 1,
+        page_size: 20,
+        total_pages: 1,
+      }),
   },
   {
     method: 'GET',
-    pattern: /^\/search\/hotels\/(\d+)$/,
+    pattern: /^\/search\/hotels\/([^/]+)$/,
     handler: () => ok(hotelDetail),
   },
   {
     method: 'GET',
-    pattern: /^\/search\/hotels\/(\d+)\/reviews$/,
+    pattern: /^\/search\/hotels\/([^/]+)\/rooms$/,
+    handler: () => ok(hotelRooms),
+  },
+  {
+    method: 'GET',
+    pattern: /^\/search\/hotels\/([^/]+)\/reviews$/,
     handler: () => ok(hotelReviews),
   },
 

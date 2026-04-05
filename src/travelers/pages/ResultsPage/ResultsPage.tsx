@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Box, Checkbox, FormControlLabel } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
 import StarIcon from '@mui/icons-material/Star';
+import SearchOffIcon from '@mui/icons-material/SearchOff';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import TravelerNav from '@/design-system/layouts/TravelerNav';
@@ -41,24 +43,94 @@ import {
   HotelCardPriceColumn,
   HotelCardFromLabel,
   HotelCardPrice,
+  EmptyStateBox,
 } from './ResultsPage.styles';
 
-const starOptions = [
-  { label: '5', value: 5, selected: false },
-  { label: '4+', value: 4, selected: true },
-  { label: '3+', value: 3, selected: false },
+function formatShortDate(isoDate: string): string {
+  if (!isoDate) return '';
+  const d = new Date(isoDate + 'T00:00:00');
+  return new Intl.DateTimeFormat('es', { day: 'numeric', month: 'short' }).format(d);
+}
+
+function calcNights(checkIn: string, checkOut: string): number {
+  if (!checkIn || !checkOut) return 1;
+  const diff =
+    new Date(checkOut + 'T00:00:00').getTime() - new Date(checkIn + 'T00:00:00').getTime();
+  return Math.max(1, Math.round(diff / (1000 * 60 * 60 * 24)));
+}
+
+const STAR_OPTIONS = [
+  { label: '5', value: 5 },
+  { label: '4+', value: 4 },
+  { label: '3+', value: 3 },
 ];
 
+const AMENITY_KEYS = [
+  'freeWifi',
+  'breakfastIncluded',
+  'pool',
+  'parking',
+  'petsAllowed',
+  'airConditioning',
+] as const;
+type AmenityKey = (typeof AMENITY_KEYS)[number];
+
+const DEFAULT_AMENITIES: Record<AmenityKey, boolean> = {
+  freeWifi: false,
+  breakfastIncluded: false,
+  pool: false,
+  parking: false,
+  petsAllowed: false,
+  airConditioning: false,
+};
+
+// Maps sidebar amenity keys to the icon names returned by the backend
+const AMENITY_FILTER_ICONS: Record<AmenityKey, string> = {
+  freeWifi: 'wifi',
+  breakfastIncluded: 'free_breakfast',
+  pool: 'pool',
+  parking: 'local_parking',
+  petsAllowed: 'pets',
+  airConditioning: 'ac_unit',
+};
+
 export default function ResultsPage() {
-  const { data: hotels, isLoading } = useSearchHotels();
+  const [searchParams] = useSearchParams();
+  const destination = searchParams.get('destination') ?? '';
+  const checkIn = searchParams.get('checkIn') ?? '';
+  const checkOut = searchParams.get('checkOut') ?? '';
+  const guests = Number(searchParams.get('guests') ?? 1) || 1;
+
+  // Filter state
+  const [minRating, setMinRating] = useState<number | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [checkedAmenities, setCheckedAmenities] =
+    useState<Record<AmenityKey, boolean>>(DEFAULT_AMENITIES);
+  const [minPrice, setMinPrice] = useState<string>('');
+  const [maxPrice, setMaxPrice] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('recommended');
+
+  const { data: hotels, isLoading } = useSearchHotels(
+    destination
+      ? { destination, checkIn, checkOut, guests, ...(minRating ? { minRating } : {}) }
+      : undefined
+  );
 
   const { t } = useTranslation('travelers');
   const { formatPrice } = useLocale();
 
-  if (isLoading || !hotels) return <ResultsPageSkeleton />;
+  if (isLoading) return <ResultsPageSkeleton />;
 
-  const mockHotels = hotels as Array<{
-    id: number;
+  const nights = calcNights(checkIn, checkOut);
+  const datesLabel =
+    checkIn && checkOut ? `${formatShortDate(checkIn)} – ${formatShortDate(checkOut)}` : '';
+  const guestsLabel = t('home.search.guestsCount', { count: guests });
+  const navSummary = destination
+    ? [destination, datesLabel, guestsLabel].filter(Boolean).join(' · ')
+    : t('results.searchSummary');
+
+  const hotelList = (Array.isArray(hotels) ? hotels : []) as Array<{
+    id: string;
     type: string;
     name: string;
     location: string;
@@ -66,11 +138,34 @@ export default function ResultsPage() {
     reviewCount: number;
     starsText: string;
     pricePerNight: number;
-    totalPrice: number;
     gradient: string;
     amenities: Array<{ icon: string; label: string }>;
     photoCount: number;
   }>;
+
+  // ── Client-side filter + sort ──────────────────────────────────────────────
+  let displayList = [...hotelList];
+
+  const minP = parseFloat(minPrice);
+  const maxP = parseFloat(maxPrice);
+  if (!isNaN(minP) && minP > 0) displayList = displayList.filter(h => h.pricePerNight >= minP);
+  if (!isNaN(maxP) && maxP > 0) displayList = displayList.filter(h => h.pricePerNight <= maxP);
+
+  if (selectedType) displayList = displayList.filter(h => h.type === selectedType);
+
+  const activeAmenities = AMENITY_KEYS.filter(k => checkedAmenities[k]);
+  if (activeAmenities.length > 0) {
+    displayList = displayList.filter(h =>
+      activeAmenities.every(k => h.amenities.some(a => a.icon === AMENITY_FILTER_ICONS[k]))
+    );
+  }
+
+  if (sortBy === 'priceLowToHigh') displayList.sort((a, b) => a.pricePerNight - b.pricePerNight);
+  else if (sortBy === 'priceHighToLow')
+    displayList.sort((a, b) => b.pricePerNight - a.pricePerNight);
+  else if (sortBy === 'ratingSort' || sortBy === 'popularity')
+    displayList.sort((a, b) => b.rating - a.rating);
+  // ──────────────────────────────────────────────────────────────────────────
 
   const propertyTypes = [
     t('results.filters.propertyTypes.hotel'),
@@ -80,95 +175,115 @@ export default function ResultsPage() {
     t('results.filters.propertyTypes.cabin'),
   ];
 
-  const amenitiesFilter = [
-    { label: t('results.filters.freeWifi'), checked: true },
-    { label: t('results.filters.breakfastIncluded'), checked: true },
-    { label: t('results.filters.pool'), checked: false },
-    { label: t('results.filters.parking'), checked: false },
-    { label: t('results.filters.petsAllowed'), checked: false },
-    { label: t('results.filters.airConditioning'), checked: false },
+  const amenitiesFilter: Array<{ key: AmenityKey; label: string }> = [
+    { key: 'freeWifi', label: t('results.filters.freeWifi') },
+    { key: 'breakfastIncluded', label: t('results.filters.breakfastIncluded') },
+    { key: 'pool', label: t('results.filters.pool') },
+    { key: 'parking', label: t('results.filters.parking') },
+    { key: 'petsAllowed', label: t('results.filters.petsAllowed') },
+    { key: 'airConditioning', label: t('results.filters.airConditioning') },
   ];
 
-  const FilterSidebar = () => (
-    <FilterSidebarContainer>
-      <Text textVariant="sectionTitle">{t('results.filters.title')}</Text>
+  const toggleAmenity = (key: AmenityKey) =>
+    setCheckedAmenities(prev => ({ ...prev, [key]: !prev[key] }));
 
-      {/* Price range */}
-      <FilterSection>
-        <FilterSectionLabel>{t('results.filters.pricePerNight')}</FilterSectionLabel>
-        <FilterInputGroup>
-          <Text textVariant="caption">{t('results.filters.minimum')}</Text>
-          <FilterInput component="input" defaultValue={formatPrice(0)} />
-          <Text textVariant="caption">{t('results.filters.maximum')}</Text>
-          <FilterInput component="input" defaultValue={formatPrice(800000)} />
-        </FilterInputGroup>
-      </FilterSection>
+  const toggleRating = (value: number) => setMinRating(prev => (prev === value ? null : value));
 
-      {/* Property type */}
-      <FilterSection>
-        <FilterSectionLabel>{t('results.filters.propertyType')}</FilterSectionLabel>
-        <PropertyTypeTags>
-          {propertyTypes.map((type, i) => (
-            <PropertyTypeTag key={type} active={i === 0}>
-              {type}
-            </PropertyTypeTag>
-          ))}
-        </PropertyTypeTags>
-      </FilterSection>
-
-      {/* Star rating */}
-      <FilterSection>
-        <FilterSectionLabel>{t('results.filters.rating')}</FilterSectionLabel>
-        <StarRatingTags>
-          {starOptions.map(opt => (
-            <StarTag key={opt.label} active={opt.selected}>
-              {opt.value > 0 && <StarIcon sx={{ color: palette.star, fontSize: 14 }} />}
-              {opt.label}
-            </StarTag>
-          ))}
-          <StarTag>{t('results.filters.all')}</StarTag>
-        </StarRatingTags>
-      </FilterSection>
-
-      {/* Amenities */}
-      <FilterSection>
-        <FilterSectionLabel>{t('results.filters.amenities')}</FilterSectionLabel>
-        {amenitiesFilter.map(amenity => (
-          <FormControlLabel
-            key={amenity.label}
-            control={
-              <Checkbox
-                defaultChecked={amenity.checked}
-                sx={{
-                  color: palette.outline,
-                  '&.Mui-checked': { color: palette.primary },
-                  padding: '0 10px 0 0',
-                }}
-                size="small"
-              />
-            }
-            label={amenity.label}
-            sx={{
-              ml: 0,
-              '& .MuiFormControlLabel-label': {
-                fontSize: 14,
-                color: palette.onSurface,
-              },
-            }}
-          />
-        ))}
-      </FilterSection>
-    </FilterSidebarContainer>
-  );
+  const toggleType = (type: string) => setSelectedType(prev => (prev === type ? null : type));
 
   return (
     <PageRoot>
-      <TravelerNav variant="results" searchSummary={t('results.searchSummary')} />
+      <TravelerNav variant="results" searchSummary={navSummary} />
 
-      {/* PAGE BODY */}
       <PageBody>
         {/* SIDEBAR FILTERS */}
-        <FilterSidebar />
+        <FilterSidebarContainer>
+          <Text textVariant="sectionTitle">{t('results.filters.title')}</Text>
+
+          {/* Price range */}
+          <FilterSection>
+            <FilterSectionLabel>{t('results.filters.pricePerNight')}</FilterSectionLabel>
+            <FilterInputGroup>
+              <Text textVariant="caption">{t('results.filters.minimum')}</Text>
+              <FilterInput
+                type="number"
+                placeholder="0"
+                value={minPrice}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMinPrice(e.target.value)}
+              />
+              <Text textVariant="caption">{t('results.filters.maximum')}</Text>
+              <FilterInput
+                type="number"
+                placeholder="800000"
+                value={maxPrice}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMaxPrice(e.target.value)}
+              />
+            </FilterInputGroup>
+          </FilterSection>
+
+          {/* Property type */}
+          <FilterSection>
+            <FilterSectionLabel>{t('results.filters.propertyType')}</FilterSectionLabel>
+            <PropertyTypeTags>
+              {propertyTypes.map(type => (
+                <PropertyTypeTag
+                  key={type}
+                  active={selectedType === type}
+                  onClick={() => toggleType(type)}
+                >
+                  {type}
+                </PropertyTypeTag>
+              ))}
+            </PropertyTypeTags>
+          </FilterSection>
+
+          {/* Star rating — wired to backend min_rating param */}
+          <FilterSection>
+            <FilterSectionLabel>{t('results.filters.rating')}</FilterSectionLabel>
+            <StarRatingTags>
+              {STAR_OPTIONS.map(opt => (
+                <StarTag
+                  key={opt.label}
+                  active={minRating === opt.value}
+                  onClick={() => toggleRating(opt.value)}
+                >
+                  <StarIcon sx={{ color: palette.star, fontSize: 14 }} />
+                  {opt.label}
+                </StarTag>
+              ))}
+              <StarTag active={minRating === null} onClick={() => setMinRating(null)}>
+                {t('results.filters.all')}
+              </StarTag>
+            </StarRatingTags>
+          </FilterSection>
+
+          {/* Amenities */}
+          <FilterSection>
+            <FilterSectionLabel>{t('results.filters.amenities')}</FilterSectionLabel>
+            {amenitiesFilter.map(amenity => (
+              <FormControlLabel
+                key={amenity.key}
+                control={
+                  <Checkbox
+                    checked={checkedAmenities[amenity.key]}
+                    onChange={() => toggleAmenity(amenity.key)}
+                    sx={{
+                      color: palette.outline,
+                      '&.Mui-checked': { color: palette.primary },
+                      padding: '0 10px 0 0',
+                    }}
+                    size="small"
+                  />
+                }
+                label={amenity.label}
+                sx={{
+                  ml: 0,
+                  '& .MuiFormControlLabel-label': { fontSize: 14, color: palette.onSurface },
+                }}
+              />
+            ))}
+          </FilterSection>
+        </FilterSidebarContainer>
 
         {/* RESULTS AREA */}
         <ResultsArea>
@@ -176,78 +291,116 @@ export default function ResultsPage() {
           <ResultsHeader>
             <ResultsCountText noWrap>
               <Box component="span" sx={{ fontWeight: 600 }}>
-                {t('results.header.accommodationsFound', { count: 247 })}
-              </Box>{' '}
-              {t('results.header.foundIn')}
+                {t('results.header.accommodationsFound', { count: displayList.length })}
+              </Box>
+              {destination && (
+                <>
+                  {' '}
+                  {t('results.header.foundIn', {
+                    destination,
+                    dates: datesLabel,
+                    guests: guestsLabel,
+                  })}
+                </>
+              )}
             </ResultsCountText>
             <SortRow>
               <Text textVariant="body">{t('results.header.sortBy')}</Text>
-              <SortSelect component="select" defaultValue={t('results.header.recommended')}>
-                <option>{t('results.header.recommended')}</option>
-                <option>{t('results.header.priceLowToHigh')}</option>
-                <option>{t('results.header.priceHighToLow')}</option>
-                <option>{t('results.header.ratingSort')}</option>
-                <option>{t('results.header.popularity')}</option>
+              <SortSelect
+                value={sortBy}
+                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSortBy(e.target.value)}
+              >
+                <option value="recommended">{t('results.header.recommended')}</option>
+                <option value="priceLowToHigh">{t('results.header.priceLowToHigh')}</option>
+                <option value="priceHighToLow">{t('results.header.priceHighToLow')}</option>
+                <option value="ratingSort">{t('results.header.ratingSort')}</option>
+                <option value="popularity">{t('results.header.popularity')}</option>
               </SortSelect>
             </SortRow>
           </ResultsHeader>
 
+          {/* Empty state */}
+          {displayList.length === 0 && (
+            <EmptyStateBox>
+              <SearchOffIcon sx={{ fontSize: 56, color: palette.outline }} />
+              <Text textVariant="sectionTitle">{t('results.noResults.title')}</Text>
+              <Text textVariant="body" sx={{ color: palette.onSurfaceVariant, maxWidth: 400 }}>
+                {t('results.noResults.subtitle')}
+              </Text>
+            </EmptyStateBox>
+          )}
+
           {/* Hotel cards */}
-          {mockHotels.map(hotel => (
-            <Link
-              key={hotel.id}
-              to={`/property/${hotel.id}`}
-              style={{ textDecoration: 'none', color: 'inherit' }}
-            >
-              <HotelCard>
-                {/* Image area */}
-                <HotelCardImage gradient={hotel.gradient}>
-                  <PhotoCountBadge>
-                    {t('results.card.photos', { count: hotel.photoCount })}
-                  </PhotoCountBadge>
-                </HotelCardImage>
+          {displayList.map(hotel => {
+            const totalPrice = hotel.pricePerNight * nights;
+            return (
+              <Link
+                key={hotel.id}
+                to={`/property/${hotel.id}?checkIn=${checkIn}&checkOut=${checkOut}&guests=${guests}`}
+                style={{ textDecoration: 'none', color: 'inherit' }}
+              >
+                <HotelCard>
+                  {/* Image area */}
+                  <HotelCardImage gradient={hotel.gradient}>
+                    {hotel.photoCount > 0 && (
+                      <PhotoCountBadge>
+                        {t('results.card.photos', { count: hotel.photoCount })}
+                      </PhotoCountBadge>
+                    )}
+                  </HotelCardImage>
 
-                {/* Info section */}
-                <HotelCardInfo>
-                  <Text textVariant="overline">{hotel.type}</Text>
-                  <HotelCardName>{hotel.name}</HotelCardName>
-                  <HotelCardLocation>
-                    <PlaceIcon sx={{ fontSize: 14 }} />
-                    {hotel.location}
-                  </HotelCardLocation>
-                  <HotelCardRatingRow>
-                    <RatingBadge rating={hotel.rating} />
-                    <HotelCardStars>{hotel.starsText}</HotelCardStars>
-                    <Text textVariant="caption">
-                      ({hotel.reviewCount} {t('results.card.reviews')})
-                    </Text>
-                  </HotelCardRatingRow>
-                  <HotelCardAmenities>
-                    {hotel.amenities.map(amenity => (
-                      <AmenityTag key={amenity.label} icon={amenity.icon} label={amenity.label} />
-                    ))}
-                  </HotelCardAmenities>
-                </HotelCardInfo>
+                  {/* Info section */}
+                  <HotelCardInfo>
+                    <Text textVariant="overline">{hotel.type}</Text>
+                    <HotelCardName>{hotel.name}</HotelCardName>
+                    <HotelCardLocation>
+                      <PlaceIcon sx={{ fontSize: 14 }} />
+                      {hotel.location}
+                    </HotelCardLocation>
+                    <HotelCardRatingRow>
+                      <RatingBadge rating={hotel.rating} />
+                      <HotelCardStars>{hotel.starsText}</HotelCardStars>
+                      {hotel.reviewCount > 0 && (
+                        <Text textVariant="caption">
+                          ({hotel.reviewCount} {t('results.card.reviews')})
+                        </Text>
+                      )}
+                    </HotelCardRatingRow>
+                    {hotel.amenities.length > 0 && (
+                      <HotelCardAmenities>
+                        {hotel.amenities.map(amenity => (
+                          <AmenityTag
+                            key={amenity.label}
+                            icon={amenity.icon}
+                            label={amenity.label}
+                          />
+                        ))}
+                      </HotelCardAmenities>
+                    )}
+                  </HotelCardInfo>
 
-                {/* Price column */}
-                <HotelCardPriceColumn>
-                  <HotelCardFromLabel>{t('results.card.from')}</HotelCardFromLabel>
-                  <div>
-                    <HotelCardPrice>{formatPrice(hotel.pricePerNight)}</HotelCardPrice>
-                    <Text textVariant="caption" sx={{ textAlign: 'right' }}>
-                      {t('results.card.perNight')}
-                    </Text>
-                  </div>
-                  <Text textVariant="caption">
-                    {`${formatPrice(hotel.totalPrice)} ${t('results.card.total')}`}
-                  </Text>
-                  <PrimaryPillButton pillSize="sm" sx={{ width: '100%' }}>
-                    {t('results.card.viewRooms')}
-                  </PrimaryPillButton>
-                </HotelCardPriceColumn>
-              </HotelCard>
-            </Link>
-          ))}
+                  {/* Price column */}
+                  <HotelCardPriceColumn>
+                    <HotelCardFromLabel>{t('results.card.from')}</HotelCardFromLabel>
+                    <div>
+                      <HotelCardPrice>{formatPrice(hotel.pricePerNight)}</HotelCardPrice>
+                      <Text textVariant="caption" sx={{ textAlign: 'right' }}>
+                        {t('results.card.perNight')}
+                      </Text>
+                    </div>
+                    {nights > 1 && (
+                      <Text textVariant="caption">
+                        {`${formatPrice(totalPrice)} ${t('results.card.total')}`}
+                      </Text>
+                    )}
+                    <PrimaryPillButton pillSize="sm" sx={{ width: '100%' }}>
+                      {t('results.card.viewRooms')}
+                    </PrimaryPillButton>
+                  </HotelCardPriceColumn>
+                </HotelCard>
+              </Link>
+            );
+          })}
         </ResultsArea>
       </PageBody>
     </PageRoot>

@@ -13,7 +13,14 @@
       "selectDate": "Select date",
       "guests": "Guests",
       "defaultGuests": "1 adult",
-      "searchButton": "Search"
+      "guestsCount_one": "{{count}} adult",
+      "guestsCount_other": "{{count}} adults",
+      "searchButton": "Search",
+      "errors": {
+        "destination": "Select a destination",
+        "checkIn": "Select a check-in date",
+        "checkOut": "Select a check-out date"
+      }
     },
     "destinations": {
       "title": "Popular destinations",
@@ -72,7 +79,7 @@
     },
     "header": {
       "accommodationsFound": "{{count}} accommodations",
-      "foundIn": "found in Cartagena · Mar 15--20 · 2 guests",
+      "foundIn": "found · {{destination}} · {{dates}} · {{guests}}",
       "sortBy": "Sort by",
       "recommended": "Recommended",
       "priceLowToHigh": "Price: low to high",
@@ -88,7 +95,11 @@
       "viewRooms": "View rooms",
       "total": "total"
     },
-    "searchSummary": "Cartagena · Mar 15 -- Mar 20 · 2 guests"
+    "searchSummary": "Cartagena · Mar 15 -- Mar 20 · 2 guests",
+    "noResults": {
+      "title": "No accommodations available",
+      "subtitle": "We couldn't find any lodging for your search. Try different dates or destination."
+    }
   },
   "propertyDetail": {
     "hotelType": "Hotel · 5 stars",
