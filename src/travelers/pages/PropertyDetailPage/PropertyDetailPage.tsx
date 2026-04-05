@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Skeleton } from '@mui/material';
 import { Box, Typography } from '@mui/material';
 import Text from '@/design-system/components/Text';
@@ -10,16 +11,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import InfoIcon from '@mui/icons-material/Info';
 import CancelIcon from '@mui/icons-material/Cancel';
-import WifiIcon from '@mui/icons-material/Wifi';
-import PoolIcon from '@mui/icons-material/Pool';
-import FreeBreakfastIcon from '@mui/icons-material/FreeBreakfast';
-import SpaIcon from '@mui/icons-material/Spa';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import LocalParkingIcon from '@mui/icons-material/LocalParking';
-import AcUnitIcon from '@mui/icons-material/AcUnit';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import LocalBarIcon from '@mui/icons-material/LocalBar';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import { useDebouncedCallback } from '@/hooks/useDebouncedCallback';
@@ -27,7 +19,7 @@ import TravelerLayout from '@/design-system/layouts/TravelerLayout';
 import RatingBadge from '@/design-system/components/RatingBadge';
 import { palette } from '@/design-system/theme/palette';
 import PropertyDetailPageSkeleton from './PropertyDetailPage.skeleton';
-import { useHotelDetail, useHotelReviews } from '@/api/hooks/useSearch';
+import { useHotelDetail, useHotelReviews, useHotelRooms } from '@/api/hooks/useSearch';
 import { useSetCart } from '@/api/hooks/useCart';
 import { saveCartSelection } from '@/modules/checkout/cartStorage';
 import {
@@ -72,23 +64,85 @@ import {
   ReviewStars,
 } from './PropertyDetailPage.styles';
 
+const ICON_MAP: Record<string, string> = {
+  wifi: 'wifi',
+  ac: 'ac_unit',
+  tv: 'tv',
+  minibar: 'local_bar',
+  balcony: 'balcony',
+  jacuzzi: 'hot_tub',
+  desk: 'desk',
+  kitchen: 'kitchen',
+  private_pool: 'pool',
+  garden_view: 'park',
+};
+
+const ROOM_GRADIENTS = [
+  'linear-gradient(135deg, #006874, #4A9FAA)',
+  'linear-gradient(135deg, #1A6B4F, #4A9F7E)',
+  'linear-gradient(135deg, #5B5EA6, #8E91CC)',
+  'linear-gradient(135deg, #B5451B, #E07050)',
+  'linear-gradient(135deg, #7B4F00, #C89030)',
+];
+
+function calcNights(checkIn: string, checkOut: string): number {
+  if (!checkIn || !checkOut) return 1;
+  const diff =
+    new Date(checkOut + 'T00:00:00').getTime() - new Date(checkIn + 'T00:00:00').getTime();
+  return Math.max(1, Math.round(diff / (1000 * 60 * 60 * 24)));
+}
+
 export default function PropertyDetailPage() {
-  const { isLoading: isHotelLoading } = useHotelDetail(1);
-  const { data: reviewsData, isLoading: isReviewsLoading } = useHotelReviews(1);
+  const { id = '' } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const checkIn = searchParams.get('checkIn') ?? '';
+  const checkOut = searchParams.get('checkOut') ?? '';
+  const guests = Number(searchParams.get('guests') ?? 1) || 1;
+
+  const { data: hotelRaw, isLoading: isHotelLoading } = useHotelDetail(id);
+  const { data: roomsData, isLoading: isRoomsLoading } = useHotelRooms(id);
+  const { data: reviewsData, isLoading: isReviewsLoading } = useHotelReviews(id);
+
+  const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
+
   const setCart = useSetCart();
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
 
+  const hotel = hotelRaw as
+    | {
+        id?: string;
+        name?: string;
+        description?: string;
+        city?: string;
+        country?: string;
+        rating?: number;
+      }
+    | null
+    | undefined;
+
+  const rooms = (Array.isArray(roomsData) ? roomsData : []) as Array<{
+    id: string;
+    roomType: string;
+    capacity: number;
+    pricePerNight: number;
+    taxRate: number;
+    description: string;
+    amenities: Array<{ icon: string; label: string }>;
+  }>;
+
+  const selectedRoom = rooms.find(r => r.id === selectedRoomId) ?? rooms[0] ?? null;
+
   const handleReserve = useDebouncedCallback(() => {
-    if (setCart.isPending) return;
+    if (setCart.isPending || !selectedRoom) return;
 
     const selection = {
-      roomId: 'b1000000-0000-0000-0000-000000000001',
-      hotelId: 'a1000000-0000-0000-0000-000000000001',
-      checkIn: '2026-03-15',
-      checkOut: '2026-03-20',
-      guests: 2,
+      roomId: selectedRoom.id,
+      hotelId: hotel?.id ?? id,
+      checkIn,
+      checkOut,
+      guests,
     };
 
     saveCartSelection(selection);
@@ -96,7 +150,7 @@ export default function PropertyDetailPage() {
     setCart.mutate(selection);
   });
 
-  if (isHotelLoading) return <PropertyDetailPageSkeleton />;
+  if (isHotelLoading || isRoomsLoading) return <PropertyDetailPageSkeleton />;
 
   const reviews = (reviewsData ?? []) as Array<{
     initial: string;
@@ -106,134 +160,97 @@ export default function PropertyDetailPage() {
     text: string;
   }>;
 
-  const amenities = [
-    {
-      icon: <WifiIcon sx={{ fontSize: 16, color: palette.primary }} />,
-      label: t('propertyDetail.amenities.freeWifi'),
-    },
-    {
-      icon: <PoolIcon sx={{ fontSize: 16, color: palette.primary }} />,
-      label: t('propertyDetail.amenities.pool'),
-    },
-    {
-      icon: <FreeBreakfastIcon sx={{ fontSize: 16, color: palette.primary }} />,
-      label: t('propertyDetail.amenities.breakfastIncluded'),
-    },
-    {
-      icon: <SpaIcon sx={{ fontSize: 16, color: palette.primary }} />,
-      label: t('propertyDetail.amenities.spaWellness'),
-    },
-    {
-      icon: <FitnessCenterIcon sx={{ fontSize: 16, color: palette.primary }} />,
-      label: t('propertyDetail.amenities.gym'),
-    },
-    {
-      icon: <LocalParkingIcon sx={{ fontSize: 16, color: palette.primary }} />,
-      label: t('propertyDetail.amenities.parking'),
-    },
-    {
-      icon: <AcUnitIcon sx={{ fontSize: 16, color: palette.primary }} />,
-      label: t('propertyDetail.amenities.airConditioning'),
-    },
-    {
-      icon: <RestaurantIcon sx={{ fontSize: 16, color: palette.primary }} />,
-      label: t('propertyDetail.amenities.restaurant'),
-    },
-    {
-      icon: <LocalBarIcon sx={{ fontSize: 16, color: palette.primary }} />,
-      label: t('propertyDetail.amenities.bar'),
-    },
-  ];
+  // Aggregate unique amenities from all rooms
+  const amenityMap = new Map<string, { icon: string; label: string }>();
+  for (const room of rooms) {
+    for (const amenity of room.amenities) {
+      if (!amenityMap.has(amenity.label)) {
+        amenityMap.set(amenity.label, amenity);
+      }
+    }
+  }
+  const hotelAmenities = Array.from(amenityMap.values());
 
-  const rooms = [
-    {
-      name: t('propertyDetail.rooms.superiorRoom'),
-      features: t('propertyDetail.rooms.superiorFeatures'),
-      price: formatPrice(480000),
-      gradient: 'linear-gradient(135deg, #006874, #4A9FAA)',
-      active: true,
-    },
-    {
-      name: t('propertyDetail.rooms.juniorSuite'),
-      features: t('propertyDetail.rooms.juniorFeatures'),
-      price: formatPrice(680000),
-      gradient: 'linear-gradient(135deg, #1A6B4F, #4A9F7E)',
-      active: false,
-    },
-  ];
+  const nights = calcNights(checkIn, checkOut);
+  const pricePerNight = selectedRoom?.pricePerNight ?? 0;
+  const taxRate = selectedRoom?.taxRate ?? 0.19;
+  const subtotal = pricePerNight * nights;
+  const taxes = Math.round(subtotal * taxRate);
+  const total = subtotal + taxes;
+
+  const hotelName = hotel?.name ?? '';
+  const hotelCity = hotel?.city ?? '';
+  const hotelCountry = hotel?.country ?? '';
+  const hotelRating = hotel?.rating ?? 0;
+  const hotelDescription = hotel?.description ?? '';
 
   const BookingSidebar = () => (
     <SidebarWrapper>
-      {/* Price card */}
       <PriceCard>
-        {/* Price */}
         <div>
           <Text textVariant="caption">{t('propertyDetail.booking.from')}</Text>
           <PriceHeadline>
-            {formatPrice(480000)}{' '}
+            {formatPrice(pricePerNight)}{' '}
             <PricePerNightLabel component="span">
               {t('propertyDetail.booking.perNight')}
             </PricePerNightLabel>
           </PriceHeadline>
         </div>
 
-        {/* Date fields */}
         <DateFieldsGrid>
           <DateField>
             <FieldTopLabel>{t('propertyDetail.booking.checkIn')}</FieldTopLabel>
-            <FieldValue>{formatDate('2026-03-15', 'shortWithDay')}</FieldValue>
+            <FieldValue>{checkIn ? formatDate(checkIn, 'shortWithDay') : '—'}</FieldValue>
           </DateField>
           <DateField>
             <FieldTopLabel>{t('propertyDetail.booking.checkOut')}</FieldTopLabel>
-            <FieldValue>{formatDate('2026-03-20', 'shortWithDay')}</FieldValue>
+            <FieldValue>{checkOut ? formatDate(checkOut, 'shortWithDay') : '—'}</FieldValue>
           </DateField>
         </DateFieldsGrid>
 
-        {/* Guests */}
         <GuestsField>
           <div>
             <FieldTopLabel>{t('propertyDetail.booking.guests')}</FieldTopLabel>
-            <FieldValue>{t('propertyDetail.booking.defaultGuests')}</FieldValue>
+            <FieldValue>{t('home.search.guestsCount', { count: guests })}</FieldValue>
           </div>
           <ExpandMoreIcon sx={{ color: palette.onSurfaceVariant, fontSize: 20 }} />
         </GuestsField>
 
-        {/* Price breakdown */}
-        <PriceBreakdown>
-          <PriceRow>
-            <Text textVariant="body">
-              {formatPrice(480000)} x 5 {t('propertyDetail.booking.nights')}
-            </Text>
-            <Text textVariant="body">{formatPrice(2400000)}</Text>
-          </PriceRow>
-          <PriceRow>
-            <Text textVariant="body">{t('propertyDetail.booking.taxesAndFees')}</Text>
-            <Text textVariant="body">{formatPrice(264000)}</Text>
-          </PriceRow>
-          <PriceTotalRow>
-            <Text textVariant="bodySemibold">{t('propertyDetail.booking.total')}</Text>
-            <Text textVariant="bodySemibold">{formatPrice(2664000)}</Text>
-          </PriceTotalRow>
-        </PriceBreakdown>
+        {pricePerNight > 0 && (
+          <PriceBreakdown>
+            <PriceRow>
+              <Text textVariant="body">
+                {formatPrice(pricePerNight)} x {nights} {t('propertyDetail.booking.nights')}
+              </Text>
+              <Text textVariant="body">{formatPrice(subtotal)}</Text>
+            </PriceRow>
+            <PriceRow>
+              <Text textVariant="body">{t('propertyDetail.booking.taxesAndFees')}</Text>
+              <Text textVariant="body">{formatPrice(taxes)}</Text>
+            </PriceRow>
+            <PriceTotalRow>
+              <Text textVariant="bodySemibold">{t('propertyDetail.booking.total')}</Text>
+              <Text textVariant="bodySemibold">{formatPrice(total)}</Text>
+            </PriceTotalRow>
+          </PriceBreakdown>
+        )}
 
-        {/* Reserve button */}
         <PrimaryPillButton
           pillSize="lg"
           fullWidth
           loading={setCart.isPending}
           onClick={handleReserve}
+          disabled={!selectedRoom}
         >
           {t('propertyDetail.booking.reserveNow')}
         </PrimaryPillButton>
 
-        {/* Secure badge */}
         <SecureBadge>
           <LockIcon sx={{ fontSize: 16, color: palette.primary }} />
           <Text textVariant="caption">{t('propertyDetail.booking.securePayment')}</Text>
         </SecureBadge>
       </PriceCard>
 
-      {/* Cancellation policy */}
       <div>
         <Text textVariant="cardSubheading" sx={{ mb: '12px' }}>
           {t('propertyDetail.cancellation.title')}
@@ -292,15 +309,19 @@ export default function PropertyDetailPage() {
         <HeaderRow>
           <HeaderInfo>
             <HotelTypeLabel>{t('propertyDetail.hotelType')}</HotelTypeLabel>
-            <HotelTitle component="h1">Hotel Santa Clara Sofitel</HotelTitle>
+            <HotelTitle component="h1">{hotelName}</HotelTitle>
             <LocationRow>
               <PlaceIcon sx={{ fontSize: 16 }} />
-              Centro Historico, Cartagena, Colombia
+              {[hotelCity, hotelCountry].filter(Boolean).join(', ')}
             </LocationRow>
             <RatingRow>
-              <RatingBadge rating={4.8} />
-              <StarsText>&#9733;&#9733;&#9733;&#9733;&#9733;</StarsText>
-              <Text textVariant="hint">312 {t('propertyDetail.reviews')}</Text>
+              <RatingBadge rating={hotelRating} />
+              <StarsText>{'★'.repeat(Math.round(hotelRating))}</StarsText>
+              {reviews.length > 0 && (
+                <Text textVariant="hint">
+                  {reviews.length} {t('propertyDetail.reviews')}
+                </Text>
+              )}
             </RatingRow>
           </HeaderInfo>
           <ActionButtons>
@@ -314,66 +335,85 @@ export default function PropertyDetailPage() {
         </HeaderRow>
 
         {/* Description */}
-        <div>
-          <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
-            {t('propertyDetail.description')}
-          </Text>
-          <Text textVariant="body" sx={{ lineHeight: 1.6, maxWidth: 860 }}>
-            {t('propertyDetail.descriptionText')}
-          </Text>
-        </div>
+        {hotelDescription && (
+          <div>
+            <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
+              {t('propertyDetail.description')}
+            </Text>
+            <Text textVariant="body" sx={{ lineHeight: 1.6, maxWidth: 860 }}>
+              {hotelDescription}
+            </Text>
+          </div>
+        )}
 
         {/* Amenities */}
-        <div>
-          <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
-            {t('propertyDetail.amenities.title')}
-          </Text>
-          <AmenitiesGrid>
-            {amenities.map(amenity => (
-              <AmenityChip key={amenity.label}>
-                {amenity.icon}
-                {amenity.label}
-              </AmenityChip>
-            ))}
-          </AmenitiesGrid>
-        </div>
+        {hotelAmenities.length > 0 && (
+          <div>
+            <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
+              {t('propertyDetail.amenities.title')}
+            </Text>
+            <AmenitiesGrid>
+              {hotelAmenities.map(amenity => (
+                <AmenityChip key={amenity.label}>
+                  <span
+                    className="material-symbols-outlined"
+                    style={{ fontSize: 16, color: palette.primary }}
+                  >
+                    {ICON_MAP[amenity.icon] ?? amenity.icon}
+                  </span>
+                  {amenity.label}
+                </AmenityChip>
+              ))}
+            </AmenitiesGrid>
+          </div>
+        )}
 
         {/* Rooms */}
-        <div>
-          <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
-            {t('propertyDetail.rooms.title')}
-          </Text>
-          <RoomsList>
-            {rooms.map(room => (
-              <RoomCard key={room.name}>
-                <RoomThumbnail gradient={room.gradient} />
-                <Box sx={{ flex: 1 }}>
-                  <Text textVariant="cardSubheading" sx={{ mb: '4px' }}>
-                    {room.name}
-                  </Text>
-                  <Text textVariant="hint">{room.features}</Text>
-                </Box>
-                <Box sx={{ textAlign: 'right' }}>
-                  <Text textVariant="price">{room.price}</Text>
-                  <Text textVariant="caption">{t('propertyDetail.rooms.perNight')}</Text>
-                </Box>
-                {room.active ? (
-                  <PrimaryPillButton pillSize="xs" sx={{ whiteSpace: 'nowrap' }}>
-                    {t('propertyDetail.rooms.select')}
-                  </PrimaryPillButton>
-                ) : (
-                  <OutlinedPillButton
-                    pillSize="xs"
-                    variant="outlined"
-                    sx={{ whiteSpace: 'nowrap' }}
-                  >
-                    {t('propertyDetail.rooms.select')}
-                  </OutlinedPillButton>
-                )}
-              </RoomCard>
-            ))}
-          </RoomsList>
-        </div>
+        {rooms.length > 0 && (
+          <div>
+            <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
+              {t('propertyDetail.rooms.title')}
+            </Text>
+            <RoomsList>
+              {rooms.map((room, idx) => {
+                const isSelected = selectedRoomId ? room.id === selectedRoomId : idx === 0;
+                return (
+                  <RoomCard key={room.id}>
+                    <RoomThumbnail gradient={ROOM_GRADIENTS[idx % ROOM_GRADIENTS.length]} />
+                    <Box sx={{ flex: 1 }}>
+                      <Text textVariant="cardSubheading" sx={{ mb: '4px' }}>
+                        {room.roomType}
+                      </Text>
+                      <Text textVariant="hint">{room.description}</Text>
+                    </Box>
+                    <Box sx={{ textAlign: 'right' }}>
+                      <Text textVariant="price">{formatPrice(room.pricePerNight)}</Text>
+                      <Text textVariant="caption">{t('propertyDetail.rooms.perNight')}</Text>
+                    </Box>
+                    {isSelected ? (
+                      <PrimaryPillButton
+                        pillSize="xs"
+                        sx={{ whiteSpace: 'nowrap' }}
+                        onClick={() => setSelectedRoomId(room.id)}
+                      >
+                        {t('propertyDetail.rooms.select')}
+                      </PrimaryPillButton>
+                    ) : (
+                      <OutlinedPillButton
+                        pillSize="xs"
+                        variant="outlined"
+                        sx={{ whiteSpace: 'nowrap' }}
+                        onClick={() => setSelectedRoomId(room.id)}
+                      >
+                        {t('propertyDetail.rooms.select')}
+                      </OutlinedPillButton>
+                    )}
+                  </RoomCard>
+                );
+              })}
+            </RoomsList>
+          </div>
+        )}
 
         {/* Reviews */}
         <div>

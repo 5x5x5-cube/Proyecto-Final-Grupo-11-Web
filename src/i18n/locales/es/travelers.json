@@ -13,7 +13,14 @@
       "selectDate": "Selecciona fecha",
       "guests": "Huespedes",
       "defaultGuests": "1 adulto",
-      "searchButton": "Buscar"
+      "guestsCount_one": "{{count}} adulto",
+      "guestsCount_other": "{{count}} adultos",
+      "searchButton": "Buscar",
+      "errors": {
+        "destination": "Selecciona un destino",
+        "checkIn": "Selecciona una fecha de llegada",
+        "checkOut": "Selecciona una fecha de salida"
+      }
     },
     "destinations": {
       "title": "Destinos populares",
@@ -72,7 +79,7 @@
     },
     "header": {
       "accommodationsFound": "{{count}} alojamientos",
-      "foundIn": "encontrados en Cartagena · 15--20 mar · 2 huespedes",
+      "foundIn": "encontrados · {{destination}} · {{dates}} · {{guests}}",
       "sortBy": "Ordenar por",
       "recommended": "Recomendados",
       "priceLowToHigh": "Precio: menor a mayor",
@@ -88,7 +95,11 @@
       "viewRooms": "Ver habitaciones",
       "total": "total"
     },
-    "searchSummary": "Cartagena · 15 mar -- 20 mar · 2 huespedes"
+    "searchSummary": "Cartagena · 15 mar -- 20 mar · 2 huespedes",
+    "noResults": {
+      "title": "No hay hospedajes disponibles",
+      "subtitle": "No encontramos alojamientos para tu busqueda. Intenta con otras fechas o destino."
+    }
   },
   "propertyDetail": {
     "hotelType": "Hotel · 5 estrellas",
