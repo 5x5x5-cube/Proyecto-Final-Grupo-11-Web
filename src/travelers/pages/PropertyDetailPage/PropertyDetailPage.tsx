@@ -122,7 +122,7 @@ export default function PropertyDetailPage() {
     | null
     | undefined;
 
-  const rooms = (Array.isArray(roomsData) ? roomsData : []) as Array<{
+  const allRooms = (Array.isArray(roomsData) ? roomsData : []) as Array<{
     id: string;
     roomType: string;
     capacity: number;
@@ -131,6 +131,9 @@ export default function PropertyDetailPage() {
     description: string;
     amenities: Array<{ icon: string; label: string }>;
   }>;
+
+  // Only show rooms with enough capacity for the number of guests
+  const rooms = allRooms.filter(r => r.capacity >= guests);
 
   const selectedRoom = rooms.find(r => r.id === selectedRoomId) ?? rooms[0] ?? null;
 
@@ -369,11 +372,15 @@ export default function PropertyDetailPage() {
         )}
 
         {/* Rooms */}
-        {rooms.length > 0 && (
-          <div>
-            <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
-              {t('propertyDetail.rooms.title')}
-            </Text>
+        <div>
+          <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
+            {t('propertyDetail.rooms.title')}
+          </Text>
+          {rooms.length === 0 ? (
+            <Box sx={{ py: '24px', textAlign: 'center', color: palette.onSurfaceVariant }}>
+              <Text textVariant="body">{t('propertyDetail.rooms.noRooms')}</Text>
+            </Box>
+          ) : (
             <RoomsList>
               {rooms.map((room, idx) => {
                 const isSelected = selectedRoomId ? room.id === selectedRoomId : idx === 0;
@@ -385,6 +392,9 @@ export default function PropertyDetailPage() {
                         {room.roomType}
                       </Text>
                       <Text textVariant="hint">{room.description}</Text>
+                      <Text textVariant="hint" sx={{ mt: '2px', color: palette.onSurfaceVariant }}>
+                        {t('propertyDetail.rooms.capacity', { count: room.capacity })}
+                      </Text>
                     </Box>
                     <Box sx={{ textAlign: 'right' }}>
                       <Text textVariant="price">{formatPrice(room.pricePerNight)}</Text>
@@ -412,8 +422,8 @@ export default function PropertyDetailPage() {
                 );
               })}
             </RoomsList>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Reviews */}
         <div>

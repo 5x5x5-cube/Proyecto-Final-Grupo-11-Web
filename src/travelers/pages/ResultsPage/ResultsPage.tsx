@@ -63,35 +63,36 @@ const STAR_OPTIONS = [
   { label: '5', value: 5 },
   { label: '4+', value: 4 },
   { label: '3+', value: 3 },
+  { label: '2+', value: 2 },
+  { label: '1+', value: 1 },
 ];
 
+// Keys match backend amenity names directly
 const AMENITY_KEYS = [
-  'freeWifi',
-  'breakfastIncluded',
-  'pool',
-  'parking',
-  'petsAllowed',
-  'airConditioning',
+  'wifi',
+  'ac',
+  'tv',
+  'minibar',
+  'balcony',
+  'jacuzzi',
+  'desk',
+  'kitchen',
+  'private_pool',
+  'garden_view',
 ] as const;
 type AmenityKey = (typeof AMENITY_KEYS)[number];
 
 const DEFAULT_AMENITIES: Record<AmenityKey, boolean> = {
-  freeWifi: false,
-  breakfastIncluded: false,
-  pool: false,
-  parking: false,
-  petsAllowed: false,
-  airConditioning: false,
-};
-
-// Maps sidebar amenity keys to the icon names returned by the backend
-const AMENITY_FILTER_ICONS: Record<AmenityKey, string> = {
-  freeWifi: 'wifi',
-  breakfastIncluded: 'free_breakfast',
-  pool: 'pool',
-  parking: 'local_parking',
-  petsAllowed: 'pets',
-  airConditioning: 'ac_unit',
+  wifi: false,
+  ac: false,
+  tv: false,
+  minibar: false,
+  balcony: false,
+  jacuzzi: false,
+  desk: false,
+  kitchen: false,
+  private_pool: false,
+  garden_view: false,
 };
 
 export default function ResultsPage() {
@@ -139,7 +140,7 @@ export default function ResultsPage() {
     starsText: string;
     pricePerNight: number;
     gradient: string;
-    amenities: Array<{ icon: string; label: string }>;
+    amenities: Array<{ key: string; icon: string; label: string }>;
     photoCount: number;
   }>;
 
@@ -156,7 +157,7 @@ export default function ResultsPage() {
   const activeAmenities = AMENITY_KEYS.filter(k => checkedAmenities[k]);
   if (activeAmenities.length > 0) {
     displayList = displayList.filter(h =>
-      activeAmenities.every(k => h.amenities.some(a => a.icon === AMENITY_FILTER_ICONS[k]))
+      activeAmenities.every(k => h.amenities.some(a => a.key === k))
     );
   }
 
@@ -176,12 +177,16 @@ export default function ResultsPage() {
   ];
 
   const amenitiesFilter: Array<{ key: AmenityKey; label: string }> = [
-    { key: 'freeWifi', label: t('results.filters.freeWifi') },
-    { key: 'breakfastIncluded', label: t('results.filters.breakfastIncluded') },
-    { key: 'pool', label: t('results.filters.pool') },
-    { key: 'parking', label: t('results.filters.parking') },
-    { key: 'petsAllowed', label: t('results.filters.petsAllowed') },
-    { key: 'airConditioning', label: t('results.filters.airConditioning') },
+    { key: 'wifi', label: t('results.filters.wifi') },
+    { key: 'ac', label: t('results.filters.ac') },
+    { key: 'tv', label: t('results.filters.tv') },
+    { key: 'minibar', label: t('results.filters.minibar') },
+    { key: 'balcony', label: t('results.filters.balcony') },
+    { key: 'jacuzzi', label: t('results.filters.jacuzzi') },
+    { key: 'desk', label: t('results.filters.desk') },
+    { key: 'kitchen', label: t('results.filters.kitchen') },
+    { key: 'private_pool', label: t('results.filters.private_pool') },
+    { key: 'garden_view', label: t('results.filters.garden_view') },
   ];
 
   const toggleAmenity = (key: AmenityKey) =>

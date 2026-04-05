@@ -70,12 +70,16 @@
       "rating": "Rating",
       "all": "All",
       "amenities": "Amenities",
-      "freeWifi": "Free Wi-Fi",
-      "breakfastIncluded": "Breakfast included",
-      "pool": "Pool",
-      "parking": "Parking",
-      "petsAllowed": "Pets allowed",
-      "airConditioning": "Air conditioning"
+      "wifi": "Wi-Fi",
+      "ac": "Air conditioning",
+      "tv": "TV",
+      "minibar": "Minibar",
+      "balcony": "Balcony",
+      "jacuzzi": "Jacuzzi",
+      "desk": "Desk",
+      "kitchen": "Kitchen",
+      "private_pool": "Private pool",
+      "garden_view": "Garden view"
     },
     "header": {
       "accommodationsFound": "{{count}} accommodations",
@@ -125,7 +129,10 @@
       "juniorSuite": "Junior Suite",
       "juniorFeatures": "1 King bed + sofa · 48 m2 · Ocean view · Max. 2 guests",
       "perNight": "per night",
-      "select": "Select"
+      "select": "Select",
+      "capacity_one": "{{count}} guest",
+      "capacity_other": "{{count}} guests",
+      "noRooms": "No rooms available for the selected dates and number of guests"
     },
     "guestReviews": "Guest reviews",
     "booking": {
