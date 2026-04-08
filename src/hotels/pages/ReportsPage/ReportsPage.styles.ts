@@ -1,3 +1,4 @@
+import React from 'react';
 import { styled, Box, Typography } from '@mui/material';
 import { palette } from '@/design-system/theme/palette';
 
@@ -112,12 +113,12 @@ export const TableWrapper = styled(Box)({
   flex: 1,
 });
 
-export const StyledTable = styled(Box)({
+export const StyledTable = styled(Box)<{ component?: React.ElementType }>({
   width: '100%',
   borderCollapse: 'collapse',
 });
 
-export const TableHeaderCell = styled(Box)({
+export const TableHeaderCell = styled(Box)<{ component?: React.ElementType }>({
   fontSize: 11,
   fontWeight: 600,
   color: palette.outline,
@@ -128,11 +129,11 @@ export const TableHeaderCell = styled(Box)({
   borderBottom: `1px solid ${palette.outlineVariant}`,
 });
 
-export const TableRow = styled(Box)({
+export const TableRow = styled(Box)<{ component?: React.ElementType }>({
   '&:hover': { background: palette.background },
 });
 
-export const TableCellCode = styled(Box)({
+export const TableCellCode = styled(Box)<{ component?: React.ElementType }>({
   padding: '10px 12px',
   fontSize: 12,
   fontFamily: 'monospace',
@@ -141,14 +142,14 @@ export const TableCellCode = styled(Box)({
   borderBottom: `1px solid ${palette.outlineVariant}`,
 });
 
-export const TableCell = styled(Box)({
+export const TableCell = styled(Box)<{ component?: React.ElementType }>({
   padding: '10px 12px',
   fontSize: 13,
   color: palette.onSurface,
   borderBottom: `1px solid ${palette.outlineVariant}`,
 });
 
-export const TableCellBold = styled(Box)({
+export const TableCellBold = styled(Box)<{ component?: React.ElementType }>({
   padding: '10px 12px',
   fontSize: 13,
   fontWeight: 600,
@@ -156,7 +157,7 @@ export const TableCellBold = styled(Box)({
   borderBottom: `1px solid ${palette.outlineVariant}`,
 });
 
-export const TableCellStatus = styled(Box)({
+export const TableCellStatus = styled(Box)<{ component?: React.ElementType }>({
   padding: '10px 12px',
   borderBottom: `1px solid ${palette.outlineVariant}`,
 });

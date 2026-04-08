@@ -1,3 +1,4 @@
+import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Typography, Button, IconButton } from '@mui/material';
 import { palette } from '@/design-system/theme/palette';
@@ -50,7 +51,7 @@ export const HeroEyebrow = styled(Typography)({
   textTransform: 'uppercase',
 });
 
-export const HeroTitle = styled(Typography)({
+export const HeroTitle = styled(Typography)<{ component?: React.ElementType }>({
   fontSize: 57,
   fontWeight: 700,
   color: '#ffffff',

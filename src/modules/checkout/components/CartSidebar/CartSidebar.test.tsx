@@ -6,10 +6,10 @@ import CartSidebar from './CartSidebar';
 import type { Cart } from '../../types';
 
 const mockCart: Cart = {
-  id: 1,
-  userId: 1,
-  roomId: 1,
-  hotelId: 1,
+  id: '1',
+  userId: '1',
+  roomId: '1',
+  hotelId: '1',
   hotelName: 'Hotel Test',
   roomName: 'Standard',
   pricePerNight: 250000,

@@ -1,5 +1,7 @@
+import React from 'react';
 import { styled } from '@mui/material/styles';
 import { Box, Typography } from '@mui/material';
+import type { ChangeEvent } from 'react';
 import { palette } from '@/design-system/theme/palette';
 
 /* ── Sidebar ── */
@@ -227,9 +229,17 @@ const inputBase = {
   '&:focus': { borderColor: palette.primary },
 };
 
-export const FormInput = styled(Box)(inputBase);
+export const FormInput = styled(Box)<{
+  component?: React.ElementType;
+  value?: string;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
+}>(inputBase);
 
-export const FormSelect = styled(Box)({
+export const FormSelect = styled(Box)<{
+  component?: React.ElementType;
+  defaultValue?: string;
+}>({
   ...inputBase,
   cursor: 'pointer',
 });

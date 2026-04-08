@@ -1,3 +1,4 @@
+import React from 'react';
 import { Button, type ButtonProps } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { palette } from '../theme/palette';
@@ -17,6 +18,8 @@ const sizeMap: Record<
 
 interface PillButtonProps extends Omit<ButtonProps, 'size'> {
   pillSize?: PillSize;
+  component?: React.ElementType;
+  to?: string;
 }
 
 const PillButton = styled(Button, {

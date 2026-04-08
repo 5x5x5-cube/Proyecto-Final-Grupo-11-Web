@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/renderWithProviders';
 import GuestInfoCard from './GuestInfoCard';
-import type { GuestInfo } from '../types';
+import type { GuestInfo } from '../../types';
 
 const mockGuest: GuestInfo = {
   name: 'Carlos Martinez',

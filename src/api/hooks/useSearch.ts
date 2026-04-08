@@ -38,7 +38,12 @@ export function useDestinations() {
       // Mock fallback: plain array with {name, country, gradient}
       if (Array.isArray(destRaw)) {
         return (
-          destRaw as Array<{ name: string; country: string; hotelCount: number; gradient: string }>
+          destRaw as unknown as Array<{
+            name: string;
+            country: string;
+            hotelCount: number;
+            gradient: string;
+          }>
         ).map(d => ({ ...d, minPrice: priceByCity[d.name] ?? 0 }));
       }
 

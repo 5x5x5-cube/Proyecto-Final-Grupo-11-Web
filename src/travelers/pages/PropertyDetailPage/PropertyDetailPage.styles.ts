@@ -1,3 +1,4 @@
+import React from 'react';
 import { styled, Box, Typography, IconButton } from '@mui/material';
 import { palette } from '@/design-system/theme/palette';
 
@@ -25,7 +26,7 @@ export const PriceHeadline = styled(Typography)({
   color: palette.primary,
 });
 
-export const PricePerNightLabel = styled(Typography)({
+export const PricePerNightLabel = styled(Typography)<{ component?: React.ElementType }>({
   fontSize: 16,
   fontWeight: 400,
   color: palette.onSurfaceVariant,
@@ -163,7 +164,7 @@ export const HotelTypeLabel = styled(Typography)({
   textTransform: 'uppercase',
 });
 
-export const HotelTitle = styled(Typography)({
+export const HotelTitle = styled(Typography)<{ component?: React.ElementType }>({
   fontSize: 30,
   fontWeight: 700,
   color: palette.onSurface,

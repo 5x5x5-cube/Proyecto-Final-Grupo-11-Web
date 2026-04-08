@@ -5,10 +5,10 @@ import HotelSummaryCard from './HotelSummaryCard';
 import type { Cart } from '../../types';
 
 const mockCart: Cart = {
-  id: 1,
-  userId: 1,
-  roomId: 1,
-  hotelId: 1,
+  id: '1',
+  userId: '1',
+  roomId: '1',
+  hotelId: '1',
   hotelName: 'Hotel Caribe Plaza',
   hotelType: 'Hotel · 5 estrellas',
   location: 'Centro Historico, Cartagena',
@@ -63,10 +63,10 @@ describe('HotelSummaryCard', () => {
 
   it('hides optional fields when not provided', () => {
     const minimalCart: Cart = {
-      id: 2,
-      userId: 1,
-      roomId: 2,
-      hotelId: 1,
+      id: '2',
+      userId: '1',
+      roomId: '2',
+      hotelId: '1',
       hotelName: 'Hotel Básico',
       roomName: 'Single',
       pricePerNight: 100000,

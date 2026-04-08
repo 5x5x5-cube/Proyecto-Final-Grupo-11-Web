@@ -67,6 +67,18 @@
 - Available methods: `showError(message)`, `showSuccess(message)`, `showSnackbar({ message, severity, duration })`
 - All error messages shown to users must come from i18n translation keys
 
+## E2E Testing (Playwright)
+
+- **Single `e2e/` folder** for all tests — no separate folders for mocked vs backend tests
+- **Page Object pattern**: page objects live in `e2e/pages/*.page.ts`, instantiated via fixtures in `e2e/fixtures.ts`
+- **Always import `test` and `expect` from `e2e/fixtures.ts`** (not from `@playwright/test` directly) — this provides page object fixtures and the `hasBackend` flag
+- **Backend-dependent tests** must include `test.skip(!hasBackend, 'Requires backend')` as the first line — they auto-skip when no backend is available
+- **`E2E_BACKEND_URL` env var**: when set, Playwright hits the external backend instead of the local Vite preview server. Stored as a GitHub repo variable (`Settings → Variables`)
+- **CI trigger**: comment `/run-e2e` on a PR (`.github/workflows/e2e-on-demand.yml`). Builds the app, runs all tests, and posts the result back as a PR comment. If `E2E_BACKEND_URL` is set in repo variables, backend-dependent tests also run
+- **E2E tests do NOT run automatically on PRs** — only on demand via the `/run-e2e` comment
+- **Local usage**: `yarn build && yarn test:e2e` (mocked) or `E2E_BACKEND_URL=https://... yarn test:e2e` (real backend)
+- Config: `playwright.config.ts`, excluded from ESLint (`eslint.config.js`) and Vitest (`vite.config.ts`)
+
 ## Pull Requests
 
 - All PRs must follow the template in `.github/PULL_REQUEST_TEMPLATE.md`
