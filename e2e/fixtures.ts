@@ -3,11 +3,25 @@ import { HomePage } from './pages/home.page';
 import { ResultsPage } from './pages/results.page';
 
 /**
+ * Whether a real backend is available.
+ * Tests that need a backend should call: test.skip(!hasBackend, 'Requires backend');
+ */
+export const hasBackend = !!process.env.E2E_BACKEND_URL;
+
+/**
  * Custom test fixtures that provide page objects to all tests.
  *
  * Usage:
- *   import { test, expect } from '../fixtures';
- *   test('my test', async ({ homePage, resultsPage }) => { ... });
+ *   import { test, expect, hasBackend } from './fixtures';
+ *
+ *   // Test that always runs (uses mocked data or doesn't need backend):
+ *   test('homepage loads', async ({ homePage }) => { ... });
+ *
+ *   // Test that requires a real backend:
+ *   test('booking flow creates a reservation', async ({ homePage }) => {
+ *     test.skip(!hasBackend, 'Requires backend');
+ *     ...
+ *   });
  */
 export const test = base.extend<{
   homePage: HomePage;

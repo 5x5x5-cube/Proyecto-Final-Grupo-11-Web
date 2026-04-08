@@ -1,5 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const backendUrl = process.env.E2E_BACKEND_URL;
+const localUrl = 'http://localhost:4173';
+
 export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
@@ -8,7 +11,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:4173',
+    baseURL: backendUrl || localUrl,
     trace: 'on-first-retry',
   },
   projects: [
@@ -17,9 +20,12 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: {
-    command: 'yarn preview',
-    url: 'http://localhost:4173',
-    reuseExistingServer: !process.env.CI,
-  },
+  // Only start the local preview server when no external backend URL is provided
+  ...(!backendUrl && {
+    webServer: {
+      command: 'yarn preview',
+      url: localUrl,
+      reuseExistingServer: !process.env.CI,
+    },
+  }),
 });
