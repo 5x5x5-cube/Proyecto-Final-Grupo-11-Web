@@ -74,11 +74,9 @@
 - **Always import `test` and `expect` from `e2e/fixtures.ts`** (not from `@playwright/test` directly) — this provides page object fixtures and the `hasBackend` flag
 - **Backend-dependent tests** must include `test.skip(!hasBackend, 'Requires backend')` as the first line — they auto-skip when no backend is available
 - **`E2E_BACKEND_URL` env var**: when set, Playwright hits the external backend instead of the local Vite preview server. Stored as a GitHub repo variable (`Settings → Variables`)
-- **CI triggers**:
-  - **Automatic on PRs** (`.github/workflows/pr-checks.yml` → `e2e` job): runs all tests against the local build — backend-dependent tests auto-skip
-  - **On demand via `/run-e2e` PR comment** (`.github/workflows/e2e-on-demand.yml`): runs all tests including backend-dependent ones (if `E2E_BACKEND_URL` is set in repo variables). Posts result back as a PR comment
+- **CI trigger**: comment `/run-e2e` on a PR (`.github/workflows/e2e-on-demand.yml`). Builds the app, runs all tests, and posts the result back as a PR comment. If `E2E_BACKEND_URL` is set in repo variables, backend-dependent tests also run
+- **E2E tests do NOT run automatically on PRs** — only on demand via the `/run-e2e` comment
 - **Local usage**: `yarn build && yarn test:e2e` (mocked) or `E2E_BACKEND_URL=https://... yarn test:e2e` (real backend)
-- **Transition plan**: as mock data is replaced by real API calls, more tests will need the backend. Eventually, the automatic PR e2e job can be removed and all e2e runs become on-demand via `/run-e2e`
 - Config: `playwright.config.ts`, excluded from ESLint (`eslint.config.js`) and Vitest (`vite.config.ts`)
 
 ## Pull Requests

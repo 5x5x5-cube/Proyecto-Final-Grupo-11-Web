@@ -94,8 +94,8 @@ yarn test:e2e:ui                 # modo UI interactivo (requiere build previo)
 
 **En CI:**
 
-- Los tests e2e corren automáticamente en cada PR contra `main` o `develop`
-- Para ejecutar manualmente (incluyendo tests que requieren backend), comenta `/run-e2e` en el PR
+- Los tests e2e **no corren automáticamente** — comenta `/run-e2e` en un PR para ejecutarlos
+- El workflow construye la app, corre los tests, y comenta el resultado en el PR
 
 **Tests con backend:**
 
