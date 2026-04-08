@@ -115,7 +115,7 @@ const MyReservationsPage: React.FC = () => {
     nights: number;
     guests: string;
     room: string;
-    status: string;
+    status: 'confirmed' | 'pending' | 'cancelled' | 'past';
     code: string;
     totalPriceCop: number;
   }>;

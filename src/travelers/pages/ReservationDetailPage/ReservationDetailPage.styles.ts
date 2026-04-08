@@ -1,3 +1,4 @@
+import React from 'react';
 import { styled, Box, Typography } from '@mui/material';
 import {
   primary,
@@ -84,7 +85,11 @@ export const SidebarSectionTitle = styled(Typography)({
   marginBottom: '8px',
 });
 
-export const SidebarMenuItem = styled(Box)<{ active?: boolean }>(({ active }) => ({
+export const SidebarMenuItem = styled(Box)<{
+  active?: boolean;
+  component?: React.ElementType;
+  to?: string;
+}>(({ active }) => ({
   display: 'flex',
   alignItems: 'center',
   gap: '12px',

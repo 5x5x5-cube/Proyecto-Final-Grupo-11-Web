@@ -1,3 +1,4 @@
+import React from 'react';
 import { styled, Box, Typography } from '@mui/material';
 import { palette } from '@/design-system/theme/palette';
 
@@ -88,7 +89,7 @@ export const DetailRow = styled(Box)({
   color: palette.onSurfaceVariant,
 });
 
-export const DetailStrong = styled(Box)({
+export const DetailStrong = styled(Box)<{ component?: React.ElementType }>({
   color: palette.onSurface,
   fontWeight: 600,
 });
@@ -189,7 +190,10 @@ export const FloatingLabel = styled(Typography)({
   zIndex: 1,
 });
 
-export const FormInput = styled(Box)({
+export const FormInput = styled(Box)<{
+  component?: React.ElementType;
+  placeholder?: string;
+}>({
   width: '100%',
   height: 48,
   border: `1px solid ${palette.outline}`,

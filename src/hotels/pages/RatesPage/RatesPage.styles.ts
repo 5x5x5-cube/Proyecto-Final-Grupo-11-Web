@@ -1,3 +1,4 @@
+import React from 'react';
 import { styled, Box, Typography } from '@mui/material';
 import { palette } from '@/design-system/theme/palette';
 
@@ -78,12 +79,12 @@ export const TableCardTitle = styled(Box)({
   color: palette.onSurface,
 });
 
-export const StyledTable = styled(Box)({
+export const StyledTable = styled(Box)<{ component?: React.ElementType }>({
   width: '100%',
   borderCollapse: 'collapse',
 });
 
-export const TableHeaderCell = styled(Box)({
+export const TableHeaderCell = styled(Box)<{ component?: React.ElementType }>({
   fontSize: 11,
   fontWeight: 600,
   color: palette.outline,
@@ -95,7 +96,10 @@ export const TableHeaderCell = styled(Box)({
   borderBottom: `1px solid ${palette.outlineVariant}`,
 });
 
-export const RateRow = styled(Box)<{ ownerState?: { selected?: boolean } }>(({ ownerState }) => ({
+export const RateRow = styled(Box)<{
+  ownerState?: { selected?: boolean };
+  component?: React.ElementType;
+}>(({ ownerState }) => ({
   borderBottom: `1px solid ${palette.outlineVariant}`,
   background: ownerState?.selected ? palette.surfaceContainer : 'transparent',
   '&:hover': {
@@ -103,7 +107,7 @@ export const RateRow = styled(Box)<{ ownerState?: { selected?: boolean } }>(({ o
   },
 }));
 
-export const RateCell = styled(Box)({
+export const RateCell = styled(Box)<{ component?: React.ElementType }>({
   padding: '12px 16px',
   fontSize: 13,
   color: palette.onSurface,
@@ -152,13 +156,13 @@ export const PriceText = styled(Typography)({
   color: palette.onSurface,
 });
 
-export const PriceUnit = styled(Box)({
+export const PriceUnit = styled(Box)<{ component?: React.ElementType }>({
   fontSize: 11,
   color: palette.outline,
   fontWeight: 400,
 });
 
-export const ValidityText = styled(Box)({
+export const ValidityText = styled(Box)<{ component?: React.ElementType }>({
   padding: '12px 16px',
   fontSize: 12,
   color: palette.onSurfaceVariant,
@@ -281,7 +285,10 @@ export const FloatingLabel = styled(Typography)({
   zIndex: 1,
 });
 
-export const FormSelect = styled(Box)({
+export const FormSelect = styled(Box)<{
+  component?: React.ElementType;
+  defaultValue?: string;
+}>({
   width: '100%',
   height: 48,
   border: `1px solid ${palette.outline}`,
@@ -333,7 +340,11 @@ export const CurrencyPrefix = styled(Box)({
   color: palette.onSurfaceVariant,
 });
 
-export const FormInput = styled(Box)({
+export const FormInput = styled(Box)<{
+  component?: React.ElementType;
+  defaultValue?: string;
+  placeholder?: string;
+}>({
   width: '100%',
   height: 48,
   border: `1px solid ${palette.outline}`,
@@ -347,7 +358,10 @@ export const FormInput = styled(Box)({
   boxSizing: 'border-box',
 });
 
-export const PriceInput = styled(Box)({
+export const PriceInput = styled(Box)<{
+  component?: React.ElementType;
+  defaultValue?: string;
+}>({
   flex: 1,
   height: 48,
   border: `1px solid ${palette.outline}`,

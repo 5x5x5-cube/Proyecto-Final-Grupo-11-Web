@@ -1,3 +1,4 @@
+import React from 'react';
 import { styled, Box, Typography } from '@mui/material';
 import { palette } from '@/design-system/theme/palette';
 
@@ -74,7 +75,7 @@ export const ViewAllLink = styled(Typography)({
   cursor: 'pointer',
 });
 
-export const TableHeader = styled(Box)({
+export const TableHeader = styled(Box)<{ component?: React.ElementType }>({
   padding: '12px 16px',
   textAlign: 'left',
   fontSize: 11,
@@ -85,12 +86,14 @@ export const TableHeader = styled(Box)({
   backgroundColor: palette.background,
 });
 
-export const TableCell = styled(Box)<{ isLast?: boolean }>(({ isLast }) => ({
-  padding: '14px 16px',
-  fontSize: 14,
-  color: palette.onSurface,
-  borderBottom: isLast ? 'none' : `1px solid ${palette.outlineVariant}`,
-}));
+export const TableCell = styled(Box)<{ isLast?: boolean; component?: React.ElementType }>(
+  ({ isLast }) => ({
+    padding: '14px 16px',
+    fontSize: 14,
+    color: palette.onSurface,
+    borderBottom: isLast ? 'none' : `1px solid ${palette.outlineVariant}`,
+  })
+);
 
 export const AvatarCircle = styled(Box)({
   width: 32,
@@ -106,7 +109,7 @@ export const AvatarCircle = styled(Box)({
   flexShrink: 0,
 });
 
-export const TableRow = styled(Box)({
+export const TableRow = styled(Box)<{ component?: React.ElementType }>({
   '&:hover td': { backgroundColor: '#fafefe' },
   cursor: 'pointer',
 });
