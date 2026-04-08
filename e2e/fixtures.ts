@@ -1,6 +1,9 @@
 import { test as base } from '@playwright/test';
 import { HomePage } from './pages/home.page';
 import { ResultsPage } from './pages/results.page';
+import { LoginPage } from './pages/login.page';
+import { RegisterPage } from './pages/register.page';
+import { PaymentPage } from './pages/payment.page';
 
 /**
  * Whether a real backend is available.
@@ -26,15 +29,28 @@ export const hasBackend = !!process.env.E2E_BACKEND_URL;
 export const test = base.extend<{
   homePage: HomePage;
   resultsPage: ResultsPage;
+  loginPage: LoginPage;
+  registerPage: RegisterPage;
+  paymentPage: PaymentPage;
 }>({
   homePage: async ({ page }, use) => {
-    const homePage = new HomePage(page);
-    await use(homePage);
+    await use(new HomePage(page));
   },
 
   resultsPage: async ({ page }, use) => {
-    const resultsPage = new ResultsPage(page);
-    await use(resultsPage);
+    await use(new ResultsPage(page));
+  },
+
+  loginPage: async ({ page }, use) => {
+    await use(new LoginPage(page));
+  },
+
+  registerPage: async ({ page }, use) => {
+    await use(new RegisterPage(page));
+  },
+
+  paymentPage: async ({ page }, use) => {
+    await use(new PaymentPage(page));
   },
 });
 
