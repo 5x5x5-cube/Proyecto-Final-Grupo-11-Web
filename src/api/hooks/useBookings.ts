@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { httpClient } from '../httpClient';
+import type { CreateBookingRequest } from '@/modules/checkout/types';
 
 export function useBookings() {
   return useQuery({
@@ -42,7 +43,7 @@ export function useCancelBooking() {
 export function useCreateBooking() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: unknown) => httpClient.post('/bookings', { body: data }),
+    mutationFn: (data: CreateBookingRequest) => httpClient.post('/bookings', { body: data }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
     },

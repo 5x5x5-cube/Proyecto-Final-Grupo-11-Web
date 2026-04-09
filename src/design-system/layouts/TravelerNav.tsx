@@ -1,12 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Box, Typography, Button, Menu, MenuItem } from '@mui/material';
+import { Box, Typography, Menu, MenuItem } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import SearchIcon from '@mui/icons-material/Search';
 import LanguageIcon from '@mui/icons-material/Language';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useTranslation } from 'react-i18next';
-import { useLocale, currencyNames, languageNames } from '../../contexts/LocaleContext';
-import type { Language, Currency } from '../../contexts/LocaleContext';
+import { useLocale, currencyNames, languageNames } from '@/contexts/LocaleContext';
+import type { Language, Currency } from '@/contexts/LocaleContext';
 import {
   primary,
   onPrimary,
@@ -256,45 +257,12 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
         </Box>
       ) : (
         <Box sx={{ display: 'flex', gap: '12px', alignItems: 'center', ml: 'auto' }}>
-          <Button
-            variant="text"
-            component={Link}
-            to="/reservations"
-            sx={{
-              height: 40,
-              px: '16px',
-              borderRadius: '100px',
-              fontFamily: "'Roboto', sans-serif",
-              fontSize: 14,
-              fontWeight: 500,
-              color: primary,
-              textTransform: 'none',
-              letterSpacing: '0.1px',
-            }}
-          >
+          <OutlinedPillButton pillSize="sm" component={Link} to="/reservations">
             {t('nav.myReservations')}
-          </Button>
-          <Button
-            variant="contained"
-            disableElevation
-            component={Link}
-            to="/login"
-            sx={{
-              height: 40,
-              px: '20px',
-              backgroundColor: primary,
-              borderRadius: '100px',
-              fontFamily: "'Roboto', sans-serif",
-              fontSize: 14,
-              fontWeight: 500,
-              color: '#ffffff',
-              textTransform: 'none',
-              letterSpacing: '0.1px',
-              '&:hover': { backgroundColor: primary },
-            }}
-          >
+          </OutlinedPillButton>
+          <PrimaryPillButton pillSize="sm" component={Link} to="/login">
             {t('nav.login')}
-          </Button>
+          </PrimaryPillButton>
         </Box>
       )}
     </Box>
