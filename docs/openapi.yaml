@@ -829,11 +829,34 @@ paths:
       operationId: getCart
       responses:
         '200':
-          description: Current user cart with price breakdown
+          description: Current cart with room details and price breakdown
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Cart'
+    put:
+      tags: [Cart]
+      summary: Set room in cart (replaces any existing item)
+      operationId: setCart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetCartRequest'
+      responses:
+        '200':
+          description: Cart updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cart'
+        '400':
+          description: Invalid room or dates
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       tags: [Cart]
       summary: Clear cart
@@ -841,56 +864,6 @@ paths:
       responses:
         '204':
           description: Cart cleared
-
-  /cart/items:
-    post:
-      tags: [Cart]
-      summary: Add room to cart
-      operationId: addCartItem
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AddCartItemRequest'
-      responses:
-        '200':
-          description: Item added to cart
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Cart'
-        '400':
-          description: Invalid item or room unavailable
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-
-  /cart/items/{itemId}:
-    delete:
-      tags: [Cart]
-      summary: Remove item from cart
-      operationId: removeCartItem
-      parameters:
-        - name: itemId
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Item removed, updated cart returned
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Cart'
-        '404':
-          description: Cart item not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
 
   # ──────────────────────────────────────────────
   # Payment Service
@@ -2019,12 +1992,14 @@ components:
         cancelled:
           type: integer
 
-    # ── Cart ───────────────────────────────────
-    CartItem:
+    # ── Cart (single-room) ────────────────────
+    Cart:
       type: object
-      required: [id, roomId, hotelId, hotelName, roomName, checkIn, checkOut, guests, pricePerNight, nights]
+      required: [id, userId, roomId, hotelId, hotelName, roomName, checkIn, checkOut, guests, pricePerNight, nights, subtotal, total, createdAt]
       properties:
         id:
+          type: integer
+        userId:
           type: integer
         roomId:
           type: integer
@@ -2032,8 +2007,23 @@ components:
           type: integer
         hotelName:
           type: string
+        hotelType:
+          type: string
+          description: "Hotel category label (e.g. 'Hotel · 5 estrellas')"
+        location:
+          type: string
+          description: "City / neighbourhood (e.g. 'Centro Histórico, Cartagena')"
+        rating:
+          type: number
+          description: Average guest rating (0-5)
+        reviewCount:
+          type: integer
+          description: Total number of guest reviews
         roomName:
           type: string
+        roomFeatures:
+          type: string
+          description: "Room amenities summary (e.g. '1 cama King · 32 m² · Vista al jardín')"
         checkIn:
           type: string
           format: date
@@ -2047,22 +2037,9 @@ components:
           description: Price per night in COP
         nights:
           type: integer
-
-    Cart:
-      type: object
-      required: [id, userId, items, subtotal, createdAt]
-      properties:
-        id:
-          type: integer
-        userId:
-          type: integer
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/CartItem'
         subtotal:
           type: number
-          description: Sum of (pricePerNight × nights) for all items, in COP
+          description: pricePerNight × nights, in COP
         tourismTax:
           type: number
           description: Tourism tax in COP
@@ -2079,7 +2056,7 @@ components:
           type: string
           format: date-time
 
-    AddCartItemRequest:
+    SetCartRequest:
       type: object
       required: [roomId, hotelId, checkIn, checkOut, guests]
       properties:

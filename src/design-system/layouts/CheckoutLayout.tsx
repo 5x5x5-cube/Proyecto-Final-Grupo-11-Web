@@ -16,38 +16,48 @@ const CheckoutLayout: React.FC<CheckoutLayoutProps> = ({ currentStep, sidebar, c
       {/* Top nav */}
       <Box
         sx={{
-          height: 72,
           backgroundColor: '#ffffff',
           borderBottom: `1px solid ${outlineVariant}`,
           display: 'flex',
+          flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
           padding: '0 48px',
           position: 'relative',
           flexShrink: 0,
         }}
       >
-        {/* Brand (left) */}
-        <Box sx={{ position: 'absolute', left: 48 }}>
-          <Link to="/" style={{ textDecoration: 'none' }}>
-            <Typography
-              sx={{
-                fontSize: 22,
-                fontWeight: 800,
-                color: primary,
-                letterSpacing: '-0.25px',
-              }}
-            >
-              <Box component="span" sx={{ fontWeight: 300 }}>
-                Travel
-              </Box>
-              Hub
-            </Typography>
-          </Link>
-        </Box>
+        <Box
+          sx={{
+            height: 72,
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            position: 'relative',
+          }}
+        >
+          {/* Brand (left) */}
+          <Box sx={{ position: 'absolute', left: 0 }}>
+            <Link to="/" style={{ textDecoration: 'none' }}>
+              <Typography
+                sx={{
+                  fontSize: 22,
+                  fontWeight: 800,
+                  color: primary,
+                  letterSpacing: '-0.25px',
+                }}
+              >
+                <Box component="span" sx={{ fontWeight: 300 }}>
+                  Travel
+                </Box>
+                Hub
+              </Typography>
+            </Link>
+          </Box>
 
-        {/* Stepper (centered) */}
-        <CheckoutStepper currentStep={currentStep} />
+          {/* Stepper (centered) */}
+          <CheckoutStepper currentStep={currentStep} />
+        </Box>
       </Box>
 
       {/* Body */}

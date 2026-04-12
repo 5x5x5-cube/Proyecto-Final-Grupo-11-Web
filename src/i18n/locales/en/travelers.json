@@ -13,7 +13,14 @@
       "selectDate": "Select date",
       "guests": "Guests",
       "defaultGuests": "1 adult",
-      "searchButton": "Search"
+      "guestsCount_one": "{{count}} adult",
+      "guestsCount_other": "{{count}} adults",
+      "searchButton": "Search",
+      "errors": {
+        "destination": "Select a destination",
+        "checkIn": "Select a check-in date",
+        "checkOut": "Select a check-out date"
+      }
     },
     "destinations": {
       "title": "Popular destinations",
@@ -63,16 +70,20 @@
       "rating": "Rating",
       "all": "All",
       "amenities": "Amenities",
-      "freeWifi": "Free Wi-Fi",
-      "breakfastIncluded": "Breakfast included",
-      "pool": "Pool",
-      "parking": "Parking",
-      "petsAllowed": "Pets allowed",
-      "airConditioning": "Air conditioning"
+      "wifi": "Wi-Fi",
+      "ac": "Air conditioning",
+      "tv": "TV",
+      "minibar": "Minibar",
+      "balcony": "Balcony",
+      "jacuzzi": "Jacuzzi",
+      "desk": "Desk",
+      "kitchen": "Kitchen",
+      "private_pool": "Private pool",
+      "garden_view": "Garden view"
     },
     "header": {
       "accommodationsFound": "{{count}} accommodations",
-      "foundIn": "found in Cartagena · Mar 15--20 · 2 guests",
+      "foundIn": "found · {{destination}} · {{dates}} · {{guests}}",
       "sortBy": "Sort by",
       "recommended": "Recommended",
       "priceLowToHigh": "Price: low to high",
@@ -88,7 +99,11 @@
       "viewRooms": "View rooms",
       "total": "total"
     },
-    "searchSummary": "Cartagena · Mar 15 -- Mar 20 · 2 guests"
+    "searchSummary": "Cartagena · Mar 15 -- Mar 20 · 2 guests",
+    "noResults": {
+      "title": "No accommodations available",
+      "subtitle": "We couldn't find any lodging for your search. Try different dates or destination."
+    }
   },
   "propertyDetail": {
     "hotelType": "Hotel · 5 stars",
@@ -114,7 +129,10 @@
       "juniorSuite": "Junior Suite",
       "juniorFeatures": "1 King bed + sofa · 48 m2 · Ocean view · Max. 2 guests",
       "perNight": "per night",
-      "select": "Select"
+      "select": "Select",
+      "capacity_one": "{{count}} guest",
+      "capacity_other": "{{count}} guests",
+      "noRooms": "No rooms available for the selected dates and number of guests"
     },
     "guestReviews": "Guest reviews",
     "booking": {
@@ -128,7 +146,13 @@
       "taxesAndFees": "Taxes and fees",
       "total": "Total",
       "reserveNow": "Reserve now",
-      "securePayment": "Secure payment · No additional charges"
+      "securePayment": "Secure payment · No additional charges",
+      "errors": {
+        "roomUnavailable": "This room is no longer available for the selected dates",
+        "serviceBusy": "The server is busy, please try again in a few seconds",
+        "generic": "Could not complete the reservation. Please try again",
+        "cartFailed": "Could not add the room to the cart. Please try again"
+      }
     },
     "cancellation": {
       "title": "Cancellation policy",
@@ -150,10 +174,10 @@
       "checkOutDate": "Thu, Mar 20 2026",
       "checkOutSub": "Check-out until 12:00 PM",
       "duration": "Duration",
-      "durationValue": "5 nights",
-      "durationSub": "2 adults",
-      "roomName": "Superior Room",
-      "roomFeatures": "1 King bed · 32 m2 · Garden view",
+      "nightsCount_one": "{{count}} night",
+      "nightsCount_other": "{{count}} nights",
+      "guestsCount_one": "{{count}} adult",
+      "guestsCount_other": "{{count}} adults",
       "perNight": "per night"
     },
     "guest": {

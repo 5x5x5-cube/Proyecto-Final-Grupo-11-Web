@@ -16,6 +16,16 @@ import FilterChip from '../components/FilterChip';
 import SearchField from '../components/SearchField';
 import ModalOverlay from '../components/ModalOverlay';
 import ProfileMenuRow from '../components/ProfileMenuRow';
+import Text from '../components/Text';
+import {
+  PrimaryPillButton,
+  OutlinedPillButton,
+  ErrorPillButton,
+  ErrorOutlinedPillButton,
+  SuccessPillButton,
+  NeutralPillButton,
+  NeutralOutlinedPillButton,
+} from '../components/PillButton';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
@@ -460,7 +470,7 @@ export default function DesignSystemPage() {
         </Section>
 
         {/* 13. Buttons */}
-        <Section title="Buttons">
+        <Section title="Buttons (MUI default)">
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
             <Button variant="contained">Contained</Button>
             <Button variant="outlined">Outlined</Button>
@@ -468,6 +478,55 @@ export default function DesignSystemPage() {
             <Button variant="contained" disabled>
               Disabled
             </Button>
+          </Box>
+        </Section>
+
+        <Section title="PillButton (Design System)">
+          <Typography sx={{ fontSize: 13, color: palette.onSurfaceVariant, mb: '12px' }}>
+            Pill-shaped buttons used across the app. Sizes: lg (52), md (48), sm (40), xs (36), xxs
+            (32).
+          </Typography>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+              <PrimaryPillButton pillSize="lg">Large</PrimaryPillButton>
+              <PrimaryPillButton pillSize="md">Medium</PrimaryPillButton>
+              <PrimaryPillButton pillSize="sm">Small</PrimaryPillButton>
+              <PrimaryPillButton pillSize="xs">Extra Small</PrimaryPillButton>
+              <PrimaryPillButton pillSize="xxs">XXS</PrimaryPillButton>
+            </Box>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+              <OutlinedPillButton pillSize="sm">Outlined</OutlinedPillButton>
+              <ErrorPillButton pillSize="sm">Error</ErrorPillButton>
+              <ErrorOutlinedPillButton pillSize="sm">Error Outlined</ErrorOutlinedPillButton>
+              <SuccessPillButton pillSize="sm">Success</SuccessPillButton>
+              <NeutralPillButton pillSize="sm">Neutral</NeutralPillButton>
+              <NeutralOutlinedPillButton pillSize="sm">Neutral Outlined</NeutralOutlinedPillButton>
+            </Box>
+            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '12px', alignItems: 'center' }}>
+              <PrimaryPillButton pillSize="lg" loading>
+                Loading
+              </PrimaryPillButton>
+              <PrimaryPillButton pillSize="sm" disabled>
+                Disabled
+              </PrimaryPillButton>
+            </Box>
+          </Box>
+        </Section>
+
+        <Section title="Text (Design System)">
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Text textVariant="sectionTitle">sectionTitle — Section Heading (18/600)</Text>
+            <Text textVariant="panelTitle">panelTitle — Panel Title (16/600)</Text>
+            <Text textVariant="cardSubheading">cardSubheading — Card Title (15/600)</Text>
+            <Text textVariant="bodyMedium">bodyMedium — Emphasized body (14/500)</Text>
+            <Text textVariant="bodySemibold">bodySemibold — Bold value (14/600)</Text>
+            <Text textVariant="body">body — Secondary body text (14)</Text>
+            <Text textVariant="hint">hint — Descriptive hint (13)</Text>
+            <Text textVariant="caption">caption — Small label (12)</Text>
+            <Text textVariant="overline">overline — Category Label (11/500 uppercase)</Text>
+            <Text textVariant="miniLabel">miniLabel — Section Divider (11/600 uppercase)</Text>
+            <Text textVariant="price">price — $250,000 (20/700)</Text>
+            <Text textVariant="priceSmall">priceSmall — $250,000 (16/700)</Text>
           </Box>
         </Section>
 
