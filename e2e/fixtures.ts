@@ -4,6 +4,8 @@ import { ResultsPage } from './pages/results.page';
 import { LoginPage } from './pages/login.page';
 import { RegisterPage } from './pages/register.page';
 import { PaymentPage } from './pages/payment.page';
+import { PropertyDetailPage } from './pages/property-detail.page';
+import { CartPage } from './pages/cart.page';
 
 /**
  * Whether a real backend is available.
@@ -32,6 +34,8 @@ export const test = base.extend<{
   loginPage: LoginPage;
   registerPage: RegisterPage;
   paymentPage: PaymentPage;
+  propertyDetailPage: PropertyDetailPage;
+  cartPage: CartPage;
 }>({
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
@@ -51,6 +55,14 @@ export const test = base.extend<{
 
   paymentPage: async ({ page }, use) => {
     await use(new PaymentPage(page));
+  },
+
+  propertyDetailPage: async ({ page }, use) => {
+    await use(new PropertyDetailPage(page));
+  },
+
+  cartPage: async ({ page }, use) => {
+    await use(new CartPage(page));
   },
 });
 
