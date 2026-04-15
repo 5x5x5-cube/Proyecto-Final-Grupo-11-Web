@@ -12,6 +12,8 @@ export default defineConfig({
   reporter: 'html',
   use: {
     baseURL: backendUrl || localUrl,
+    // EKS ALB uses a self-signed certificate; without this, Chromium rejects navigation
+    ignoreHTTPSErrors: true,
     trace: 'on-first-retry',
   },
   projects: [
