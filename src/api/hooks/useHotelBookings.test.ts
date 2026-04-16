@@ -177,20 +177,45 @@ describe('useHotelBookings', () => {
 });
 
 describe('useHotelBookingDetail', () => {
-  it('fetches a specific booking by ID', async () => {
-    const mockBooking = {
+  it('fetches and maps a specific booking by ID', async () => {
+    const mockRaw = {
       id: '1',
       code: 'BK-001',
       status: 'pending',
+      guestName: 'Maria Lopez',
+      guestEmail: 'maria@email.com',
+      guestPhone: '+57 310 000 0000',
+      checkIn: '2026-05-20',
+      checkOut: '2026-05-23',
+      guests: 2,
       totalPrice: 595000,
+      currency: 'COP',
+      createdAt: '2026-04-01T10:00:00Z',
+      priceBreakdown: null,
+      timeline: [],
     };
-    mockGet.mockResolvedValueOnce(mockBooking);
+    mockGet.mockResolvedValueOnce(mockRaw);
 
     const { result } = renderHook(() => useHotelBookingDetail('1'), { wrapper: createWrapper() });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
-    expect(result.current.data).toEqual(mockBooking);
+    expect(result.current.data).toMatchObject({
+      id: '1',
+      code: 'BK-001',
+      status: 'pending',
+      guestName: 'Maria Lopez',
+      guestEmail: 'maria@email.com',
+      guestPhone: '+57 310 000 0000',
+      checkIn: '2026-05-20',
+      checkOut: '2026-05-23',
+      nights: 3,
+      guests: 2,
+      totalPrice: 595000,
+      currency: 'COP',
+      priceBreakdown: null,
+      timeline: [],
+    });
     expect(mockGet).toHaveBeenCalledWith('/bookings/hotel/1');
   });
 });

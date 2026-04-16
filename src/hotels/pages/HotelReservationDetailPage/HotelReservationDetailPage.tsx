@@ -6,13 +6,10 @@ import { ErrorOutlinedPillButton, PrimaryPillButton } from '@/design-system/comp
 import PersonIcon from '@mui/icons-material/Person';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
-import PolicyIcon from '@mui/icons-material/Policy';
 import CloseIcon from '@mui/icons-material/Close';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone';
-import KingBedIcon from '@mui/icons-material/KingBed';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { useLocale } from '@/contexts/LocaleContext';
@@ -32,32 +29,16 @@ import {
   GuestAvatar,
   GuestName,
   ContactRow,
-  RoomSectionLabel,
-  RoomRow,
-  RoomImage,
-  RoomTitle,
-  RoomSubtitle,
-  AmenityChip,
   PriceLineLabel,
-  PaymentMethodRow,
-  PaymentMethodIcon,
-  PaymentMethodName,
-  PaymentMethodNumber,
   ApprovedBadge,
-  PolicyValue,
   HeaderRow,
   HeaderInfo,
   ActionButtons,
   ColumnStack,
   GuestRow,
   ContactsRow,
-  RoomLabelRow,
-  AmenitiesRow,
-  RoomPriceBox,
   PriceBreakdownStack,
   PriceRow,
-  PolicyRow,
-  PolicyStack,
 } from './HotelReservationDetailPage.styles';
 
 export default function HotelReservationDetailPage() {
@@ -90,6 +71,8 @@ export default function HotelReservationDetailPage() {
     );
   }
 
+  const pb = booking.priceBreakdown;
+
   return (
     <HotelAdminLayout activeNav="reservas" breadcrumbs={breadcrumbs}>
       {/* Page header card */}
@@ -98,20 +81,24 @@ export default function HotelReservationDetailPage() {
           <BookingCodeBadge>{booking.code}</BookingCodeBadge>
           <HeaderInfo>
             <HeaderTitle>
-              {t('reservationDetail.reservationOf', { name: 'Carlos Mendoza' })}
+              {t('reservationDetail.reservationOf', {
+                name: booking.guestName || '—',
+              })}
             </HeaderTitle>
             <HeaderMeta>
               <Icon sx={{ fontSize: 14 }}>calendar_today</Icon>
-              {t('reservationDetail.receivedOn', {
-                date: `${formatDate('2026-02-24', 'medium')}, 10:32 am`,
-              })}
+              {booking.createdAt
+                ? t('reservationDetail.receivedOn', {
+                    date: `${formatDate(booking.createdAt, 'medium')}`,
+                  })
+                : ''}
               <span>&middot;</span>
               <StatusChip status={booking.status as any} />
             </HeaderMeta>
           </HeaderInfo>
         </HeaderRow>
 
-        {/* Action buttons — only for pending bookings */}
+        {/* Botones de acción solo para reservas pendientes */}
         {booking.status === 'pending' && (
           <ActionButtons>
             <ErrorOutlinedPillButton
@@ -148,19 +135,20 @@ export default function HotelReservationDetailPage() {
                 <PersonIcon sx={{ fontSize: 28, color: palette.primary }} />
               </GuestAvatar>
               <div>
-                <GuestName>Carlos Andres Mendoza Lopez</GuestName>
-                <Text textVariant="caption" sx={{ mb: '6px' }}>
-                  Colombia · CC 1020303040
-                </Text>
+                <GuestName>{booking.guestName || '—'}</GuestName>
                 <ContactsRow>
-                  <ContactRow>
-                    <EmailIcon sx={{ fontSize: 14, color: palette.primary }} />
-                    carlos.mendoza@email.com
-                  </ContactRow>
-                  <ContactRow>
-                    <PhoneIcon sx={{ fontSize: 14, color: palette.primary }} />
-                    +57 310 456 7890
-                  </ContactRow>
+                  {booking.guestEmail && (
+                    <ContactRow>
+                      <EmailIcon sx={{ fontSize: 14, color: palette.primary }} />
+                      {booking.guestEmail}
+                    </ContactRow>
+                  )}
+                  {booking.guestPhone && (
+                    <ContactRow>
+                      <PhoneIcon sx={{ fontSize: 14, color: palette.primary }} />
+                      {booking.guestPhone}
+                    </ContactRow>
+                  )}
                 </ContactsRow>
               </div>
             </GuestRow>
@@ -176,60 +164,26 @@ export default function HotelReservationDetailPage() {
               items={[
                 {
                   label: t('reservationDetail.checkIn'),
-                  value: formatDate('2026-03-15', 'medium'),
+                  value: formatDate(booking.checkIn, 'medium'),
                   sub: t('reservationDetail.from', { time: '3:00 PM' }),
                 },
                 {
                   label: t('reservationDetail.checkOut'),
-                  value: formatDate('2026-03-18', 'medium'),
+                  value: formatDate(booking.checkOut, 'medium'),
                   sub: t('reservationDetail.until', { time: '12:00 PM' }),
                 },
                 {
                   label: t('reservationDetail.duration'),
-                  value: t('reservationDetail.nightsCount', { count: 3 }),
-                  sub: t('reservationDetail.hours', { count: 72 }),
+                  value: t('reservationDetail.nightsCount', { count: booking.nights }),
+                  sub: t('reservationDetail.hours', { count: booking.nights * 24 }),
                 },
                 {
                   label: t('reservationDetail.guests'),
-                  value: t('reservationDetail.adults', { count: 2 }),
+                  value: t('reservationDetail.adults', { count: booking.guests }),
                   sub: t('reservationDetail.noMinors'),
                 },
               ]}
             />
-
-            <Divider sx={{ borderColor: palette.outlineVariant, my: '16px' }} />
-
-            {/* Room info */}
-            <RoomLabelRow>
-              <Icon sx={{ fontSize: 18, color: palette.primary }}>bed</Icon>
-              <RoomSectionLabel>{t('reservationDetail.reservedRoom')}</RoomSectionLabel>
-            </RoomLabelRow>
-
-            <RoomRow>
-              <RoomImage>
-                <KingBedIcon sx={{ fontSize: 24, color: 'rgba(255,255,255,0.7)' }} />
-              </RoomImage>
-
-              <div>
-                <RoomTitle>Suite Deluxe King — Piso 4</RoomTitle>
-                <RoomSubtitle>1 cama King · Vista al mar · 45 m2</RoomSubtitle>
-                <AmenitiesRow>
-                  {['WiFi', 'A/C', 'Desayuno', 'Jacuzzi', 'Cancelacion gratuita'].map(amenity => (
-                    <AmenityChip key={amenity}>{amenity}</AmenityChip>
-                  ))}
-                </AmenitiesRow>
-              </div>
-
-              <RoomPriceBox>
-                <Text textVariant="priceSmall">
-                  {formatPrice(888000)}
-                  {t('reservationDetail.perNight')}
-                </Text>
-                <Text textVariant="caption">
-                  {t('reservationDetail.nightsTotal', { nights: 3, total: formatPrice(2664000) })}
-                </Text>
-              </RoomPriceBox>
-            </RoomRow>
           </SectionCard>
         </ColumnStack>
 
@@ -241,33 +195,34 @@ export default function HotelReservationDetailPage() {
             title={t('reservationDetail.paymentSummary')}
           >
             <PriceBreakdownStack>
-              {[
-                {
-                  label: t('reservationDetail.roomNights', { count: 3 }),
-                  value: formatPrice(2664000),
-                  color: palette.onSurface,
-                },
-                {
-                  label: t('reservationDetail.taxIVA'),
-                  value: formatPrice(505160),
-                  color: palette.onSurface,
-                },
-                {
-                  label: t('reservationDetail.serviceCharge'),
-                  value: formatPrice(80000),
-                  color: palette.onSurface,
-                },
-                {
-                  label: t('reservationDetail.discountApplied'),
-                  value: `-${formatPrice(100000)}`,
-                  color: palette.success,
-                },
-              ].map((row, index) => (
-                <PriceRow key={index}>
-                  <Text textVariant="hint">{row.label}</Text>
-                  <PriceLineLabel sx={{ color: row.color }}>{row.value}</PriceLineLabel>
-                </PriceRow>
-              ))}
+              {pb ? (
+                <>
+                  <PriceRow>
+                    <Text textVariant="hint">
+                      {t('reservationDetail.roomNights', { count: pb.nights })}
+                    </Text>
+                    <PriceLineLabel sx={{ color: palette.onSurface }}>
+                      {formatPrice(pb.basePrice)}
+                    </PriceLineLabel>
+                  </PriceRow>
+                  {pb.vat > 0 && (
+                    <PriceRow>
+                      <Text textVariant="hint">{t('reservationDetail.taxIVA')}</Text>
+                      <PriceLineLabel sx={{ color: palette.onSurface }}>
+                        {formatPrice(pb.vat)}
+                      </PriceLineLabel>
+                    </PriceRow>
+                  )}
+                  {pb.serviceFee > 0 && (
+                    <PriceRow>
+                      <Text textVariant="hint">{t('reservationDetail.serviceCharge')}</Text>
+                      <PriceLineLabel sx={{ color: palette.onSurface }}>
+                        {formatPrice(pb.serviceFee)}
+                      </PriceLineLabel>
+                    </PriceRow>
+                  )}
+                </>
+              ) : null}
 
               <Divider sx={{ borderColor: palette.outlineVariant, my: '4px' }} />
 
@@ -275,51 +230,18 @@ export default function HotelReservationDetailPage() {
                 <PriceLineLabel sx={{ fontWeight: 700, color: palette.onSurface }}>
                   {t('reservationDetail.totalCharged')}
                 </PriceLineLabel>
-                <Text textVariant="priceSmall">{formatPrice(3149160)}</Text>
+                <Text textVariant="priceSmall">
+                  {formatPrice(pb ? pb.totalPrice : booking.totalPrice)}
+                </Text>
               </PriceRow>
             </PriceBreakdownStack>
 
-            {/* Payment method */}
-            <PaymentMethodRow>
-              <PaymentMethodIcon>
-                <CreditCardIcon sx={{ fontSize: 16, color: palette.onPrimary }} />
-              </PaymentMethodIcon>
-              <div>
-                <PaymentMethodName>Visa Credito</PaymentMethodName>
-                <PaymentMethodNumber>**** **** **** 4821</PaymentMethodNumber>
-              </div>
-              <ApprovedBadge>
+            {booking.status === 'confirmed' && (
+              <ApprovedBadge sx={{ mt: '12px' }}>
                 <CheckCircleIcon sx={{ fontSize: 13 }} />
                 {t('reservationDetail.approved')}
               </ApprovedBadge>
-            </PaymentMethodRow>
-          </SectionCard>
-
-          {/* Cancellation policy card */}
-          <SectionCard
-            icon={<PolicyIcon sx={{ fontSize: 18, color: palette.primary }} />}
-            title={t('reservationDetail.cancellationPolicy')}
-          >
-            <PolicyStack>
-              <PolicyRow>
-                <Text textVariant="caption">{t('reservationDetail.freeCancellationUntil')}</Text>
-                <PolicyValue valueColor={palette.success}>
-                  {formatDate('2026-03-12', 'medium')}
-                </PolicyValue>
-              </PolicyRow>
-              <PolicyRow>
-                <Text textVariant="caption">{t('reservationDetail.penaltyAfter')}</Text>
-                <PolicyValue valueColor={palette.warning}>
-                  {t('reservationDetail.fiftyPercent')}
-                </PolicyValue>
-              </PolicyRow>
-              <PolicyRow>
-                <Text textVariant="caption">No-show</Text>
-                <PolicyValue valueColor={palette.error}>
-                  {t('reservationDetail.hundredPercent')}
-                </PolicyValue>
-              </PolicyRow>
-            </PolicyStack>
+            )}
           </SectionCard>
         </ColumnStack>
       </ContentGrid>
