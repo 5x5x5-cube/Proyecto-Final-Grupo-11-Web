@@ -415,12 +415,69 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'GET',
     pattern: /^\/bookings\/hotel$/,
-    handler: () => ok({ reservations: hotelReservations, summary: reservationSummary }),
+    handler: () =>
+      ok({
+        data: hotelReservations.map(r => ({
+          id: r.id,
+          code: r.code,
+          guestName: r.guest,
+          guestEmail: r.email,
+          roomId: r.id,
+          checkIn: r.checkIn,
+          checkOut: r.checkOut,
+          guests: 2,
+          status: r.status,
+          totalPrice: r.totalCop,
+          currency: 'COP',
+        })),
+        total: reservationSummary.total,
+        page: 1,
+        limit: 10,
+        summary: reservationSummary,
+      }),
   },
   {
     method: 'GET',
     pattern: /^\/bookings\/hotel\/([^/]+)$/,
-    handler: () => ok(hotelReservationDetail),
+    handler: () =>
+      ok({
+        id: hotelReservationDetail.id,
+        code: hotelReservationDetail.code,
+        status: hotelReservationDetail.status,
+        guestName: hotelReservationDetail.guest,
+        guestEmail: hotelReservationDetail.email,
+        guestPhone: hotelReservationDetail.phone,
+        checkIn: hotelReservationDetail.checkIn,
+        checkOut: hotelReservationDetail.checkOut,
+        guests: hotelReservationDetail.guests,
+        totalPrice: hotelReservationDetail.total,
+        currency: 'COP',
+        createdAt: '2026-02-24T10:32:00Z',
+        priceBreakdown: {
+          pricePerNight: hotelReservationDetail.pricePerNight,
+          nights: hotelReservationDetail.nights,
+          basePrice: hotelReservationDetail.total,
+          vat: hotelReservationDetail.tourismTax + hotelReservationDetail.vat,
+          serviceFee: 0,
+          totalPrice:
+            hotelReservationDetail.total +
+            hotelReservationDetail.tourismTax +
+            hotelReservationDetail.vat,
+          currency: 'COP',
+        },
+        timeline: [
+          {
+            event: 'booking_created',
+            timestamp: '2026-02-24T10:32:00Z',
+            description: 'Reserva registrada en el sistema',
+          },
+          {
+            event: 'confirmed',
+            timestamp: '2026-02-24T11:00:00Z',
+            description: 'Reserva confirmada por el hotel',
+          },
+        ],
+      }),
   },
   {
     method: 'POST',
@@ -428,7 +485,22 @@ export const mockHandlers: MockRoute[] = [
     handler: (config: RequestConfig | undefined) => {
       const action = (config?.body as { action?: string })?.action;
       const status = action === 'confirm' ? 'confirmed' : 'rejected';
-      return ok({ ...hotelReservationDetail, status: status as 'confirmed' | 'rejected' });
+      return ok({
+        id: hotelReservationDetail.id,
+        code: hotelReservationDetail.code,
+        status: status as 'confirmed' | 'rejected',
+        guestName: hotelReservationDetail.guest,
+        guestEmail: hotelReservationDetail.email,
+        guestPhone: hotelReservationDetail.phone,
+        checkIn: hotelReservationDetail.checkIn,
+        checkOut: hotelReservationDetail.checkOut,
+        guests: hotelReservationDetail.guests,
+        totalPrice: hotelReservationDetail.total,
+        currency: 'COP',
+        createdAt: '2026-02-24T10:32:00Z',
+        priceBreakdown: null,
+        timeline: [],
+      });
     },
   },
 

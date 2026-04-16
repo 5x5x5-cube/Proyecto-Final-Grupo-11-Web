@@ -19,6 +19,39 @@ export interface HotelBooking {
   paymentMethod: string;
 }
 
+export interface HotelBookingDetail {
+  id: string;
+  code: string;
+  status: string;
+  guestName: string;
+  guestEmail: string;
+  guestPhone: string;
+  checkIn: string;
+  checkOut: string;
+  nights: number;
+  guests: number;
+  totalPrice: number;
+  currency: string;
+  createdAt: string;
+  priceBreakdown: {
+    pricePerNight: number;
+    nights: number;
+    basePrice: number;
+    vat: number;
+    serviceFee: number;
+    totalPrice: number;
+    currency: string;
+  } | null;
+  timeline: Array<{ event: string; timestamp: string; description: string }>;
+}
+
+export interface HotelBookingFilters {
+  status?: string;
+  code?: string;
+  checkInFrom?: string;
+  checkInTo?: string;
+}
+
 interface BackendBooking {
   id: string;
   code: string;
@@ -45,11 +78,20 @@ interface BackendBookingResponse {
   summary: BookingSummary;
 }
 
-export function useHotelBookings() {
+export function useHotelBookings(filters: HotelBookingFilters = {}) {
   return useQuery({
-    queryKey: ['hotelBookings'],
+    queryKey: ['hotelBookings', filters],
     queryFn: async () => {
-      const raw = await httpClient.get<BackendBookingResponse>('/bookings/hotel');
+      const params: Record<string, string> = {};
+      if (filters.status) params.status = filters.status;
+      if (filters.code) params.code = filters.code;
+      if (filters.checkInFrom) params.checkInFrom = filters.checkInFrom;
+      if (filters.checkInTo) params.checkInTo = filters.checkInTo;
+
+      const hasFilters = Object.keys(params).length > 0;
+      const raw = hasFilters
+        ? await httpClient.get<BackendBookingResponse>('/bookings/hotel', { params })
+        : await httpClient.get<BackendBookingResponse>('/bookings/hotel');
 
       const reservations: HotelBooking[] = (raw.data ?? []).map(b => {
         const name = b.guestName ?? 'Guest';
@@ -90,7 +132,35 @@ export function useHotelBookings() {
 export function useHotelBookingDetail(bookingId: string) {
   return useQuery({
     queryKey: ['hotelBookings', bookingId],
-    queryFn: () => httpClient.get<HotelBooking>(`/bookings/hotel/${bookingId}`),
+    queryFn: async (): Promise<HotelBookingDetail> => {
+      const raw = await httpClient.get<any>(`/bookings/hotel/${bookingId}`);
+      const checkIn: string = raw.checkIn ?? raw.check_in ?? '';
+      const checkOut: string = raw.checkOut ?? raw.check_out ?? '';
+      const nights =
+        checkIn && checkOut
+          ? Math.max(
+              1,
+              Math.round((new Date(checkOut).getTime() - new Date(checkIn).getTime()) / 86400000)
+            )
+          : 1;
+      return {
+        id: raw.id,
+        code: raw.code,
+        status: raw.status ?? 'pending',
+        guestName: raw.guestName ?? raw.guest_name ?? '',
+        guestEmail: raw.guestEmail ?? raw.guest_email ?? '',
+        guestPhone: raw.guestPhone ?? raw.guest_phone ?? '',
+        checkIn,
+        checkOut,
+        nights,
+        guests: raw.guests ?? 1,
+        totalPrice: raw.totalPrice ?? raw.total_price ?? 0,
+        currency: raw.currency ?? 'COP',
+        createdAt: raw.createdAt ?? raw.created_at ?? '',
+        priceBreakdown: raw.priceBreakdown ?? raw.price_breakdown ?? null,
+        timeline: raw.timeline ?? [],
+      };
+    },
   });
 }
 
