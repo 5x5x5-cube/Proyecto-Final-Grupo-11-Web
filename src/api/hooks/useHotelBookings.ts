@@ -22,11 +22,57 @@ export interface HotelBooking {
 export function useHotelBookings() {
   return useQuery({
     queryKey: ['hotelBookings'],
-    queryFn: () =>
-      httpClient.get<{
-        reservations: HotelBooking[];
+    queryFn: async () => {
+      const raw = await httpClient.get<{
+        data: Array<{
+          id: string;
+          code: string;
+          guestName?: string;
+          guestEmail?: string;
+          roomId: string;
+          checkIn: string;
+          checkOut: string;
+          guests: number;
+          status: string;
+          totalPrice: number;
+          currency: string;
+        }>;
         summary: { total: number; confirmed: number; pending: number; cancelled: number };
-      }>('/bookings/hotel'),
+      }>('/bookings/hotel');
+
+      const reservations: HotelBooking[] = (raw.data ?? []).map(b => {
+        const name = b.guestName ?? 'Guest';
+        const initials = name
+          .split(' ')
+          .map(w => w[0])
+          .join('')
+          .slice(0, 2)
+          .toUpperCase();
+        const nights = Math.max(
+          1,
+          Math.round((new Date(b.checkOut).getTime() - new Date(b.checkIn).getTime()) / 86400000)
+        );
+        return {
+          id: b.id,
+          code: b.code,
+          guest: name,
+          email: b.guestEmail ?? '',
+          initials,
+          avatarColor: 'teal',
+          room: `Room`,
+          roomType: 'Standard',
+          checkIn: b.checkIn,
+          checkOut: b.checkOut,
+          nights,
+          status: b.status,
+          total: `${b.currency} ${b.totalPrice}`,
+          totalCop: b.totalPrice,
+          paymentMethod: 'card',
+        };
+      });
+
+      return { reservations, summary: raw.summary };
+    },
   });
 }
 
