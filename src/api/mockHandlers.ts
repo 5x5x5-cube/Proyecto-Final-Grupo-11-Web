@@ -415,7 +415,7 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'GET',
     pattern: /^\/bookings\/hotel$/,
-    handler: () => ok({ reservations: hotelReservations, summary: reservationSummary }),
+    handler: () => ok({ data: hotelReservations, summary: reservationSummary }),
   },
   {
     method: 'GET',

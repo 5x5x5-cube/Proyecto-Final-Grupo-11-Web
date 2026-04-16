@@ -19,14 +19,58 @@ export interface HotelBooking {
   paymentMethod: string;
 }
 
+function normalizeBooking(raw: any): HotelBooking {
+  const guestName: string = raw.guest ?? raw.guestName ?? '';
+  const initials = guestName
+    .split(' ')
+    .slice(0, 2)
+    .map((w: string) => w[0] ?? '')
+    .join('')
+    .toUpperCase();
+
+  const checkIn = raw.checkIn;
+  const checkOut = raw.checkOut;
+  const nights =
+    raw.nights ??
+    (checkIn && checkOut
+      ? Math.max(
+          1,
+          Math.round(
+            (new Date(checkOut).getTime() - new Date(checkIn).getTime()) / (1000 * 60 * 60 * 24)
+          )
+        )
+      : 1);
+
+  return {
+    id: raw.id,
+    code: raw.code,
+    guest: guestName,
+    email: raw.email ?? raw.guestEmail ?? '',
+    initials: initials || '?',
+    avatarColor: raw.avatarColor ?? 'teal',
+    room: raw.room ?? (raw.roomId ? raw.roomId.slice(0, 8) : '—'),
+    roomType: raw.roomType ?? '',
+    checkIn,
+    checkOut,
+    nights,
+    status: raw.status,
+    total: raw.total ?? String(raw.totalPrice ?? 0),
+    totalCop: raw.totalCop ?? raw.totalPrice ?? 0,
+    paymentMethod: raw.paymentMethod ?? '',
+  };
+}
+
 export function useHotelBookings() {
   return useQuery({
     queryKey: ['hotelBookings'],
-    queryFn: () =>
-      httpClient.get<{
-        reservations: HotelBooking[];
-        summary: { total: number; confirmed: number; pending: number; cancelled: number };
-      }>('/bookings/hotel'),
+    queryFn: async () => {
+      const raw = await httpClient.get<any>('/bookings/hotel');
+      const list: any[] = raw.data ?? raw.reservations ?? [];
+      return {
+        data: list.map(normalizeBooking),
+        summary: raw.summary,
+      };
+    },
   });
 }
 

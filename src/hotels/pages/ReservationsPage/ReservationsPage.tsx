@@ -62,7 +62,7 @@ export default function ReservationsPage() {
     );
   }
 
-  const { reservations: hotelReservations, summary: reservationSummary } = data as any;
+  const { data: hotelReservations, summary: reservationSummary } = data as any;
 
   return (
     <HotelAdminLayout
