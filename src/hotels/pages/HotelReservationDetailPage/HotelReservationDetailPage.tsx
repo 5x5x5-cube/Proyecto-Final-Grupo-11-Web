@@ -19,6 +19,7 @@ import { useLocale } from '@/contexts/LocaleContext';
 import HotelAdminLayout from '@/design-system/layouts/HotelAdminLayout';
 import SectionCard from '@/design-system/components/SectionCard';
 import InfoGrid from '@/design-system/components/InfoGrid';
+import StatusChip from '@/design-system/components/StatusChip';
 import { palette } from '@/design-system/theme/palette';
 import { useHotelBookingDetail, useUpdateBookingStatus } from '@/api/hooks/useHotelBookings';
 import HotelReservationDetailPageSkeleton from './HotelReservationDetailPage.skeleton';
@@ -27,7 +28,6 @@ import {
   BookingCodeBadge,
   HeaderTitle,
   HeaderMeta,
-  PendingBadge,
   ContentGrid,
   GuestAvatar,
   GuestName,
@@ -106,10 +106,7 @@ export default function HotelReservationDetailPage() {
                 date: `${formatDate('2026-02-24', 'medium')}, 10:32 am`,
               })}
               <span>&middot;</span>
-              <PendingBadge>
-                <Icon sx={{ fontSize: 14 }}>schedule</Icon>
-                {t('reservationDetail.pendingConfirmation')}
-              </PendingBadge>
+              <StatusChip status={booking.status as any} />
             </HeaderMeta>
           </HeaderInfo>
         </HeaderRow>
