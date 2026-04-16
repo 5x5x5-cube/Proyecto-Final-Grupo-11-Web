@@ -5,7 +5,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { useTranslation } from 'react-i18next';
 import { palette } from '../theme/palette';
 
-type Status = 'confirmed' | 'pending' | 'cancelled' | 'past';
+type Status = 'confirmed' | 'pending' | 'cancelled' | 'rejected' | 'past';
 
 export default function StatusChip({ status, label }: { status: Status; label?: string }) {
   const { t } = useTranslation('common');
@@ -31,6 +31,12 @@ export default function StatusChip({ status, label }: { status: Status; label?: 
       color: palette.error,
       icon: <CancelIcon sx={{ fontSize: 14 }} />,
       label: t('status.cancelled'),
+    },
+    rejected: {
+      bg: palette.errorContainer,
+      color: palette.error,
+      icon: <CancelIcon sx={{ fontSize: 14 }} />,
+      label: t('status.rejected'),
     },
     past: {
       bg: palette.outlineVariant,

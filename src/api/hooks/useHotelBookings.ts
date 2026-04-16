@@ -19,26 +19,37 @@ export interface HotelBooking {
   paymentMethod: string;
 }
 
+interface BackendBooking {
+  id: string;
+  code: string;
+  guestName?: string;
+  guestEmail?: string;
+  roomId: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  status: string;
+  totalPrice: number;
+  currency: string;
+}
+
+interface BookingSummary {
+  total: number;
+  confirmed: number;
+  pending: number;
+  cancelled: number;
+}
+
+interface BackendBookingResponse {
+  data: BackendBooking[];
+  summary: BookingSummary;
+}
+
 export function useHotelBookings() {
   return useQuery({
     queryKey: ['hotelBookings'],
     queryFn: async () => {
-      const raw = await httpClient.get<{
-        data: Array<{
-          id: string;
-          code: string;
-          guestName?: string;
-          guestEmail?: string;
-          roomId: string;
-          checkIn: string;
-          checkOut: string;
-          guests: number;
-          status: string;
-          totalPrice: number;
-          currency: string;
-        }>;
-        summary: { total: number; confirmed: number; pending: number; cancelled: number };
-      }>('/bookings/hotel');
+      const raw = await httpClient.get<BackendBookingResponse>('/bookings/hotel');
 
       const reservations: HotelBooking[] = (raw.data ?? []).map(b => {
         const name = b.guestName ?? 'Guest';
