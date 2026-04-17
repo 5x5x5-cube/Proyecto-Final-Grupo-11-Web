@@ -3,6 +3,7 @@
     "confirmed": "Confirmada",
     "pending": "Pendiente",
     "cancelled": "Cancelada",
+    "rejected": "Rechazada",
     "past": "Pasada"
   },
   "nav": {

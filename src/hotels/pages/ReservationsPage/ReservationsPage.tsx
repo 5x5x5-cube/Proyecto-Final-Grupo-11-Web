@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Box } from '@mui/material';
 import { NeutralPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
@@ -48,7 +49,13 @@ export default function ReservationsPage() {
   const { formatPrice, formatDate } = useLocale();
   const navigate = useNavigate();
 
-  const { data, isLoading } = useHotelBookings();
+  const [activeStatus, setActiveStatus] = useState<string>('');
+  const [searchCode, setSearchCode] = useState('');
+
+  const { data, isLoading } = useHotelBookings({
+    status: activeStatus || undefined,
+    code: searchCode || undefined,
+  });
 
   if (isLoading || !data) {
     return (
@@ -73,23 +80,40 @@ export default function ReservationsPage() {
       {/* Filter bar */}
       <FilterBar>
         <Box sx={{ maxWidth: 340, minWidth: 200 }}>
-          <SearchField placeholder={t('reservations.searchPlaceholder')} />
+          <SearchField
+            placeholder={t('reservations.searchPlaceholder')}
+            value={searchCode}
+            onChange={e => setSearchCode(e.target.value)}
+          />
         </Box>
 
         <FilterDivider />
 
         <FilterChip
           label={t('reservations.filterAll')}
-          selected
+          selected={activeStatus === ''}
           icon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
+          onClick={() => setActiveStatus('')}
         />
-        <FilterChip label={t('reservations.filterConfirmed')} />
-        <FilterChip label={t('reservations.filterPending')} />
-        <FilterChip label={t('reservations.filterCancelled')} />
+        <FilterChip
+          label={t('reservations.filterConfirmed')}
+          selected={activeStatus === 'confirmed'}
+          onClick={() => setActiveStatus('confirmed')}
+        />
+        <FilterChip
+          label={t('reservations.filterPending')}
+          selected={activeStatus === 'pending'}
+          onClick={() => setActiveStatus('pending')}
+        />
+        <FilterChip
+          label={t('reservations.filterCancelled')}
+          selected={activeStatus === 'cancelled'}
+          onClick={() => setActiveStatus('cancelled')}
+        />
 
         <FilterDivider />
 
-        {/* Date filter */}
+        {/* Date filter (visual) */}
         <DateFilterPill>
           <CalendarTodayIcon sx={{ fontSize: 16, color: palette.primary }} />
           {formatDate('2026-02-01', 'short')} – {formatDate('2026-02-28', 'medium')}
@@ -97,7 +121,14 @@ export default function ReservationsPage() {
 
         {/* Clear filters */}
         <Box sx={{ marginLeft: 'auto', flexShrink: 0 }}>
-          <ClearFiltersLink>{t('reservations.clearFilters')}</ClearFiltersLink>
+          <ClearFiltersLink
+            onClick={() => {
+              setActiveStatus('');
+              setSearchCode('');
+            }}
+          >
+            {t('reservations.clearFilters')}
+          </ClearFiltersLink>
         </Box>
       </FilterBar>
 
