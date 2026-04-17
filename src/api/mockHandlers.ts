@@ -24,6 +24,7 @@ interface MockRoute {
 
 const ok = (data: unknown) => ({ status: 200, data });
 const created = (data: unknown) => ({ status: 201, data });
+const accepted = (data: unknown) => ({ status: 202, data });
 
 // Reviews for property detail (inline since not in a separate mock file)
 const hotelReviews = [
@@ -401,14 +402,28 @@ export const mockHandlers: MockRoute[] = [
   // ─── Payments ───
   {
     method: 'POST',
+    pattern: /^\/payments\/tokenize$/,
+    handler: (config: RequestConfig | undefined) => {
+      const body = config?.body as { cardNumber?: string } | undefined;
+      const digits = (body?.cardNumber ?? '').replace(/\D/g, '');
+      const last4 = digits.slice(-4) || '0000';
+      return ok({
+        token: `tok_mock_${last4}`,
+        cardLast4: last4,
+        cardBrand: 'Visa',
+        expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+      });
+    },
+  },
+  {
+    method: 'POST',
     pattern: /^\/payments\/initiate$/,
-    handler: () =>
-      ok({ paymentId: 'pay-001', status: 'approved', redirectUrl: '/checkout/confirmation' }),
+    handler: () => accepted({ paymentId: 'pay-001', status: 'processing' }),
   },
   {
     method: 'GET',
     pattern: /^\/payments\/([^/]+)\/status$/,
-    handler: () => ok({ paymentId: 'pay-001', status: 'approved' }),
+    handler: () => ok({ paymentId: 'pay-001', status: 'approved', bookingCode: 'BK-MOCK001' }),
   },
 
   // ─── Hotel Bookings (Admin) ───
