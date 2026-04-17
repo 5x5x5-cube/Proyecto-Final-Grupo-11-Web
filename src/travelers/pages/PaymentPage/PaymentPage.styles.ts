@@ -239,6 +239,7 @@ export const FormInput = styled(Box)<{
 export const FormSelect = styled(Box)<{
   component?: React.ElementType;
   defaultValue?: string;
+  onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
 }>({
   ...inputBase,
   cursor: 'pointer',

@@ -1,15 +1,16 @@
-import { CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import LockIcon from '@mui/icons-material/Lock';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
+import { useSnackbar } from '@/contexts/SnackbarContext';
 import CheckoutLayout from '@/design-system/layouts/CheckoutLayout';
 import SectionCard from '@/design-system/components/SectionCard';
 import { palette } from '@/design-system/theme/palette';
-import { useInitiatePayment } from '@/api/hooks/usePayments';
+import { useTokenizeCard, useInitiatePayment, usePaymentStatus } from '@/api/hooks/usePayments';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import {
@@ -50,16 +51,43 @@ export default function PaymentPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
-  const payment = useInitiatePayment();
+  const { showError } = useSnackbar();
 
-  const [cardNumber, setCardNumber] = useState('');
+  const tokenize = useTokenizeCard();
+  const initiate = useInitiatePayment();
+
+  const [rawCardDigits, setRawCardDigits] = useState('');
+  const [cardDisplayValue, setCardDisplayValue] = useState('');
   const [cardHolder, setCardHolder] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
+  const [currency, setCurrency] = useState('COP');
 
-  const formatCardNumber = (value: string) => {
-    const digits = value.replace(/\D/g, '').slice(0, 16);
-    return digits.replace(/(.{4})/g, '$1 ').trim();
+  const [paymentId, setPaymentId] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  const paymentStatus = usePaymentStatus(paymentId);
+
+  // Format card number for display with masking: first 12 digits become dots, last 4 visible
+  const formatCardDisplay = (digits: string): string => {
+    if (digits.length <= 12) {
+      // No masking yet, show formatted digits
+      return digits.replace(/(.{4})/g, '$1 ').trim();
+    }
+    // Mask first 12, show last 4
+    const masked =
+      '\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 ' +
+      digits.slice(12);
+    return masked;
+  };
+
+  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Extract raw digits from what user types
+    const inputValue = e.target.value;
+    // If user is deleting, work from raw digits
+    const currentRaw = inputValue.replace(/[^\d]/g, '').slice(0, 16);
+    setRawCardDigits(currentRaw);
+    setCardDisplayValue(formatCardDisplay(currentRaw));
   };
 
   const formatExpiry = (value: string) => {
@@ -77,18 +105,84 @@ export default function PaymentPage() {
     return digits;
   };
 
-  const isCardNumberValid = cardNumber.replace(/\s/g, '').length === 16;
+  const isCardNumberValid = rawCardDigits.length === 16;
   const isExpiryValid = /^\d{2}\/\d{2}$/.test(expiry);
   const isCvvValid = cvv.length === 3;
   const isCardHolderValid = cardHolder.trim().length > 0;
 
   const isFormValid = isCardNumberValid && isExpiryValid && isCvvValid && isCardHolderValid;
 
+  const last4 = rawCardDigits.length >= 4 ? rawCardDigits.slice(-4) : '';
+  const previewCardNumber =
+    last4.length === 4
+      ? `\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 ${last4}`
+      : '\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022';
+  const previewHolder = cardHolder.trim()
+    ? cardHolder.toUpperCase()
+    : '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022';
+  const previewExpiry = isExpiryValid ? expiry : '\u2022\u2022/\u2022\u2022';
+
+  const showPaymentError = useCallback(() => {
+    showError(t('payment.errors.declined'));
+  }, [showError, t]);
+
+  // Watch polling results
+  useEffect(() => {
+    if (!paymentStatus.data) return;
+
+    if (paymentStatus.data.status === 'approved') {
+      setIsProcessing(false);
+      navigate('/checkout/confirmation', {
+        state: { bookingCode: paymentStatus.data.bookingCode },
+      });
+    } else if (paymentStatus.data.status === 'declined') {
+      setIsProcessing(false);
+      setPaymentId('');
+      showPaymentError();
+    }
+  }, [paymentStatus.data, navigate, showPaymentError]);
+
   const handlePay = () => {
-    if (!isFormValid || payment.isPending) return;
-    payment.mutate(
-      { cardNumber, cardHolder, expiry, cvv },
-      { onSuccess: () => navigate('/checkout/confirmation') }
+    if (!isFormValid || isProcessing) return;
+
+    setIsProcessing(true);
+
+    // Step 1: Tokenize card
+    tokenize.mutate(
+      {
+        cardNumber: rawCardDigits,
+        cardHolder,
+        expiry,
+        cvv,
+      },
+      {
+        onSuccess: tokenData => {
+          // Step 2: Initiate payment with token
+          initiate.mutate(
+            {
+              token: tokenData.token,
+              bookingId: 'booking-mock-001',
+              amount: 2664000,
+              currency,
+              method: 'card',
+            },
+            {
+              onSuccess: paymentData => {
+                // Step 3: Start polling
+                setPaymentId(paymentData.paymentId);
+              },
+              onError: () => {
+                setIsProcessing(false);
+                showError(t('payment.errors.generic'));
+              },
+            }
+          );
+        },
+        onError: () => {
+          setIsProcessing(false);
+          showError(t('payment.errors.tokenFailed'));
+        },
+      }
     );
   };
 
@@ -133,11 +227,11 @@ export default function PaymentPage() {
       <PrimaryPillButton
         fullWidth
         pillSize="lg"
-        disabled={!isFormValid || payment.isPending}
+        disabled={!isFormValid || isProcessing}
         onClick={handlePay}
         sx={{ height: 56, display: 'flex', alignItems: 'center', gap: '8px' }}
       >
-        {payment.isPending ? (
+        {isProcessing ? (
           <CircularProgress size={20} sx={{ color: '#fff' }} />
         ) : (
           <>
@@ -157,6 +251,34 @@ export default function PaymentPage() {
 
   return (
     <CheckoutLayout currentStep={3} sidebar={<PaymentSidebar />}>
+      {/* Processing overlay */}
+      {isProcessing && (
+        <Box
+          sx={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(255, 255, 255, 0.92)',
+            zIndex: 1300,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '16px',
+          }}
+        >
+          <CircularProgress size={48} sx={{ color: palette.primary }} />
+          <Text textVariant="panelTitle" sx={{ color: palette.onSurface }}>
+            {t('payment.processing')}
+          </Text>
+          <Text textVariant="caption" sx={{ color: palette.onSurfaceVariant }}>
+            {t('payment.processingSubtext')}
+          </Text>
+        </Box>
+      )}
+
       <CardList>
         <SectionCard
           icon={<PaymentsIcon sx={{ color: palette.primary, fontSize: 20 }} />}
@@ -187,17 +309,15 @@ export default function PaymentPage() {
                 <CardChip />
                 <CardBrand>VISA</CardBrand>
               </CardPreviewHeader>
-              <CardNumber>
-                &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; &bull;&bull;&bull;&bull; 4242
-              </CardNumber>
+              <CardNumber>{previewCardNumber}</CardNumber>
               <CardPreviewFooter>
                 <div>
                   <CardFieldLabel>{t('payment.cardPreview.cardHolder')}</CardFieldLabel>
-                  <CardFieldValue>CARLOS MARTINEZ</CardFieldValue>
+                  <CardFieldValue>{previewHolder}</CardFieldValue>
                 </div>
                 <div>
                   <CardFieldLabelRight>{t('payment.cardPreview.expires')}</CardFieldLabelRight>
-                  <CardFieldValue>12/28</CardFieldValue>
+                  <CardFieldValue>{previewExpiry}</CardFieldValue>
                 </div>
               </CardPreviewFooter>
             </CardPreview>
@@ -214,10 +334,8 @@ export default function PaymentPage() {
                 </Text>
                 <FormInput
                   component="input"
-                  value={cardNumber}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setCardNumber(formatCardNumber(e.target.value))
-                  }
+                  value={cardDisplayValue}
+                  onChange={handleCardNumberChange}
                   placeholder={t('payment.form.cardNumberPlaceholder')}
                 />
               </div>
@@ -280,7 +398,15 @@ export default function PaymentPage() {
                   >
                     {t('payment.form.currency')}
                   </Text>
-                  <FormSelect component="select" defaultValue={t('payment.form.currencies.cop')}>
+                  <FormSelect
+                    component="select"
+                    defaultValue={t('payment.form.currencies.cop')}
+                    onChange={(e: unknown) => {
+                      const val = (e as React.ChangeEvent<HTMLSelectElement>).target.value;
+                      const code = val.split(' ')[0] ?? 'COP';
+                      setCurrency(code);
+                    }}
+                  >
                     <option>{t('payment.form.currencies.cop')}</option>
                     <option>{t('payment.form.currencies.usd')}</option>
                     <option>{t('payment.form.currencies.mxn')}</option>
