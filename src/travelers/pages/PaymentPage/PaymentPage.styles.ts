@@ -103,18 +103,38 @@ const paymentTabBase = {
   flexDirection: 'column' as const,
   alignItems: 'center',
   gap: '8px',
+  background: 'transparent',
+  fontFamily: "'Roboto', sans-serif",
+  transition: 'border-color 120ms ease, background-color 120ms ease',
+  '&:focus-visible': {
+    outline: `2px solid ${palette.primary}`,
+    outlineOffset: '2px',
+  },
 };
 
-export const PaymentTabActive = styled(Box)({
+export const PaymentTab = styled('button', {
+  shouldForwardProp: prop => prop !== '$active',
+})<{ $active: boolean }>(({ $active }) => ({
   ...paymentTabBase,
-  border: `2px solid ${palette.primary}`,
-  backgroundColor: '#f0fbfc',
-});
+  border: `2px solid ${$active ? palette.primary : palette.outlineVariant}`,
+  backgroundColor: $active ? '#f0fbfc' : '#fff',
+}));
 
-export const PaymentTabInactive = styled(Box)({
-  ...paymentTabBase,
-  border: `2px solid ${palette.outlineVariant}`,
+export const PaymentTabLabel = styled(Typography, {
+  shouldForwardProp: prop => prop !== '$active',
+})<{ $active: boolean }>(({ $active }) => ({
+  fontSize: 13,
+  fontWeight: 500,
+  color: $active ? palette.primary : palette.onSurfaceVariant,
+}));
+
+export const MethodPlaceholder = styled(Box)({
+  padding: '24px',
+  borderRadius: '12px',
+  border: `1px dashed ${palette.outlineVariant}`,
   backgroundColor: '#fff',
+  textAlign: 'center',
+  color: palette.onSurfaceVariant,
 });
 
 export const PaymentTabEmoji = styled(Typography)({
