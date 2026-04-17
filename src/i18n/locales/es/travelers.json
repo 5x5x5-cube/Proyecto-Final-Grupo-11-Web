@@ -218,7 +218,9 @@
       "title": "Metodo de pago",
       "card": "Tarjeta",
       "digitalWallet": "Billetera digital",
-      "transfer": "Transferencia"
+      "transfer": "Transferencia",
+      "comingSoon": "Este metodo de pago estara disponible proximamente.",
+      "ariaLabel": "Seleccionar metodo de pago"
     },
     "cardPreview": {
       "cardHolder": "TITULAR",

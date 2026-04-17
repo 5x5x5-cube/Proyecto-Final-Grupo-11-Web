@@ -218,7 +218,9 @@
       "title": "Payment method",
       "card": "Card",
       "digitalWallet": "Digital wallet",
-      "transfer": "Transfer"
+      "transfer": "Transfer",
+      "comingSoon": "This payment method will be available soon.",
+      "ariaLabel": "Select payment method"
     },
     "cardPreview": {
       "cardHolder": "CARD HOLDER",

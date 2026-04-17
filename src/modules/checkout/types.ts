@@ -62,3 +62,6 @@ export interface GuestInfo {
   phone: string;
   initials: string;
 }
+
+/** Matches the `method` discriminator accepted by POST /payments/tokenize */
+export type PaymentMethod = 'credit_card' | 'digital_wallet' | 'transfer';
