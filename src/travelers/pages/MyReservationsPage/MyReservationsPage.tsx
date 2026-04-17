@@ -90,6 +90,10 @@ const UserSidebar: React.FC = () => {
           <MenuItemLabel>{item.label}</MenuItemLabel>
         </SidebarMenuItem>
       ))}
+
+      <Text textVariant="caption" sx={{ textAlign: 'center', opacity: 0.5 }}>
+        v{__APP_VERSION__}
+      </Text>
     </SidebarRoot>
   );
 };
