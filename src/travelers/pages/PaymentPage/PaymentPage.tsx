@@ -13,7 +13,7 @@ import { palette } from '@/design-system/theme/palette';
 import { useTokenizeCard, useInitiatePayment, usePaymentStatus } from '@/api/hooks/usePayments';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
-import type { PaymentMethod } from '@/modules/checkout/types';
+import type { PaymentMethod, WalletProvider } from '@/modules/checkout/types';
 import {
   SidebarContainer,
   SidebarTitle,
@@ -34,6 +34,7 @@ import {
   MethodPlaceholder,
 } from './PaymentPage.styles';
 import CardForm from './forms/CardForm';
+import WalletForm from './forms/WalletForm';
 
 export default function PaymentPage() {
   const navigate = useNavigate();
@@ -50,6 +51,8 @@ export default function PaymentPage() {
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
   const [currency, setCurrency] = useState('COP');
+  const [walletProvider, setWalletProvider] = useState<WalletProvider | ''>('');
+  const [walletEmail, setWalletEmail] = useState('');
 
   const [paymentId, setPaymentId] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -257,12 +260,6 @@ export default function PaymentPage() {
               })}
             </PaymentTabsRow>
 
-            {selectedMethod !== 'credit_card' && (
-              <MethodPlaceholder>
-                <Text textVariant="body">{t('payment.method.comingSoon')}</Text>
-              </MethodPlaceholder>
-            )}
-
             {selectedMethod === 'credit_card' && (
               <CardForm
                 rawCardDigits={rawCardDigits}
@@ -275,6 +272,21 @@ export default function PaymentPage() {
                 onCvvChange={setCvv}
                 onCurrencyChange={setCurrency}
               />
+            )}
+
+            {selectedMethod === 'digital_wallet' && (
+              <WalletForm
+                walletProvider={walletProvider}
+                onWalletProviderChange={setWalletProvider}
+                walletEmail={walletEmail}
+                onWalletEmailChange={setWalletEmail}
+              />
+            )}
+
+            {selectedMethod === 'transfer' && (
+              <MethodPlaceholder>
+                <Text textVariant="body">{t('payment.method.comingSoon')}</Text>
+              </MethodPlaceholder>
             )}
           </FormFieldsContainer>
         </SectionCard>

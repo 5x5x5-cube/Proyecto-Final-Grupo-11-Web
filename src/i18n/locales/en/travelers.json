@@ -241,7 +241,17 @@
         "ars": "ARS -- Argentine peso",
         "clp": "CLP -- Chilean peso",
         "pen": "PEN -- Peruvian sol"
-      }
+      },
+      "walletProvider": "Wallet provider",
+      "walletProviderPlaceholder": "Select a provider",
+      "walletProviders": {
+        "paypal": "PayPal",
+        "googlePay": "Google Pay",
+        "applePay": "Apple Pay"
+      },
+      "walletEmail": "Wallet email",
+      "walletEmailPlaceholder": "you@example.com",
+      "walletEmailInvalid": "Enter a valid email address"
     },
     "sidebar": {
       "title": "Booking summary",

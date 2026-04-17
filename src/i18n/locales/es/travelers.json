@@ -241,7 +241,17 @@
         "ars": "ARS -- Peso argentino",
         "clp": "CLP -- Peso chileno",
         "pen": "PEN -- Sol peruano"
-      }
+      },
+      "walletProvider": "Proveedor de billetera",
+      "walletProviderPlaceholder": "Seleccione un proveedor",
+      "walletProviders": {
+        "paypal": "PayPal",
+        "googlePay": "Google Pay",
+        "applePay": "Apple Pay"
+      },
+      "walletEmail": "Correo de la billetera",
+      "walletEmailPlaceholder": "tu@ejemplo.com",
+      "walletEmailInvalid": "Ingrese un correo electronico valido"
     },
     "sidebar": {
       "title": "Resumen de reserva",
