@@ -181,6 +181,10 @@ const ReservationDetailPage: React.FC = () => {
             <MenuItemLabel>{item.label}</MenuItemLabel>
           </SidebarBottomItem>
         ))}
+
+        <Text textVariant="caption" sx={{ textAlign: 'center', opacity: 0.5 }}>
+          v{__APP_VERSION__}
+        </Text>
       </UserSidebarContainer>
     );
   };

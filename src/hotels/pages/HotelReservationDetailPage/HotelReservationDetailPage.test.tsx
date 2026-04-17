@@ -139,6 +139,17 @@ describe('HotelReservationDetailPage', () => {
     });
   });
 
+  it('renders StatusChip for confirmed bookings', () => {
+    mockUseHotelBookingDetail.mockReturnValue({
+      data: { ...pendingBooking, status: 'confirmed' },
+      isLoading: false,
+    });
+
+    renderWithProviders(<HotelReservationDetailPage />);
+
+    expect(screen.getByText(/confirmed|confirmad/i)).toBeInTheDocument();
+  });
+
   it('hides action buttons for non-pending bookings', () => {
     mockUseHotelBookingDetail.mockReturnValue({
       data: { ...pendingBooking, status: 'confirmed' },

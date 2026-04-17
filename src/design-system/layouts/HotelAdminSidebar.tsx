@@ -249,6 +249,18 @@ const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => 
       >
         {bottomNavItems.map(renderNavItem)}
       </Box>
+
+      <Typography
+        sx={{
+          fontSize: 11,
+          textAlign: 'center',
+          color: onSurfaceVariant,
+          opacity: 0.5,
+          pt: '12px',
+        }}
+      >
+        v{__APP_VERSION__}
+      </Typography>
     </Box>
   );
 };
