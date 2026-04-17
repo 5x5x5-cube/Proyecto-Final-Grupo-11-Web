@@ -251,16 +251,26 @@ const inputBase = {
 
 export const FormInput = styled(Box)<{
   component?: React.ElementType;
+  type?: string;
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
   placeholder?: string;
+  'aria-invalid'?: boolean;
 }>(inputBase);
 
 export const FormSelect = styled(Box)<{
   component?: React.ElementType;
   defaultValue?: string;
+  value?: string;
   onChange?: (e: ChangeEvent<HTMLSelectElement>) => void;
 }>({
   ...inputBase,
   cursor: 'pointer',
+});
+
+export const FieldError = styled(Typography)({
+  fontSize: 12,
+  color: palette.error,
+  marginTop: '6px',
 });

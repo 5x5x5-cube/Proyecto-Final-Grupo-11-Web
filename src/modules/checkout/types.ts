@@ -65,3 +65,6 @@ export interface GuestInfo {
 
 /** Matches the `method` discriminator accepted by POST /payments/tokenize */
 export type PaymentMethod = 'credit_card' | 'digital_wallet' | 'transfer';
+
+/** Supported digital wallet providers sent as `walletProvider` to POST /payments/tokenize */
+export type WalletProvider = 'paypal' | 'google_pay' | 'apple_pay';
