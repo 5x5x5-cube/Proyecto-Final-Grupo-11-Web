@@ -32,20 +32,8 @@ import {
   PaymentTabEmoji,
   PaymentTabLabel,
   MethodPlaceholder,
-  CardPreview,
-  CardPreviewHeader,
-  CardChip,
-  CardBrand,
-  CardNumber,
-  CardPreviewFooter,
-  CardFieldLabel,
-  CardFieldLabelRight,
-  CardFieldValue,
-  FormFieldsGrid,
-  FormRowThreeCol,
-  FormInput,
-  FormSelect,
 } from './PaymentPage.styles';
+import CardForm from './forms/CardForm';
 
 export default function PaymentPage() {
   const navigate = useNavigate();
@@ -58,7 +46,6 @@ export default function PaymentPage() {
 
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('credit_card');
   const [rawCardDigits, setRawCardDigits] = useState('');
-  const [cardDisplayValue, setCardDisplayValue] = useState('');
   const [cardHolder, setCardHolder] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
@@ -68,43 +55,6 @@ export default function PaymentPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   const paymentStatus = usePaymentStatus(paymentId);
-
-  // Format card number for display with masking: first 12 digits become dots, last 4 visible
-  const formatCardDisplay = (digits: string): string => {
-    if (digits.length <= 12) {
-      // No masking yet, show formatted digits
-      return digits.replace(/(.{4})/g, '$1 ').trim();
-    }
-    // Mask first 12, show last 4
-    const masked =
-      '\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 ' +
-      digits.slice(12);
-    return masked;
-  };
-
-  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Extract raw digits from what user types
-    const inputValue = e.target.value;
-    // If user is deleting, work from raw digits
-    const currentRaw = inputValue.replace(/[^\d]/g, '').slice(0, 16);
-    setRawCardDigits(currentRaw);
-    setCardDisplayValue(formatCardDisplay(currentRaw));
-  };
-
-  const formatExpiry = (value: string) => {
-    const digits = value.replace(/\D/g, '').slice(0, 4);
-    if (digits.length >= 3) {
-      const month = digits.slice(0, 2);
-      const year = digits.slice(2);
-      if (parseInt(month, 10) > 12) return expiry;
-      return `${month}/${year}`;
-    }
-    if (digits.length === 2) {
-      if (parseInt(digits, 10) > 12) return expiry;
-      return digits;
-    }
-    return digits;
-  };
 
   const isCardNumberValid = rawCardDigits.length === 16;
   const isExpiryValid = /^\d{2}\/\d{2}$/.test(expiry);
@@ -123,16 +73,6 @@ export default function PaymentPage() {
     { value: 'digital_wallet', labelKey: 'payment.method.digitalWallet', emoji: '\uD83D\uDCF1' },
     { value: 'transfer', labelKey: 'payment.method.transfer', emoji: '\uD83C\uDFE6' },
   ];
-
-  const last4 = rawCardDigits.length >= 4 ? rawCardDigits.slice(-4) : '';
-  const previewCardNumber =
-    last4.length === 4
-      ? `\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 ${last4}`
-      : '\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022';
-  const previewHolder = cardHolder.trim()
-    ? cardHolder.toUpperCase()
-    : '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022';
-  const previewExpiry = isExpiryValid ? expiry : '\u2022\u2022/\u2022\u2022';
 
   const showPaymentError = useCallback(() => {
     showError(t('payment.errors.declined'));
@@ -324,122 +264,17 @@ export default function PaymentPage() {
             )}
 
             {selectedMethod === 'credit_card' && (
-              <>
-                {/* Card preview */}
-                <CardPreview>
-                  <CardPreviewHeader>
-                    <CardChip />
-                    <CardBrand>VISA</CardBrand>
-                  </CardPreviewHeader>
-                  <CardNumber>{previewCardNumber}</CardNumber>
-                  <CardPreviewFooter>
-                    <div>
-                      <CardFieldLabel>{t('payment.cardPreview.cardHolder')}</CardFieldLabel>
-                      <CardFieldValue>{previewHolder}</CardFieldValue>
-                    </div>
-                    <div>
-                      <CardFieldLabelRight>{t('payment.cardPreview.expires')}</CardFieldLabelRight>
-                      <CardFieldValue>{previewExpiry}</CardFieldValue>
-                    </div>
-                  </CardPreviewFooter>
-                </CardPreview>
-
-                {/* Card form */}
-                <FormFieldsGrid>
-                  {/* Card number */}
-                  <div>
-                    <Text
-                      textVariant="caption"
-                      sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}
-                    >
-                      {t('payment.form.cardNumber')}
-                    </Text>
-                    <FormInput
-                      component="input"
-                      value={cardDisplayValue}
-                      onChange={handleCardNumberChange}
-                      placeholder={t('payment.form.cardNumberPlaceholder')}
-                    />
-                  </div>
-
-                  {/* Card holder name */}
-                  <div>
-                    <Text
-                      textVariant="caption"
-                      sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}
-                    >
-                      {t('payment.form.cardHolderName')}
-                    </Text>
-                    <FormInput
-                      component="input"
-                      value={cardHolder}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setCardHolder(e.target.value)
-                      }
-                    />
-                  </div>
-
-                  {/* Row: Expiry, CVV, Currency */}
-                  <FormRowThreeCol>
-                    <div>
-                      <Text
-                        textVariant="caption"
-                        sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}
-                      >
-                        {t('payment.form.expiryDate')}
-                      </Text>
-                      <FormInput
-                        component="input"
-                        value={expiry}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          setExpiry(formatExpiry(e.target.value))
-                        }
-                        placeholder={t('payment.form.expiryPlaceholder')}
-                      />
-                    </div>
-                    <div>
-                      <Text
-                        textVariant="caption"
-                        sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}
-                      >
-                        {t('payment.form.cvv')}
-                      </Text>
-                      <FormInput
-                        component="input"
-                        value={cvv}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          setCvv(e.target.value.replace(/\D/g, '').slice(0, 3))
-                        }
-                        placeholder="&bull;&bull;&bull;"
-                      />
-                    </div>
-                    <div>
-                      <Text
-                        textVariant="caption"
-                        sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}
-                      >
-                        {t('payment.form.currency')}
-                      </Text>
-                      <FormSelect
-                        component="select"
-                        defaultValue={t('payment.form.currencies.cop')}
-                        onChange={(e: unknown) => {
-                          const val = (e as React.ChangeEvent<HTMLSelectElement>).target.value;
-                          const code = val.split(' ')[0] ?? 'COP';
-                          setCurrency(code);
-                        }}
-                      >
-                        <option>{t('payment.form.currencies.cop')}</option>
-                        <option>{t('payment.form.currencies.usd')}</option>
-                        <option>{t('payment.form.currencies.mxn')}</option>
-                        <option>{t('payment.form.currencies.ars')}</option>
-                        <option>{t('payment.form.currencies.clp')}</option>
-                        <option>{t('payment.form.currencies.pen')}</option>
-                      </FormSelect>
-                    </div>
-                  </FormRowThreeCol>
-                </FormFieldsGrid>
-              </>
+              <CardForm
+                rawCardDigits={rawCardDigits}
+                onRawCardDigitsChange={setRawCardDigits}
+                cardHolder={cardHolder}
+                onCardHolderChange={setCardHolder}
+                expiry={expiry}
+                onExpiryChange={setExpiry}
+                cvv={cvv}
+                onCvvChange={setCvv}
+                onCurrencyChange={setCurrency}
+              />
             )}
           </FormFieldsContainer>
         </SectionCard>
