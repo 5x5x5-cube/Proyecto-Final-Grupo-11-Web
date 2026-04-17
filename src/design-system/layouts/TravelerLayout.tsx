@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import TravelerNav from './TravelerNav';
-import { outlineVariant } from '../theme/palette';
+import { onSurfaceVariant, outlineVariant } from '../theme/palette';
 
 interface TravelerLayoutProps {
   variant?: 'home' | 'results' | 'detail' | 'reservations';
@@ -56,6 +56,19 @@ const TravelerLayout: React.FC<TravelerLayoutProps> = ({
             {sidebar}
           </Box>
         )}
+      </Box>
+
+      <Box
+        component="footer"
+        sx={{
+          borderTop: `1px solid ${outlineVariant}`,
+          padding: '8px 48px',
+          textAlign: 'right',
+          fontSize: '11px',
+          color: onSurfaceVariant,
+        }}
+      >
+        v{__APP_VERSION__}
       </Box>
     </Box>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import { Box } from '@mui/material';
 import HotelAdminSidebar from './HotelAdminSidebar';
 import HotelAdminTopbar from './HotelAdminTopbar';
+import { onSurfaceVariant, outlineVariant } from '../theme/palette';
 
 interface Breadcrumb {
   label: string;
@@ -43,6 +44,20 @@ const HotelAdminLayout: React.FC<HotelAdminLayoutProps> = ({
           actions={topbarActions}
         />
         {children}
+
+        <Box
+          component="footer"
+          sx={{
+            borderTop: `1px solid ${outlineVariant}`,
+            padding: '8px 48px',
+            textAlign: 'right',
+            fontSize: '11px',
+            color: onSurfaceVariant,
+            marginTop: '16px',
+          }}
+        >
+          v{__APP_VERSION__}
+        </Box>
       </Box>
     </Box>
   );
