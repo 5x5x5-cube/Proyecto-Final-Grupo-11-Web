@@ -219,7 +219,6 @@
       "card": "Tarjeta",
       "digitalWallet": "Billetera digital",
       "transfer": "Transferencia",
-      "comingSoon": "Este metodo de pago estara disponible proximamente.",
       "ariaLabel": "Seleccionar metodo de pago"
     },
     "cardPreview": {
@@ -251,7 +250,21 @@
       },
       "walletEmail": "Correo de la billetera",
       "walletEmailPlaceholder": "tu@ejemplo.com",
-      "walletEmailInvalid": "Ingrese un correo electronico valido"
+      "walletEmailInvalid": "Ingrese un correo electronico valido",
+      "bank": "Banco",
+      "bankPlaceholder": "Seleccione su banco",
+      "banks": {
+        "bancolombia": "Bancolombia",
+        "bogota": "Banco de Bogota",
+        "davivienda": "Davivienda",
+        "bbva": "BBVA",
+        "popular": "Banco Popular"
+      },
+      "accountNumber": "Numero de cuenta",
+      "accountNumberPlaceholder": "Ingrese su numero de cuenta",
+      "accountNumberInvalid": "El numero de cuenta debe tener al menos 6 digitos",
+      "accountHolder": "Titular de la cuenta",
+      "accountHolderPlaceholder": "Nombre completo del titular"
     },
     "sidebar": {
       "title": "Resumen de reserva",
