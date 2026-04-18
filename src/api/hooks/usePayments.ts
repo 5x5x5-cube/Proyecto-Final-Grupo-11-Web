@@ -47,10 +47,20 @@ interface InitiatePaymentResponse {
   status: string;
 }
 
+export interface PaymentMethodInfo {
+  id: string;
+  methodType: string;
+  displayLabel: string;
+  cardLast4: string | null;
+  cardBrand: string | null;
+}
+
 interface PaymentStatusResponse {
   paymentId: string;
   status: 'processing' | 'approved' | 'declined';
-  bookingCode?: string;
+  amount: number;
+  currency: string;
+  paymentMethod?: PaymentMethodInfo;
 }
 
 export function useTokenize() {

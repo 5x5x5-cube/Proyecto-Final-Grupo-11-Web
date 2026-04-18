@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Divider } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box, CircularProgress, Divider, Skeleton } from '@mui/material';
+import { Link, useParams } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import PlaceIcon from '@mui/icons-material/Place';
@@ -12,6 +12,9 @@ import InfoGrid from '@/design-system/components/InfoGrid';
 import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import { palette } from '@/design-system/theme/palette';
+import { usePaymentStatus } from '@/api/hooks/usePayments';
+import { useBookingByPaymentId } from '@/api/hooks/useBookings';
+import { useCart } from '@/api/hooks/useCart';
 import {
   ContentWrapper,
   SuccessIconCircle,
@@ -39,74 +42,131 @@ import {
 } from './ConfirmationPage.styles';
 
 /* --- Sidebar --- */
-const Sidebar: React.FC = () => {
+interface SidebarProps {
+  paymentId: string;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ paymentId }) => {
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
+
+  const { data: cart, isLoading: isCartLoading } = useCart();
+  const { data: paymentData, isLoading: isPaymentLoading } = usePaymentStatus(paymentId);
+  const { data: bookingData } = useBookingByPaymentId(paymentId);
+
+  const booking = bookingData?.data?.[0];
+
+  const hotelName = cart?.hotelName || booking?.hotelName || '';
+  const hotelType = cart?.hotelType || t('confirmation.sidebar.hotelType');
+  const location = cart?.location || '';
+  const checkIn = cart?.checkIn || '';
+  const checkOut = cart?.checkOut || '';
+  const roomName = cart?.roomName || t('confirmation.sidebar.roomValue');
+  const roomFeatures = cart?.roomFeatures || t('confirmation.sidebar.roomSub');
+  const guests = cart?.guests ?? 2;
+  const nights = cart?.nights ?? 0;
+
+  const paymentLabel = paymentData?.paymentMethod?.displayLabel || '';
+  const totalAmount = paymentData?.amount ?? cart?.total ?? 0;
+
+  const isLoading = isCartLoading || isPaymentLoading;
 
   return (
     <SidebarRoot>
       <SidebarTitle>{t('confirmation.sidebar.title')}</SidebarTitle>
 
       {/* Hotel mini card */}
-      <HotelMiniCard>
-        <HotelThumbnail />
-        <Box>
-          <HotelTypeLabel>{t('confirmation.sidebar.hotelType')}</HotelTypeLabel>
-          <HotelNameText>Hotel Santa Clara Sofitel</HotelNameText>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <PlaceIcon sx={{ fontSize: 14, color: palette.onSurfaceVariant }} />
-            <Text textVariant="hint">Centro Hist&oacute;rico, Cartagena</Text>
+      {isLoading ? (
+        <Box sx={{ display: 'flex', gap: '16px' }}>
+          <Skeleton variant="rounded" width={80} height={80} sx={{ borderRadius: '12px' }} />
+          <Box sx={{ flex: 1 }}>
+            <Skeleton width="60%" height={16} sx={{ mb: '8px' }} />
+            <Skeleton width="80%" height={20} sx={{ mb: '6px' }} />
+            <Skeleton width="50%" height={14} />
           </Box>
         </Box>
-      </HotelMiniCard>
+      ) : (
+        <HotelMiniCard>
+          <HotelThumbnail />
+          <Box>
+            <HotelTypeLabel>{hotelType}</HotelTypeLabel>
+            <HotelNameText>{hotelName}</HotelNameText>
+            {location && (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <PlaceIcon sx={{ fontSize: 14, color: palette.onSurfaceVariant }} />
+                <Text textVariant="hint">{location}</Text>
+              </Box>
+            )}
+          </Box>
+        </HotelMiniCard>
+      )}
 
       <Divider sx={{ borderColor: palette.outlineVariant }} />
 
       {/* Info grid */}
-      <InfoGrid
-        columns={2}
-        items={[
-          {
-            label: t('confirmation.sidebar.checkIn'),
-            value: formatDate('2026-03-15', 'mediumWithDay'),
-            sub: '3:00 PM',
-          },
-          {
-            label: t('confirmation.sidebar.checkOut'),
-            value: formatDate('2026-03-20', 'mediumWithDay'),
-            sub: '12:00 PM',
-          },
-          {
-            label: t('confirmation.sidebar.room'),
-            value: t('confirmation.sidebar.roomValue'),
-            sub: t('confirmation.sidebar.roomSub'),
-          },
-          {
-            label: t('confirmation.sidebar.guests'),
-            value: t('confirmation.sidebar.guestsValue'),
-            sub: t('confirmation.sidebar.guestsSub'),
-          },
-        ]}
-      />
+      {isLoading ? (
+        <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          {Array.from({ length: 4 }).map((_, i) => (
+            <Box key={i}>
+              <Skeleton width="50%" height={12} sx={{ mb: '4px' }} />
+              <Skeleton width="80%" height={16} sx={{ mb: '2px' }} />
+              <Skeleton width="40%" height={12} />
+            </Box>
+          ))}
+        </Box>
+      ) : (
+        <InfoGrid
+          columns={2}
+          items={[
+            {
+              label: t('confirmation.sidebar.checkIn'),
+              value: checkIn ? formatDate(checkIn, 'mediumWithDay') : '--',
+              sub: '3:00 PM',
+            },
+            {
+              label: t('confirmation.sidebar.checkOut'),
+              value: checkOut ? formatDate(checkOut, 'mediumWithDay') : '--',
+              sub: '12:00 PM',
+            },
+            {
+              label: t('confirmation.sidebar.room'),
+              value: roomName,
+              sub: roomFeatures,
+            },
+            {
+              label: t('confirmation.sidebar.guests'),
+              value: `${guests} adultos`,
+              sub: nights ? `${nights} noches` : '',
+            },
+          ]}
+        />
+      )}
 
       <Divider sx={{ borderColor: palette.outlineVariant }} />
 
       {/* Payment summary */}
-      <PaymentRow>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <CreditCardIcon sx={{ fontSize: 16, color: palette.primary }} />
-            <Text textVariant="hint">VISA &bull;&bull;&bull;&bull; 4242</Text>
+      {isPaymentLoading ? (
+        <Box>
+          <Skeleton width="100%" height={24} sx={{ mb: '8px' }} />
+          <Skeleton width="40%" height={16} />
+        </Box>
+      ) : (
+        <PaymentRow>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <CreditCardIcon sx={{ fontSize: 16, color: palette.primary }} />
+              <Text textVariant="hint">{paymentLabel}</Text>
+            </Box>
+            <PaymentAmount>{formatPrice(totalAmount)}</PaymentAmount>
           </Box>
-          <PaymentAmount>{formatPrice(2664000)}</PaymentAmount>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <PaymentSuccessPill>
-            <CheckCircleIcon sx={{ fontSize: 14, color: palette.success }} />
-            <PaymentSuccessText>{t('confirmation.sidebar.paymentSuccess')}</PaymentSuccessText>
-          </PaymentSuccessPill>
-        </Box>
-      </PaymentRow>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <PaymentSuccessPill>
+              <CheckCircleIcon sx={{ fontSize: 14, color: palette.success }} />
+              <PaymentSuccessText>{t('confirmation.sidebar.paymentSuccess')}</PaymentSuccessText>
+            </PaymentSuccessPill>
+          </Box>
+        </PaymentRow>
+      )}
 
       <Divider sx={{ borderColor: palette.outlineVariant }} />
 
@@ -141,9 +201,16 @@ const Sidebar: React.FC = () => {
 /* --- Main Content --- */
 const ConfirmationPage: React.FC = () => {
   const { t } = useTranslation('travelers');
+  const { paymentId } = useParams<{ paymentId: string }>();
+
+  const { data: bookingData } = useBookingByPaymentId(paymentId ?? '');
+
+  const booking = bookingData?.data?.[0];
+  const bookingCode = booking?.code;
+  const isBookingLoading = !bookingCode;
 
   return (
-    <CheckoutLayout currentStep={4} sidebar={<Sidebar />}>
+    <CheckoutLayout currentStep={4} sidebar={<Sidebar paymentId={paymentId ?? ''} />}>
       <ContentWrapper>
         <SuccessIconCircle>
           <CheckCircleIcon sx={{ fontSize: 52, color: palette.success }} />
@@ -155,7 +222,16 @@ const ConfirmationPage: React.FC = () => {
 
         <BookingCodeCard>
           <BookingCodeLabel>{t('confirmation.bookingNumber')}</BookingCodeLabel>
-          <BookingCodeValue>TH-2026-48291</BookingCodeValue>
+          {isBookingLoading ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <CircularProgress size={18} sx={{ color: palette.primary }} />
+              <BookingCodeValue sx={{ fontSize: 18, letterSpacing: 0 }}>
+                Generando...
+              </BookingCodeValue>
+            </Box>
+          ) : (
+            <BookingCodeValue>{bookingCode}</BookingCodeValue>
+          )}
         </BookingCodeCard>
 
         <EmailNoticePill>

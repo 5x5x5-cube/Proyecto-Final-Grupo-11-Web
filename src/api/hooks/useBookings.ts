@@ -2,6 +2,34 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { httpClient } from '../httpClient';
 import type { CreateBookingRequest } from '@/modules/checkout/types';
 
+export interface BookingSummary {
+  code: string;
+  status: string;
+  hotelName: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  total: number;
+}
+
+interface BookingByPaymentResponse {
+  data: BookingSummary[];
+  total: number;
+}
+
+export function useBookingByPaymentId(paymentId: string) {
+  return useQuery<BookingByPaymentResponse>({
+    queryKey: ['bookings', 'payment', paymentId],
+    queryFn: () => httpClient.get(`/bookings?paymentId=${paymentId}`),
+    enabled: !!paymentId,
+    refetchInterval: query => {
+      const data = query.state.data;
+      if (data?.data?.length && data.data.length > 0) return false;
+      return 2000;
+    },
+  });
+}
+
 export function useBookings() {
   return useQuery({
     queryKey: ['bookings'],

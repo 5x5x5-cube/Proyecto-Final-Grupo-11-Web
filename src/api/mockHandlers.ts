@@ -348,6 +348,25 @@ export const mockHandlers: MockRoute[] = [
   // ─── Bookings (Traveler) ───
   {
     method: 'GET',
+    pattern: /^\/bookings\?paymentId=/,
+    handler: () =>
+      ok({
+        data: [
+          {
+            code: 'BK-MOCK001',
+            status: 'confirmed',
+            hotelName: 'Hotel Santa Clara Sofitel',
+            checkIn: '2026-03-15',
+            checkOut: '2026-03-20',
+            guests: 2,
+            total: 2664000,
+          },
+        ],
+        total: 1,
+      }),
+  },
+  {
+    method: 'GET',
     pattern: /^\/bookings$/,
     handler: () => ok(mockReservations),
   },
@@ -468,7 +487,20 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'GET',
     pattern: /^\/payments\/([^/]+)$/,
-    handler: () => ok({ paymentId: 'pay-001', status: 'approved', bookingCode: 'BK-MOCK001' }),
+    handler: () =>
+      ok({
+        paymentId: 'pay-001',
+        status: 'approved',
+        amount: 2664000,
+        currency: 'COP',
+        paymentMethod: {
+          id: 'pm-001',
+          methodType: 'credit_card',
+          displayLabel: 'VISA ····4242',
+          cardLast4: '4242',
+          cardBrand: 'VISA',
+        },
+      }),
   },
 
   // ─── Hotel Bookings (Admin) ───

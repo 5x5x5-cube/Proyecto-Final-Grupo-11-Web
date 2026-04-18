@@ -106,9 +106,7 @@ export default function PaymentPage() {
 
     if (paymentStatus.data.status === 'approved') {
       setIsProcessing(false);
-      navigate('/checkout/confirmation', {
-        state: { bookingCode: paymentStatus.data.bookingCode },
-      });
+      navigate(`/checkout/confirmation/${paymentStatus.data.paymentId}`);
     } else if (paymentStatus.data.status === 'declined') {
       setIsProcessing(false);
       setPaymentId('');
