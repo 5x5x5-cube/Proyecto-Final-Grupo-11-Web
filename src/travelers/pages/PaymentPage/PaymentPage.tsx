@@ -31,10 +31,10 @@ import {
   PaymentTab,
   PaymentTabEmoji,
   PaymentTabLabel,
-  MethodPlaceholder,
 } from './PaymentPage.styles';
 import CardForm from './forms/CardForm';
 import WalletForm from './forms/WalletForm';
+import TransferForm from './forms/TransferForm';
 
 export default function PaymentPage() {
   const navigate = useNavigate();
@@ -53,6 +53,9 @@ export default function PaymentPage() {
   const [currency, setCurrency] = useState('COP');
   const [walletProvider, setWalletProvider] = useState<WalletProvider | ''>('');
   const [walletEmail, setWalletEmail] = useState('');
+  const [bankCode, setBankCode] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [accountHolder, setAccountHolder] = useState('');
 
   const [paymentId, setPaymentId] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -284,9 +287,14 @@ export default function PaymentPage() {
             )}
 
             {selectedMethod === 'transfer' && (
-              <MethodPlaceholder>
-                <Text textVariant="body">{t('payment.method.comingSoon')}</Text>
-              </MethodPlaceholder>
+              <TransferForm
+                bankCode={bankCode}
+                onBankCodeChange={setBankCode}
+                accountNumber={accountNumber}
+                onAccountNumberChange={setAccountNumber}
+                accountHolder={accountHolder}
+                onAccountHolderChange={setAccountHolder}
+              />
             )}
           </FormFieldsContainer>
         </SectionCard>

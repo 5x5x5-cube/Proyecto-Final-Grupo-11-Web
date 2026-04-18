@@ -219,7 +219,6 @@
       "card": "Card",
       "digitalWallet": "Digital wallet",
       "transfer": "Transfer",
-      "comingSoon": "This payment method will be available soon.",
       "ariaLabel": "Select payment method"
     },
     "cardPreview": {
@@ -251,7 +250,21 @@
       },
       "walletEmail": "Wallet email",
       "walletEmailPlaceholder": "you@example.com",
-      "walletEmailInvalid": "Enter a valid email address"
+      "walletEmailInvalid": "Enter a valid email address",
+      "bank": "Bank",
+      "bankPlaceholder": "Select your bank",
+      "banks": {
+        "bancolombia": "Bancolombia",
+        "bogota": "Banco de Bogota",
+        "davivienda": "Davivienda",
+        "bbva": "BBVA",
+        "popular": "Banco Popular"
+      },
+      "accountNumber": "Account number",
+      "accountNumberPlaceholder": "Enter your account number",
+      "accountNumberInvalid": "Account number must be at least 6 digits",
+      "accountHolder": "Account holder",
+      "accountHolderPlaceholder": "Full name as on the bank account"
     },
     "sidebar": {
       "title": "Booking summary",

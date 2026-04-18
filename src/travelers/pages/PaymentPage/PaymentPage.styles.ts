@@ -128,15 +128,6 @@ export const PaymentTabLabel = styled(Typography, {
   color: $active ? palette.primary : palette.onSurfaceVariant,
 }));
 
-export const MethodPlaceholder = styled(Box)({
-  padding: '24px',
-  borderRadius: '12px',
-  border: `1px dashed ${palette.outlineVariant}`,
-  backgroundColor: '#fff',
-  textAlign: 'center',
-  color: palette.onSurfaceVariant,
-});
-
 export const PaymentTabEmoji = styled(Typography)({
   fontSize: 28,
 });
@@ -252,6 +243,7 @@ const inputBase = {
 export const FormInput = styled(Box)<{
   component?: React.ElementType;
   type?: string;
+  inputMode?: React.HTMLAttributes<HTMLInputElement>['inputMode'];
   value?: string;
   onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
   onBlur?: (e: React.FocusEvent<HTMLInputElement>) => void;
