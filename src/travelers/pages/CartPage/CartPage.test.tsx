@@ -88,7 +88,7 @@ describe('CartPage', () => {
     }
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('/checkout/payment');
+      expect(mockNavigate).toHaveBeenCalledWith('/checkout/payment', { state: { cartId: 1 } });
     });
   });
 

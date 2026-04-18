@@ -210,7 +210,8 @@
     "errors": {
       "declined": "The transaction could not be processed. Please verify your details or contact your bank.",
       "generic": "An error occurred while processing the payment. Please try again.",
-      "tokenFailed": "Could not verify card details. Please check and try again."
+      "tokenFailed": "Could not verify card details. Please check and try again.",
+      "noCart": "Cart not found. Please try again."
     },
     "processing": "Processing payment...",
     "processingSubtext": "Do not close this window",

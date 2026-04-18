@@ -402,7 +402,7 @@ export const mockHandlers: MockRoute[] = [
   // ─── Payments ───
   {
     method: 'POST',
-    pattern: /^\/payments\/tokenize$/,
+    pattern: /^\/gateway\/tokenize$/,
     handler: (config: RequestConfig | undefined) => {
       const body = config?.body as
         | {
@@ -467,7 +467,7 @@ export const mockHandlers: MockRoute[] = [
   },
   {
     method: 'GET',
-    pattern: /^\/payments\/([^/]+)\/status$/,
+    pattern: /^\/payments\/([^/]+)$/,
     handler: () => ok({ paymentId: 'pay-001', status: 'approved', bookingCode: 'BK-MOCK001' }),
   },
 

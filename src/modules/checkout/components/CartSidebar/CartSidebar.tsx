@@ -78,7 +78,7 @@ export default function CartSidebar({ cart, onContinue, onHoldExpired }: Props) 
         </BreakdownRow>
       </BreakdownList>
 
-      <PrimaryPillButton pillSize="lg" fullWidth onClick={onContinue}>
+      <PrimaryPillButton pillSize="lg" fullWidth onClick={onContinue} disabled={!cart.id}>
         {t('cart.sidebar.continueToPayment')}
       </PrimaryPillButton>
 
