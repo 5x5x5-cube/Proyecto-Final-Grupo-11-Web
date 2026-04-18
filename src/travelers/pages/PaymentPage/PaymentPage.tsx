@@ -12,6 +12,7 @@ import SectionCard from '@/design-system/components/SectionCard';
 import { palette } from '@/design-system/theme/palette';
 import { useTokenize, useInitiatePayment, usePaymentStatus } from '@/api/hooks/usePayments';
 import type { TokenizeRequest } from '@/api/hooks/usePayments';
+import { useCart } from '@/api/hooks/useCart';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import type { PaymentMethod, WalletProvider } from '@/modules/checkout/types';
@@ -45,13 +46,14 @@ export default function PaymentPage() {
 
   const tokenize = useTokenize();
   const initiate = useInitiatePayment();
+  const { data: cart } = useCart();
 
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('credit_card');
   const [rawCardDigits, setRawCardDigits] = useState('');
   const [cardHolder, setCardHolder] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
-  const [currency, setCurrency] = useState('COP');
+  const [, setCurrency] = useState('COP');
   const [walletProvider, setWalletProvider] = useState<WalletProvider | ''>('');
   const [walletEmail, setWalletEmail] = useState('');
   const [bankCode, setBankCode] = useState('');
@@ -155,9 +157,7 @@ export default function PaymentPage() {
         initiate.mutate(
           {
             token: tokenData.token,
-            bookingId: 'booking-mock-001',
-            amount: 2664000,
-            currency,
+            cartId: cart?.id ?? '',
             method: selectedMethod,
           },
           {

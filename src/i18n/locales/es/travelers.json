@@ -210,7 +210,8 @@
     "errors": {
       "declined": "No se pudo procesar la transaccion. Verifique los datos o contacte a su banco.",
       "generic": "Ocurrio un error al procesar el pago. Intente nuevamente.",
-      "tokenFailed": "No se pudieron verificar los datos de la tarjeta. Verifique e intente de nuevo."
+      "tokenFailed": "No se pudieron verificar los datos de la tarjeta. Verifique e intente de nuevo.",
+      "noCart": "No se encontro el carrito. Intente de nuevo."
     },
     "processing": "Procesando pago...",
     "processingSubtext": "No cierre esta ventana",

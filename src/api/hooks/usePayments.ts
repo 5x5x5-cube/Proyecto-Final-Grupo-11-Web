@@ -38,9 +38,7 @@ export interface TokenizeResponse {
 
 interface InitiatePaymentRequest {
   token: string;
-  bookingId: string;
-  amount: number;
-  currency: string;
+  cartId: string;
   method: PaymentMethod;
 }
 
@@ -57,7 +55,7 @@ interface PaymentStatusResponse {
 
 export function useTokenize() {
   return useMutation<TokenizeResponse, Error, TokenizeRequest>({
-    mutationFn: data => httpClient.post('/payments/tokenize', { body: data }),
+    mutationFn: data => httpClient.post('/gateway/tokenize', { body: data }),
   });
 }
 
@@ -70,7 +68,7 @@ export function useInitiatePayment() {
 export function usePaymentStatus(paymentId: string) {
   return useQuery<PaymentStatusResponse>({
     queryKey: ['payments', paymentId, 'status'],
-    queryFn: () => httpClient.get(`/payments/${paymentId}/status`),
+    queryFn: () => httpClient.get(`/payments/${paymentId}`),
     enabled: !!paymentId,
     refetchInterval: query => {
       const status = query.state.data?.status;

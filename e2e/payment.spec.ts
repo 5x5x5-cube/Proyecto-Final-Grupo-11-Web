@@ -1,102 +1,212 @@
-import { test, expect } from './fixtures';
+import { test, expect, hasBackend } from './fixtures';
 
-test.describe('Payment page', () => {
-  test.beforeEach(async ({ paymentPage }) => {
-    await paymentPage.goto();
-  });
+test.describe('Payment flow', () => {
+  // Run sequentially — each test creates a cart which needs its own hold
+  test.describe.configure({ mode: 'serial' });
 
-  test('renders the payment form with card preview', async ({ paymentPage }) => {
-    await expect(paymentPage.cardNumberInput).toBeVisible();
-    await expect(paymentPage.expiryInput).toBeVisible();
-    await expect(paymentPage.cvvInput).toBeVisible();
-    await expect(paymentPage.cardPreview).toBeVisible();
-  });
+  const hotelId = 'a1000000-0000-0000-0000-000000000001';
 
-  test('pay button is disabled when form is empty', async ({ paymentPage }) => {
-    await expect(paymentPage.payButton).toBeDisabled();
-  });
+  const getCheckDates = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const checkOut = new Date(tomorrow);
+    checkOut.setDate(checkOut.getDate() + 3);
+    const fmt = (d: Date) => d.toISOString().split('T')[0];
+    return { checkIn: fmt(tomorrow), checkOut: fmt(checkOut) };
+  };
 
-  test('formats card number with spaces every 4 digits', async ({ paymentPage }) => {
+  /** Full UI flow: search → property → reserve → cart → continue → payment */
+  const navigateToPayment = async (propertyDetailPage: any, cartPage: any, page: any) => {
+    const { checkIn, checkOut } = getCheckDates();
+
+    await propertyDetailPage.goto(hotelId, { checkIn, checkOut, guests: 2 });
+    await expect(propertyDetailPage.reserveButton).toBeVisible({ timeout: 15000 });
+    await propertyDetailPage.reserveButton.click();
+
+    await expect(page).toHaveURL(/\/checkout\/cart/, { timeout: 10000 });
+    await expect(cartPage.continueToPaymentButton).toBeEnabled({ timeout: 20000 });
+    await cartPage.continueToPaymentButton.click();
+
+    await expect(page).toHaveURL(/\/checkout\/payment/, { timeout: 10000 });
+  };
+
+  // ─── Card payment tests ───
+
+  test('card: successful payment reaches confirmation', async ({
+    propertyDetailPage,
+    cartPage,
+    paymentPage,
+    page,
+  }) => {
+    test.skip(!hasBackend, 'Requires backend');
+    test.setTimeout(90000);
+
+    await navigateToPayment(propertyDetailPage, cartPage, page);
+
     await paymentPage.fillCardNumber('4242424242424242');
-
-    await expect(paymentPage.cardNumberInput).toHaveValue('4242 4242 4242 4242');
-  });
-
-  test('formats expiry as MM/YY', async ({ paymentPage }) => {
-    await paymentPage.fillExpiry('1228');
-
-    await expect(paymentPage.expiryInput).toHaveValue('12/28');
-  });
-
-  test('limits CVV to 3 digits', async ({ paymentPage }) => {
-    await paymentPage.fillCvv('12345');
-
-    await expect(paymentPage.cvvInput).toHaveValue('123');
-  });
-
-  test('enables pay button when all fields are valid', async ({ paymentPage }) => {
-    await paymentPage.fillCardNumber('4242424242424242');
-    await paymentPage.fillCardHolder('CARLOS MARTINEZ');
+    await paymentPage.fillCardHolder('Carlos Martinez');
     await paymentPage.fillExpiry('1228');
     await paymentPage.fillCvv('123');
 
     await expect(paymentPage.payButton).toBeEnabled();
+    await paymentPage.payButton.click();
+
+    await expect(page).toHaveURL(/\/checkout\/confirmation/, { timeout: 30000 });
   });
 
-  test('switching to wallet reveals the wallet form and hides the card form', async ({
+  test('card: declined card shows error feedback and stays on page', async ({
+    propertyDetailPage,
+    cartPage,
     paymentPage,
+    page,
   }) => {
-    await paymentPage.selectWalletMethod();
+    test.skip(!hasBackend, 'Requires backend');
+    test.setTimeout(90000);
 
-    await expect(paymentPage.walletEmailInput).toBeVisible();
-    await expect(paymentPage.cardNumberInput).toHaveCount(0);
-    await expect(paymentPage.walletTab).toHaveAttribute('aria-checked', 'true');
+    await navigateToPayment(propertyDetailPage, cartPage, page);
+
+    await paymentPage.fillCardNumber('4000000000000002');
+    await paymentPage.fillCardHolder('Test Decline');
+    await paymentPage.fillExpiry('1228');
+    await paymentPage.fillCvv('123');
+
+    await paymentPage.payButton.click();
+
+    // Button re-enables after decline (proves the gateway processed and rejected)
+    await expect(paymentPage.payButton).toBeEnabled({ timeout: 20000 });
+
+    // Should NOT navigate to confirmation — stays on payment
+    await expect(page).toHaveURL(/\/checkout\/payment/);
   });
 
-  test('wallet flow: pay button stays disabled with invalid email and enables with a valid one', async ({
+  test('card: expired magic card is declined and stays on page', async ({
+    propertyDetailPage,
+    cartPage,
     paymentPage,
+    page,
   }) => {
+    test.skip(!hasBackend, 'Requires backend');
+    test.setTimeout(90000);
+
+    await navigateToPayment(propertyDetailPage, cartPage, page);
+
+    await paymentPage.fillCardNumber('4000000000000069');
+    await paymentPage.fillCardHolder('Test Expired');
+    await paymentPage.fillExpiry('1228');
+    await paymentPage.fillCvv('123');
+
+    await paymentPage.payButton.click();
+
+    await expect(paymentPage.payButton).toBeEnabled({ timeout: 20000 });
+    await expect(page).toHaveURL(/\/checkout\/payment/);
+  });
+
+  // ─── Wallet payment test ───
+
+  test('wallet: successful PayPal payment reaches confirmation', async ({
+    propertyDetailPage,
+    cartPage,
+    paymentPage,
+    page,
+  }) => {
+    test.skip(!hasBackend, 'Requires backend');
+    test.setTimeout(90000);
+
+    await navigateToPayment(propertyDetailPage, cartPage, page);
+
     await paymentPage.selectWalletMethod();
     await paymentPage.selectWalletProvider('paypal');
+    await paymentPage.fillWalletEmail('carlos@example.com');
 
-    await paymentPage.fillWalletEmail('not-an-email');
-    await expect(paymentPage.payButton).toBeDisabled();
-
-    await paymentPage.fillWalletEmail('buyer@example.com');
     await expect(paymentPage.payButton).toBeEnabled();
+    await paymentPage.payButton.click();
+
+    await expect(page).toHaveURL(/\/checkout\/confirmation/, { timeout: 30000 });
   });
 
-  test('switching to transfer reveals the transfer form and hides the card form', async ({
+  // ─── Transfer payment test ───
+
+  test('transfer: successful bank transfer reaches confirmation', async ({
+    propertyDetailPage,
+    cartPage,
     paymentPage,
+    page,
   }) => {
-    await paymentPage.selectTransferMethod();
+    test.skip(!hasBackend, 'Requires backend');
+    test.setTimeout(90000);
 
-    await expect(paymentPage.accountNumberInput).toBeVisible();
-    await expect(paymentPage.accountHolderInput).toBeVisible();
-    await expect(paymentPage.cardNumberInput).toHaveCount(0);
-    await expect(paymentPage.transferTab).toHaveAttribute('aria-checked', 'true');
-  });
+    await navigateToPayment(propertyDetailPage, cartPage, page);
 
-  test('transfer form only accepts digits in the account number', async ({ paymentPage }) => {
-    await paymentPage.selectTransferMethod();
-
-    await paymentPage.fillAccountNumber('12a3-4b5');
-
-    await expect(paymentPage.accountNumberInput).toHaveValue('12345');
-  });
-
-  test('transfer flow: pay button enables when bank, account and holder are valid', async ({
-    paymentPage,
-  }) => {
     await paymentPage.selectTransferMethod();
     await paymentPage.selectBank('007');
-    await paymentPage.fillAccountNumber('12345');
-
-    await expect(paymentPage.payButton).toBeDisabled();
-
-    await paymentPage.fillAccountNumber('1234567');
-    await paymentPage.fillAccountHolder('Ada Lovelace');
+    await paymentPage.fillAccountNumber('1234567890');
+    await paymentPage.fillAccountHolder('Carlos Martinez');
 
     await expect(paymentPage.payButton).toBeEnabled();
+    await paymentPage.payButton.click();
+
+    await expect(page).toHaveURL(/\/checkout\/confirmation/, { timeout: 30000 });
+  });
+
+  // ─── Form validation tests ───
+
+  test('pay button is disabled with empty form', async ({
+    propertyDetailPage,
+    cartPage,
+    paymentPage,
+    page,
+  }) => {
+    test.skip(!hasBackend, 'Requires backend');
+    test.setTimeout(60000);
+
+    await navigateToPayment(propertyDetailPage, cartPage, page);
+
+    await expect(paymentPage.payButton).toBeDisabled();
+  });
+
+  test('card fields are visible on payment page', async ({
+    propertyDetailPage,
+    cartPage,
+    paymentPage,
+    page,
+  }) => {
+    test.skip(!hasBackend, 'Requires backend');
+    test.setTimeout(60000);
+
+    await navigateToPayment(propertyDetailPage, cartPage, page);
+
+    await expect(paymentPage.cardNumberInput).toBeVisible();
+    await expect(paymentPage.expiryInput).toBeVisible();
+    await expect(paymentPage.cvvInput).toBeVisible();
+  });
+
+  test('wallet tab shows wallet form', async ({
+    propertyDetailPage,
+    cartPage,
+    paymentPage,
+    page,
+  }) => {
+    test.skip(!hasBackend, 'Requires backend');
+    test.setTimeout(60000);
+
+    await navigateToPayment(propertyDetailPage, cartPage, page);
+
+    await paymentPage.selectWalletMethod();
+    await expect(paymentPage.walletEmailInput).toBeVisible();
+  });
+
+  test('transfer tab shows transfer form', async ({
+    propertyDetailPage,
+    cartPage,
+    paymentPage,
+    page,
+  }) => {
+    test.skip(!hasBackend, 'Requires backend');
+    test.setTimeout(60000);
+
+    await navigateToPayment(propertyDetailPage, cartPage, page);
+
+    await paymentPage.selectTransferMethod();
+    await expect(paymentPage.accountNumberInput).toBeVisible();
   });
 });

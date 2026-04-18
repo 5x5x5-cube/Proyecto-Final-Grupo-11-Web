@@ -34,7 +34,7 @@ export default function CartPage() {
   }, [error, navigate, showError, t]);
 
   const handleContinueToPayment = () => {
-    navigate('/checkout/payment');
+    navigate('/checkout/payment', { state: { cartId: cart?.id } });
   };
 
   const handleHoldExpired = () => {
