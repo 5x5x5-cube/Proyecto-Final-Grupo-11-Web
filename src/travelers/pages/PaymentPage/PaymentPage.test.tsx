@@ -9,7 +9,7 @@ vi.mock('react-router-dom', async () => ({
 }));
 
 vi.mock('@/api/hooks/usePayments', () => ({
-  useTokenizeCard: () => ({ mutate: vi.fn(), isPending: false }),
+  useTokenize: () => ({ mutate: vi.fn(), isPending: false }),
   useInitiatePayment: () => ({ mutate: vi.fn(), isPending: false }),
   usePaymentStatus: () => ({ data: undefined, isLoading: false }),
 }));

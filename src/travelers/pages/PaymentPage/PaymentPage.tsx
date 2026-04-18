@@ -10,7 +10,8 @@ import { useSnackbar } from '@/contexts/SnackbarContext';
 import CheckoutLayout from '@/design-system/layouts/CheckoutLayout';
 import SectionCard from '@/design-system/components/SectionCard';
 import { palette } from '@/design-system/theme/palette';
-import { useTokenizeCard, useInitiatePayment, usePaymentStatus } from '@/api/hooks/usePayments';
+import { useTokenize, useInitiatePayment, usePaymentStatus } from '@/api/hooks/usePayments';
+import type { TokenizeRequest } from '@/api/hooks/usePayments';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import type { PaymentMethod, WalletProvider } from '@/modules/checkout/types';
@@ -42,7 +43,7 @@ export default function PaymentPage() {
   const { formatPrice, formatDate } = useLocale();
   const { showError } = useSnackbar();
 
-  const tokenize = useTokenizeCard();
+  const tokenize = useTokenize();
   const initiate = useInitiatePayment();
 
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('credit_card');
@@ -68,7 +69,20 @@ export default function PaymentPage() {
   const isCardHolderValid = cardHolder.trim().length > 0;
 
   const isCardFormValid = isCardNumberValid && isExpiryValid && isCvvValid && isCardHolderValid;
-  const isFormValid = selectedMethod === 'credit_card' && isCardFormValid;
+
+  const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isWalletFormValid = walletProvider !== '' && EMAIL_REGEX.test(walletEmail);
+
+  const MIN_ACCOUNT_DIGITS = 6;
+  const isTransferFormValid =
+    bankCode !== '' &&
+    accountNumber.length >= MIN_ACCOUNT_DIGITS &&
+    accountHolder.trim().length > 0;
+
+  const isFormValid =
+    (selectedMethod === 'credit_card' && isCardFormValid) ||
+    (selectedMethod === 'digital_wallet' && isWalletFormValid) ||
+    (selectedMethod === 'transfer' && isTransferFormValid);
 
   const methodOptions: {
     value: PaymentMethod;
@@ -100,48 +114,68 @@ export default function PaymentPage() {
     }
   }, [paymentStatus.data, navigate, showPaymentError]);
 
-  const handlePay = () => {
-    if (!isFormValid || isProcessing) return;
-
-    setIsProcessing(true);
-
-    // Step 1: Tokenize card
-    tokenize.mutate(
-      {
+  const buildTokenizePayload = (): TokenizeRequest | null => {
+    if (selectedMethod === 'credit_card') {
+      return {
+        method: 'credit_card',
         cardNumber: rawCardDigits,
         cardHolder,
         expiry,
         cvv,
-      },
-      {
-        onSuccess: tokenData => {
-          // Step 2: Initiate payment with token
-          initiate.mutate(
-            {
-              token: tokenData.token,
-              bookingId: 'booking-mock-001',
-              amount: 2664000,
-              currency,
-              method: 'card',
+      };
+    }
+    if (selectedMethod === 'digital_wallet' && walletProvider !== '') {
+      return {
+        method: 'digital_wallet',
+        walletProvider,
+        walletEmail,
+      };
+    }
+    if (selectedMethod === 'transfer') {
+      return {
+        method: 'transfer',
+        bankCode,
+        accountNumber,
+        accountHolder,
+      };
+    }
+    return null;
+  };
+
+  const handlePay = () => {
+    if (!isFormValid || isProcessing) return;
+
+    const payload = buildTokenizePayload();
+    if (!payload) return;
+
+    setIsProcessing(true);
+
+    tokenize.mutate(payload, {
+      onSuccess: tokenData => {
+        initiate.mutate(
+          {
+            token: tokenData.token,
+            bookingId: 'booking-mock-001',
+            amount: 2664000,
+            currency,
+            method: selectedMethod,
+          },
+          {
+            onSuccess: paymentData => {
+              setPaymentId(paymentData.paymentId);
             },
-            {
-              onSuccess: paymentData => {
-                // Step 3: Start polling
-                setPaymentId(paymentData.paymentId);
-              },
-              onError: () => {
-                setIsProcessing(false);
-                showError(t('payment.errors.generic'));
-              },
-            }
-          );
-        },
-        onError: () => {
-          setIsProcessing(false);
-          showError(t('payment.errors.tokenFailed'));
-        },
-      }
-    );
+            onError: () => {
+              setIsProcessing(false);
+              showError(t('payment.errors.generic'));
+            },
+          }
+        );
+      },
+      onError: () => {
+        setIsProcessing(false);
+        showError(t('payment.errors.tokenFailed'));
+      },
+    });
   };
 
   const PaymentSidebar = () => (

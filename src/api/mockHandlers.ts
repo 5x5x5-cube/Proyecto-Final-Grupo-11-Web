@@ -404,14 +404,59 @@ export const mockHandlers: MockRoute[] = [
     method: 'POST',
     pattern: /^\/payments\/tokenize$/,
     handler: (config: RequestConfig | undefined) => {
-      const body = config?.body as { cardNumber?: string } | undefined;
+      const body = config?.body as
+        | {
+            method?: 'credit_card' | 'debit_card' | 'digital_wallet' | 'transfer';
+            cardNumber?: string;
+            walletProvider?: string;
+            walletEmail?: string;
+            bankCode?: string;
+            accountNumber?: string;
+          }
+        | undefined;
+      const method = body?.method ?? 'credit_card';
+      const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+
+      if (method === 'digital_wallet') {
+        const provider = body?.walletProvider ?? 'wallet';
+        return ok({
+          token: `tok_wallet_${provider}_${Date.now()}`,
+          method: 'digital_wallet',
+          displayLabel: `${provider} · ${body?.walletEmail ?? ''}`,
+          expiresAt,
+          cardLast4: null,
+          cardBrand: null,
+          walletProvider: provider,
+          bankCode: null,
+        });
+      }
+
+      if (method === 'transfer') {
+        const bank = body?.bankCode ?? '000';
+        const acct = (body?.accountNumber ?? '').slice(-4) || '0000';
+        return ok({
+          token: `tok_transfer_${bank}_${acct}`,
+          method: 'transfer',
+          displayLabel: `Bank ${bank} · ****${acct}`,
+          expiresAt,
+          cardLast4: null,
+          cardBrand: null,
+          walletProvider: null,
+          bankCode: bank,
+        });
+      }
+
       const digits = (body?.cardNumber ?? '').replace(/\D/g, '');
       const last4 = digits.slice(-4) || '0000';
       return ok({
         token: `tok_mock_${last4}`,
+        method,
+        displayLabel: `Visa ****${last4}`,
+        expiresAt,
         cardLast4: last4,
         cardBrand: 'Visa',
-        expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+        walletProvider: null,
+        bankCode: null,
       });
     },
   },
