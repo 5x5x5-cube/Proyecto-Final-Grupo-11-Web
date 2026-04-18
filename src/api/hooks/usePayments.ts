@@ -1,18 +1,39 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { httpClient } from '../httpClient';
+import type { PaymentMethod } from '@/modules/checkout/types';
 
-interface TokenizeRequest {
+export interface CardTokenizeRequest {
+  method: 'credit_card' | 'debit_card';
   cardNumber: string;
   cardHolder: string;
   expiry: string;
   cvv: string;
 }
 
-interface TokenizeResponse {
+export interface WalletTokenizeRequest {
+  method: 'digital_wallet';
+  walletProvider: string;
+  walletEmail: string;
+}
+
+export interface TransferTokenizeRequest {
+  method: 'transfer';
+  bankCode: string;
+  accountNumber: string;
+  accountHolder: string;
+}
+
+export type TokenizeRequest = CardTokenizeRequest | WalletTokenizeRequest | TransferTokenizeRequest;
+
+export interface TokenizeResponse {
   token: string;
-  cardLast4: string;
-  cardBrand: string;
+  method: PaymentMethod;
+  displayLabel: string;
   expiresAt: string;
+  cardLast4: string | null;
+  cardBrand: string | null;
+  walletProvider: string | null;
+  bankCode: string | null;
 }
 
 interface InitiatePaymentRequest {
@@ -20,7 +41,7 @@ interface InitiatePaymentRequest {
   bookingId: string;
   amount: number;
   currency: string;
-  method: string;
+  method: PaymentMethod;
 }
 
 interface InitiatePaymentResponse {
@@ -34,7 +55,7 @@ interface PaymentStatusResponse {
   bookingCode?: string;
 }
 
-export function useTokenizeCard() {
+export function useTokenize() {
   return useMutation<TokenizeResponse, Error, TokenizeRequest>({
     mutationFn: data => httpClient.post('/payments/tokenize', { body: data }),
   });
