@@ -5,8 +5,8 @@ import HotelAdminLayout from '@/design-system/layouts/HotelAdminLayout';
 import Text from '@/design-system/components/Text';
 import { palette } from '@/design-system/theme/palette';
 import { useHotelBookings } from '@/api/hooks/useHotelBookings';
-import ReservationFilterBar from '@/hotels/components/ReservationFilterBar/ReservationFilterBar';
-import ReservationTable from '@/hotels/components/ReservationTable/ReservationTable';
+import ReservationFilterBar from '@/modules/hotel-reservations/components/ReservationFilterBar/ReservationFilterBar';
+import ReservationTable from '@/modules/hotel-reservations/components/ReservationTable/ReservationTable';
 import ReservationsPageSkeleton from './ReservationsPage.skeleton';
 import { SummaryRow, SummaryPill, SummaryCount } from './ReservationsPage.styles';
 
