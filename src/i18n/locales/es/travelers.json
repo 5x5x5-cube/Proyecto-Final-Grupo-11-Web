@@ -199,6 +199,7 @@
       "vatValue": "COP 168.000",
       "serviceFee": "Tarifa de servicio",
       "serviceFeeValue": "COP 0",
+      "taxesAndFees": "Impuestos y tasas",
       "totalToPay": "Total a pagar",
       "totalValue": "COP 2.664.000",
       "nightsLabel": "noches",

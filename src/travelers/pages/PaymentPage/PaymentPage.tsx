@@ -46,7 +46,7 @@ export default function PaymentPage() {
 
   const tokenize = useTokenize();
   const initiate = useInitiatePayment();
-  const { data: cart } = useCart();
+  const { data: cart, pricing } = useCart();
 
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('credit_card');
   const [rawCardDigits, setRawCardDigits] = useState('');
@@ -106,9 +106,7 @@ export default function PaymentPage() {
 
     if (paymentStatus.data.status === 'approved') {
       setIsProcessing(false);
-      navigate('/checkout/confirmation', {
-        state: { bookingCode: paymentStatus.data.bookingCode },
-      });
+      navigate(`/checkout/confirmation/${paymentId}`);
     } else if (paymentStatus.data.status === 'declined') {
       setIsProcessing(false);
       setPaymentId('');
@@ -178,6 +176,8 @@ export default function PaymentPage() {
     });
   };
 
+  const { pricePerNight, nights, subtotal, taxes, total } = pricing;
+
   const PaymentSidebar = () => (
     <SidebarContainer>
       <SidebarTitle>{t('payment.sidebar.title')}</SidebarTitle>
@@ -187,12 +187,18 @@ export default function PaymentPage() {
         <BookingThumbnail />
         <div>
           <Text textVariant="bodySemibold" sx={{ mb: '4px' }}>
-            Hotel Santa Clara Sofitel
+            {cart?.hotelName || '...'}
           </Text>
           <Text textVariant="caption" sx={{ mb: '2px' }}>
-            {`${formatDate('2026-03-15', 'short')} – ${formatDate('2026-03-20', 'medium')} · 5 ${t('payment.sidebar.nightsLabel')}`}
+            {cart?.checkIn && cart?.checkOut
+              ? `${formatDate(cart.checkIn, 'short')} – ${formatDate(cart.checkOut, 'medium')} · ${nights} ${t('payment.sidebar.nightsLabel')}`
+              : '...'}
           </Text>
-          <Text textVariant="caption">{t('payment.sidebar.room')}</Text>
+          <Text textVariant="caption">
+            {cart?.roomName
+              ? `${cart.roomName} · ${cart.guests} adultos`
+              : t('payment.sidebar.room')}
+          </Text>
         </div>
       </BookingMiniCard>
 
@@ -200,18 +206,20 @@ export default function PaymentPage() {
       <PriceBreakdownList>
         <PriceRow>
           <Text textVariant="body">
-            {`${formatPrice(480000)} x 5 ${t('payment.sidebar.nightsLabel')}`}
+            {`${formatPrice(pricePerNight)} x ${nights} ${t('payment.sidebar.nightsLabel')}`}
           </Text>
-          <PriceRowValue>{formatPrice(2400000)}</PriceRowValue>
+          <PriceRowValue>{formatPrice(subtotal)}</PriceRowValue>
         </PriceRow>
-        <PriceRow>
-          <Text textVariant="body">{t('payment.sidebar.taxesAndFees')}</Text>
-          <PriceRowValue>{formatPrice(264000)}</PriceRowValue>
-        </PriceRow>
+        {taxes > 0 && (
+          <PriceRow>
+            <Text textVariant="body">{t('payment.sidebar.taxesAndFees')}</Text>
+            <PriceRowValue>{formatPrice(taxes)}</PriceRowValue>
+          </PriceRow>
+        )}
         <Divider />
         <PriceRow>
           <Text textVariant="panelTitle">{t('payment.sidebar.totalToPay')}</Text>
-          <TotalPrice>{formatPrice(2664000)}</TotalPrice>
+          <TotalPrice>{formatPrice(total)}</TotalPrice>
         </PriceRow>
       </PriceBreakdownList>
 
@@ -228,7 +236,7 @@ export default function PaymentPage() {
         ) : (
           <>
             <LockIcon sx={{ fontSize: 20 }} />
-            {`${t('payment.sidebar.payLabel')} ${formatPrice(2664000)}`}
+            {`${t('payment.sidebar.payLabel')} ${formatPrice(total)}`}
           </>
         )}
       </PrimaryPillButton>
