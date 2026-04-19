@@ -50,6 +50,8 @@ export interface HotelBookingFilters {
   code?: string;
   checkInFrom?: string;
   checkInTo?: string;
+  page?: number;
+  limit?: number;
 }
 
 interface BackendBooking {
@@ -83,6 +85,8 @@ export function useHotelBookings(filters: HotelBookingFilters = {}) {
     queryKey: ['hotelBookings', filters],
     queryFn: async () => {
       const params: Record<string, string> = {};
+      if (filters.page) params.page = String(filters.page);
+      if (filters.limit) params.limit = String(filters.limit);
       if (filters.status) params.status = filters.status;
       if (filters.code) params.code = filters.code;
       if (filters.checkInFrom) params.checkInFrom = filters.checkInFrom;
@@ -112,8 +116,8 @@ export function useHotelBookings(filters: HotelBookingFilters = {}) {
           email: b.guestEmail ?? '',
           initials,
           avatarColor: 'teal',
-          room: `Room`,
-          roomType: 'Standard',
+          room: '—',
+          roomType: '',
           checkIn: b.checkIn,
           checkOut: b.checkOut,
           nights,
@@ -124,7 +128,13 @@ export function useHotelBookings(filters: HotelBookingFilters = {}) {
         };
       });
 
-      return { reservations, summary: raw.summary };
+      return {
+        reservations,
+        summary: raw.summary,
+        total: (raw as any).total ?? reservations.length,
+        page: (raw as any).page ?? 1,
+        limit: (raw as any).limit ?? 10,
+      };
     },
   });
 }

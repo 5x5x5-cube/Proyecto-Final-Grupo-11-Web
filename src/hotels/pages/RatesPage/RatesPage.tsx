@@ -131,7 +131,7 @@ const PAGE_SIZE = 6;
 
 export default function RatesPage() {
   const { t } = useTranslation('hotels');
-  const { formatPrice, formatDate } = useLocale();
+  const { formatPrice, formatDate, currency } = useLocale();
   const { showSuccess, showError } = useSnackbar();
 
   const { data: tariffsRaw, isLoading } = useTariffs();
@@ -546,7 +546,7 @@ export default function RatesPage() {
               </Text>
               <Box>
                 <Box sx={{ display: 'flex' }}>
-                  <CurrencyPrefix>COP</CurrencyPrefix>
+                  <CurrencyPrefix>{currency}</CurrencyPrefix>
                   <PriceInput
                     type="number"
                     placeholder="0"

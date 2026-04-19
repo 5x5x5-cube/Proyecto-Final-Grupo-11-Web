@@ -22,6 +22,9 @@ interface LocaleContextType {
   setCurrency: (cur: Currency) => void;
   formatPrice: (copAmount: number) => string;
   formatDate: (date: string | Date, format: DateFormat) => string;
+  /** Set by ?open=language|currency URL param — consumed once by LocaleSelector */
+  autoOpen: 'language' | 'currency' | null;
+  clearAutoOpen: () => void;
 }
 
 const exchangeRates: Record<Currency, { rate: number; symbol: string; decimals: number }> = {
@@ -47,17 +50,25 @@ const languageNames: Record<Language, string> = {
   EN: 'English',
 };
 
+export const LANGUAGES: Language[] = Object.keys(languageNames) as Language[];
+export const CURRENCIES: Currency[] = Object.keys(currencyNames) as Currency[];
+
 const LocaleContext = createContext<LocaleContextType | null>(null);
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const params = new URLSearchParams(window.location.search);
   const initLang = params.get('lang')?.toUpperCase();
   const initCur = params.get('currency')?.toUpperCase();
+  const openParam = params.get('open');
 
   const [language, setLanguage] = useState<Language>(initLang === 'EN' ? 'EN' : 'ES');
   const [currency, setCurrency] = useState<Currency>(
     initCur && initCur in exchangeRates ? (initCur as Currency) : 'COP'
   );
+  const [autoOpen, setAutoOpen] = useState<'language' | 'currency' | null>(
+    openParam === 'language' || openParam === 'currency' ? openParam : null
+  );
+  const clearAutoOpen = () => setAutoOpen(null);
 
   useEffect(() => {
     i18n.changeLanguage(language);
@@ -81,7 +92,16 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <LocaleContext.Provider
-      value={{ language, currency, setLanguage, setCurrency, formatPrice, formatDate }}
+      value={{
+        language,
+        currency,
+        setLanguage,
+        setCurrency,
+        formatPrice,
+        formatDate,
+        autoOpen,
+        clearAutoOpen,
+      }}
     >
       {children}
     </LocaleContext.Provider>

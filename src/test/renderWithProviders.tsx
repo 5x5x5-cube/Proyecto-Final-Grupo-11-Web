@@ -8,6 +8,7 @@ import { theme } from '../design-system/theme/theme';
 import { LocaleProvider } from '../contexts/LocaleContext';
 import { SnackbarProvider } from '../contexts/SnackbarContext';
 import { AuthProvider } from '../contexts/AuthContext';
+import { HotelProvider } from '../contexts/HotelContext';
 import '../i18n';
 
 function AllProviders({ children }: { children: React.ReactNode }) {
@@ -18,13 +19,15 @@ function AllProviders({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <LocaleProvider>
-          <ThemeProvider theme={theme}>
-            <SnackbarProvider>
-              <MemoryRouter>{children}</MemoryRouter>
-            </SnackbarProvider>
-          </ThemeProvider>
-        </LocaleProvider>
+        <HotelProvider>
+          <LocaleProvider>
+            <ThemeProvider theme={theme}>
+              <SnackbarProvider>
+                <MemoryRouter>{children}</MemoryRouter>
+              </SnackbarProvider>
+            </ThemeProvider>
+          </LocaleProvider>
+        </HotelProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
