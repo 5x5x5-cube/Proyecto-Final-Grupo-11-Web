@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import Text from '@/design-system/components/Text';
 import {
@@ -33,8 +33,17 @@ const MASKED_GROUP = '\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u
 const HOLDER_PLACEHOLDER = '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022';
 const EXPIRY_PLACEHOLDER = '\u2022\u2022/\u2022\u2022';
 
-function formatCardDisplay(digits: string): string {
-  return digits.replace(/(.{4})/g, '$1 ').trim();
+const DOT = '\u2022';
+
+function formatCardDisplay(digits: string, masked: boolean): string {
+  if (!masked || digits.length <= 4) {
+    // While focused or short input: show all digits with spaces
+    return digits.replace(/(.{4})/g, '$1 ').trim();
+  }
+  // On blur: mask all but last 4
+  const maskedPart = DOT.repeat(digits.length - 4);
+  const visible = digits.slice(-4);
+  return (maskedPart + visible).replace(/(.{4})/g, '$1 ').trim();
 }
 
 export default function CardForm({
@@ -49,8 +58,9 @@ export default function CardForm({
   onCurrencyChange,
 }: CardFormProps) {
   const { t } = useTranslation('travelers');
+  const [cardFocused, setCardFocused] = useState(false);
 
-  const cardDisplayValue = formatCardDisplay(rawCardDigits);
+  const cardDisplayValue = formatCardDisplay(rawCardDigits, !cardFocused);
   const isExpiryValid = /^\d{2}\/\d{2}$/.test(expiry);
   const last4 = rawCardDigits.length >= 4 ? rawCardDigits.slice(-4) : '';
   const previewCardNumber =
@@ -119,8 +129,12 @@ export default function CardForm({
           </Text>
           <FormInput
             component="input"
+            inputMode="numeric"
+            autoComplete="cc-number"
             value={cardDisplayValue}
             onChange={handleCardNumberChange}
+            onFocus={() => setCardFocused(true)}
+            onBlur={() => setCardFocused(false)}
             placeholder={t('payment.form.cardNumberPlaceholder')}
           />
         </div>
