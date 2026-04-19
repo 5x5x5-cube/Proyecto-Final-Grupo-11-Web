@@ -1,13 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Box, Typography, Menu, MenuItem } from '@mui/material';
+import React from 'react';
+import { Box, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import SearchIcon from '@mui/icons-material/Search';
-import LanguageIcon from '@mui/icons-material/Language';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useTranslation } from 'react-i18next';
-import { useLocale, currencyNames, languageNames } from '@/contexts/LocaleContext';
-import type { Language, Currency } from '@/contexts/LocaleContext';
+import LocaleSelector from '@/design-system/components/LocaleSelector';
 import {
   primary,
   onPrimary,
@@ -41,24 +38,9 @@ const Brand = () => (
   </Link>
 );
 
-const languages: Language[] = ['ES', 'EN'];
-const currencies: Currency[] = ['COP', 'USD', 'MXN', 'ARS', 'CLP', 'PEN'];
-
 const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSummary }) => {
   const height = 72;
   const { t } = useTranslation('common');
-  const { language, currency, setLanguage, setCurrency } = useLocale();
-  const [langAnchor, setLangAnchor] = useState<null | HTMLElement>(null);
-  const [curAnchor, setCurAnchor] = useState<null | HTMLElement>(null);
-  const langBtnRef = useRef<HTMLDivElement>(null);
-  const curBtnRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const open = params.get('open');
-    if (open === 'language' && langBtnRef.current) setLangAnchor(langBtnRef.current);
-    if (open === 'currency' && curBtnRef.current) setCurAnchor(curBtnRef.current);
-  }, []);
 
   const navLinks = [
     { label: t('nav.home'), path: '/' },
@@ -149,86 +131,7 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
       {variant === 'reservations' && <Box sx={{ flex: 1 }} />}
 
       {/* Language & Currency selectors */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-        {/* Language selector */}
-        <Box
-          ref={langBtnRef}
-          onClick={e => setLangAnchor(e.currentTarget)}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            padding: '4px 10px',
-            borderRadius: '8px',
-            border: `1px solid ${outlineVariant}`,
-            cursor: 'pointer',
-            '&:hover': { backgroundColor: surfaceContainer },
-          }}
-        >
-          <LanguageIcon sx={{ fontSize: 16, color: onSurfaceVariant }} />
-          <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>{language}</Typography>
-          <KeyboardArrowDownIcon sx={{ fontSize: 16, color: onSurfaceVariant }} />
-        </Box>
-        <Menu
-          anchorEl={langAnchor}
-          open={Boolean(langAnchor)}
-          onClose={() => setLangAnchor(null)}
-          slotProps={{ paper: { sx: { borderRadius: '12px', mt: '4px', minWidth: 180 } } }}
-        >
-          {languages.map(lang => (
-            <MenuItem
-              key={lang}
-              selected={lang === language}
-              onClick={() => {
-                setLanguage(lang);
-                setLangAnchor(null);
-              }}
-              sx={{ fontSize: 13 }}
-            >
-              {lang} — {languageNames[lang]}
-            </MenuItem>
-          ))}
-        </Menu>
-
-        {/* Currency selector */}
-        <Box
-          ref={curBtnRef}
-          onClick={e => setCurAnchor(e.currentTarget)}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            padding: '4px 10px',
-            borderRadius: '8px',
-            border: `1px solid ${outlineVariant}`,
-            cursor: 'pointer',
-            '&:hover': { backgroundColor: surfaceContainer },
-          }}
-        >
-          <Typography sx={{ fontSize: 12, color: onSurfaceVariant }}>{currency}</Typography>
-          <KeyboardArrowDownIcon sx={{ fontSize: 16, color: onSurfaceVariant }} />
-        </Box>
-        <Menu
-          anchorEl={curAnchor}
-          open={Boolean(curAnchor)}
-          onClose={() => setCurAnchor(null)}
-          slotProps={{ paper: { sx: { borderRadius: '12px', mt: '4px', minWidth: 220 } } }}
-        >
-          {currencies.map(cur => (
-            <MenuItem
-              key={cur}
-              selected={cur === currency}
-              onClick={() => {
-                setCurrency(cur);
-                setCurAnchor(null);
-              }}
-              sx={{ fontSize: 13 }}
-            >
-              {cur} — {currencyNames[cur]}
-            </MenuItem>
-          ))}
-        </Menu>
-      </Box>
+      <LocaleSelector />
 
       {/* Right actions */}
       {variant === 'reservations' ? (
