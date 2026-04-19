@@ -34,10 +34,7 @@ const HOLDER_PLACEHOLDER = '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022';
 const EXPIRY_PLACEHOLDER = '\u2022\u2022/\u2022\u2022';
 
 function formatCardDisplay(digits: string): string {
-  if (digits.length <= 12) {
-    return digits.replace(/(.{4})/g, '$1 ').trim();
-  }
-  return `${MASKED_GROUP} ${digits.slice(12)}`;
+  return digits.replace(/(.{4})/g, '$1 ').trim();
 }
 
 export default function CardForm({
