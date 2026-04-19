@@ -236,6 +236,8 @@
     "form": {
       "cardNumber": "Card number",
       "cardNumberPlaceholder": "1234 5678 9012 3456",
+      "cardNumberInvalid": "Invalid card number",
+      "expiryInvalid": "Card is expired",
       "cardHolderName": "Cardholder name",
       "expiryDate": "Expiry date",
       "expiryPlaceholder": "MM/YY",

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import SectionCard from '@/design-system/components/SectionCard';
 import { palette } from '@/design-system/theme/palette';
 import type { PaymentMethod, WalletProvider } from '../../types';
+import { isValidLuhn } from '../../utils/luhn';
 import type { TokenizeRequest } from '@/api/hooks/usePayments';
 import CardForm from '@/travelers/pages/PaymentPage/forms/CardForm';
 import WalletForm from '@/travelers/pages/PaymentPage/forms/WalletForm';
@@ -56,11 +57,20 @@ const PaymentMethodForm = forwardRef<PaymentMethodFormHandle, Props>(
     const [accountHolder, setAccountHolder] = useState('');
 
     // Validation
+    const isCardNumberComplete = rawCardDigits.length === 16;
+    const isCardNumberValid = isCardNumberComplete && isValidLuhn(rawCardDigits);
+
+    const isExpiryFormatValid = /^\d{2}\/\d{2}$/.test(expiry);
+    const isExpiryNotExpired = (() => {
+      if (!isExpiryFormatValid) return true; // Don't show expired error until format is valid
+      const [mm, yy] = expiry.split('/').map(Number);
+      const expiryDate = new Date(2000 + yy, mm); // First day of month after expiry
+      return expiryDate > new Date();
+    })();
+    const isExpiryValid = isExpiryFormatValid && isExpiryNotExpired;
+
     const isCardFormValid =
-      rawCardDigits.length === 16 &&
-      /^\d{2}\/\d{2}$/.test(expiry) &&
-      cvv.length === 3 &&
-      cardHolder.trim().length > 0;
+      isCardNumberValid && isExpiryValid && cvv.length === 3 && cardHolder.trim().length > 0;
 
     const isWalletFormValid =
       walletProvider !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(walletEmail);
@@ -137,6 +147,8 @@ const PaymentMethodForm = forwardRef<PaymentMethodFormHandle, Props>(
                 cvv={cvv}
                 onCvvChange={setCvv}
                 onCurrencyChange={setCurrency}
+                cardNumberError={isCardNumberComplete && !isCardNumberValid}
+                expiryError={isExpiryFormatValid && !isExpiryNotExpired}
               />
             )}
 

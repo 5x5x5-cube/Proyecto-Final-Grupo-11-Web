@@ -237,6 +237,8 @@
     "form": {
       "cardNumber": "Numero de tarjeta",
       "cardNumberPlaceholder": "1234 5678 9012 3456",
+      "cardNumberInvalid": "Numero de tarjeta invalido",
+      "expiryInvalid": "La tarjeta esta vencida",
       "cardHolderName": "Nombre del titular",
       "expiryDate": "Fecha de vencimiento",
       "expiryPlaceholder": "MM/AA",

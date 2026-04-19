@@ -15,6 +15,7 @@ import {
   FormRowThreeCol,
   FormInput,
   FormSelect,
+  FieldError,
 } from '../PaymentPage.styles';
 
 export interface CardFormProps {
@@ -27,6 +28,8 @@ export interface CardFormProps {
   cvv: string;
   onCvvChange: (value: string) => void;
   onCurrencyChange: (value: string) => void;
+  cardNumberError?: boolean;
+  expiryError?: boolean;
 }
 
 const MASKED_GROUP = '\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022';
@@ -56,6 +59,8 @@ export default function CardForm({
   cvv,
   onCvvChange,
   onCurrencyChange,
+  cardNumberError,
+  expiryError,
 }: CardFormProps) {
   const { t } = useTranslation('travelers');
   const [cardFocused, setCardFocused] = useState(false);
@@ -136,7 +141,9 @@ export default function CardForm({
             onFocus={() => setCardFocused(true)}
             onBlur={() => setCardFocused(false)}
             placeholder={t('payment.form.cardNumberPlaceholder')}
+            aria-invalid={cardNumberError}
           />
+          {cardNumberError && <FieldError>{t('payment.form.cardNumberInvalid')}</FieldError>}
         </div>
 
         <div>
@@ -160,7 +167,9 @@ export default function CardForm({
               value={expiry}
               onChange={handleExpiryChange}
               placeholder={t('payment.form.expiryPlaceholder')}
+              aria-invalid={expiryError}
             />
+            {expiryError && <FieldError>{t('payment.form.expiryInvalid')}</FieldError>}
           </div>
           <div>
             <Text textVariant="caption" sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}>
