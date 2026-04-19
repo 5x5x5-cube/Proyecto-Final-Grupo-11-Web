@@ -1,11 +1,7 @@
-import { Box, CircularProgress } from '@mui/material';
 import PaymentsIcon from '@mui/icons-material/Payments';
-import LockIcon from '@mui/icons-material/Lock';
-import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '@/contexts/LocaleContext';
 import { useSnackbar } from '@/contexts/SnackbarContext';
 import CheckoutLayout from '@/design-system/layouts/CheckoutLayout';
 import SectionCard from '@/design-system/components/SectionCard';
@@ -13,20 +9,10 @@ import { palette } from '@/design-system/theme/palette';
 import { useTokenize, useInitiatePayment, usePaymentStatus } from '@/api/hooks/usePayments';
 import type { TokenizeRequest } from '@/api/hooks/usePayments';
 import { useCart } from '@/api/hooks/useCart';
-import { PrimaryPillButton } from '@/design-system/components/PillButton';
-import Text from '@/design-system/components/Text';
 import type { PaymentMethod, WalletProvider } from '@/modules/checkout/types';
+import PaymentSidebar from '@/modules/checkout/components/PaymentSidebar/PaymentSidebar';
+import ProcessingOverlay from '@/modules/checkout/components/ProcessingOverlay/ProcessingOverlay';
 import {
-  SidebarContainer,
-  SidebarTitle,
-  BookingMiniCard,
-  BookingThumbnail,
-  PriceBreakdownList,
-  PriceRow,
-  PriceRowValue,
-  Divider,
-  TotalPrice,
-  SecureNote,
   CardList,
   FormFieldsContainer,
   PaymentTabsRow,
@@ -41,7 +27,6 @@ import TransferForm from './forms/TransferForm';
 export default function PaymentPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
-  const { formatPrice, formatDate } = useLocale();
   const { showError } = useSnackbar();
 
   const tokenize = useTokenize();
@@ -176,108 +161,20 @@ export default function PaymentPage() {
     });
   };
 
-  const { pricePerNight, nights, subtotal, taxes, total } = pricing;
-
-  const PaymentSidebar = () => (
-    <SidebarContainer>
-      <SidebarTitle>{t('payment.sidebar.title')}</SidebarTitle>
-
-      {/* Booking mini card */}
-      <BookingMiniCard>
-        <BookingThumbnail />
-        <div>
-          <Text textVariant="bodySemibold" sx={{ mb: '4px' }}>
-            {cart?.hotelName || '...'}
-          </Text>
-          <Text textVariant="caption" sx={{ mb: '2px' }}>
-            {cart?.checkIn && cart?.checkOut
-              ? `${formatDate(cart.checkIn, 'short')} – ${formatDate(cart.checkOut, 'medium')} · ${nights} ${t('payment.sidebar.nightsLabel')}`
-              : '...'}
-          </Text>
-          <Text textVariant="caption">
-            {cart?.roomName
-              ? `${cart.roomName} · ${cart.guests} adultos`
-              : t('payment.sidebar.room')}
-          </Text>
-        </div>
-      </BookingMiniCard>
-
-      {/* Price breakdown */}
-      <PriceBreakdownList>
-        <PriceRow>
-          <Text textVariant="body">
-            {`${formatPrice(pricePerNight)} x ${nights} ${t('payment.sidebar.nightsLabel')}`}
-          </Text>
-          <PriceRowValue>{formatPrice(subtotal)}</PriceRowValue>
-        </PriceRow>
-        {taxes > 0 && (
-          <PriceRow>
-            <Text textVariant="body">{t('payment.sidebar.taxesAndFees')}</Text>
-            <PriceRowValue>{formatPrice(taxes)}</PriceRowValue>
-          </PriceRow>
-        )}
-        <Divider />
-        <PriceRow>
-          <Text textVariant="panelTitle">{t('payment.sidebar.totalToPay')}</Text>
-          <TotalPrice>{formatPrice(total)}</TotalPrice>
-        </PriceRow>
-      </PriceBreakdownList>
-
-      {/* Pay button */}
-      <PrimaryPillButton
-        fullWidth
-        pillSize="lg"
-        disabled={!isFormValid || isProcessing}
-        onClick={handlePay}
-        sx={{ height: 56, display: 'flex', alignItems: 'center', gap: '8px' }}
-      >
-        {isProcessing ? (
-          <CircularProgress size={20} sx={{ color: '#fff' }} />
-        ) : (
-          <>
-            <LockIcon sx={{ fontSize: 20 }} />
-            {`${t('payment.sidebar.payLabel')} ${formatPrice(total)}`}
-          </>
-        )}
-      </PrimaryPillButton>
-
-      {/* Secure note */}
-      <SecureNote>
-        <VerifiedUserIcon sx={{ fontSize: 15, color: palette.primary }} />
-        <Text textVariant="caption">{t('payment.sidebar.secureTransaction')}</Text>
-      </SecureNote>
-    </SidebarContainer>
-  );
-
   return (
-    <CheckoutLayout currentStep={3} sidebar={<PaymentSidebar />}>
-      {/* Processing overlay */}
-      {isProcessing && (
-        <Box
-          sx={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(255, 255, 255, 0.92)',
-            zIndex: 1300,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '16px',
-          }}
-        >
-          <CircularProgress size={48} sx={{ color: palette.primary }} />
-          <Text textVariant="panelTitle" sx={{ color: palette.onSurface }}>
-            {t('payment.processing')}
-          </Text>
-          <Text textVariant="caption" sx={{ color: palette.onSurfaceVariant }}>
-            {t('payment.processingSubtext')}
-          </Text>
-        </Box>
-      )}
+    <CheckoutLayout
+      currentStep={3}
+      sidebar={
+        <PaymentSidebar
+          cart={cart}
+          pricing={pricing}
+          isFormValid={isFormValid}
+          isProcessing={isProcessing}
+          onPay={handlePay}
+        />
+      }
+    >
+      <ProcessingOverlay visible={isProcessing} />
 
       <CardList>
         <SectionCard
