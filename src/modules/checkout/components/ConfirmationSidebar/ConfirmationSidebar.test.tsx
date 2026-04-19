@@ -3,15 +3,6 @@ import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/renderWithProviders';
 import ConfirmationSidebar from './ConfirmationSidebar';
 
-const mockPricing = {
-  pricePerNight: 250000,
-  nights: 2,
-  subtotal: 500000,
-  taxes: 95000,
-  total: 595000,
-  currency: 'COP',
-};
-
 vi.mock('@/api/hooks/usePayments', () => ({
   usePaymentStatus: () => ({
     data: {
@@ -24,20 +15,30 @@ vi.mock('@/api/hooks/usePayments', () => ({
   }),
 }));
 
-vi.mock('@/api/hooks/useCart', () => ({
-  useCart: () => ({
+vi.mock('@/api/hooks/useBookings', () => ({
+  useBookingByPaymentId: () => ({
     data: {
-      id: 'cart-1',
-      hotelName: 'Hotel Test',
-      roomName: 'Standard',
-      location: 'Bogota, Colombia',
-      roomFeatures: 'Vista al mar',
+      id: 'bk-1',
+      code: 'BK-12345678',
+      hotelId: 'hotel-1',
+      roomId: 'room-1',
       checkIn: '2026-05-01',
       checkOut: '2026-05-03',
       guests: 2,
-      pricing: mockPricing,
+      totalPrice: 595000,
+      currency: 'COP',
     },
-    pricing: mockPricing,
+  }),
+}));
+
+vi.mock('@/api/hooks/useSearch', () => ({
+  useHotelDetail: () => ({
+    data: {
+      name: 'Hotel Test',
+      city: 'Bogota',
+      country: 'Colombia',
+      rating: 4.5,
+    },
   }),
 }));
 
@@ -47,12 +48,12 @@ describe('ConfirmationSidebar', () => {
     expect(screen.getByText(/detalle de tu reserva/i)).toBeInTheDocument();
   });
 
-  it('renders hotel name from cart', () => {
+  it('renders hotel name from hotel detail', () => {
     renderWithProviders(<ConfirmationSidebar paymentId="pay-1" />);
     expect(screen.getByText('Hotel Test')).toBeInTheDocument();
   });
 
-  it('renders location', () => {
+  it('renders location from hotel detail', () => {
     renderWithProviders(<ConfirmationSidebar paymentId="pay-1" />);
     expect(screen.getByText('Bogota, Colombia')).toBeInTheDocument();
   });

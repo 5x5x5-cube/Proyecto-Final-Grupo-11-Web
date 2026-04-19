@@ -5,7 +5,8 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import { usePaymentStatus } from '@/api/hooks/usePayments';
-import { useCart } from '@/api/hooks/useCart';
+import { useBookingByPaymentId } from '@/api/hooks/useBookings';
+import { useHotelDetail } from '@/api/hooks/useSearch';
 import InfoGrid from '@/design-system/components/InfoGrid';
 import Text from '@/design-system/components/Text';
 import { palette } from '@/design-system/theme/palette';
@@ -34,10 +35,24 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
   const { data: payment } = usePaymentStatus(paymentId);
-  const { data: cart, pricing } = useCart();
+  const { data: booking } = useBookingByPaymentId(paymentId);
+  const { data: hotel } = useHotelDetail(booking?.hotelId ?? '') as {
+    data: { name?: string; city?: string; country?: string; rating?: number } | undefined;
+  };
 
-  const cartLoaded = !!cart?.id;
+  const bookingLoaded = !!booking && !!hotel;
   const paymentLoaded = !!payment;
+
+  const nights =
+    booking?.checkIn && booking?.checkOut
+      ? Math.ceil(
+          (new Date(booking.checkOut).getTime() - new Date(booking.checkIn).getTime()) /
+            (1000 * 60 * 60 * 24)
+        )
+      : 0;
+
+  const location =
+    hotel?.city && hotel?.country ? `${hotel.city}, ${hotel.country}` : (hotel?.city ?? '');
 
   const steps = [
     {
@@ -63,17 +78,17 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
     <SidebarRoot>
       <SidebarTitle>{t('confirmation.sidebar.title')}</SidebarTitle>
 
-      {cartLoaded ? (
+      {bookingLoaded ? (
         <>
           <HotelMiniCard>
             <HotelThumbnail />
             <Box>
               <HotelTypeLabel>{t('confirmation.sidebar.hotelType')}</HotelTypeLabel>
-              <HotelNameText>{cart.hotelName}</HotelNameText>
-              {cart.location && (
+              <HotelNameText>{hotel.name}</HotelNameText>
+              {location && (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <PlaceIcon sx={{ fontSize: 14, color: palette.onSurfaceVariant }} />
-                  <Text textVariant="hint">{cart.location}</Text>
+                  <Text textVariant="hint">{location}</Text>
                 </Box>
               )}
             </Box>
@@ -86,23 +101,23 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
             items={[
               {
                 label: t('confirmation.sidebar.checkIn'),
-                value: formatDate(cart.checkIn, 'mediumWithDay'),
+                value: formatDate(booking.checkIn, 'mediumWithDay'),
                 sub: t('confirmation.sidebar.checkInSub'),
               },
               {
                 label: t('confirmation.sidebar.checkOut'),
-                value: formatDate(cart.checkOut, 'mediumWithDay'),
+                value: formatDate(booking.checkOut, 'mediumWithDay'),
                 sub: t('confirmation.sidebar.checkOutSub'),
               },
               {
                 label: t('confirmation.sidebar.room'),
-                value: cart.roomName,
-                sub: cart.roomFeatures || '',
+                value: t('confirmation.sidebar.room'),
+                sub: '',
               },
               {
                 label: t('confirmation.sidebar.guests'),
-                value: t('confirmation.sidebar.guestsCount', { count: cart.guests }),
-                sub: t('confirmation.sidebar.nightsCount', { count: pricing.nights }),
+                value: t('confirmation.sidebar.guestsCount', { count: booking.guests }),
+                sub: t('confirmation.sidebar.nightsCount', { count: nights }),
               },
             ]}
           />

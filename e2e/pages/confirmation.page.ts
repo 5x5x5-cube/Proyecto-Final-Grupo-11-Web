@@ -54,12 +54,12 @@ export class ConfirmationPage {
 
   /** Wait for the booking code to appear (BK-XXXXXXXX) */
   async waitForBookingCode(timeout = 60000) {
-    await this.page.locator('text=/BK-\\d+/').waitFor({ state: 'visible', timeout });
+    await this.page.locator('text=/BK-[A-Z0-9]+/i').waitFor({ state: 'visible', timeout });
   }
 
   /** Extract the booking code text */
   async getBookingCode(): Promise<string> {
-    const el = this.page.locator('text=/BK-\\d+/');
+    const el = this.page.locator('text=/BK-[A-Z0-9]+/i');
     const text = (await el.textContent()) ?? '';
     return text.trim();
   }

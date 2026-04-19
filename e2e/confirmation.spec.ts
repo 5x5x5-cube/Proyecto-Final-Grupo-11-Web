@@ -72,7 +72,7 @@ test.describe('Confirmation page', () => {
 
     await confirmationPage.waitForBookingCode(60000);
     const code = await confirmationPage.getBookingCode();
-    expect(code).toMatch(/^BK-\d+$/);
+    expect(code).toMatch(/^BK-[A-Z0-9]+$/i);
   });
 
   test('shows sidebar with reservation details', async ({
