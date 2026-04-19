@@ -9,6 +9,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useLocale } from '@/contexts/LocaleContext';
+import { useHotel } from '@/contexts/HotelContext';
 import HotelAdminLayout from '@/design-system/layouts/HotelAdminLayout';
 import StatusChip from '@/design-system/components/StatusChip';
 import SearchField from '@/design-system/components/SearchField';
@@ -36,6 +37,8 @@ import {
   NavButton,
 } from './ReservationsPage.styles';
 
+const ITEMS_PER_PAGE = 10;
+
 const avatarColorMap = {
   teal: palette.primaryContainer,
   green: palette.successContainer,
@@ -47,43 +50,62 @@ const avatarColorMap = {
 export default function ReservationsPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
+  const { hotel } = useHotel();
   const navigate = useNavigate();
 
   const [activeStatus, setActiveStatus] = useState<string>('');
   const [searchCode, setSearchCode] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const { data, isLoading } = useHotelBookings({
     status: activeStatus || undefined,
     code: searchCode || undefined,
+    page: currentPage,
+    limit: ITEMS_PER_PAGE,
   });
+
+  const subtitle = hotel.name;
 
   if (isLoading || !data) {
     return (
-      <HotelAdminLayout
-        activeNav="reservas"
-        title={t('reservations.title')}
-        subtitle={`Hotel Santa Clara Sofitel · ${formatDate('2026-02-01', 'monthYear')}`}
-      >
+      <HotelAdminLayout activeNav="reservas" title={t('reservations.title')} subtitle={subtitle}>
         <ReservationsPageSkeleton />
       </HotelAdminLayout>
     );
   }
 
-  const { reservations: hotelReservations, summary: reservationSummary } = data as any;
+  const { reservations: hotelReservations, summary: reservationSummary, total } = data as any;
+  const totalPages = Math.max(1, Math.ceil(total / ITEMS_PER_PAGE));
+  const from = (currentPage - 1) * ITEMS_PER_PAGE + 1;
+  const to = Math.min(currentPage * ITEMS_PER_PAGE, total);
+
+  const handleStatusChange = (status: string) => {
+    setActiveStatus(status);
+    setCurrentPage(1);
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchCode(value);
+    setCurrentPage(1);
+  };
+
+  // Build page numbers: show up to 5 around current page
+  const pageNumbers: number[] = [];
+  const startPage = Math.max(1, currentPage - 2);
+  const endPage = Math.min(totalPages, startPage + 4);
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
 
   return (
-    <HotelAdminLayout
-      activeNav="reservas"
-      title={t('reservations.title')}
-      subtitle={`Hotel Santa Clara Sofitel · ${formatDate('2026-02-01', 'monthYear')}`}
-    >
+    <HotelAdminLayout activeNav="reservas" title={t('reservations.title')} subtitle={subtitle}>
       {/* Filter bar */}
       <FilterBar>
         <Box sx={{ maxWidth: 340, minWidth: 200 }}>
           <SearchField
             placeholder={t('reservations.searchPlaceholder')}
             value={searchCode}
-            onChange={e => setSearchCode(e.target.value)}
+            onChange={e => handleSearch(e.target.value)}
           />
         </Box>
 
@@ -93,37 +115,35 @@ export default function ReservationsPage() {
           label={t('reservations.filterAll')}
           selected={activeStatus === ''}
           icon={<CheckCircleIcon sx={{ fontSize: 16 }} />}
-          onClick={() => setActiveStatus('')}
+          onClick={() => handleStatusChange('')}
         />
         <FilterChip
           label={t('reservations.filterConfirmed')}
           selected={activeStatus === 'confirmed'}
-          onClick={() => setActiveStatus('confirmed')}
+          onClick={() => handleStatusChange('confirmed')}
         />
         <FilterChip
           label={t('reservations.filterPending')}
           selected={activeStatus === 'pending'}
-          onClick={() => setActiveStatus('pending')}
+          onClick={() => handleStatusChange('pending')}
         />
         <FilterChip
           label={t('reservations.filterCancelled')}
           selected={activeStatus === 'cancelled'}
-          onClick={() => setActiveStatus('cancelled')}
+          onClick={() => handleStatusChange('cancelled')}
         />
 
         <FilterDivider />
 
-        {/* Date filter (visual) */}
         <DateFilterPill>
           <CalendarTodayIcon sx={{ fontSize: 16, color: palette.primary }} />
-          {formatDate('2026-02-01', 'short')} – {formatDate('2026-02-28', 'medium')}
+          {t('reservations.allDates')}
         </DateFilterPill>
 
-        {/* Clear filters */}
         <Box sx={{ marginLeft: 'auto', flexShrink: 0 }}>
           <ClearFiltersLink
             onClick={() => {
-              setActiveStatus('');
+              handleStatusChange('');
               setSearchCode('');
             }}
           >
@@ -163,11 +183,7 @@ export default function ReservationsPage() {
           {t('reservations.cancelled')}
         </SummaryPill>
         <Text textVariant="hint" sx={{ marginLeft: 'auto' }}>
-          {t('reservations.showing', {
-            from: 1,
-            to: hotelReservations.length,
-            total: reservationSummary.total,
-          })}
+          {t('reservations.showing', { from, to, total })}
         </Text>
       </SummaryRow>
 
@@ -196,12 +212,10 @@ export default function ReservationsPage() {
           <Box component="tbody">
             {hotelReservations.map((res: any, index: number) => (
               <TableRow component="tr" key={res.id}>
-                {/* Code */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
                   <CodeBadge>{res.code}</CodeBadge>
                 </TableCell>
 
-                {/* Guest */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <AvatarCircle
@@ -211,45 +225,38 @@ export default function ReservationsPage() {
                     </AvatarCircle>
                     <Box>
                       <Text textVariant="bodyMedium">{res.guest}</Text>
-                      <Text textVariant="caption">{res.email}</Text>
+                      {res.email && <Text textVariant="caption">{res.email}</Text>}
                     </Box>
                   </Box>
                 </TableCell>
 
-                {/* Room */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
                   <Text textVariant="bodyMedium">{res.room}</Text>
-                  <Text textVariant="caption">{res.roomType}</Text>
+                  {res.roomType && <Text textVariant="caption">{res.roomType}</Text>}
                 </TableCell>
 
-                {/* Check-in */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
                   {formatDate(res.checkIn, 'medium')}
                 </TableCell>
 
-                {/* Check-out */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
                   {formatDate(res.checkOut, 'medium')}
                 </TableCell>
 
-                {/* Nights */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
                   <Text textVariant="hint">
                     {t('reservations.nightsCount', { count: res.nights })}
                   </Text>
                 </TableCell>
 
-                {/* Total */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
                   <TotalPrice>{formatPrice(res.totalCop)}</TotalPrice>
                 </TableCell>
 
-                {/* Status */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
                   <StatusChip status={res.status} />
                 </TableCell>
 
-                {/* Actions */}
                 <TableCell component="td" isLast={index === hotelReservations.length - 1}>
                   <NeutralPillButton
                     pillSize="xxs"
@@ -265,23 +272,33 @@ export default function ReservationsPage() {
 
         {/* Pagination */}
         <PaginationBar>
-          <Text textVariant="hint">
-            {t('reservations.showing', {
-              from: 1,
-              to: hotelReservations.length,
-              total: reservationSummary.total,
-            })}
-          </Text>
+          <Text textVariant="hint">{t('reservations.showing', { from, to, total })}</Text>
           <Box sx={{ display: 'flex', gap: '4px' }}>
-            <NavButton>
+            <NavButton
+              onClick={() => currentPage > 1 && setCurrentPage(p => p - 1)}
+              sx={{
+                opacity: currentPage === 1 ? 0.3 : 1,
+                pointerEvents: currentPage === 1 ? 'none' : 'auto',
+              }}
+            >
               <ChevronLeftIcon sx={{ fontSize: 16, color: palette.onSurfaceVariant }} />
             </NavButton>
-            {[1, 2, 3, 4, 5].map(page => (
-              <PageButton key={page} active={page === 1}>
+            {pageNumbers.map(page => (
+              <PageButton
+                key={page}
+                active={page === currentPage}
+                onClick={() => setCurrentPage(page)}
+              >
                 {page}
               </PageButton>
             ))}
-            <NavButton>
+            <NavButton
+              onClick={() => currentPage < totalPages && setCurrentPage(p => p + 1)}
+              sx={{
+                opacity: currentPage === totalPages ? 0.3 : 1,
+                pointerEvents: currentPage === totalPages ? 'none' : 'auto',
+              }}
+            >
               <ChevronRightIcon sx={{ fontSize: 16, color: palette.onSurfaceVariant }} />
             </NavButton>
           </Box>
