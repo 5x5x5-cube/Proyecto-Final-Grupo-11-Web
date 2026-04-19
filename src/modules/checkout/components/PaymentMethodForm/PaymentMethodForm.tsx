@@ -6,9 +6,9 @@ import { palette } from '@/design-system/theme/palette';
 import type { PaymentMethod } from '../../types';
 import type { TokenizeRequest } from '@/api/hooks/usePayments';
 import { usePaymentMethodForm } from '../../hooks/usePaymentMethodForm';
-import CardForm from '@/travelers/pages/PaymentPage/forms/CardForm';
-import WalletForm from '@/travelers/pages/PaymentPage/forms/WalletForm';
-import TransferForm from '@/travelers/pages/PaymentPage/forms/TransferForm';
+import CardForm from './forms/CardForm';
+import WalletForm from './forms/WalletForm';
+import TransferForm from './forms/TransferForm';
 import {
   CardList,
   FormFieldsContainer,

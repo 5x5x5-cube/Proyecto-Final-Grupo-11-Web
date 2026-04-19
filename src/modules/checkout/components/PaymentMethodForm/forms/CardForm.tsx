@@ -16,7 +16,7 @@ import {
   FormInput,
   FormSelect,
   FieldError,
-} from '../PaymentPage.styles';
+} from './FormStyles';
 
 export interface CardFormProps {
   rawCardDigits: string;

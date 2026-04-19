@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Text from '@/design-system/components/Text';
 import type { WalletProvider } from '@/modules/checkout/types';
-import { FormFieldsGrid, FormInput, FormSelect, FieldError } from '../PaymentPage.styles';
+import { FormFieldsGrid, FormInput, FormSelect, FieldError } from './FormStyles';
 
 export interface WalletFormProps {
   walletProvider: WalletProvider | '';
