@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/contexts/AuthContext';
 import { useBookingByPaymentId } from '@/api/hooks/useBookings';
 import CheckoutLayout from '@/design-system/layouts/CheckoutLayout';
 import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
@@ -24,6 +25,7 @@ import {
 
 const ConfirmationPage: React.FC = () => {
   const { t } = useTranslation('travelers');
+  const { user } = useAuth();
   const { paymentId } = useParams<{ paymentId: string }>();
   const { data: booking } = useBookingByPaymentId(paymentId ?? '');
 
@@ -54,7 +56,7 @@ const ConfirmationPage: React.FC = () => {
 
         <EmailNoticePill>
           <MarkEmailReadIcon sx={{ fontSize: 20, color: palette.success }} />
-          <EmailNoticeText>{t('confirmation.emailSent')}</EmailNoticeText>
+          <EmailNoticeText>{t('confirmation.emailSent', { email: user.email })}</EmailNoticeText>
         </EmailNoticePill>
 
         <ActionButtonsRow>

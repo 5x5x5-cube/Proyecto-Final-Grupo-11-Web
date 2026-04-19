@@ -187,7 +187,14 @@
       "title": "Cancellation policy",
       "free": "<strong>Free</strong> cancellation until Friday, March 12, 2026",
       "halfCharge": "<strong>50%</strong> charge (COP 1,200,000) if cancelled between March 12--14",
-      "noRefund": "<strong>No refund</strong> from March 15 (check-in date)"
+      "noRefund": "<strong>No refund</strong> from March 15 (check-in date)",
+      "freeDynamic": "<strong>Free</strong> cancellation until {{date}}",
+      "halfChargeDynamic": "<strong>{{percent}}%</strong> charge if cancelled between {{range}}",
+      "noRefundDynamic": "<strong>No refund</strong> from {{date}} (check-in date)",
+      "freeLabel": "Free cancellation until",
+      "halfChargeLabel": "{{percent}}% charge if cancelled between",
+      "noRefundLabel": "No refund",
+      "fromDate": "from {{date}}"
     },
     "sidebar": {
       "title": "Payment summary",
@@ -286,7 +293,7 @@
     "title": "Booking confirmed!",
     "subtitle": "Your booking has been successfully processed. You will receive all details in your email.",
     "bookingNumber": "Booking number",
-    "emailSent": "Confirmation sent to carlos.martinez@email.com",
+    "emailSent": "Confirmation sent to {{email}}",
     "viewReservations": "View my reservations",
     "downloadReceipt": "Download receipt",
     "sidebar": {
