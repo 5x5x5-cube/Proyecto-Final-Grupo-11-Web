@@ -169,7 +169,20 @@
     "typeWeekendDesc": "Vie, Sab, Dom",
     "typeSeasonDesc": "Rango de fechas",
     "typePromoDesc": "Descuento especial",
-    "allYear": "Todo el ano"
+    "allYear": "Todo el ano",
+    "createRate": "Nueva tarifa",
+    "selectRoom": "Selecciona una habitacion",
+    "errors": {
+      "roomRequired": "Selecciona una habitacion",
+      "rateTypeRequired": "Selecciona un tipo de tarifa",
+      "priceRequired": "El precio es requerido",
+      "pricePositive": "El precio debe ser mayor a 0",
+      "startDateRequired": "La fecha de inicio es requerida",
+      "endDateRequired": "La fecha fin es requerida",
+      "endDateAfterStart": "La fecha fin debe ser posterior a la fecha inicio"
+    },
+    "successCreated": "Tarifa creada exitosamente",
+    "successUpdated": "Tarifa actualizada exitosamente"
   },
   "discounts": {
     "title": "Gestion de Descuentos",

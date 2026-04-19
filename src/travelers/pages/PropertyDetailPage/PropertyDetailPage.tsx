@@ -100,7 +100,7 @@ export default function PropertyDetailPage() {
   const guests = Number(searchParams.get('guests') ?? 1) || 1;
 
   const { data: hotelRaw, isLoading: isHotelLoading } = useHotelDetail(id);
-  const { data: roomsData, isLoading: isRoomsLoading } = useHotelRooms(id);
+  const { data: roomsData, isLoading: isRoomsLoading } = useHotelRooms(id, checkIn || undefined);
   const { data: reviewsData, isLoading: isReviewsLoading } = useHotelReviews(id);
 
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);

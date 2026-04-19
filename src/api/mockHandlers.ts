@@ -3,7 +3,7 @@ import { mockDestinations } from '../travelers/data/mockDestinations';
 import { mockHotels } from '../travelers/data/mockHotels';
 import { mockReservations } from '../travelers/data/mockReservations';
 import { hotelReservations, reservationSummary } from '../hotels/data/mockHotelReservations';
-import { roomRates, discounts } from '../hotels/data/mockRates';
+import { discounts, tariffsList, hotelAdminRooms } from '../hotels/data/mockRates';
 import {
   dashboardStats,
   recentReservations,
@@ -564,26 +564,31 @@ export const mockHandlers: MockRoute[] = [
     },
   },
 
-  // ─── Tariffs ───
+  // ─── Tariffs (inventory service) ───
   {
     method: 'GET',
-    pattern: /^\/bookings\/tariffs$/,
-    handler: () => ok(roomRates),
+    pattern: /^\/inventory\/rooms$/,
+    handler: () => ok(hotelAdminRooms),
+  },
+  {
+    method: 'GET',
+    pattern: /^\/inventory\/tariffs$/,
+    handler: () => ok(tariffsList),
   },
   {
     method: 'POST',
-    pattern: /^\/bookings\/tariffs$/,
-    handler: _config => created({ id: 5, ...(_config?.body as object) }),
+    pattern: /^\/inventory\/tariffs$/,
+    handler: _config => created({ id: crypto.randomUUID(), ...(_config?.body as object) }),
   },
   {
     method: 'PUT',
-    pattern: /^\/bookings\/tariffs\/(\d+)$/,
-    handler: _config => ok({ id: 1, ...(_config?.body as object) }),
+    pattern: /^\/inventory\/tariffs\/([^/]+)$/,
+    handler: (_config, match) => ok({ id: match[1], ...(_config?.body as object) }),
   },
   {
     method: 'DELETE',
-    pattern: /^\/bookings\/tariffs\/(\d+)$/,
-    handler: () => ok({ message: 'Tariff deleted' }),
+    pattern: /^\/inventory\/tariffs\/([^/]+)$/,
+    handler: () => ({ status: 204, data: undefined }),
   },
 
   // ─── Discounts ───

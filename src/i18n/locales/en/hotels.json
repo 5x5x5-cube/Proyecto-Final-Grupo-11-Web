@@ -169,7 +169,20 @@
     "typeWeekendDesc": "Fri, Sat, Sun",
     "typeSeasonDesc": "Date range",
     "typePromoDesc": "Special discount",
-    "allYear": "All year"
+    "allYear": "All year",
+    "createRate": "New rate",
+    "selectRoom": "Select a room",
+    "errors": {
+      "roomRequired": "Please select a room",
+      "rateTypeRequired": "Please select a rate type",
+      "priceRequired": "Price is required",
+      "pricePositive": "Price must be greater than 0",
+      "startDateRequired": "Start date is required",
+      "endDateRequired": "End date is required",
+      "endDateAfterStart": "End date must be after start date"
+    },
+    "successCreated": "Rate created successfully",
+    "successUpdated": "Rate updated successfully"
   },
   "discounts": {
     "title": "Discount Management",

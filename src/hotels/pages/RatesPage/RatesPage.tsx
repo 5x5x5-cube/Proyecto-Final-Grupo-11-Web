@@ -1,10 +1,9 @@
+import { useState } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import Text from '@/design-system/components/Text';
 import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import SellIcon from '@mui/icons-material/Sell';
 import KingBedIcon from '@mui/icons-material/KingBed';
-import HotelIcon from '@mui/icons-material/Hotel';
-import SingleBedIcon from '@mui/icons-material/SingleBed';
 import StarIcon from '@mui/icons-material/Star';
 import WeekendIcon from '@mui/icons-material/Weekend';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
@@ -21,7 +20,15 @@ import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import HotelAdminLayout from '@/design-system/layouts/HotelAdminLayout';
 import { palette } from '@/design-system/theme/palette';
-import { useTariffs } from '@/api/hooks/useTariffs';
+import {
+  useTariffs,
+  useCreateTariff,
+  useUpdateTariff,
+  useDeleteTariff,
+  useHotelAdminRooms,
+} from '@/api/hooks/useTariffs';
+import { useSnackbar } from '@/contexts/SnackbarContext';
+import type { RateType, Tariff } from '@/hotels/data/mockRates';
 import {
   FilterBar,
   SearchBox,
@@ -69,11 +76,77 @@ const typeChipStyles: Record<string, { bg: string; color: string }> = {
   promo: { bg: palette.successContainer, color: palette.success },
 };
 
+const TYPE_ICONS: Record<RateType, typeof StarIcon> = {
+  standard: StarIcon,
+  weekend: WeekendIcon,
+  season: WbSunnyIcon,
+  promo: LocalOfferIcon,
+};
+
+interface FormState {
+  roomId: string;
+  rateType: RateType | '';
+  pricePerNight: string;
+  startDate: string;
+  endDate: string;
+}
+
+interface TouchedState {
+  roomId: boolean;
+  rateType: boolean;
+  pricePerNight: boolean;
+  startDate: boolean;
+  endDate: boolean;
+}
+
+const EMPTY_FORM: FormState = {
+  roomId: '',
+  rateType: '',
+  pricePerNight: '',
+  startDate: '',
+  endDate: '',
+};
+const EMPTY_TOUCHED: TouchedState = {
+  roomId: false,
+  rateType: false,
+  pricePerNight: false,
+  startDate: false,
+  endDate: false,
+};
+
+function validate(form: FormState, t: (k: string) => string) {
+  const errors: Partial<Record<keyof FormState, string>> = {};
+  if (!form.roomId) errors.roomId = t('rates.errors.roomRequired');
+  if (!form.rateType) errors.rateType = t('rates.errors.rateTypeRequired');
+  if (!form.pricePerNight) errors.pricePerNight = t('rates.errors.priceRequired');
+  else if (Number(form.pricePerNight) <= 0) errors.pricePerNight = t('rates.errors.pricePositive');
+  if (form.endDate && !form.startDate) errors.startDate = t('rates.errors.startDateRequired');
+  if (form.startDate && !form.endDate) errors.endDate = t('rates.errors.endDateRequired');
+  if (form.startDate && form.endDate && form.endDate <= form.startDate)
+    errors.endDate = t('rates.errors.endDateAfterStart');
+  return errors;
+}
+
+const PAGE_SIZE = 6;
+
 export default function RatesPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice, formatDate } = useLocale();
+  const { showSuccess, showError } = useSnackbar();
 
-  const { isLoading } = useTariffs();
+  const { data: tariffsRaw, isLoading } = useTariffs();
+  const { data: roomsRaw } = useHotelAdminRooms();
+  const createTariff = useCreateTariff();
+  const updateTariff = useUpdateTariff();
+  const deleteTariff = useDeleteTariff();
+
+  const [panelOpen, setPanelOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [filterChip, setFilterChip] = useState<'all' | RateType>('all');
+  const [searchText, setSearchText] = useState('');
+  const [page, setPage] = useState(1);
+  const [form, setForm] = useState<FormState>(EMPTY_FORM);
+  const [touched, setTouched] = useState<TouchedState>(EMPTY_TOUCHED);
 
   if (isLoading) {
     return (
@@ -85,117 +158,130 @@ export default function RatesPage() {
     );
   }
 
-  const rates = [
-    {
-      id: 1,
-      name: 'Suite Deluxe King',
-      location: 'Piso 4 · Vista al mar',
-      icon: KingBedIcon,
-      type: 'standard',
-      typeLabel: t('rates.typeStandard'),
-      typeIcon: StarIcon,
-      price: formatPrice(888000),
-      validity: t('rates.allYear'),
-      selected: true,
-    },
-    {
-      id: 2,
-      name: 'Suite Deluxe King',
-      location: 'Piso 4 · Vista al mar',
-      icon: KingBedIcon,
-      type: 'weekend',
-      typeLabel: t('rates.typeWeekend'),
-      typeIcon: WeekendIcon,
-      price: formatPrice(1050000),
-      validity: t('rates.allYear'),
-      selected: false,
-    },
-    {
-      id: 3,
-      name: 'Suite Deluxe King',
-      location: 'Piso 4 · Vista al mar',
-      icon: KingBedIcon,
-      type: 'season',
-      typeLabel: t('rates.typeSeason'),
-      typeIcon: WbSunnyIcon,
-      price: formatPrice(1280000),
-      validityStart: '2025-12-20',
-      validityEnd: '2026-01-10',
-      selected: false,
-    },
-    {
-      id: 4,
-      name: 'Junior Suite',
-      location: 'Piso 3 · Vista jardin',
-      icon: HotelIcon,
-      type: 'standard',
-      typeLabel: t('rates.typeStandard'),
-      typeIcon: StarIcon,
-      price: formatPrice(560000),
-      validity: t('rates.allYear'),
-      selected: false,
-    },
-    {
-      id: 5,
-      name: 'Junior Suite',
-      location: 'Piso 3 · Vista jardin',
-      icon: HotelIcon,
-      type: 'promo',
-      typeLabel: t('rates.typePromo'),
-      typeIcon: LocalOfferIcon,
-      price: formatPrice(420000),
-      validityStart: '2026-03-01',
-      validityEnd: '2026-03-31',
-      selected: false,
-    },
-    {
-      id: 6,
-      name: 'Habitacion Estandar',
-      location: 'Piso 2 · Vista interior',
-      icon: SingleBedIcon,
-      type: 'standard',
-      typeLabel: t('rates.typeStandard'),
-      typeIcon: StarIcon,
-      price: formatPrice(320000),
-      validity: t('rates.allYear'),
-      selected: false,
-    },
-  ];
+  const tariffs = (Array.isArray(tariffsRaw) ? tariffsRaw : []) as Tariff[];
+  const rooms = (Array.isArray(roomsRaw) ? roomsRaw : []) as Array<{
+    id: string;
+    name: string;
+    location: string;
+  }>;
 
-  const filterChips = [
-    t('rates.filterAll'),
-    t('rates.filterStandard'),
-    t('rates.filterWeekend'),
-    t('rates.filterSeason'),
-    t('rates.filterPromo'),
+  // Filter + search
+  let filtered = tariffs;
+  if (filterChip !== 'all') filtered = filtered.filter(r => r.rateType === filterChip);
+  if (searchText)
+    filtered = filtered.filter(r => r.roomName.toLowerCase().includes(searchText.toLowerCase()));
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const errors = validate(form, t);
+  const isFormValid = Object.keys(errors).length === 0;
+
+  const filterChips: Array<{ key: 'all' | RateType; label: string }> = [
+    { key: 'all', label: t('rates.filterAll') },
+    { key: 'standard', label: t('rates.filterStandard') },
+    { key: 'weekend', label: t('rates.filterWeekend') },
+    { key: 'season', label: t('rates.filterSeason') },
+    { key: 'promo', label: t('rates.filterPromo') },
   ];
 
   const rateTypeOptions = [
     {
+      type: 'standard' as RateType,
       icon: StarIcon,
       label: t('rates.typeStandard'),
       desc: t('rates.typeStandardDesc'),
-      selected: true,
     },
     {
+      type: 'weekend' as RateType,
       icon: WeekendIcon,
       label: t('rates.typeWeekend'),
       desc: t('rates.typeWeekendDesc'),
-      selected: false,
     },
     {
+      type: 'season' as RateType,
       icon: WbSunnyIcon,
       label: t('rates.typeSeason'),
       desc: t('rates.typeSeasonDesc'),
-      selected: false,
     },
     {
+      type: 'promo' as RateType,
       icon: LocalOfferIcon,
       label: t('rates.typePromo'),
       desc: t('rates.typePromoDesc'),
-      selected: false,
     },
   ];
+
+  const openCreate = () => {
+    setEditingId(null);
+    setForm(EMPTY_FORM);
+    setTouched(EMPTY_TOUCHED);
+    setPanelOpen(true);
+  };
+
+  const openEdit = (tariff: Tariff) => {
+    setEditingId(tariff.id);
+    setForm({
+      roomId: String(tariff.roomId),
+      rateType: tariff.rateType,
+      pricePerNight: String(tariff.pricePerNight),
+      startDate: tariff.startDate ?? '',
+      endDate: tariff.endDate ?? '',
+    });
+    setTouched(EMPTY_TOUCHED);
+    setPanelOpen(true);
+  };
+
+  const closePanel = () => {
+    setPanelOpen(false);
+    setEditingId(null);
+    setForm(EMPTY_FORM);
+    setTouched(EMPTY_TOUCHED);
+  };
+
+  const touchAll = () =>
+    setTouched({
+      roomId: true,
+      rateType: true,
+      pricePerNight: true,
+      startDate: true,
+      endDate: true,
+    });
+
+  const handleSave = async () => {
+    touchAll();
+    if (!isFormValid) return;
+    const room = rooms.find(r => String(r.id) === form.roomId);
+    const payload = {
+      roomId: form.roomId,
+      roomName: room?.name ?? '',
+      roomLocation: room?.location ?? '',
+      rateType: form.rateType,
+      pricePerNight: Number(form.pricePerNight),
+      startDate: form.startDate || null,
+      endDate: form.endDate || null,
+    };
+    try {
+      if (editingId !== null) {
+        await updateTariff.mutateAsync({ id: editingId, ...payload });
+        showSuccess(t('rates.successUpdated'));
+      } else {
+        await createTariff.mutateAsync(payload);
+        showSuccess(t('rates.successCreated'));
+      }
+      closePanel();
+    } catch {
+      showError(t('errors.generic'));
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await deleteTariff.mutateAsync(id);
+    } catch {
+      showError(t('errors.generic'));
+    }
+  };
 
   return (
     <HotelAdminLayout
@@ -203,7 +289,11 @@ export default function RatesPage() {
       title={t('rates.title')}
       subtitle={t('rates.subtitle')}
       topbarActions={
-        <PrimaryPillButton pillSize="sm" startIcon={<AddIcon sx={{ fontSize: 16 }} />}>
+        <PrimaryPillButton
+          pillSize="sm"
+          startIcon={<AddIcon sx={{ fontSize: 16 }} />}
+          onClick={openCreate}
+        >
           {t('rates.newRate')}
         </PrimaryPillButton>
       }
@@ -212,34 +302,60 @@ export default function RatesPage() {
       <FilterBar>
         <SearchBox>
           <SearchIcon sx={{ fontSize: 18, color: palette.outline }} />
-          {t('rates.searchPlaceholder')}
+          <input
+            placeholder={t('rates.searchPlaceholder')}
+            value={searchText}
+            onChange={e => {
+              setSearchText(e.target.value);
+              setPage(1);
+            }}
+            style={{
+              border: 'none',
+              outline: 'none',
+              background: 'transparent',
+              fontFamily: "'Roboto', sans-serif",
+              fontSize: 13,
+              color: palette.onSurface,
+              width: '100%',
+            }}
+          />
         </SearchBox>
 
         <FilterDivider />
 
         <Box sx={{ display: 'flex', gap: '8px' }}>
-          {filterChips.map((chip, i) => (
-            <FilterChip key={chip} ownerState={{ active: i === 0 }}>
-              {chip}
+          {filterChips.map(chip => (
+            <FilterChip
+              key={chip.key}
+              ownerState={{ active: filterChip === chip.key }}
+              onClick={() => {
+                setFilterChip(chip.key);
+                setPage(1);
+              }}
+            >
+              {chip.label}
             </FilterChip>
           ))}
         </Box>
       </FilterBar>
 
-      {/* Content layout: table + edit panel */}
+      {/* Content layout */}
       <ContentGrid>
-        {/* Rates table card */}
+        {/* Rates table */}
         <TableCard>
-          {/* Card header */}
           <TableCardHeader>
             <TableCardTitle>
               <SellIcon sx={{ fontSize: 18, color: palette.primary }} />
               {t('rates.configuredRates')}
             </TableCardTitle>
-            <Text textVariant="caption">{t('rates.ratesSummary', { rates: 12, rooms: 4 })}</Text>
+            <Text textVariant="caption">
+              {t('rates.ratesSummary', {
+                rates: filtered.length,
+                rooms: new Set(filtered.map(r => r.roomId)).size,
+              })}
+            </Text>
           </TableCardHeader>
 
-          {/* Table */}
           <StyledTable component="table">
             <Box component="thead">
               <Box component="tr">
@@ -257,55 +373,62 @@ export default function RatesPage() {
               </Box>
             </Box>
             <Box component="tbody">
-              {rates.map(rate => {
-                const IconComp = rate.icon;
-                const TypeIcon = rate.typeIcon;
-                const chipStyle = typeChipStyles[rate.type];
+              {paginated.map(rate => {
+                const TypeIcon = TYPE_ICONS[rate.rateType];
+                const chipStyle = typeChipStyles[rate.rateType];
                 return (
-                  <RateRow component="tr" key={rate.id} ownerState={{ selected: rate.selected }}>
-                    {/* Room cell */}
+                  <RateRow
+                    component="tr"
+                    key={rate.id}
+                    ownerState={{ selected: rate.id === editingId }}
+                  >
                     <RateCell component="td">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <RoomIconBox>
-                          <IconComp sx={{ fontSize: 16, color: 'rgba(255,255,255,0.8)' }} />
+                          <KingBedIcon sx={{ fontSize: 16, color: 'rgba(255,255,255,0.8)' }} />
                         </RoomIconBox>
                         <Box>
-                          <RoomName>{rate.name}</RoomName>
-                          <RoomLocation>{rate.location}</RoomLocation>
+                          <RoomName>{rate.roomName}</RoomName>
+                          <RoomLocation>{rate.roomLocation}</RoomLocation>
                         </Box>
                       </Box>
                     </RateCell>
-                    {/* Type chip */}
                     <RateCell component="td">
                       <TypeChip ownerState={chipStyle}>
                         <TypeIcon sx={{ fontSize: 13 }} />
-                        {rate.typeLabel}
+                        {t(
+                          `rates.type${rate.rateType.charAt(0).toUpperCase() + rate.rateType.slice(1)}`
+                        )}
                       </TypeChip>
                     </RateCell>
-                    {/* Price */}
                     <RateCell component="td">
                       <PriceText>
-                        {rate.price} <PriceUnit component="span">{t('rates.perNight')}</PriceUnit>
+                        {formatPrice(rate.pricePerNight)}{' '}
+                        <PriceUnit component="span">{t('rates.perNight')}</PriceUnit>
                       </PriceText>
                     </RateCell>
-                    {/* Validity */}
                     <ValidityText component="td">
-                      {rate.validityStart && rate.validityEnd
-                        ? `${formatDate(rate.validityStart, 'short')} - ${formatDate(rate.validityEnd, 'short')}`
-                        : rate.validity}
+                      {rate.startDate && rate.endDate
+                        ? `${formatDate(rate.startDate, 'short')} - ${formatDate(rate.endDate, 'short')}`
+                        : t('rates.allYear')}
                     </ValidityText>
-                    {/* Actions */}
                     <RateCell component="td">
                       <Box sx={{ display: 'flex', gap: '4px' }}>
-                        <ActionButton ownerState={{ active: rate.selected }}>
+                        <ActionButton
+                          ownerState={{ active: rate.id === editingId }}
+                          onClick={() => openEdit(rate)}
+                        >
                           <EditIcon
                             sx={{
                               fontSize: 16,
-                              color: rate.selected ? palette.onPrimary : palette.onSurfaceVariant,
+                              color:
+                                rate.id === editingId
+                                  ? palette.onPrimary
+                                  : palette.onSurfaceVariant,
                             }}
                           />
                         </ActionButton>
-                        <DeleteButton>
+                        <DeleteButton onClick={() => handleDelete(rate.id)}>
                           <DeleteOutlineIcon
                             className="delete-icon"
                             sx={{ fontSize: 16, color: palette.onSurfaceVariant }}
@@ -319,105 +442,188 @@ export default function RatesPage() {
             </Box>
           </StyledTable>
 
-          {/* Pagination */}
           <PaginationBar>
-            <span>{t('rates.showingRates', { from: 1, to: 6, total: 12 })}</span>
+            <span>
+              {t('rates.showingRates', {
+                from: filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1,
+                to: Math.min(page * PAGE_SIZE, filtered.length),
+                total: filtered.length,
+              })}
+            </span>
             <Box sx={{ display: 'flex', gap: '4px' }}>
-              <PageButton>
+              <PageButton onClick={() => setPage(p => Math.max(1, p - 1))}>
                 <ChevronLeftIcon sx={{ fontSize: 16, color: palette.onSurfaceVariant }} />
               </PageButton>
-              <PageButton ownerState={{ active: true }}>1</PageButton>
-              <PageButton>2</PageButton>
-              <PageButton>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                <PageButton key={p} ownerState={{ active: p === page }} onClick={() => setPage(p)}>
+                  {p}
+                </PageButton>
+              ))}
+              <PageButton onClick={() => setPage(p => Math.min(totalPages, p + 1))}>
                 <ChevronRightIcon sx={{ fontSize: 16, color: palette.onSurfaceVariant }} />
               </PageButton>
             </Box>
           </PaginationBar>
         </TableCard>
 
-        {/* Edit panel */}
-        <EditPanel>
-          {/* Panel header */}
-          <EditPanelHeader>
-            <EditPanelTitle>
-              <EditIcon sx={{ fontSize: 18 }} />
-              {t('rates.editRate')}
-            </EditPanelTitle>
-            <CloseButton>
-              <CloseIcon sx={{ fontSize: 16, color: palette.onPrimary }} />
-            </CloseButton>
-          </EditPanelHeader>
+        {/* Create panel */}
+        {panelOpen && (
+          <EditPanel>
+            <EditPanelHeader>
+              <EditPanelTitle>
+                {editingId !== null ? (
+                  <EditIcon sx={{ fontSize: 18 }} />
+                ) : (
+                  <AddIcon sx={{ fontSize: 18 }} />
+                )}
+                {editingId !== null ? t('rates.editRate') : t('rates.createRate')}
+              </EditPanelTitle>
+              <CloseButton onClick={closePanel}>
+                <CloseIcon sx={{ fontSize: 16, color: palette.onPrimary }} />
+              </CloseButton>
+            </EditPanelHeader>
 
-          {/* Panel body */}
-          <PanelBody>
-            {/* Room section */}
-            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
-              {t('rates.roomLabel')}
-            </Text>
-            <Box sx={{ position: 'relative' }}>
-              <FloatingLabel>{t('rates.roomLabel')}</FloatingLabel>
-              <FormSelect component="select" defaultValue="Suite Deluxe King — Piso 4">
-                <option>Suite Deluxe King -- Piso 4</option>
-              </FormSelect>
-            </Box>
-
-            {/* Rate type section */}
-            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
-              {t('rates.rateTypeLabel')}
-            </Text>
-            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-              {rateTypeOptions.map(opt => {
-                const OptIcon = opt.icon;
-                return (
-                  <RateTypeOption key={opt.label} ownerState={{ selected: opt.selected }}>
-                    <OptIcon sx={{ fontSize: 18, color: palette.primary, mb: '2px' }} />
-                    <RateTypeLabel>{opt.label}</RateTypeLabel>
-                    <RateTypeDesc>{opt.desc}</RateTypeDesc>
-                  </RateTypeOption>
-                );
-              })}
-            </Box>
-
-            {/* Price section */}
-            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
-              {t('rates.priceLabel')}
-            </Text>
-            <Box sx={{ position: 'relative' }}>
-              <FloatingLabel>{t('rates.pricePerNightLabel')}</FloatingLabel>
-              <Box sx={{ display: 'flex' }}>
-                <CurrencyPrefix>COP</CurrencyPrefix>
-                <PriceInput component="input" defaultValue="888.000" />
-              </Box>
-            </Box>
-
-            {/* Validity section */}
-            <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
-              {t('rates.validityLabel')}
-            </Text>
-            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <PanelBody>
+              {/* Room */}
+              <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
+                {t('rates.roomLabel')}
+              </Text>
               <Box sx={{ position: 'relative' }}>
-                <FloatingLabel>{t('rates.startDate')}</FloatingLabel>
-                <FormInput component="input" defaultValue="01/01/2026" />
+                <FloatingLabel>{t('rates.roomLabel')}</FloatingLabel>
+                <FormSelect
+                  value={form.roomId}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                    setForm(f => ({ ...f, roomId: e.target.value }));
+                    setTouched(t => ({ ...t, roomId: true }));
+                  }}
+                >
+                  <option value="">{t('rates.selectRoom')}</option>
+                  {rooms.map(r => (
+                    <option key={r.id} value={String(r.id)}>
+                      {r.name} — {r.location}
+                    </option>
+                  ))}
+                </FormSelect>
+                {touched.roomId && errors.roomId && (
+                  <Text textVariant="hint" sx={{ color: palette.error, mt: '4px' }}>
+                    {errors.roomId}
+                  </Text>
+                )}
               </Box>
-              <Box sx={{ position: 'relative' }}>
-                <FloatingLabel>{t('rates.endDate')}</FloatingLabel>
-                <FormInput component="input" defaultValue="31/12/2026" />
-              </Box>
-            </Box>
-          </PanelBody>
 
-          {/* Panel footer */}
-          <PanelFooter>
-            <OutlinedPillButton pillSize="xs">{t('rates.cancel')}</OutlinedPillButton>
-            <PrimaryPillButton
-              pillSize="xs"
-              startIcon={<SaveIcon sx={{ fontSize: 16 }} />}
-              sx={{ flex: 1 }}
-            >
-              {t('rates.saveRate')}
-            </PrimaryPillButton>
-          </PanelFooter>
-        </EditPanel>
+              {/* Rate type */}
+              <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
+                {t('rates.rateTypeLabel')}
+              </Text>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                {rateTypeOptions.map(opt => {
+                  const OptIcon = opt.icon;
+                  return (
+                    <RateTypeOption
+                      key={opt.type}
+                      ownerState={{ selected: form.rateType === opt.type }}
+                      onClick={() => {
+                        setForm(f => ({ ...f, rateType: opt.type }));
+                        setTouched(t => ({ ...t, rateType: true }));
+                      }}
+                    >
+                      <OptIcon sx={{ fontSize: 18, color: palette.primary, mb: '2px' }} />
+                      <RateTypeLabel>{opt.label}</RateTypeLabel>
+                      <RateTypeDesc>{opt.desc}</RateTypeDesc>
+                    </RateTypeOption>
+                  );
+                })}
+              </Box>
+              {touched.rateType && errors.rateType && (
+                <Text textVariant="hint" sx={{ color: palette.error, mt: '-4px' }}>
+                  {errors.rateType}
+                </Text>
+              )}
+
+              {/* Price */}
+              <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
+                {t('rates.priceLabel')}
+              </Text>
+              <Box>
+                <Box sx={{ display: 'flex' }}>
+                  <CurrencyPrefix>COP</CurrencyPrefix>
+                  <PriceInput
+                    type="number"
+                    placeholder="0"
+                    value={form.pricePerNight}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      setForm(f => ({ ...f, pricePerNight: e.target.value }));
+                      setTouched(t => ({ ...t, pricePerNight: true }));
+                    }}
+                  />
+                </Box>
+                {touched.pricePerNight && errors.pricePerNight && (
+                  <Text textVariant="hint" sx={{ color: palette.error, mt: '4px' }}>
+                    {errors.pricePerNight}
+                  </Text>
+                )}
+              </Box>
+
+              {/* Validity */}
+              <Text textVariant="miniLabel" sx={{ mb: '-4px' }}>
+                {t('rates.validityLabel')}
+              </Text>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <Box>
+                  <Box sx={{ position: 'relative' }}>
+                    <FloatingLabel>{t('rates.startDate')}</FloatingLabel>
+                    <FormInput
+                      type="date"
+                      value={form.startDate}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setForm(f => ({ ...f, startDate: e.target.value }));
+                        setTouched(t => ({ ...t, startDate: true }));
+                      }}
+                    />
+                  </Box>
+                  {touched.startDate && errors.startDate && (
+                    <Text textVariant="hint" sx={{ color: palette.error, mt: '4px' }}>
+                      {errors.startDate}
+                    </Text>
+                  )}
+                </Box>
+                <Box>
+                  <Box sx={{ position: 'relative' }}>
+                    <FloatingLabel>{t('rates.endDate')}</FloatingLabel>
+                    <FormInput
+                      type="date"
+                      value={form.endDate}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setForm(f => ({ ...f, endDate: e.target.value }));
+                        setTouched(t => ({ ...t, endDate: true }));
+                      }}
+                    />
+                  </Box>
+                  {touched.endDate && errors.endDate && (
+                    <Text textVariant="hint" sx={{ color: palette.error, mt: '4px' }}>
+                      {errors.endDate}
+                    </Text>
+                  )}
+                </Box>
+              </Box>
+            </PanelBody>
+
+            <PanelFooter>
+              <OutlinedPillButton pillSize="xs" onClick={closePanel}>
+                {t('rates.cancel')}
+              </OutlinedPillButton>
+              <PrimaryPillButton
+                pillSize="xs"
+                startIcon={<SaveIcon sx={{ fontSize: 16 }} />}
+                loading={editingId !== null ? updateTariff.isPending : createTariff.isPending}
+                onClick={handleSave}
+                sx={{ flex: 1 }}
+              >
+                {t('rates.saveRate')}
+              </PrimaryPillButton>
+            </PanelFooter>
+          </EditPanel>
+        )}
       </ContentGrid>
     </HotelAdminLayout>
   );
