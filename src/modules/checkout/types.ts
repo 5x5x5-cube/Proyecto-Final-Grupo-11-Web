@@ -47,6 +47,31 @@ export interface Cart {
   holdExpiresAt?: string; // ISO datetime
 }
 
+import type { Currency } from '@/contexts/LocaleContext';
+import { DEFAULT_CURRENCY } from '@/contexts/LocaleContext';
+
+/** Normalized pricing — resolved from priceBreakdown or top-level fields */
+export interface CartPricing {
+  pricePerNight: number;
+  nights: number;
+  subtotal: number;
+  taxes: number;
+  total: number;
+  currency: Currency;
+}
+
+export const EMPTY_PRICING: CartPricing = {
+  pricePerNight: 0,
+  nights: 0,
+  subtotal: 0,
+  taxes: 0,
+  total: 0,
+  currency: DEFAULT_CURRENCY,
+};
+
+/** Cart with normalized pricing ready for display */
+export type NormalizedCart = Cart & { pricing: CartPricing };
+
 /** Matches OpenAPI CreateBookingRequest schema */
 export interface CreateBookingRequest {
   roomId: string;

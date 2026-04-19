@@ -31,7 +31,7 @@ export const router = createBrowserRouter([
   { path: '/property/:id', element: <PropertyDetailPage /> },
   { path: '/checkout/cart', element: <CartPage /> },
   { path: '/checkout/payment', element: <PaymentPage /> },
-  { path: '/checkout/confirmation', element: <ConfirmationPage /> },
+  { path: '/checkout/confirmation/:paymentId', element: <ConfirmationPage /> },
   { path: '/reservations', element: <MyReservationsPage /> },
   { path: '/reservations/:id', element: <ReservationDetailPage /> },
 

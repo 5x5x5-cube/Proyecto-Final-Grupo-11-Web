@@ -22,6 +22,31 @@ vi.mock('@/api/hooks/usePayments', () => ({
   usePaymentStatus: () => ({ data: undefined, isLoading: false }),
 }));
 
+const mockPricing = {
+  pricePerNight: 250000,
+  nights: 2,
+  subtotal: 500000,
+  taxes: 95000,
+  total: 595000,
+  currency: 'COP',
+};
+
+vi.mock('@/api/hooks/useCart', () => ({
+  useCart: () => ({
+    data: {
+      id: 'cart-1',
+      hotelName: 'Hotel Test',
+      roomName: 'Standard',
+      checkIn: '2026-05-01',
+      checkOut: '2026-05-03',
+      guests: 2,
+      pricing: mockPricing,
+    },
+    pricing: mockPricing,
+    isLoading: false,
+  }),
+}));
+
 describe('PaymentPage', () => {
   beforeEach(() => {
     mocks.tokenizeMutate.mockReset();

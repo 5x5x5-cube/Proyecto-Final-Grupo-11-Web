@@ -3,27 +3,29 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/renderWithProviders';
 import CartSidebar from './CartSidebar';
-import type { Cart } from '../../types';
+import type { NormalizedCart } from '../../types';
 
-const mockCart: Cart = {
+const mockCart: NormalizedCart = {
   id: '1',
   userId: '1',
   roomId: '1',
   hotelId: '1',
   hotelName: 'Hotel Test',
   roomName: 'Standard',
-  pricePerNight: 250000,
   checkIn: '2026-04-01',
   checkOut: '2026-04-03',
   guests: 2,
-  nights: 2,
-  subtotal: 500000,
-  vat: 95000,
-  serviceFee: 0,
-  total: 595000,
   createdAt: '2026-03-26T00:00:00Z',
   holdId: 'hold-mock-001',
   holdExpiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+  pricing: {
+    pricePerNight: 250000,
+    nights: 2,
+    subtotal: 500000,
+    taxes: 95000,
+    total: 595000,
+    currency: 'COP',
+  },
 };
 
 describe('CartSidebar', () => {

@@ -2,9 +2,9 @@ import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/renderWithProviders';
 import HotelSummaryCard from './HotelSummaryCard';
-import type { Cart } from '../../types';
+import type { NormalizedCart } from '../../types';
 
-const mockCart: Cart = {
+const mockCart: NormalizedCart = {
   id: '1',
   userId: '1',
   roomId: '1',
@@ -16,16 +16,18 @@ const mockCart: Cart = {
   reviewCount: 312,
   roomName: 'Standard',
   roomFeatures: '1 cama King · 32 m²',
-  pricePerNight: 250000,
   checkIn: '2026-04-01',
   checkOut: '2026-04-03',
   guests: 2,
-  nights: 2,
-  subtotal: 500000,
-  vat: 95000,
-  serviceFee: 0,
-  total: 595000,
   createdAt: '2026-03-26T00:00:00Z',
+  pricing: {
+    pricePerNight: 250000,
+    nights: 2,
+    subtotal: 500000,
+    taxes: 95000,
+    total: 595000,
+    currency: 'COP',
+  },
 };
 
 describe('HotelSummaryCard', () => {
@@ -62,21 +64,25 @@ describe('HotelSummaryCard', () => {
   });
 
   it('hides optional fields when not provided', () => {
-    const minimalCart: Cart = {
+    const minimalCart: NormalizedCart = {
       id: '2',
       userId: '1',
       roomId: '2',
       hotelId: '1',
       hotelName: 'Hotel Básico',
       roomName: 'Single',
-      pricePerNight: 100000,
       checkIn: '2026-04-01',
       checkOut: '2026-04-02',
       guests: 1,
-      nights: 1,
-      subtotal: 100000,
-      total: 119000,
       createdAt: '2026-03-26T00:00:00Z',
+      pricing: {
+        pricePerNight: 100000,
+        nights: 1,
+        subtotal: 100000,
+        taxes: 19000,
+        total: 119000,
+        currency: 'COP',
+      },
     };
 
     renderWithProviders(<HotelSummaryCard cart={minimalCart} />);

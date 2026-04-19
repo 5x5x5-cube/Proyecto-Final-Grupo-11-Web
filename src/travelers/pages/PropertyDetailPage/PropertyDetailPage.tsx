@@ -149,8 +149,9 @@ export default function PropertyDetailPage() {
     };
 
     saveCartSelection(selection);
-    navigate('/checkout/cart');
-    setCart.mutate(selection);
+    setCart.mutate(selection, {
+      onSuccess: () => navigate('/checkout/cart'),
+    });
   });
 
   if (isHotelLoading || isRoomsLoading) return <PropertyDetailPageSkeleton />;

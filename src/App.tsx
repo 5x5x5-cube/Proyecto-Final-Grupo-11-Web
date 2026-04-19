@@ -7,19 +7,22 @@ import { theme } from './design-system/theme/theme';
 import { router } from './router';
 import { LocaleProvider } from './contexts/LocaleContext';
 import { SnackbarProvider } from './contexts/SnackbarContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { queryClient } from './api/queryClient';
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <LocaleProvider>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <SnackbarProvider>
-            <RouterProvider router={router} />
-          </SnackbarProvider>
-        </ThemeProvider>
-      </LocaleProvider>
+      <AuthProvider>
+        <LocaleProvider>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <SnackbarProvider>
+              <RouterProvider router={router} />
+            </SnackbarProvider>
+          </ThemeProvider>
+        </LocaleProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

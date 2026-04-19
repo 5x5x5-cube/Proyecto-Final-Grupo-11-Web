@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import { useState, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import Text from '@/design-system/components/Text';
 import {
@@ -15,7 +15,8 @@ import {
   FormRowThreeCol,
   FormInput,
   FormSelect,
-} from '../PaymentPage.styles';
+  FieldError,
+} from './FormStyles';
 
 export interface CardFormProps {
   rawCardDigits: string;
@@ -27,17 +28,25 @@ export interface CardFormProps {
   cvv: string;
   onCvvChange: (value: string) => void;
   onCurrencyChange: (value: string) => void;
+  cardNumberError?: boolean;
+  expiryError?: boolean;
 }
 
 const MASKED_GROUP = '\u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022 \u2022\u2022\u2022\u2022';
 const HOLDER_PLACEHOLDER = '\u2022\u2022\u2022\u2022\u2022\u2022\u2022\u2022';
 const EXPIRY_PLACEHOLDER = '\u2022\u2022/\u2022\u2022';
 
-function formatCardDisplay(digits: string): string {
-  if (digits.length <= 12) {
+const DOT = '\u2022';
+
+function formatCardDisplay(digits: string, masked: boolean): string {
+  if (!masked || digits.length <= 4) {
+    // While focused or short input: show all digits with spaces
     return digits.replace(/(.{4})/g, '$1 ').trim();
   }
-  return `${MASKED_GROUP} ${digits.slice(12)}`;
+  // On blur: mask all but last 4
+  const maskedPart = DOT.repeat(digits.length - 4);
+  const visible = digits.slice(-4);
+  return (maskedPart + visible).replace(/(.{4})/g, '$1 ').trim();
 }
 
 export default function CardForm({
@@ -50,10 +59,13 @@ export default function CardForm({
   cvv,
   onCvvChange,
   onCurrencyChange,
+  cardNumberError,
+  expiryError,
 }: CardFormProps) {
   const { t } = useTranslation('travelers');
+  const [cardFocused, setCardFocused] = useState(false);
 
-  const cardDisplayValue = formatCardDisplay(rawCardDigits);
+  const cardDisplayValue = formatCardDisplay(rawCardDigits, !cardFocused);
   const isExpiryValid = /^\d{2}\/\d{2}$/.test(expiry);
   const last4 = rawCardDigits.length >= 4 ? rawCardDigits.slice(-4) : '';
   const previewCardNumber =
@@ -122,10 +134,16 @@ export default function CardForm({
           </Text>
           <FormInput
             component="input"
+            inputMode="numeric"
+            autoComplete="cc-number"
             value={cardDisplayValue}
             onChange={handleCardNumberChange}
+            onFocus={() => setCardFocused(true)}
+            onBlur={() => setCardFocused(false)}
             placeholder={t('payment.form.cardNumberPlaceholder')}
+            aria-invalid={cardNumberError}
           />
+          {cardNumberError && <FieldError>{t('payment.form.cardNumberInvalid')}</FieldError>}
         </div>
 
         <div>
@@ -149,7 +167,9 @@ export default function CardForm({
               value={expiry}
               onChange={handleExpiryChange}
               placeholder={t('payment.form.expiryPlaceholder')}
+              aria-invalid={expiryError}
             />
+            {expiryError && <FieldError>{t('payment.form.expiryInvalid')}</FieldError>}
           </div>
           <div>
             <Text textVariant="caption" sx={{ fontWeight: 500, mb: '6px', letterSpacing: '0.4px' }}>
