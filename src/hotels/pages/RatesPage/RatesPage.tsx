@@ -120,9 +120,9 @@ function validate(form: FormState, t: (k: string) => string) {
   if (!form.rateType) errors.rateType = t('rates.errors.rateTypeRequired');
   if (!form.pricePerNight) errors.pricePerNight = t('rates.errors.priceRequired');
   else if (Number(form.pricePerNight) <= 0) errors.pricePerNight = t('rates.errors.pricePositive');
-  if (!form.startDate) errors.startDate = t('rates.errors.startDateRequired');
-  if (!form.endDate) errors.endDate = t('rates.errors.endDateRequired');
-  else if (form.startDate && form.endDate <= form.startDate)
+  if (form.endDate && !form.startDate) errors.startDate = t('rates.errors.startDateRequired');
+  if (form.startDate && !form.endDate) errors.endDate = t('rates.errors.endDateRequired');
+  if (form.startDate && form.endDate && form.endDate <= form.startDate)
     errors.endDate = t('rates.errors.endDateAfterStart');
   return errors;
 }
@@ -160,7 +160,7 @@ export default function RatesPage() {
 
   const tariffs = (Array.isArray(tariffsRaw) ? tariffsRaw : []) as Tariff[];
   const rooms = (Array.isArray(roomsRaw) ? roomsRaw : []) as Array<{
-    id: number;
+    id: string;
     name: string;
     location: string;
   }>;
@@ -253,7 +253,7 @@ export default function RatesPage() {
     if (!isFormValid) return;
     const room = rooms.find(r => String(r.id) === form.roomId);
     const payload = {
-      roomId: Number(form.roomId),
+      roomId: form.roomId,
       roomName: room?.name ?? '',
       roomLocation: room?.location ?? '',
       rateType: form.rateType,

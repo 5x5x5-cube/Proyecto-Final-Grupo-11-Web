@@ -160,13 +160,14 @@ export function useHotelDetail(hotelId: string) {
   });
 }
 
-export function useHotelRooms(hotelId: string) {
+export function useHotelRooms(hotelId: string, checkIn?: string) {
   return useQuery({
-    queryKey: ['hotels', hotelId, 'rooms'],
+    queryKey: ['hotels', hotelId, 'rooms', checkIn],
     queryFn: async () => {
-      const raw = await httpClient.get<HotelRoomsResponse | BackendRoom[]>(
-        `/search/hotels/${hotelId}/rooms`
-      );
+      const url = checkIn
+        ? `/search/hotels/${hotelId}/rooms?check_in=${checkIn}`
+        : `/search/hotels/${hotelId}/rooms`;
+      const raw = await httpClient.get<HotelRoomsResponse | BackendRoom[]>(url);
       const list: BackendRoom[] = Array.isArray(raw)
         ? raw
         : ((raw as HotelRoomsResponse).rooms ?? []);
