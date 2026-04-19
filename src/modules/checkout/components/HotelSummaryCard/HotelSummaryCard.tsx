@@ -7,7 +7,7 @@ import SectionCard from '@/design-system/components/SectionCard';
 import InfoGrid from '@/design-system/components/InfoGrid';
 import RatingBadge from '@/design-system/components/RatingBadge';
 import { palette } from '@/design-system/theme/palette';
-import type { Cart } from '../../types';
+import type { NormalizedCart } from '../../types';
 import {
   ContentWrapper,
   HotelInfoRow,
@@ -28,16 +28,14 @@ import {
 } from './HotelSummaryCard.styles';
 
 interface Props {
-  cart: Cart;
+  cart: NormalizedCart;
 }
 
 export default function HotelSummaryCard({ cart }: Props) {
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
 
-  const pb = cart.priceBreakdown;
-  const nights = pb?.nights ?? cart.nights ?? 0;
-  const pricePerNight = Number(pb?.pricePerNight ?? pb?.basePrice ?? cart.pricePerNight) || 0;
+  const { nights, pricePerNight } = cart.pricing;
 
   return (
     <SectionCard

@@ -5,7 +5,7 @@ import CancellationPolicyCard from './CancellationPolicyCard';
 
 describe('CancellationPolicyCard', () => {
   it('renders all three policy lines', () => {
-    renderWithProviders(<CancellationPolicyCard />);
+    renderWithProviders(<CancellationPolicyCard checkIn="2026-05-01" />);
 
     // Free cancellation line
     expect(screen.getByText(/gratuita|free/i)).toBeInTheDocument();

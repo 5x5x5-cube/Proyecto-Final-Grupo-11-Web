@@ -7,22 +7,25 @@ import { theme } from './design-system/theme/theme';
 import { router } from './router';
 import { LocaleProvider } from './contexts/LocaleContext';
 import { SnackbarProvider } from './contexts/SnackbarContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { HotelProvider } from './contexts/HotelContext';
 import { queryClient } from './api/queryClient';
 
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <HotelProvider>
-        <LocaleProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <SnackbarProvider>
-              <RouterProvider router={router} />
-            </SnackbarProvider>
-          </ThemeProvider>
-        </LocaleProvider>
-      </HotelProvider>
+      <AuthProvider>
+        <HotelProvider>
+          <LocaleProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              <SnackbarProvider>
+                <RouterProvider router={router} />
+              </SnackbarProvider>
+            </ThemeProvider>
+          </LocaleProvider>
+        </HotelProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

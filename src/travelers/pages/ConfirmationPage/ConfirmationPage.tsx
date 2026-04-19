@@ -1,17 +1,15 @@
 import React from 'react';
-import { Box, Divider } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box, CircularProgress } from '@mui/material';
+import { Link, useParams } from 'react-router-dom';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
-import PlaceIcon from '@mui/icons-material/Place';
-import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '@/contexts/LocaleContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useBookingByPaymentId } from '@/api/hooks/useBookings';
 import CheckoutLayout from '@/design-system/layouts/CheckoutLayout';
-import InfoGrid from '@/design-system/components/InfoGrid';
 import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
-import Text from '@/design-system/components/Text';
 import { palette } from '@/design-system/theme/palette';
+import ConfirmationSidebar from '@/modules/checkout/components/ConfirmationSidebar/ConfirmationSidebar';
 import {
   ContentWrapper,
   SuccessIconCircle,
@@ -23,127 +21,16 @@ import {
   EmailNoticePill,
   EmailNoticeText,
   ActionButtonsRow,
-  SidebarRoot,
-  SidebarTitle,
-  HotelMiniCard,
-  HotelThumbnail,
-  HotelTypeLabel,
-  HotelNameText,
-  PaymentRow,
-  PaymentAmount,
-  PaymentSuccessPill,
-  PaymentSuccessText,
-  StepsList,
-  StepCircle,
-  StepNumber,
 } from './ConfirmationPage.styles';
 
-/* --- Sidebar --- */
-const Sidebar: React.FC = () => {
-  const { t } = useTranslation('travelers');
-  const { formatPrice, formatDate } = useLocale();
-
-  return (
-    <SidebarRoot>
-      <SidebarTitle>{t('confirmation.sidebar.title')}</SidebarTitle>
-
-      {/* Hotel mini card */}
-      <HotelMiniCard>
-        <HotelThumbnail />
-        <Box>
-          <HotelTypeLabel>{t('confirmation.sidebar.hotelType')}</HotelTypeLabel>
-          <HotelNameText>Hotel Santa Clara Sofitel</HotelNameText>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <PlaceIcon sx={{ fontSize: 14, color: palette.onSurfaceVariant }} />
-            <Text textVariant="hint">Centro Hist&oacute;rico, Cartagena</Text>
-          </Box>
-        </Box>
-      </HotelMiniCard>
-
-      <Divider sx={{ borderColor: palette.outlineVariant }} />
-
-      {/* Info grid */}
-      <InfoGrid
-        columns={2}
-        items={[
-          {
-            label: t('confirmation.sidebar.checkIn'),
-            value: formatDate('2026-03-15', 'mediumWithDay'),
-            sub: '3:00 PM',
-          },
-          {
-            label: t('confirmation.sidebar.checkOut'),
-            value: formatDate('2026-03-20', 'mediumWithDay'),
-            sub: '12:00 PM',
-          },
-          {
-            label: t('confirmation.sidebar.room'),
-            value: t('confirmation.sidebar.roomValue'),
-            sub: t('confirmation.sidebar.roomSub'),
-          },
-          {
-            label: t('confirmation.sidebar.guests'),
-            value: t('confirmation.sidebar.guestsValue'),
-            sub: t('confirmation.sidebar.guestsSub'),
-          },
-        ]}
-      />
-
-      <Divider sx={{ borderColor: palette.outlineVariant }} />
-
-      {/* Payment summary */}
-      <PaymentRow>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <CreditCardIcon sx={{ fontSize: 16, color: palette.primary }} />
-            <Text textVariant="hint">VISA &bull;&bull;&bull;&bull; 4242</Text>
-          </Box>
-          <PaymentAmount>{formatPrice(2664000)}</PaymentAmount>
-        </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <PaymentSuccessPill>
-            <CheckCircleIcon sx={{ fontSize: 14, color: palette.success }} />
-            <PaymentSuccessText>{t('confirmation.sidebar.paymentSuccess')}</PaymentSuccessText>
-          </PaymentSuccessPill>
-        </Box>
-      </PaymentRow>
-
-      <Divider sx={{ borderColor: palette.outlineVariant }} />
-
-      {/* Next steps */}
-      <Box>
-        <Text textVariant="bodySemibold" sx={{ mb: '12px' }}>
-          {t('confirmation.sidebar.nextSteps')}
-        </Text>
-        <StepsList>
-          {[
-            { num: '1', text: t('confirmation.sidebar.step1') },
-            { num: '2', text: t('confirmation.sidebar.step2') },
-            { num: '3', text: t('confirmation.sidebar.step3') },
-          ].map(step => (
-            <Box key={step.num} sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-              <StepCircle>
-                <StepNumber>{step.num}</StepNumber>
-              </StepCircle>
-              <Text
-                textVariant="hint"
-                sx={{ lineHeight: 1.4 }}
-                dangerouslySetInnerHTML={{ __html: step.text }}
-              />
-            </Box>
-          ))}
-        </StepsList>
-      </Box>
-    </SidebarRoot>
-  );
-};
-
-/* --- Main Content --- */
 const ConfirmationPage: React.FC = () => {
   const { t } = useTranslation('travelers');
+  const { user } = useAuth();
+  const { paymentId } = useParams<{ paymentId: string }>();
+  const { data: booking } = useBookingByPaymentId(paymentId ?? '');
 
   return (
-    <CheckoutLayout currentStep={4} sidebar={<Sidebar />}>
+    <CheckoutLayout currentStep={4} sidebar={<ConfirmationSidebar paymentId={paymentId ?? ''} />}>
       <ContentWrapper>
         <SuccessIconCircle>
           <CheckCircleIcon sx={{ fontSize: 52, color: palette.success }} />
@@ -155,12 +42,21 @@ const ConfirmationPage: React.FC = () => {
 
         <BookingCodeCard>
           <BookingCodeLabel>{t('confirmation.bookingNumber')}</BookingCodeLabel>
-          <BookingCodeValue>TH-2026-48291</BookingCodeValue>
+          <BookingCodeValue>
+            {booking?.code ? (
+              booking.code
+            ) : (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CircularProgress size={18} />
+                {t('confirmation.generating')}
+              </Box>
+            )}
+          </BookingCodeValue>
         </BookingCodeCard>
 
         <EmailNoticePill>
           <MarkEmailReadIcon sx={{ fontSize: 20, color: palette.success }} />
-          <EmailNoticeText>{t('confirmation.emailSent')}</EmailNoticeText>
+          <EmailNoticeText>{t('confirmation.emailSent', { email: user.email })}</EmailNoticeText>
         </EmailNoticePill>
 
         <ActionButtonsRow>

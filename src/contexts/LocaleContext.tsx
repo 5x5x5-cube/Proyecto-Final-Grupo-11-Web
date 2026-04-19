@@ -1,8 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import i18n from '../i18n';
 
-type Language = 'ES' | 'EN';
-type Currency = 'COP' | 'USD' | 'MXN' | 'ARS' | 'CLP' | 'PEN';
+export type Language = 'ES' | 'EN';
+export type Currency = 'COP' | 'USD' | 'MXN' | 'ARS' | 'CLP' | 'PEN';
+export const DEFAULT_CURRENCY: Currency = 'COP';
 type DateFormat = 'short' | 'shortWithDay' | 'medium' | 'mediumWithDay' | 'monthYear' | 'monthOnly';
 
 const dateFormatOptions: Record<DateFormat, Intl.DateTimeFormatOptions> = {
@@ -114,4 +115,4 @@ export function useLocale() {
 }
 
 export { currencyNames, languageNames };
-export type { Language, Currency, DateFormat };
+export type { DateFormat };

@@ -45,6 +45,10 @@ export const PrimaryPillButton = styled(PillButton)({
   backgroundColor: palette.primary,
   color: '#fff',
   '&:hover': { backgroundColor: palette.primary },
+  '&.Mui-disabled': {
+    backgroundColor: palette.outlineVariant,
+    color: palette.onSurfaceVariant,
+  },
 });
 
 export const OutlinedPillButton = styled(PillButton)({
