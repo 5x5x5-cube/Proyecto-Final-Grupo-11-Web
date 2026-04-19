@@ -48,7 +48,7 @@ const ConfirmationPage: React.FC = () => {
             ) : (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <CircularProgress size={18} />
-                Generando...
+                {t('confirmation.generating')}
               </Box>
             )}
           </BookingCodeValue>

@@ -51,8 +51,8 @@ export default function PaymentSidebar({ cart, pricing, isFormValid, isProcessin
           </Text>
           <Text textVariant="caption">
             {cart?.roomName
-              ? `${cart.roomName} · ${cart.guests} adultos`
-              : t('payment.sidebar.room')}
+              ? `${cart.roomName} · ${t('payment.sidebar.room', { guests: cart.guests })}`
+              : '...'}
           </Text>
         </div>
       </BookingMiniCard>

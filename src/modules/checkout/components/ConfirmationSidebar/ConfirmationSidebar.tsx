@@ -39,6 +39,26 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
   const cartLoaded = !!cart?.id;
   const paymentLoaded = !!payment;
 
+  const steps = [
+    {
+      num: '1',
+      label: t('confirmation.sidebar.step1Label'),
+      bold: t('confirmation.sidebar.step1Bold'),
+      suffix: t('confirmation.sidebar.step1Suffix'),
+    },
+    {
+      num: '2',
+      label: t('confirmation.sidebar.step2Label'),
+      bold: t('confirmation.sidebar.step2Bold'),
+    },
+    {
+      num: '3',
+      label: t('confirmation.sidebar.step3Label'),
+      bold: t('confirmation.sidebar.step3Bold'),
+      suffix: t('confirmation.sidebar.step3Suffix'),
+    },
+  ];
+
   return (
     <SidebarRoot>
       <SidebarTitle>{t('confirmation.sidebar.title')}</SidebarTitle>
@@ -49,7 +69,7 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
             <HotelThumbnail />
             <Box>
               <HotelTypeLabel>{t('confirmation.sidebar.hotelType')}</HotelTypeLabel>
-              <HotelNameText>{cart.hotelName || 'Hotel'}</HotelNameText>
+              <HotelNameText>{cart.hotelName}</HotelNameText>
               {cart.location && (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                   <PlaceIcon sx={{ fontSize: 14, color: palette.onSurfaceVariant }} />
@@ -67,22 +87,22 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
               {
                 label: t('confirmation.sidebar.checkIn'),
                 value: formatDate(cart.checkIn, 'mediumWithDay'),
-                sub: '3:00 PM',
+                sub: t('confirmation.sidebar.checkInSub'),
               },
               {
                 label: t('confirmation.sidebar.checkOut'),
                 value: formatDate(cart.checkOut, 'mediumWithDay'),
-                sub: '12:00 PM',
+                sub: t('confirmation.sidebar.checkOutSub'),
               },
               {
                 label: t('confirmation.sidebar.room'),
-                value: cart.roomName || t('confirmation.sidebar.roomValue'),
+                value: cart.roomName,
                 sub: cart.roomFeatures || '',
               },
               {
                 label: t('confirmation.sidebar.guests'),
-                value: `${cart.guests} adultos`,
-                sub: `${pricing.nights} noches`,
+                value: t('confirmation.sidebar.guestsCount', { count: cart.guests }),
+                sub: t('confirmation.sidebar.nightsCount', { count: pricing.nights }),
               },
             ]}
           />
@@ -120,20 +140,15 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
           {t('confirmation.sidebar.nextSteps')}
         </Text>
         <StepsList>
-          {[
-            { num: '1', text: t('confirmation.sidebar.step1') },
-            { num: '2', text: t('confirmation.sidebar.step2') },
-            { num: '3', text: t('confirmation.sidebar.step3') },
-          ].map(step => (
+          {steps.map(step => (
             <Box key={step.num} sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <StepCircle>
                 <StepNumber>{step.num}</StepNumber>
               </StepCircle>
-              <Text
-                textVariant="hint"
-                sx={{ lineHeight: 1.4 }}
-                dangerouslySetInnerHTML={{ __html: step.text }}
-              />
+              <Text textVariant="hint" sx={{ lineHeight: 1.4 }}>
+                {step.label} <strong>{step.bold}</strong>
+                {step.suffix ? ` ${step.suffix}` : '.'}
+              </Text>
             </Box>
           ))}
         </StepsList>
