@@ -1,11 +1,11 @@
-import { useState, useImperativeHandle, forwardRef } from 'react';
+import { useImperativeHandle, forwardRef, useEffect, useRef } from 'react';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import { useTranslation } from 'react-i18next';
 import SectionCard from '@/design-system/components/SectionCard';
 import { palette } from '@/design-system/theme/palette';
-import type { PaymentMethod, WalletProvider } from '../../types';
-import { isValidLuhn } from '../../utils/luhn';
+import type { PaymentMethod } from '../../types';
 import type { TokenizeRequest } from '@/api/hooks/usePayments';
+import { usePaymentMethodForm } from '../../hooks/usePaymentMethodForm';
 import CardForm from '@/travelers/pages/PaymentPage/forms/CardForm';
 import WalletForm from '@/travelers/pages/PaymentPage/forms/WalletForm';
 import TransferForm from '@/travelers/pages/PaymentPage/forms/TransferForm';
@@ -37,77 +37,20 @@ interface Props {
 const PaymentMethodForm = forwardRef<PaymentMethodFormHandle, Props>(
   ({ onValidityChange }, ref) => {
     const { t } = useTranslation('travelers');
+    const form = usePaymentMethodForm();
 
-    const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>('credit_card');
-
-    // Card fields
-    const [rawCardDigits, setRawCardDigits] = useState('');
-    const [cardHolder, setCardHolder] = useState('');
-    const [expiry, setExpiry] = useState('');
-    const [cvv, setCvv] = useState('');
-    const [, setCurrency] = useState('COP');
-
-    // Wallet fields
-    const [walletProvider, setWalletProvider] = useState<WalletProvider | ''>('');
-    const [walletEmail, setWalletEmail] = useState('');
-
-    // Transfer fields
-    const [bankCode, setBankCode] = useState('');
-    const [accountNumber, setAccountNumber] = useState('');
-    const [accountHolder, setAccountHolder] = useState('');
-
-    // Validation
-    const isCardNumberComplete = rawCardDigits.length === 16;
-    const isCardNumberValid = isCardNumberComplete && isValidLuhn(rawCardDigits);
-
-    const isExpiryFormatValid = /^\d{2}\/\d{2}$/.test(expiry);
-    const isExpiryNotExpired = (() => {
-      if (!isExpiryFormatValid) return true; // Don't show expired error until format is valid
-      const [mm, yy] = expiry.split('/').map(Number);
-      const expiryDate = new Date(2000 + yy, mm); // First day of month after expiry
-      return expiryDate > new Date();
-    })();
-    const isExpiryValid = isExpiryFormatValid && isExpiryNotExpired;
-
-    const isCardFormValid =
-      isCardNumberValid && isExpiryValid && cvv.length === 3 && cardHolder.trim().length > 0;
-
-    const isWalletFormValid =
-      walletProvider !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(walletEmail);
-
-    const isTransferFormValid =
-      bankCode !== '' && accountNumber.length >= 6 && accountHolder.trim().length > 0;
-
-    const isFormValid =
-      (selectedMethod === 'credit_card' && isCardFormValid) ||
-      (selectedMethod === 'digital_wallet' && isWalletFormValid) ||
-      (selectedMethod === 'transfer' && isTransferFormValid);
-
-    // Notify parent of validity changes
-    const prevValid = { current: false };
-    if (isFormValid !== prevValid.current) {
-      prevValid.current = isFormValid;
-      // Use microtask to avoid setState-during-render
-      queueMicrotask(() => onValidityChange(isFormValid));
-    }
-
-    const buildTokenizePayload = (): TokenizeRequest | null => {
-      if (selectedMethod === 'credit_card') {
-        return { method: 'credit_card', cardNumber: rawCardDigits, cardHolder, expiry, cvv };
+    const prevValidRef = useRef(false);
+    useEffect(() => {
+      if (form.isFormValid !== prevValidRef.current) {
+        prevValidRef.current = form.isFormValid;
+        onValidityChange(form.isFormValid);
       }
-      if (selectedMethod === 'digital_wallet' && walletProvider !== '') {
-        return { method: 'digital_wallet', walletProvider, walletEmail };
-      }
-      if (selectedMethod === 'transfer') {
-        return { method: 'transfer', bankCode, accountNumber, accountHolder };
-      }
-      return null;
-    };
+    }, [form.isFormValid, onValidityChange]);
 
     useImperativeHandle(ref, () => ({
-      isFormValid,
-      selectedMethod,
-      buildTokenizePayload,
+      isFormValid: form.isFormValid,
+      selectedMethod: form.selectedMethod,
+      buildTokenizePayload: form.buildTokenizePayload,
     }));
 
     return (
@@ -119,7 +62,7 @@ const PaymentMethodForm = forwardRef<PaymentMethodFormHandle, Props>(
           <FormFieldsContainer>
             <PaymentTabsRow role="radiogroup" aria-label={t('payment.method.ariaLabel')}>
               {METHOD_OPTIONS.map(option => {
-                const isActive = selectedMethod === option.value;
+                const isActive = form.selectedMethod === option.value;
                 return (
                   <PaymentTab
                     key={option.value}
@@ -127,7 +70,7 @@ const PaymentMethodForm = forwardRef<PaymentMethodFormHandle, Props>(
                     role="radio"
                     aria-checked={isActive}
                     $active={isActive}
-                    onClick={() => setSelectedMethod(option.value)}
+                    onClick={() => form.setSelectedMethod(option.value)}
                   >
                     <PaymentTabEmoji>{option.emoji}</PaymentTabEmoji>
                     <PaymentTabLabel $active={isActive}>{t(option.labelKey)}</PaymentTabLabel>
@@ -136,39 +79,39 @@ const PaymentMethodForm = forwardRef<PaymentMethodFormHandle, Props>(
               })}
             </PaymentTabsRow>
 
-            {selectedMethod === 'credit_card' && (
+            {form.selectedMethod === 'credit_card' && (
               <CardForm
-                rawCardDigits={rawCardDigits}
-                onRawCardDigitsChange={setRawCardDigits}
-                cardHolder={cardHolder}
-                onCardHolderChange={setCardHolder}
-                expiry={expiry}
-                onExpiryChange={setExpiry}
-                cvv={cvv}
-                onCvvChange={setCvv}
-                onCurrencyChange={setCurrency}
-                cardNumberError={isCardNumberComplete && !isCardNumberValid}
-                expiryError={isExpiryFormatValid && !isExpiryNotExpired}
+                rawCardDigits={form.rawCardDigits}
+                onRawCardDigitsChange={form.setRawCardDigits}
+                cardHolder={form.cardHolder}
+                onCardHolderChange={form.setCardHolder}
+                expiry={form.expiry}
+                onExpiryChange={form.setExpiry}
+                cvv={form.cvv}
+                onCvvChange={form.setCvv}
+                onCurrencyChange={form.setCurrency}
+                cardNumberError={form.cardNumberError}
+                expiryError={form.expiryError}
               />
             )}
 
-            {selectedMethod === 'digital_wallet' && (
+            {form.selectedMethod === 'digital_wallet' && (
               <WalletForm
-                walletProvider={walletProvider}
-                onWalletProviderChange={setWalletProvider}
-                walletEmail={walletEmail}
-                onWalletEmailChange={setWalletEmail}
+                walletProvider={form.walletProvider}
+                onWalletProviderChange={form.setWalletProvider}
+                walletEmail={form.walletEmail}
+                onWalletEmailChange={form.setWalletEmail}
               />
             )}
 
-            {selectedMethod === 'transfer' && (
+            {form.selectedMethod === 'transfer' && (
               <TransferForm
-                bankCode={bankCode}
-                onBankCodeChange={setBankCode}
-                accountNumber={accountNumber}
-                onAccountNumberChange={setAccountNumber}
-                accountHolder={accountHolder}
-                onAccountHolderChange={setAccountHolder}
+                bankCode={form.bankCode}
+                onBankCodeChange={form.setBankCode}
+                accountNumber={form.accountNumber}
+                onAccountNumberChange={form.setAccountNumber}
+                accountHolder={form.accountHolder}
+                onAccountHolderChange={form.setAccountHolder}
               />
             )}
           </FormFieldsContainer>
