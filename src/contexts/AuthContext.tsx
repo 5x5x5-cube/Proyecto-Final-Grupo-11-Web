@@ -25,6 +25,11 @@ const MOCK_USER: AuthUser = {
   initials: 'CM',
 };
 
+// Sync user_id to localStorage so httpClient sends X-User-Id header.
+// Runs at module load time — before any component renders or query fires.
+// TODO: Remove when real auth sets this after login.
+localStorage.setItem('user_id', MOCK_USER.id);
+
 const AuthContext = createContext<AuthContextType>({
   user: MOCK_USER,
   guestInfo: {
