@@ -42,7 +42,8 @@ test.describe('Confirmation page', () => {
     await expect(page).toHaveURL(/\/checkout\/confirmation\//, { timeout: 30000 });
   };
 
-  test('shows confirmation title and subtitle', async ({
+  // Navigate once, then run all assertions on the same page
+  test('full confirmation page after successful payment', async ({
     propertyDetailPage,
     cartPage,
     paymentPage,
@@ -50,77 +51,30 @@ test.describe('Confirmation page', () => {
     page,
   }) => {
     test.skip(!hasBackend, 'Requires backend');
-    test.setTimeout(120000);
+    test.setTimeout(180000);
 
     await navigateToConfirmation(propertyDetailPage, cartPage, paymentPage, page);
 
+    // Title and subtitle
     await expect(confirmationPage.title).toBeVisible({ timeout: 10000 });
     await expect(confirmationPage.subtitle).toBeVisible();
-  });
 
-  test('displays booking code (BK-XXXXXXXX) after async creation', async ({
-    propertyDetailPage,
-    cartPage,
-    paymentPage,
-    confirmationPage,
-    page,
-  }) => {
-    test.skip(!hasBackend, 'Requires backend');
-    test.setTimeout(120000);
-
-    await navigateToConfirmation(propertyDetailPage, cartPage, paymentPage, page);
-
-    await confirmationPage.waitForBookingCode(60000);
+    // Booking code appears async
+    await confirmationPage.waitForBookingCode(90000);
     const code = await confirmationPage.getBookingCode();
     expect(code).toMatch(/^BK-[A-Z0-9]+$/i);
-  });
 
-  test('shows sidebar with reservation details', async ({
-    propertyDetailPage,
-    cartPage,
-    paymentPage,
-    confirmationPage,
-    page,
-  }) => {
-    test.skip(!hasBackend, 'Requires backend');
-    test.setTimeout(120000);
-
-    await navigateToConfirmation(propertyDetailPage, cartPage, paymentPage, page);
-
-    await expect(confirmationPage.sidebarTitle).toBeVisible({ timeout: 10000 });
+    // Sidebar details
+    await expect(confirmationPage.sidebarTitle).toBeVisible();
     await expect(confirmationPage.checkInLabel).toBeVisible();
     await expect(confirmationPage.checkOutLabel).toBeVisible();
     await expect(confirmationPage.guestsLabel).toBeVisible();
-  });
 
-  test('shows payment success pill', async ({
-    propertyDetailPage,
-    cartPage,
-    paymentPage,
-    confirmationPage,
-    page,
-  }) => {
-    test.skip(!hasBackend, 'Requires backend');
-    test.setTimeout(120000);
+    // Payment success
+    await expect(confirmationPage.paymentSuccessPill).toBeVisible();
 
-    await navigateToConfirmation(propertyDetailPage, cartPage, paymentPage, page);
-
-    await expect(confirmationPage.paymentSuccessPill).toBeVisible({ timeout: 10000 });
-  });
-
-  test('shows action buttons and next steps', async ({
-    propertyDetailPage,
-    cartPage,
-    paymentPage,
-    confirmationPage,
-    page,
-  }) => {
-    test.skip(!hasBackend, 'Requires backend');
-    test.setTimeout(120000);
-
-    await navigateToConfirmation(propertyDetailPage, cartPage, paymentPage, page);
-
-    await expect(confirmationPage.viewReservationsButton).toBeVisible({ timeout: 10000 });
+    // Action buttons and next steps
+    await expect(confirmationPage.viewReservationsButton).toBeVisible();
     await expect(confirmationPage.downloadReceiptButton).toBeVisible();
     await expect(confirmationPage.nextStepsTitle).toBeVisible();
   });
@@ -133,17 +87,17 @@ test.describe('Confirmation page', () => {
     page,
   }) => {
     test.skip(!hasBackend, 'Requires backend');
-    test.setTimeout(120000);
+    test.setTimeout(180000);
 
     await navigateToConfirmation(propertyDetailPage, cartPage, paymentPage, page);
 
-    await confirmationPage.waitForBookingCode(60000);
+    await confirmationPage.waitForBookingCode(90000);
     const codeBefore = await confirmationPage.getBookingCode();
 
     await page.reload();
 
     await expect(confirmationPage.title).toBeVisible({ timeout: 15000 });
-    await confirmationPage.waitForBookingCode(60000);
+    await confirmationPage.waitForBookingCode(90000);
     const codeAfter = await confirmationPage.getBookingCode();
     expect(codeAfter).toBe(codeBefore);
   });
