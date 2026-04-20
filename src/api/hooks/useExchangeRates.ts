@@ -12,7 +12,7 @@ export function useExchangeRates() {
   return useQuery<ExchangeRate[]>({
     queryKey: ['exchange-rates'],
     queryFn: () => httpClient.get<ExchangeRate[]>('/payments/exchange-rates'),
-    staleTime: 10 * 60 * 1000, // 10 minutes
+    staleTime: 60 * 60 * 1000, // 1 hour
     retry: 2,
   });
 }
