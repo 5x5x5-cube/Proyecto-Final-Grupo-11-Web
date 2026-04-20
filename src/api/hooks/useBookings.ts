@@ -25,9 +25,12 @@ interface BookingListResponse {
 }
 
 export function useBookings() {
-  return useQuery({
+  return useQuery<BookingData[]>({
     queryKey: ['bookings'],
-    queryFn: () => httpClient.get('/bookings'),
+    queryFn: async () => {
+      const raw = await httpClient.get<BookingListResponse>('/bookings');
+      return raw.data;
+    },
   });
 }
 
