@@ -7,6 +7,7 @@ import { PaymentPage } from './pages/payment.page';
 import { PropertyDetailPage } from './pages/property-detail.page';
 import { CartPage } from './pages/cart.page';
 import { ConfirmationPage } from './pages/confirmation.page';
+import { RatesPage } from './pages/rates.page';
 
 /**
  * Whether a real backend is available.
@@ -38,6 +39,7 @@ export const test = base.extend<{
   propertyDetailPage: PropertyDetailPage;
   cartPage: CartPage;
   confirmationPage: ConfirmationPage;
+  ratesPage: RatesPage;
 }>({
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
@@ -69,6 +71,10 @@ export const test = base.extend<{
 
   confirmationPage: async ({ page }, use) => {
     await use(new ConfirmationPage(page));
+  },
+
+  ratesPage: async ({ page }, use) => {
+    await use(new RatesPage(page));
   },
 });
 
