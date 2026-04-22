@@ -15,6 +15,8 @@ import { useTranslation } from 'react-i18next';
 import { palette } from '@/design-system/theme/palette';
 import { useLogin } from '@/api/hooks/useAuth';
 import { useSnackbar } from '@/contexts/SnackbarContext';
+import { useHotelAuth } from '@/hotels/auth/HotelAuthContext';
+import type { HotelAuthUser } from '@/hotels/auth/HotelAuthContext';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import {
@@ -48,6 +50,7 @@ export default function HotelLoginPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('hotels');
   const { showError } = useSnackbar();
+  const hotelAuth = useHotelAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -66,13 +69,32 @@ export default function HotelLoginPage() {
     return t('login.errorNetwork');
   };
 
+  // Narrow the backend response to the session shape we persist. Any response
+  // that does not carry a token / admin user is treated as a failed login —
+  // we do NOT navigate without a valid session.
+  const toHotelSession = (response: unknown): { token: string; user: HotelAuthUser } | null => {
+    const r = response as { token?: unknown; user?: Partial<HotelAuthUser> } | null;
+    if (!r || typeof r.token !== 'string' || !r.user) return null;
+    const { id, name, email: userEmail, role } = r.user;
+    if (!id || !name || !userEmail || role !== 'hotel_admin') return null;
+    return { token: r.token, user: { id, name, email: userEmail, role } };
+  };
+
   const handleSubmit = (e?: FormEvent) => {
     e?.preventDefault();
     if (!isFormValid || login.isPending) return;
     login.mutate(
       { email, password },
       {
-        onSuccess: () => navigate('/hotel/dashboard'),
+        onSuccess: response => {
+          const session = toHotelSession(response);
+          if (!session) {
+            showError(t('login.errorNetwork'));
+            return;
+          }
+          hotelAuth.login(session);
+          navigate('/hotel/dashboard');
+        },
         onError: err => showError(mapAuthError(err)),
       }
     );

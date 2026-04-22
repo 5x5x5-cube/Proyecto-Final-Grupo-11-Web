@@ -278,11 +278,39 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'POST',
     pattern: /^\/auth\/login$/,
-    handler: () =>
-      ok({
+    handler: config => {
+      const body = (config?.body ?? {}) as { email?: string; password?: string };
+      const email = (body.email ?? '').toLowerCase();
+      const password = body.password ?? '';
+
+      // Generic rejection for anything obviously wrong. The 401 shape matches
+      // what the frontend expects (see httpClient error normalisation).
+      if (!email || password.length < 6) {
+        return { status: 401, data: { message: 'Invalid credentials' } };
+      }
+
+      // Hotel admin login: routes ending in common admin domains. Any other
+      // email falls through to the traveler branch for back-compat.
+      const isHotelAdmin = email.endsWith('@hotel.com') || email.startsWith('admin@');
+      if (isHotelAdmin) {
+        return ok({
+          token: 'mock-hotel-admin-jwt',
+          user: {
+            id: 'hotel-admin-001',
+            name: 'Admin Hotel',
+            email,
+            role: 'hotel_admin',
+          },
+        });
+      }
+
+      // Traveler fallback — preserved for existing flows (not wired to a
+      // persistent session yet; see HU future refactor).
+      return ok({
         token: 'mock-jwt-token',
         user: { id: 1, name: 'Carlos Martinez', email: 'carlos.m@email.com' },
-      }),
+      });
+    },
   },
   {
     method: 'POST',

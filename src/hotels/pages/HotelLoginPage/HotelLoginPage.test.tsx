@@ -26,11 +26,22 @@ async function fillValidCredentials() {
   return user;
 }
 
+const successResponse = {
+  token: 'mock-hotel-admin-jwt',
+  user: {
+    id: 'hotel-admin-001',
+    name: 'Admin Hotel',
+    email: 'admin@hotel.com',
+    role: 'hotel_admin' as const,
+  },
+};
+
 describe('HotelLoginPage', () => {
   beforeEach(() => {
     mocks.loginMutate.mockReset();
     mocks.navigate.mockReset();
     mocks.isPending = false;
+    localStorage.clear();
   });
 
   it('renders without crashing', () => {
@@ -79,13 +90,39 @@ describe('HotelLoginPage', () => {
   });
 
   it('navigates to the dashboard on successful login', async () => {
-    mocks.loginMutate.mockImplementation((_payload, opts) => opts?.onSuccess?.());
+    mocks.loginMutate.mockImplementation((_payload, opts) => opts?.onSuccess?.(successResponse));
 
     renderWithProviders(<HotelLoginPage />);
     const user = await fillValidCredentials();
     await user.click(screen.getByRole('button', { name: /iniciar sesion/i }));
 
     expect(mocks.navigate).toHaveBeenCalledWith('/hotel/dashboard');
+  });
+
+  it('persists the JWT and user in localStorage on successful login', async () => {
+    mocks.loginMutate.mockImplementation((_payload, opts) => opts?.onSuccess?.(successResponse));
+
+    renderWithProviders(<HotelLoginPage />);
+    const user = await fillValidCredentials();
+    await user.click(screen.getByRole('button', { name: /iniciar sesion/i }));
+
+    expect(localStorage.getItem('auth_token')).toBe(successResponse.token);
+    expect(JSON.parse(localStorage.getItem('auth_user') ?? 'null')).toEqual(successResponse.user);
+  });
+
+  it('does not navigate or persist when the backend response is malformed', async () => {
+    // Response shaped like a traveler login (no hotel_admin role) must be rejected:
+    // the admin must never be signed in with a non-admin payload.
+    mocks.loginMutate.mockImplementation((_payload, opts) =>
+      opts?.onSuccess?.({ token: 't', user: { id: 1, name: 'X', email: 'x@y.com' } })
+    );
+
+    renderWithProviders(<HotelLoginPage />);
+    const user = await fillValidCredentials();
+    await user.click(screen.getByRole('button', { name: /iniciar sesion/i }));
+
+    expect(mocks.navigate).not.toHaveBeenCalled();
+    expect(localStorage.getItem('auth_token')).toBeNull();
   });
 
   it('shows a generic invalid-credentials message on 401 without leaking backend detail', async () => {
