@@ -26,14 +26,15 @@ async function fillValidCredentials() {
   return user;
 }
 
+// Mirrors the real auth_service AuthResponse shape: flat, with access_token /
+// user_id / name / email / role.
 const successResponse = {
-  token: 'mock-hotel-admin-jwt',
-  user: {
-    id: 'hotel-admin-001',
-    name: 'Admin Hotel',
-    email: 'admin@hotel.com',
-    role: 'hotel_admin' as const,
-  },
+  access_token: 'mock-hotel-admin-jwt',
+  token_type: 'bearer',
+  user_id: 'hotel-admin-001',
+  name: 'Admin Hotel',
+  email: 'admin@hotel.com',
+  role: 'hotel_admin' as const,
 };
 
 describe('HotelLoginPage', () => {
@@ -106,15 +107,41 @@ describe('HotelLoginPage', () => {
     const user = await fillValidCredentials();
     await user.click(screen.getByRole('button', { name: /iniciar sesion/i }));
 
-    expect(localStorage.getItem('auth_token')).toBe(successResponse.token);
-    expect(JSON.parse(localStorage.getItem('auth_user') ?? 'null')).toEqual(successResponse.user);
+    expect(localStorage.getItem('auth_token')).toBe(successResponse.access_token);
+    expect(JSON.parse(localStorage.getItem('auth_user') ?? 'null')).toEqual({
+      id: successResponse.user_id,
+      name: successResponse.name,
+      email: successResponse.email,
+      role: successResponse.role,
+    });
   });
 
-  it('does not navigate or persist when the backend response is malformed', async () => {
-    // Response shaped like a traveler login (no hotel_admin role) must be rejected:
-    // the admin must never be signed in with a non-admin payload.
+  it('does not navigate or persist when the backend response is for a non-admin role', async () => {
+    // A valid traveler response (role !== hotel_admin) must be rejected:
+    // the admin portal must never be signed in with a non-admin payload (RBAC).
     mocks.loginMutate.mockImplementation((_payload, opts) =>
-      opts?.onSuccess?.({ token: 't', user: { id: 1, name: 'X', email: 'x@y.com' } })
+      opts?.onSuccess?.({
+        access_token: 't',
+        token_type: 'bearer',
+        user_id: 'c1',
+        name: 'Carlos Martinez',
+        email: 'carlos.m@email.com',
+        role: 'traveler',
+      })
+    );
+
+    renderWithProviders(<HotelLoginPage />);
+    const user = await fillValidCredentials();
+    await user.click(screen.getByRole('button', { name: /iniciar sesion/i }));
+
+    expect(mocks.navigate).not.toHaveBeenCalled();
+    expect(localStorage.getItem('auth_token')).toBeNull();
+  });
+
+  it('does not navigate or persist when the backend response is missing required fields', async () => {
+    // Malformed shape (no access_token) must also be rejected.
+    mocks.loginMutate.mockImplementation((_payload, opts) =>
+      opts?.onSuccess?.({ user: { id: 1, name: 'X' } })
     );
 
     renderWithProviders(<HotelLoginPage />);

@@ -69,15 +69,29 @@ export default function HotelLoginPage() {
     return t('login.errorNetwork');
   };
 
-  // Narrow the backend response to the session shape we persist. Any response
-  // that does not carry a token / admin user is treated as a failed login —
-  // we do NOT navigate without a valid session.
+  // Narrow the backend response to the session shape we persist. The backend
+  // contract (auth_service) is flat: { access_token, token_type, user_id,
+  // email, name, role }. Any response missing access_token or with a role
+  // other than `hotel_admin` is treated as a failed login — the admin must
+  // never be signed in with a non-admin payload (CA2 / RBAC).
   const toHotelSession = (response: unknown): { token: string; user: HotelAuthUser } | null => {
-    const r = response as { token?: unknown; user?: Partial<HotelAuthUser> } | null;
-    if (!r || typeof r.token !== 'string' || !r.user) return null;
-    const { id, name, email: userEmail, role } = r.user;
-    if (!id || !name || !userEmail || role !== 'hotel_admin') return null;
-    return { token: r.token, user: { id, name, email: userEmail, role } };
+    const r = response as {
+      access_token?: unknown;
+      user_id?: unknown;
+      email?: unknown;
+      name?: unknown;
+      role?: unknown;
+    } | null;
+    if (!r || typeof r.access_token !== 'string') return null;
+    const { user_id, email: userEmail, name, role } = r;
+    if (typeof user_id !== 'string' || typeof name !== 'string' || typeof userEmail !== 'string') {
+      return null;
+    }
+    if (role !== 'hotel_admin') return null;
+    return {
+      token: r.access_token,
+      user: { id: user_id, name, email: userEmail, role: 'hotel_admin' },
+    };
   };
 
   const handleSubmit = (e?: FormEvent) => {

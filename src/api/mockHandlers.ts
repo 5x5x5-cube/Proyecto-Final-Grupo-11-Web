@@ -290,25 +290,29 @@ export const mockHandlers: MockRoute[] = [
       }
 
       // Hotel admin login: routes ending in common admin domains. Any other
-      // email falls through to the traveler branch for back-compat.
+      // email falls through to the traveler branch for back-compat. Response
+      // shape matches the real auth_service contract: flat, with access_token
+      // / user_id / name / email / role.
       const isHotelAdmin = email.endsWith('@hotel.com') || email.startsWith('admin@');
       if (isHotelAdmin) {
         return ok({
-          token: 'mock-hotel-admin-jwt',
-          user: {
-            id: 'hotel-admin-001',
-            name: 'Admin Hotel',
-            email,
-            role: 'hotel_admin',
-          },
+          access_token: 'mock-hotel-admin-jwt',
+          token_type: 'bearer',
+          user_id: 'hotel-admin-001',
+          name: 'Admin Hotel',
+          email,
+          role: 'hotel_admin',
         });
       }
 
-      // Traveler fallback — preserved for existing flows (not wired to a
-      // persistent session yet; see HU future refactor).
+      // Traveler fallback — same flat shape as the real backend, role=traveler.
       return ok({
-        token: 'mock-jwt-token',
-        user: { id: 1, name: 'Carlos Martinez', email: 'carlos.m@email.com' },
+        access_token: 'mock-jwt-token',
+        token_type: 'bearer',
+        user_id: 'c1000000-0000-0000-0000-000000000001',
+        name: 'Carlos Martinez',
+        email: 'carlos.m@email.com',
+        role: 'traveler',
       });
     },
   },
