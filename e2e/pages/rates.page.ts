@@ -47,7 +47,32 @@ export class RatesPage {
     this.cancelButton = page.getByRole('button', { name: 'Cancelar' });
   }
 
+  /**
+   * Navigate to the rates page. The route sits behind `ProtectedHotelRoute`,
+   * which reads the session from `localStorage`. For UI-only tests we seed
+   * a fake admin session before navigating — that avoids hitting the auth
+   * API while still exercising the real guard. Backend-dependent tests use
+   * `loginAndGoto()` instead, which does a proper login round-trip.
+   */
   async goto() {
+    // `addInitScript` runs before any page script on every navigation in this
+    // context, so the guard sees a populated `localStorage` on first render.
+    await this.page.addInitScript(() => {
+      try {
+        localStorage.setItem('auth_token', 'e2e.fake.jwt');
+        localStorage.setItem(
+          'auth_user',
+          JSON.stringify({
+            id: 'e2e-admin',
+            name: 'E2E Admin',
+            email: 'e2e-admin@hotel.com',
+            role: 'hotel_admin',
+          })
+        );
+      } catch {
+        // Storage not available — tests that need the guard will surface this.
+      }
+    });
     await this.page.goto('/hotel/rates');
   }
 
@@ -57,7 +82,7 @@ export class RatesPage {
     await this.page.getByLabel('Contrasena').fill(password);
     await this.page.getByRole('button', { name: 'Iniciar sesion' }).click();
     await this.page.waitForURL(/\/hotel\/dashboard/, { timeout: 10000 });
-    await this.goto();
+    await this.page.goto('/hotel/rates');
   }
 
   async openCreatePanel() {

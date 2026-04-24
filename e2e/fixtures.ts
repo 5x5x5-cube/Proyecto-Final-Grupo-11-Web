@@ -8,6 +8,7 @@ import { PropertyDetailPage } from './pages/property-detail.page';
 import { CartPage } from './pages/cart.page';
 import { ConfirmationPage } from './pages/confirmation.page';
 import { RatesPage } from './pages/rates.page';
+import { HotelLoginPage } from './pages/hotel-login.page';
 
 /**
  * Whether a real backend is available.
@@ -40,6 +41,7 @@ export const test = base.extend<{
   cartPage: CartPage;
   confirmationPage: ConfirmationPage;
   ratesPage: RatesPage;
+  hotelLoginPage: HotelLoginPage;
 }>({
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
@@ -75,6 +77,10 @@ export const test = base.extend<{
 
   ratesPage: async ({ page }, use) => {
     await use(new RatesPage(page));
+  },
+
+  hotelLoginPage: async ({ page }, use) => {
+    await use(new HotelLoginPage(page));
   },
 });
 
