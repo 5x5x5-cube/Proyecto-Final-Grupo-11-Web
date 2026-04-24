@@ -278,11 +278,43 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'POST',
     pattern: /^\/auth\/login$/,
-    handler: () =>
-      ok({
-        token: 'mock-jwt-token',
-        user: { id: 1, name: 'Carlos Martinez', email: 'carlos.m@email.com' },
-      }),
+    handler: config => {
+      const body = (config?.body ?? {}) as { email?: string; password?: string };
+      const email = (body.email ?? '').toLowerCase();
+      const password = body.password ?? '';
+
+      // Generic rejection for anything obviously wrong. The 401 shape matches
+      // what the frontend expects (see httpClient error normalisation).
+      if (!email || password.length < 6) {
+        return { status: 401, data: { message: 'Invalid credentials' } };
+      }
+
+      // Hotel admin login: routes ending in common admin domains. Any other
+      // email falls through to the traveler branch for back-compat. Response
+      // shape matches the real auth_service contract: flat, with access_token
+      // / user_id / name / email / role.
+      const isHotelAdmin = email.endsWith('@hotel.com') || email.startsWith('admin@');
+      if (isHotelAdmin) {
+        return ok({
+          access_token: 'mock-hotel-admin-jwt',
+          token_type: 'bearer',
+          user_id: 'hotel-admin-001',
+          name: 'Admin Hotel',
+          email,
+          role: 'hotel_admin',
+        });
+      }
+
+      // Traveler fallback — same flat shape as the real backend, role=traveler.
+      return ok({
+        access_token: 'mock-jwt-token',
+        token_type: 'bearer',
+        user_id: 'c1000000-0000-0000-0000-000000000001',
+        name: 'Carlos Martinez',
+        email: 'carlos.m@email.com',
+        role: 'traveler',
+      });
+    },
   },
   {
     method: 'POST',

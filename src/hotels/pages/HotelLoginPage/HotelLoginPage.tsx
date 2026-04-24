@@ -10,9 +10,13 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import SellIcon from '@mui/icons-material/Sell';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import type { FormEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 import { palette } from '@/design-system/theme/palette';
 import { useLogin } from '@/api/hooks/useAuth';
+import { useSnackbar } from '@/contexts/SnackbarContext';
+import { useHotelAuth } from '@/hotels/auth/HotelAuthContext';
+import type { HotelAuthUser } from '@/hotels/auth/HotelAuthContext';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import {
@@ -45,6 +49,8 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export default function HotelLoginPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('hotels');
+  const { showError } = useSnackbar();
+  const hotelAuth = useHotelAuth();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -55,9 +61,57 @@ export default function HotelLoginPage() {
   const emailError = emailTouched && !EMAIL_REGEX.test(email);
   const isFormValid = EMAIL_REGEX.test(email) && password.length > 0;
 
-  const handleSubmit = () => {
+  // Map any auth failure to a generic message — never leak backend details
+  // (CA2: avoid user enumeration). 401 → invalid credentials, everything else → network.
+  const mapAuthError = (err: unknown): string => {
+    const status = (err as { status?: number } | null)?.status;
+    if (status === 401 || status === 403) return t('login.errorInvalidCredentials');
+    return t('login.errorNetwork');
+  };
+
+  // Narrow the backend response to the session shape we persist. The backend
+  // contract (auth_service) is flat: { access_token, token_type, user_id,
+  // email, name, role }. Any response missing access_token or with a role
+  // other than `hotel_admin` is treated as a failed login — the admin must
+  // never be signed in with a non-admin payload (CA2 / RBAC).
+  const toHotelSession = (response: unknown): { token: string; user: HotelAuthUser } | null => {
+    const r = response as {
+      access_token?: unknown;
+      user_id?: unknown;
+      email?: unknown;
+      name?: unknown;
+      role?: unknown;
+    } | null;
+    if (!r || typeof r.access_token !== 'string') return null;
+    const { user_id, email: userEmail, name, role } = r;
+    if (typeof user_id !== 'string' || typeof name !== 'string' || typeof userEmail !== 'string') {
+      return null;
+    }
+    if (role !== 'hotel_admin') return null;
+    return {
+      token: r.access_token,
+      user: { id: user_id, name, email: userEmail, role: 'hotel_admin' },
+    };
+  };
+
+  const handleSubmit = (e?: FormEvent) => {
+    e?.preventDefault();
     if (!isFormValid || login.isPending) return;
-    login.mutate({ email, password }, { onSuccess: () => navigate('/hotel/dashboard') });
+    login.mutate(
+      { email, password },
+      {
+        onSuccess: response => {
+          const session = toHotelSession(response);
+          if (!session) {
+            showError(t('login.errorNetwork'));
+            return;
+          }
+          hotelAuth.login(session);
+          navigate('/hotel/dashboard');
+        },
+        onError: err => showError(mapAuthError(err)),
+      }
+    );
   };
 
   const trustBadges = [
@@ -123,7 +177,13 @@ export default function HotelLoginPage() {
         </BrandSection>
 
         {/* Form */}
-        <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          noValidate
+          aria-label={t('login.welcome')}
+          sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}
+        >
           <FormTitle>{t('login.welcome')}</FormTitle>
           <FormSubtitle>{t('login.subtitle')}</FormSubtitle>
 
@@ -139,7 +199,7 @@ export default function HotelLoginPage() {
               onChange={e => setEmail(e.target.value)}
               onBlur={() => setEmailTouched(true)}
               error={emailError}
-              helperText={emailError ? t('login.emailInvalid', 'Invalid email address') : undefined}
+              helperText={emailError ? t('login.emailInvalid') : undefined}
             />
           </Box>
 
@@ -161,10 +221,10 @@ export default function HotelLoginPage() {
 
           {/* Login button */}
           <PrimaryPillButton
+            type="submit"
             pillSize="lg"
             fullWidth
             disabled={!isFormValid || login.isPending}
-            onClick={handleSubmit}
             sx={{ mt: '8px' }}
           >
             {login.isPending ? (
