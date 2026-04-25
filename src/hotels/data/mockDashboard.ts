@@ -9,7 +9,8 @@ export const dashboardStats = [
   },
   {
     label: 'Ingresos este mes',
-    value: 'COP 94.2M',
+    value: '',
+    numericValue: 94200000,
     change: '+8%',
     changeType: 'up' as const,
     icon: 'payments',

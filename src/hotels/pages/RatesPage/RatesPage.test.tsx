@@ -10,6 +10,10 @@ vi.mock('react-router-dom', async () => ({
 
 vi.mock('@/api/hooks/useTariffs', () => ({
   useTariffs: vi.fn(() => ({ data: [], isLoading: false })),
+  useHotelAdminRooms: vi.fn(() => ({ data: [], isLoading: false })),
+  useCreateTariff: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
+  useUpdateTariff: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
+  useDeleteTariff: vi.fn(() => ({ mutateAsync: vi.fn(), isPending: false })),
 }));
 
 describe('RatesPage', () => {

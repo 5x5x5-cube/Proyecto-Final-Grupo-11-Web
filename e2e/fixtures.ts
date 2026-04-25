@@ -4,6 +4,11 @@ import { ResultsPage } from './pages/results.page';
 import { LoginPage } from './pages/login.page';
 import { RegisterPage } from './pages/register.page';
 import { PaymentPage } from './pages/payment.page';
+import { PropertyDetailPage } from './pages/property-detail.page';
+import { CartPage } from './pages/cart.page';
+import { ConfirmationPage } from './pages/confirmation.page';
+import { RatesPage } from './pages/rates.page';
+import { HotelLoginPage } from './pages/hotel-login.page';
 
 /**
  * Whether a real backend is available.
@@ -32,6 +37,11 @@ export const test = base.extend<{
   loginPage: LoginPage;
   registerPage: RegisterPage;
   paymentPage: PaymentPage;
+  propertyDetailPage: PropertyDetailPage;
+  cartPage: CartPage;
+  confirmationPage: ConfirmationPage;
+  ratesPage: RatesPage;
+  hotelLoginPage: HotelLoginPage;
 }>({
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
@@ -51,6 +61,26 @@ export const test = base.extend<{
 
   paymentPage: async ({ page }, use) => {
     await use(new PaymentPage(page));
+  },
+
+  propertyDetailPage: async ({ page }, use) => {
+    await use(new PropertyDetailPage(page));
+  },
+
+  cartPage: async ({ page }, use) => {
+    await use(new CartPage(page));
+  },
+
+  confirmationPage: async ({ page }, use) => {
+    await use(new ConfirmationPage(page));
+  },
+
+  ratesPage: async ({ page }, use) => {
+    await use(new RatesPage(page));
+  },
+
+  hotelLoginPage: async ({ page }, use) => {
+    await use(new HotelLoginPage(page));
   },
 });
 

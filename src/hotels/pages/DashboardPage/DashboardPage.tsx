@@ -141,7 +141,9 @@ export default function DashboardPage() {
                 </ChangeIndicator>
               </StatCardHeader>
               <Box>
-                <StatValue>{stat.value}</StatValue>
+                <StatValue>
+                  {stat.numericValue ? formatPrice(stat.numericValue) : stat.value}
+                </StatValue>
                 <Text textVariant="hint">{stat.label}</Text>
               </Box>
             </StatCard>

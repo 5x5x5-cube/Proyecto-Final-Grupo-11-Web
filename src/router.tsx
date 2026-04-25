@@ -19,6 +19,8 @@ import HotelReservationDetailPage from './hotels/pages/HotelReservationDetailPag
 import RatesPage from './hotels/pages/RatesPage';
 import DiscountsPage from './hotels/pages/DiscountsPage';
 import ReportsPage from './hotels/pages/ReportsPage';
+import { ProtectedHotelRoute } from './hotels/auth/ProtectedHotelRoute';
+
 export const router = createBrowserRouter([
   // Design System
   { path: '/design-system', element: <DesignSystemPage /> },
@@ -31,16 +33,59 @@ export const router = createBrowserRouter([
   { path: '/property/:id', element: <PropertyDetailPage /> },
   { path: '/checkout/cart', element: <CartPage /> },
   { path: '/checkout/payment', element: <PaymentPage /> },
-  { path: '/checkout/confirmation', element: <ConfirmationPage /> },
+  { path: '/checkout/confirmation/:paymentId', element: <ConfirmationPage /> },
   { path: '/reservations', element: <MyReservationsPage /> },
   { path: '/reservations/:id', element: <ReservationDetailPage /> },
 
   // Hotel Admin Portal
+  // /hotel/login is public — everything else is gated by ProtectedHotelRoute.
   { path: '/hotel/login', element: <HotelLoginPage /> },
-  { path: '/hotel/dashboard', element: <DashboardPage /> },
-  { path: '/hotel/reservations', element: <ReservationsPage /> },
-  { path: '/hotel/reservations/:id', element: <HotelReservationDetailPage /> },
-  { path: '/hotel/rates', element: <RatesPage /> },
-  { path: '/hotel/discounts', element: <DiscountsPage /> },
-  { path: '/hotel/reports', element: <ReportsPage /> },
+  {
+    path: '/hotel/dashboard',
+    element: (
+      <ProtectedHotelRoute>
+        <DashboardPage />
+      </ProtectedHotelRoute>
+    ),
+  },
+  {
+    path: '/hotel/reservations',
+    element: (
+      <ProtectedHotelRoute>
+        <ReservationsPage />
+      </ProtectedHotelRoute>
+    ),
+  },
+  {
+    path: '/hotel/reservations/:id',
+    element: (
+      <ProtectedHotelRoute>
+        <HotelReservationDetailPage />
+      </ProtectedHotelRoute>
+    ),
+  },
+  {
+    path: '/hotel/rates',
+    element: (
+      <ProtectedHotelRoute>
+        <RatesPage />
+      </ProtectedHotelRoute>
+    ),
+  },
+  {
+    path: '/hotel/discounts',
+    element: (
+      <ProtectedHotelRoute>
+        <DiscountsPage />
+      </ProtectedHotelRoute>
+    ),
+  },
+  {
+    path: '/hotel/reports',
+    element: (
+      <ProtectedHotelRoute>
+        <ReportsPage />
+      </ProtectedHotelRoute>
+    ),
+  },
 ]);

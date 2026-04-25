@@ -285,10 +285,7 @@ export const FloatingLabel = styled(Typography)({
   zIndex: 1,
 });
 
-export const FormSelect = styled(Box)<{
-  component?: React.ElementType;
-  defaultValue?: string;
-}>({
+export const FormSelect = styled('select')({
   width: '100%',
   height: 48,
   border: `1px solid ${palette.outline}`,
@@ -340,11 +337,7 @@ export const CurrencyPrefix = styled(Box)({
   color: palette.onSurfaceVariant,
 });
 
-export const FormInput = styled(Box)<{
-  component?: React.ElementType;
-  defaultValue?: string;
-  placeholder?: string;
-}>({
+export const FormInput = styled('input')({
   width: '100%',
   height: 48,
   border: `1px solid ${palette.outline}`,
@@ -358,10 +351,7 @@ export const FormInput = styled(Box)<{
   boxSizing: 'border-box',
 });
 
-export const PriceInput = styled(Box)<{
-  component?: React.ElementType;
-  defaultValue?: string;
-}>({
+export const PriceInput = styled('input')({
   flex: 1,
   height: 48,
   border: `1px solid ${palette.outline}`,

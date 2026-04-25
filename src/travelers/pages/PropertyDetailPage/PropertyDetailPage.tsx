@@ -100,7 +100,7 @@ export default function PropertyDetailPage() {
   const guests = Number(searchParams.get('guests') ?? 1) || 1;
 
   const { data: hotelRaw, isLoading: isHotelLoading } = useHotelDetail(id);
-  const { data: roomsData, isLoading: isRoomsLoading } = useHotelRooms(id);
+  const { data: roomsData, isLoading: isRoomsLoading } = useHotelRooms(id, checkIn || undefined);
   const { data: reviewsData, isLoading: isReviewsLoading } = useHotelReviews(id);
 
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
@@ -149,8 +149,9 @@ export default function PropertyDetailPage() {
     };
 
     saveCartSelection(selection);
-    navigate('/checkout/cart');
-    setCart.mutate(selection);
+    setCart.mutate(selection, {
+      onSuccess: () => navigate('/checkout/cart'),
+    });
   });
 
   if (isHotelLoading || isRoomsLoading) return <PropertyDetailPageSkeleton />;

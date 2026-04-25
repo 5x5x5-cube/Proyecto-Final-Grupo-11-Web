@@ -26,6 +26,12 @@ describe('StatusChip', () => {
     expect(chip).toBeInTheDocument();
   });
 
+  it('renders with rejected status', () => {
+    renderWithProviders(<StatusChip status="rejected" />);
+    const chip = screen.getByText(/rejected|rechazad/i);
+    expect(chip).toBeInTheDocument();
+  });
+
   it('renders with past status', () => {
     renderWithProviders(<StatusChip status="past" />);
     const chip = screen.getByText(/past|pasad/i);

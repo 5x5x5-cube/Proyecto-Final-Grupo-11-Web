@@ -1,8 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import i18n from '../i18n';
+import { useExchangeRates } from '@/api/hooks/useExchangeRates';
+import type { ExchangeRate } from '@/api/hooks/useExchangeRates';
 
-type Language = 'ES' | 'EN';
-type Currency = 'COP' | 'USD' | 'MXN' | 'ARS' | 'CLP' | 'PEN';
+export type Language = 'ES' | 'EN';
+export type Currency = 'COP' | 'USD' | 'MXN' | 'ARS' | 'CLP' | 'PEN';
+export const DEFAULT_CURRENCY: Currency = 'COP';
 type DateFormat = 'short' | 'shortWithDay' | 'medium' | 'mediumWithDay' | 'monthYear' | 'monthOnly';
 
 const dateFormatOptions: Record<DateFormat, Intl.DateTimeFormatOptions> = {
@@ -21,9 +24,12 @@ interface LocaleContextType {
   setCurrency: (cur: Currency) => void;
   formatPrice: (copAmount: number) => string;
   formatDate: (date: string | Date, format: DateFormat) => string;
+  autoOpen: 'language' | 'currency' | null;
+  clearAutoOpen: () => void;
 }
 
-const exchangeRates: Record<Currency, { rate: number; symbol: string; decimals: number }> = {
+// Fallback rates used when backend is unreachable
+const FALLBACK_RATES: Record<Currency, { rate: number; symbol: string; decimals: number }> = {
   COP: { rate: 1, symbol: 'COP', decimals: 0 },
   USD: { rate: 0.00024, symbol: 'USD', decimals: 2 },
   MXN: { rate: 0.0041, symbol: 'MXN', decimals: 0 },
@@ -46,17 +52,41 @@ const languageNames: Record<Language, string> = {
   EN: 'English',
 };
 
+export const LANGUAGES: Language[] = Object.keys(languageNames) as Language[];
+export const CURRENCIES: Currency[] = Object.keys(currencyNames) as Currency[];
+
+function buildRatesMap(
+  apiRates: ExchangeRate[] | undefined
+): Record<Currency, { rate: number; symbol: string; decimals: number }> {
+  if (!apiRates || apiRates.length === 0) return FALLBACK_RATES;
+  const map = { ...FALLBACK_RATES };
+  for (const r of apiRates) {
+    if (r.currency in map) {
+      map[r.currency as Currency] = { rate: r.rate, symbol: r.symbol, decimals: r.decimals };
+    }
+  }
+  return map;
+}
+
 const LocaleContext = createContext<LocaleContextType | null>(null);
 
 export function LocaleProvider({ children }: { children: React.ReactNode }) {
   const params = new URLSearchParams(window.location.search);
   const initLang = params.get('lang')?.toUpperCase();
   const initCur = params.get('currency')?.toUpperCase();
+  const openParam = params.get('open');
 
   const [language, setLanguage] = useState<Language>(initLang === 'EN' ? 'EN' : 'ES');
   const [currency, setCurrency] = useState<Currency>(
-    initCur && initCur in exchangeRates ? (initCur as Currency) : 'COP'
+    initCur && initCur in FALLBACK_RATES ? (initCur as Currency) : 'COP'
   );
+  const [autoOpen, setAutoOpen] = useState<'language' | 'currency' | null>(
+    openParam === 'language' || openParam === 'currency' ? openParam : null
+  );
+  const clearAutoOpen = () => setAutoOpen(null);
+
+  const { data: apiRates } = useExchangeRates();
+  const rates = useMemo(() => buildRatesMap(apiRates), [apiRates]);
 
   useEffect(() => {
     i18n.changeLanguage(language);
@@ -69,7 +99,7 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
   };
 
   const formatPrice = (copAmount: number): string => {
-    const { rate, symbol, decimals } = exchangeRates[currency];
+    const { rate, symbol, decimals } = rates[currency];
     const converted = copAmount * rate;
     const formatted = converted.toLocaleString('es-CO', {
       minimumFractionDigits: decimals,
@@ -80,7 +110,16 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <LocaleContext.Provider
-      value={{ language, currency, setLanguage, setCurrency, formatPrice, formatDate }}
+      value={{
+        language,
+        currency,
+        setLanguage,
+        setCurrency,
+        formatPrice,
+        formatDate,
+        autoOpen,
+        clearAutoOpen,
+      }}
     >
       {children}
     </LocaleContext.Provider>
@@ -94,4 +133,4 @@ export function useLocale() {
 }
 
 export { currencyNames, languageNames };
-export type { Language, Currency, DateFormat };
+export type { DateFormat };
