@@ -8,6 +8,7 @@ const mocks = vi.hoisted(() => ({
   loginMutate: vi.fn(),
   navigate: vi.fn(),
   isPending: false,
+  httpClientGet: vi.fn(),
 }));
 
 vi.mock('react-router-dom', async () => ({
@@ -17,6 +18,12 @@ vi.mock('react-router-dom', async () => ({
 
 vi.mock('@/api/hooks/useAuth', () => ({
   useLogin: () => ({ mutate: mocks.loginMutate, isPending: mocks.isPending }),
+}));
+
+vi.mock('@/api/httpClient', () => ({
+  httpClient: {
+    get: mocks.httpClientGet,
+  },
 }));
 
 async function fillValidCredentials() {
@@ -37,11 +44,23 @@ const successResponse = {
   role: 'hotel_admin' as const,
 };
 
+const mockHotels = [
+  {
+    id: '5b821494-5c0a-4166-b49f-c6680118231d',
+    name: 'Hotel Barato2',
+    city: 'Cartagena',
+    country: 'Colombia',
+    admin_id: 'hotel-admin-001',
+  },
+];
+
 describe('HotelLoginPage', () => {
   beforeEach(() => {
     mocks.loginMutate.mockReset();
     mocks.navigate.mockReset();
     mocks.isPending = false;
+    mocks.httpClientGet.mockReset();
+    mocks.httpClientGet.mockResolvedValue(mockHotels);
     localStorage.clear();
   });
 
@@ -113,6 +132,13 @@ describe('HotelLoginPage', () => {
       name: successResponse.name,
       email: successResponse.email,
       role: successResponse.role,
+    });
+    expect(localStorage.getItem('auth_hotel_id')).toBe(mockHotels[0].id);
+    expect(JSON.parse(localStorage.getItem('auth_hotel_info') ?? 'null')).toEqual({
+      id: mockHotels[0].id,
+      name: mockHotels[0].name,
+      location: `${mockHotels[0].city}, ${mockHotels[0].country}`,
+      initials: 'HB',
     });
   });
 

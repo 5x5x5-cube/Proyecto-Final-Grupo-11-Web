@@ -1,4 +1,5 @@
 import { createContext, useContext } from 'react';
+import { useHotelAuth } from '@/hotels/auth/HotelAuthContext';
 
 interface HotelInfo {
   id: string;
@@ -17,31 +18,44 @@ interface HotelContextType {
   adminUser: HotelAdminUser;
 }
 
-// TODO: Replace with real hotel + admin user from auth/session when implemented.
-// Single source of truth for the current hotel admin session.
-const MOCK_HOTEL: HotelInfo = {
-  id: 'a1000000-0000-0000-0000-000000000001',
-  name: 'Hotel Caribe Plaza',
-  location: 'Cartagena, Colombia',
-  initials: 'HC',
-};
-
-const MOCK_ADMIN: HotelAdminUser = {
-  name: 'Admin Demo',
-  initials: 'AD',
-};
+// Generate initials from name
+function generateInitials(name: string): string {
+  return name
+    .split(' ')
+    .map(word => word[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
 
 const HotelContext = createContext<HotelContextType>({
-  hotel: MOCK_HOTEL,
-  adminUser: MOCK_ADMIN,
+  hotel: { id: '', name: '', location: '', initials: '' },
+  adminUser: { name: '', initials: '' },
 });
 
 export function HotelProvider({ children }: { children: React.ReactNode }) {
-  return (
-    <HotelContext.Provider value={{ hotel: MOCK_HOTEL, adminUser: MOCK_ADMIN }}>
-      {children}
-    </HotelContext.Provider>
-  );
+  const { session } = useHotelAuth();
+
+  // Use real hotel data from session, or fallback to empty
+  const hotel: HotelInfo = session?.hotelInfo || {
+    id: '',
+    name: '',
+    location: '',
+    initials: '',
+  };
+
+  // Use real admin user data from session, or fallback to empty
+  const adminUser: HotelAdminUser = session?.user
+    ? {
+        name: session.user.name,
+        initials: generateInitials(session.user.name),
+      }
+    : {
+        name: '',
+        initials: '',
+      };
+
+  return <HotelContext.Provider value={{ hotel, adminUser }}>{children}</HotelContext.Provider>;
 }
 
 export function useHotel() {

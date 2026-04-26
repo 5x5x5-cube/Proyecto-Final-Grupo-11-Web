@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Menu, MenuItem } from '@mui/material';
 import LanguageIcon from '@mui/icons-material/Language';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';

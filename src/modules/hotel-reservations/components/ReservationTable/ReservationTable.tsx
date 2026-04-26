@@ -130,7 +130,9 @@ export default function ReservationTable({
               </TableCell>
 
               <TableCell component="td" isLast={index === reservations.length - 1}>
-                <StatusChip status={res.status} />
+                <StatusChip
+                  status={res.status as 'confirmed' | 'pending' | 'cancelled' | 'rejected' | 'past'}
+                />
               </TableCell>
 
               <TableCell component="td" isLast={index === reservations.length - 1}>
