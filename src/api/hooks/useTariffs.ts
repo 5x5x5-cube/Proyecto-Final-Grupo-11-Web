@@ -46,7 +46,7 @@ export function useHotelAdminRooms() {
   return useQuery({
     queryKey: ['hotelAdminRooms'],
     queryFn: async () => {
-      const data = await httpClient.get<RawRoom[] | unknown>('/inventory/rooms');
+      const data = await httpClient.get<RawRoom[] | unknown>('/inventory/tariffs/admin/rooms');
       return data;
     },
   });
