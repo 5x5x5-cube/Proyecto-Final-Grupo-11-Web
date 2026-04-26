@@ -58,7 +58,7 @@ export const CURRENCIES: Currency[] = Object.keys(currencyNames) as Currency[];
 function buildRatesMap(
   apiRates: ExchangeRate[] | undefined
 ): Record<Currency, { rate: number; symbol: string; decimals: number }> {
-  if (!apiRates || apiRates.length === 0) return FALLBACK_RATES;
+  if (!apiRates || !Array.isArray(apiRates) || apiRates.length === 0) return FALLBACK_RATES;
   const map = { ...FALLBACK_RATES };
   for (const r of apiRates) {
     if (r.currency in map) {
