@@ -600,7 +600,7 @@ export const mockHandlers: MockRoute[] = [
   // ─── Tariffs (inventory service) ───
   {
     method: 'GET',
-    pattern: /^\/inventory\/rooms$/,
+    pattern: /^\/inventory\/tariffs\/admin\/rooms$/,
     handler: () => ok(hotelAdminRooms),
   },
   {
