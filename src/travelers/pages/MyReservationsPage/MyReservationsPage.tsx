@@ -108,7 +108,7 @@ const MyReservationsPage: React.FC = () => {
 
   if (isLoading || !bookingsData) return <MyReservationsPageSkeleton />;
 
-  const mockReservations = bookingsData as Array<{
+  const mockReservations = bookingsData as unknown as Array<{
     id: string | number;
     gradient: string;
     hotelType: string;

@@ -135,7 +135,6 @@ export default function CardForm({
           <FormInput
             component="input"
             inputMode="numeric"
-            autoComplete="cc-number"
             value={cardDisplayValue}
             onChange={handleCardNumberChange}
             onFocus={() => setCardFocused(true)}
