@@ -17,6 +17,7 @@ import { useLogin } from '@/api/hooks/useAuth';
 import { useSnackbar } from '@/contexts/SnackbarContext';
 import { useHotelAuth } from '@/hotels/auth/HotelAuthContext';
 import type { HotelAuthUser } from '@/hotels/auth/HotelAuthContext';
+import { httpClient } from '@/api/httpClient';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import {
@@ -100,13 +101,53 @@ export default function HotelLoginPage() {
     login.mutate(
       { email, password },
       {
-        onSuccess: response => {
+        onSuccess: async response => {
           const session = toHotelSession(response);
           if (!session) {
             showError(t('login.errorNetwork'));
             return;
           }
-          hotelAuth.login(session);
+
+          // Fetch all hotels and filter by admin_id in frontend
+          let hotelId: string | undefined;
+          let hotelInfo:
+            | { id: string; name: string; location: string; initials: string }
+            | undefined;
+          try {
+            const hotels = await httpClient.get<
+              {
+                id: string;
+                name: string;
+                city: string;
+                country: string;
+                admin_id: string | null;
+              }[]
+            >('/inventory/hotels');
+            // Filter hotels by admin_id in frontend
+            const adminHotels = hotels.filter(h => h.admin_id === session.user.id);
+            if (adminHotels && adminHotels.length > 0) {
+              const hotel = adminHotels[0];
+              hotelId = hotel.id;
+              // Generate initials from hotel name
+              const initials = hotel.name
+                .split(' ')
+                .map(word => word[0])
+                .join('')
+                .toUpperCase()
+                .slice(0, 2);
+              hotelInfo = {
+                id: hotel.id,
+                name: hotel.name,
+                location: `${hotel.city}, ${hotel.country}`,
+                initials,
+              };
+            }
+          } catch (error) {
+            // If fetching hotel fails, continue without hotel_id (will use fallback)
+            console.error('Failed to fetch hotels:', error);
+          }
+
+          hotelAuth.login({ ...session, hotelId, hotelInfo });
           navigate('/hotel/dashboard');
         },
         onError: err => showError(mapAuthError(err)),
