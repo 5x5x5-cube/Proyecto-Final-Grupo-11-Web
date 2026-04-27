@@ -29,7 +29,13 @@ vi.mock('@/contexts/AuthContext', () => ({
 // Mock hooks
 const mockNavigate = vi.fn();
 
+vi.mock('@/modules/checkout/cartStorage', () => ({
+  getCartSelection: () => null,
+  clearCartSelection: vi.fn(),
+}));
+
 vi.mock('@/api/hooks/useCart', () => ({
+  useSetCart: () => ({ mutate: vi.fn(), isPending: false }),
   useCart: vi.fn(() => ({
     data: {
       id: 1,

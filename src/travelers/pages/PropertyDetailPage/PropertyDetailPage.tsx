@@ -20,7 +20,6 @@ import RatingBadge from '@/design-system/components/RatingBadge';
 import { palette } from '@/design-system/theme/palette';
 import PropertyDetailPageSkeleton from './PropertyDetailPage.skeleton';
 import { useHotelDetail, useHotelReviews, useHotelRooms } from '@/api/hooks/useSearch';
-import { useSetCart } from '@/api/hooks/useCart';
 import { saveCartSelection } from '@/modules/checkout/cartStorage';
 import {
   SidebarWrapper,
@@ -105,7 +104,6 @@ export default function PropertyDetailPage() {
 
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
 
-  const setCart = useSetCart();
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
@@ -138,7 +136,7 @@ export default function PropertyDetailPage() {
   const selectedRoom = rooms.find(r => r.id === selectedRoomId) ?? rooms[0] ?? null;
 
   const handleReserve = useDebouncedCallback(() => {
-    if (setCart.isPending || !selectedRoom) return;
+    if (!selectedRoom) return;
 
     const selection = {
       roomId: selectedRoom.id,
@@ -149,9 +147,7 @@ export default function PropertyDetailPage() {
     };
 
     saveCartSelection(selection);
-    setCart.mutate(selection, {
-      onSuccess: () => navigate('/checkout/cart'),
-    });
+    navigate('/checkout/cart');
   });
 
   if (isHotelLoading || isRoomsLoading) return <PropertyDetailPageSkeleton />;
@@ -242,7 +238,7 @@ export default function PropertyDetailPage() {
         <PrimaryPillButton
           pillSize="lg"
           fullWidth
-          loading={setCart.isPending}
+          loading={false}
           onClick={handleReserve}
           disabled={!selectedRoom}
         >

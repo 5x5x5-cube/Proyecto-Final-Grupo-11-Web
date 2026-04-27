@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import CheckoutLayout from '@/design-system/layouts/CheckoutLayout';
 import CartPageSkeleton from './CartPage.skeleton';
-import { useCart } from '@/api/hooks/useCart';
+import { useCart, useSetCart } from '@/api/hooks/useCart';
+import { getCartSelection } from '@/modules/checkout/cartStorage';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSnackbar } from '@/contexts/SnackbarContext';
 import HotelSummaryCard from '@/modules/checkout/components/HotelSummaryCard/HotelSummaryCard';
@@ -15,10 +16,20 @@ import { CardList } from './CartPage.styles';
 
 export default function CartPage() {
   const { data: cart, isLoading, isPlaceholderData, error } = useCart();
+  const setCart = useSetCart();
   const { guestInfo } = useAuth();
   const navigate = useNavigate();
   const { showError } = useSnackbar();
   const { t } = useTranslation('travelers');
+
+  // Create cart from saved selection on mount (selection saved by PropertyDetailPage)
+  useEffect(() => {
+    const selection = getCartSelection();
+    if (selection && !setCart.isPending) {
+      setCart.mutate(selection);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (!error) return;
