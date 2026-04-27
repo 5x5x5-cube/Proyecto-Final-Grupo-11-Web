@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Checkbox, FormControlLabel } from '@mui/material';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
 import StarIcon from '@mui/icons-material/Star';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
@@ -97,6 +97,7 @@ const DEFAULT_AMENITIES: Record<AmenityKey, boolean> = {
 
 export default function ResultsPage() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const destination = searchParams.get('destination') ?? '';
   const checkIn = searchParams.get('checkIn') ?? '';
   const checkOut = searchParams.get('checkOut') ?? '';
@@ -120,7 +121,11 @@ export default function ResultsPage() {
   const { t } = useTranslation('travelers');
   const { formatPrice } = useLocale();
 
-  if (isLoading) return <ResultsPageSkeleton />;
+  useEffect(() => {
+    if (!destination) navigate('/', { replace: true });
+  }, [destination, navigate]);
+
+  if (!destination || isLoading) return <ResultsPageSkeleton />;
 
   const nights = calcNights(checkIn, checkOut);
   const datesLabel =
