@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import LuggageIcon from '@mui/icons-material/Luggage';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PlaceIcon from '@mui/icons-material/Place';
@@ -26,7 +27,6 @@ import {
   SidebarSectionTitle,
   SidebarMenuItem,
   MenuItemLabel,
-  MenuBadge,
   SidebarDivider,
   PageLayout,
   MainContent,
@@ -49,48 +49,37 @@ import {
 /* --- User Sidebar --- */
 const UserSidebar: React.FC = () => {
   const { t } = useTranslation('travelers');
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
 
-  const menuItems = [
-    {
-      icon: <LuggageIcon sx={{ fontSize: 20 }} />,
-      label: t('myReservations.sidebar.myReservations'),
-      active: true,
-      badge: '3',
-    },
-  ];
-
-  const bottomItems = [
-    { icon: <LogoutIcon sx={{ fontSize: 20 }} />, label: t('myReservations.sidebar.logout') },
-  ];
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <SidebarRoot>
       <UserCard>
-        <UserAvatar>C</UserAvatar>
+        <UserAvatar>{user?.initials ?? '?'}</UserAvatar>
         <Box>
-          <Text textVariant="bodySemibold">Carlos Mart&iacute;nez</Text>
-          <Text textVariant="caption">carlos.m@email.com</Text>
+          <Text textVariant="bodySemibold">{user?.name}</Text>
+          <Text textVariant="caption">{user?.email}</Text>
         </Box>
       </UserCard>
 
       <SidebarSectionTitle>{t('myReservations.sidebar.myAccount')}</SidebarSectionTitle>
 
-      {menuItems.map(item => (
-        <SidebarMenuItem key={item.label} active={item.active}>
-          {item.icon}
-          <MenuItemLabel>{item.label}</MenuItemLabel>
-          {item.badge && <MenuBadge>{item.badge}</MenuBadge>}
-        </SidebarMenuItem>
-      ))}
+      <SidebarMenuItem active>
+        <LuggageIcon sx={{ fontSize: 20 }} />
+        <MenuItemLabel>{t('myReservations.sidebar.myReservations')}</MenuItemLabel>
+      </SidebarMenuItem>
 
       <SidebarDivider />
 
-      {bottomItems.map(item => (
-        <SidebarMenuItem key={item.label}>
-          {item.icon}
-          <MenuItemLabel>{item.label}</MenuItemLabel>
-        </SidebarMenuItem>
-      ))}
+      <SidebarMenuItem onClick={handleLogout} sx={{ cursor: 'pointer' }}>
+        <LogoutIcon sx={{ fontSize: 20 }} />
+        <MenuItemLabel>{t('myReservations.sidebar.logout')}</MenuItemLabel>
+      </SidebarMenuItem>
 
       <Text textVariant="caption" sx={{ textAlign: 'center', opacity: 0.5 }}>
         v{__APP_VERSION__}
