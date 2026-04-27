@@ -197,6 +197,18 @@ export const CancelBoxTitle = styled(Typography)({
   color: error,
 });
 
+/* ─── Back Link ─── */
+
+export const BackLink = styled(Box)<{ component?: React.ElementType; to?: string }>({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '4px',
+  fontSize: 14,
+  color: primary,
+  fontWeight: 500,
+  textDecoration: 'none',
+});
+
 /* ─── Page Header ─── */
 
 export const PageHeaderRow = styled(Box)({

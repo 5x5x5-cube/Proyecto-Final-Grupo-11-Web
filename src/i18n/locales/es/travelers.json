@@ -342,6 +342,10 @@
       "checkOut": "Salida",
       "duration": "Duracion",
       "nights": "noches",
+      "nightsCount_one": "{{count}} noche",
+      "nightsCount_other": "{{count}} noches",
+      "guestsCount_one": "{{count}} huesped",
+      "guestsCount_other": "{{count}} huespedes",
       "totalPaid": "Total pagado",
       "viewDetail": "Ver detalle"
     }
@@ -374,7 +378,12 @@
       "durationSub": "15 -- 20 mar 2026",
       "guests": "Huespedes",
       "guestsValue": "2 adultos",
-      "guestsSub": "Carlos M. (titular)"
+      "guestsSub": "Carlos M. (titular)",
+      "nightsCount_one": "{{count}} noche",
+      "nightsCount_other": "{{count}} noches",
+      "guestsCount_one": "{{count}} huesped",
+      "guestsCount_other": "{{count}} huespedes",
+      "holderSuffix": "(titular)"
     },
     "paymentHistory": {
       "title": "Historial de pagos",
@@ -406,6 +415,10 @@
       "duration": "Duracion",
       "room": "Habitacion",
       "guests": "Huespedes",
+      "nightsCount_one": "{{count}} noche",
+      "nightsCount_other": "{{count}} noches",
+      "guestsCount_one": "{{count}} huesped",
+      "guestsCount_other": "{{count}} huespedes",
       "total": "Total",
       "whatsNext": "\u00bfQue sigue?",
       "voucherSent": "<strong>Voucher enviado por correo</strong> — Recibiras tu comprobante de reserva con todos los detalles de tu estadia.",

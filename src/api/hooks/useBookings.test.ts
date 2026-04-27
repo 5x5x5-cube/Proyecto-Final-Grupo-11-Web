@@ -65,7 +65,7 @@ describe('useBookingDetail', () => {
     };
     mockGet.mockResolvedValueOnce(mockBooking);
 
-    const { result } = renderHook(() => useBookingDetail(1), { wrapper: createWrapper() });
+    const { result } = renderHook(() => useBookingDetail('1'), { wrapper: createWrapper() });
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
@@ -109,7 +109,7 @@ describe('useCancelBooking', () => {
 
     const { result } = renderHook(() => useCancelBooking(), { wrapper: createWrapper() });
 
-    result.current.mutate(42);
+    result.current.mutate('42');
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
