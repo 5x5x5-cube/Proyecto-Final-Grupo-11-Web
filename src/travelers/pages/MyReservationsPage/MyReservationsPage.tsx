@@ -1,9 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import LuggageIcon from '@mui/icons-material/Luggage';
-import LogoutIcon from '@mui/icons-material/Logout';
+import { Link } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
 import BedIcon from '@mui/icons-material/Bed';
 import { useTranslation } from 'react-i18next';
@@ -13,17 +10,11 @@ import StatusChip from '@/design-system/components/StatusChip';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import { palette } from '@/design-system/theme/palette';
+import UserSidebar from '@/travelers/components/UserSidebar';
 import { useReservationTabs } from './useReservationTabs';
 import type { ReservationTab } from './useReservationTabs';
 import MyReservationsPageSkeleton from './MyReservationsPage.skeleton';
 import {
-  SidebarRoot,
-  UserCard,
-  UserAvatar,
-  SidebarSectionTitle,
-  SidebarMenuItem,
-  MenuItemLabel,
-  SidebarDivider,
   PageLayout,
   MainContent,
   PageTitle,
@@ -40,48 +31,6 @@ import {
   BookingCode,
   TotalLabel,
 } from './MyReservationsPage.styles';
-
-/* --- User Sidebar --- */
-const UserSidebar: React.FC = () => {
-  const { t } = useTranslation('travelers');
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-
-  return (
-    <SidebarRoot>
-      <UserCard>
-        <UserAvatar>{user?.initials ?? '?'}</UserAvatar>
-        <Box>
-          <Text textVariant="bodySemibold">{user?.name}</Text>
-          <Text textVariant="caption">{user?.email}</Text>
-        </Box>
-      </UserCard>
-
-      <SidebarSectionTitle>{t('myReservations.sidebar.myAccount')}</SidebarSectionTitle>
-
-      <SidebarMenuItem active>
-        <LuggageIcon sx={{ fontSize: 20 }} />
-        <MenuItemLabel>{t('myReservations.sidebar.myReservations')}</MenuItemLabel>
-      </SidebarMenuItem>
-
-      <SidebarDivider />
-
-      <SidebarMenuItem onClick={handleLogout} sx={{ cursor: 'pointer' }}>
-        <LogoutIcon sx={{ fontSize: 20 }} />
-        <MenuItemLabel>{t('myReservations.sidebar.logout')}</MenuItemLabel>
-      </SidebarMenuItem>
-
-      <Text textVariant="caption" sx={{ textAlign: 'center', opacity: 0.5 }}>
-        v{__APP_VERSION__}
-      </Text>
-    </SidebarRoot>
-  );
-};
 
 /* --- Main --- */
 const MyReservationsPage: React.FC = () => {
