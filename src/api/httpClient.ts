@@ -54,13 +54,6 @@ async function request<T>(method: Method, path: string, config?: RequestConfig):
     headers['Authorization'] = `Bearer ${token}`;
   }
 
-  const userId = localStorage.getItem('user_id');
-  if (userId) headers['X-User-Id'] = userId;
-
-  // TODO: Remove hardcoded hotel_id fallback - should come from user's hotel association
-  const hotelId = localStorage.getItem('auth_hotel_id') || '5b821494-5c0a-4166-b49f-c6680118231d';
-  headers['X-Hotel-Id'] = hotelId;
-
   const fetchOptions: RequestInit = {
     method,
     headers,
