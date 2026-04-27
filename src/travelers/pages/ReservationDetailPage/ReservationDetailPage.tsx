@@ -16,7 +16,7 @@ import AcUnitIcon from '@mui/icons-material/AcUnit';
 import TvIcon from '@mui/icons-material/Tv';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
 import EmailIcon from '@mui/icons-material/Email';
-import DownloadIcon from '@mui/icons-material/Download';
+
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
@@ -33,7 +33,6 @@ import RatingBadge from '@/design-system/components/RatingBadge';
 import ModalOverlay from '@/design-system/components/ModalOverlay';
 import {
   PrimaryPillButton,
-  OutlinedPillButton,
   ErrorOutlinedPillButton,
   ErrorPillButton,
   SuccessPillButton,
@@ -269,13 +268,6 @@ const ReservationDetailPage: React.FC = () => {
       </CancelBox>
 
       {/* Download button */}
-      <OutlinedPillButton
-        pillSize="sm"
-        sx={{ width: '100%', display: 'flex', alignItems: 'center', gap: '6px' }}
-      >
-        <DownloadIcon sx={{ fontSize: 16 }} />
-        {t('reservationDetail.downloadReceipt')}
-      </OutlinedPillButton>
     </RightSidebarContainer>
   );
 
