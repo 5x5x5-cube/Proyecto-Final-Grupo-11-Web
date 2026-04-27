@@ -57,9 +57,11 @@ const mockBookings = [
   },
 ];
 
-vi.mock('@/api/hooks/useBookings', () => ({
-  useBookings: vi.fn(() => ({
-    data: mockBookings,
+vi.mock('./useReservationTabs', () => ({
+  useReservationTabs: vi.fn(() => ({
+    tab: 'active',
+    setTab: vi.fn(),
+    bookings: mockBookings,
     isLoading: false,
   })),
 }));

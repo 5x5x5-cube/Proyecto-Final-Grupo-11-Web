@@ -16,16 +16,16 @@ import AcUnitIcon from '@mui/icons-material/AcUnit';
 import TvIcon from '@mui/icons-material/Tv';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
 import EmailIcon from '@mui/icons-material/Email';
-import DownloadIcon from '@mui/icons-material/Download';
+
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
 import LuggageIcon from '@mui/icons-material/Luggage';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import TravelerLayout from '@/design-system/layouts/TravelerLayout';
 import StatusChip from '@/design-system/components/StatusChip';
+import UserSidebar from '@/travelers/components/UserSidebar';
 import ReservationDetailPageSkeleton from './ReservationDetailPage.skeleton';
 import SectionCard from '@/design-system/components/SectionCard';
 import InfoGrid from '@/design-system/components/InfoGrid';
@@ -33,7 +33,6 @@ import RatingBadge from '@/design-system/components/RatingBadge';
 import ModalOverlay from '@/design-system/components/ModalOverlay';
 import {
   PrimaryPillButton,
-  OutlinedPillButton,
   ErrorOutlinedPillButton,
   ErrorPillButton,
   SuccessPillButton,
@@ -54,15 +53,6 @@ import {
   ThreeColumnLayout,
   CenterPanel,
   MainContent,
-  UserSidebarContainer,
-  UserCard,
-  UserAvatar,
-  SidebarSectionTitle,
-  SidebarMenuItem,
-  MenuItemLabel,
-  MenuItemBadge,
-  SidebarDivider,
-  SidebarBottomItem,
   RightSidebarContainer,
   PriceSummaryTitle,
   PriceRowsList,
@@ -145,67 +135,6 @@ const ReservationDetailPage: React.FC = () => {
   const vat = breakdown?.vat ?? 0;
   const serviceFee = breakdown?.serviceFee ?? 0;
 
-  /* ─── Left Sidebar ─── */
-  const UserSidebar: React.FC = () => {
-    const menuItems = [
-      {
-        icon: <LuggageIcon sx={{ fontSize: 20 }} />,
-        label: t('myReservations.sidebar.myReservations'),
-        active: true,
-        badge: '3',
-      },
-    ];
-
-    const bottomItems = [
-      { icon: <LogoutIcon sx={{ fontSize: 20 }} />, label: t('myReservations.sidebar.logout') },
-    ];
-
-    return (
-      <UserSidebarContainer>
-        {/* User card */}
-        <UserCard>
-          <UserAvatar>C</UserAvatar>
-          <div>
-            <Text textVariant="bodySemibold">Carlos Mart&iacute;nez</Text>
-            <Text textVariant="caption">carlos.m@email.com</Text>
-          </div>
-        </UserCard>
-
-        {/* Section title */}
-        <SidebarSectionTitle>{t('myReservations.sidebar.myAccount')}</SidebarSectionTitle>
-
-        {/* Menu items */}
-        {menuItems.map(item => (
-          <SidebarMenuItem
-            key={item.label}
-            active={item.active}
-            component={item.active ? Link : 'div'}
-            {...(item.active ? { to: '/reservations' } : {})}
-          >
-            {item.icon}
-            <MenuItemLabel>{item.label}</MenuItemLabel>
-            {item.badge && <MenuItemBadge>{item.badge}</MenuItemBadge>}
-          </SidebarMenuItem>
-        ))}
-
-        {/* Divider */}
-        <SidebarDivider />
-
-        {/* Bottom items */}
-        {bottomItems.map(item => (
-          <SidebarBottomItem key={item.label}>
-            {item.icon}
-            <MenuItemLabel>{item.label}</MenuItemLabel>
-          </SidebarBottomItem>
-        ))}
-
-        <Text textVariant="caption" sx={{ textAlign: 'center', opacity: 0.5 }}>
-          v{__APP_VERSION__}
-        </Text>
-      </UserSidebarContainer>
-    );
-  };
-
   /* ─── Right Sidebar ─── */
   const RightSidebar: React.FC = () => (
     <RightSidebarContainer>
@@ -269,13 +198,6 @@ const ReservationDetailPage: React.FC = () => {
       </CancelBox>
 
       {/* Download button */}
-      <OutlinedPillButton
-        pillSize="sm"
-        sx={{ width: '100%', display: 'flex', alignItems: 'center', gap: '6px' }}
-      >
-        <DownloadIcon sx={{ fontSize: 16 }} />
-        {t('reservationDetail.downloadReceipt')}
-      </OutlinedPillButton>
     </RightSidebarContainer>
   );
 

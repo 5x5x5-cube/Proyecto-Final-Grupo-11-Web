@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { useBookingByPaymentId } from '@/api/hooks/useBookings';
 import CheckoutLayout from '@/design-system/layouts/CheckoutLayout';
-import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import { palette } from '@/design-system/theme/palette';
 import ConfirmationSidebar from '@/modules/checkout/components/ConfirmationSidebar/ConfirmationSidebar';
 import {
@@ -63,9 +63,6 @@ const ConfirmationPage: React.FC = () => {
           <PrimaryPillButton component={Link} to="/reservations" pillSize="md" sx={{ flex: 1 }}>
             {t('confirmation.viewReservations')}
           </PrimaryPillButton>
-          <OutlinedPillButton component={Link} to="/" pillSize="md" sx={{ flex: 1 }}>
-            {t('confirmation.downloadReceipt')}
-          </OutlinedPillButton>
         </ActionButtonsRow>
       </ContentWrapper>
     </CheckoutLayout>

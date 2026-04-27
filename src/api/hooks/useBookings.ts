@@ -39,14 +39,33 @@ interface BookingListResponse {
   total: number;
 }
 
-export function useBookings() {
+export function useBookings(filters?: { status?: string; timeframe?: string }) {
   return useQuery<BookingData[]>({
-    queryKey: ['bookings'],
+    queryKey: ['bookings', filters ?? {}],
     queryFn: async () => {
-      const raw = await httpClient.get<BookingListResponse>('/bookings');
+      const params: Record<string, string> = {};
+      if (filters?.status) params.status = filters.status;
+      if (filters?.timeframe) params.timeframe = filters.timeframe;
+      const hasParams = Object.keys(params).length > 0;
+      const raw = await httpClient.get<BookingListResponse>(
+        '/bookings',
+        hasParams ? { params } : undefined
+      );
       return raw.data;
     },
   });
+}
+
+export function useActiveBookings() {
+  return useBookings({ timeframe: 'active' });
+}
+
+export function usePastBookings() {
+  return useBookings({ timeframe: 'past' });
+}
+
+export function useCancelledBookings() {
+  return useBookings({ status: 'cancelled' });
 }
 
 export function useBookingByPaymentId(paymentId: string) {

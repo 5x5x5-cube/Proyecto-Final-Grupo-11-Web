@@ -5,6 +5,7 @@ import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/component
 import SearchIcon from '@mui/icons-material/Search';
 import { useTranslation } from 'react-i18next';
 import LocaleSelector from '@/design-system/components/LocaleSelector';
+import { useAuth } from '@/contexts/AuthContext';
 import {
   primary,
   onPrimary,
@@ -41,12 +42,9 @@ const Brand = () => (
 const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSummary }) => {
   const height = 72;
   const { t } = useTranslation('common');
+  const { user, isAuthenticated } = useAuth();
 
-  const navLinks = [
-    { label: t('nav.home'), path: '/' },
-    { label: t('nav.hotels'), path: '/results' },
-    { label: t('nav.offers'), path: '/results' },
-  ];
+  const navLinks: { label: string; path: string }[] = [];
 
   return (
     <Box
@@ -134,9 +132,18 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
       <LocaleSelector />
 
       {/* Right actions */}
-      {variant === 'reservations' ? (
+      {isAuthenticated && user ? (
         <Box
-          sx={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', ml: 'auto' }}
+          component={Link}
+          to="/reservations"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            cursor: 'pointer',
+            ml: 'auto',
+            textDecoration: 'none',
+          }}
         >
           <Box
             sx={{
@@ -152,10 +159,10 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
               fontWeight: 600,
             }}
           >
-            C
+            {user.initials}
           </Box>
           <Typography sx={{ fontSize: '14px', fontWeight: 500, color: onSurface }}>
-            Carlos Martinez
+            {user.name}
           </Typography>
         </Box>
       ) : (

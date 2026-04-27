@@ -326,9 +326,9 @@
       "logout": "Cerrar sesion"
     },
     "tabs": {
-      "active": "Activas (2)",
-      "past": "Pasadas (4)",
-      "cancelled": "Canceladas (1)"
+      "active": "Activas",
+      "past": "Pasadas",
+      "cancelled": "Canceladas"
     },
     "filters": {
       "all": "Todas",

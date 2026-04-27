@@ -33,6 +33,7 @@ test.describe('Payment flow', () => {
   // ─── Card payment tests ───
 
   test('card: successful payment reaches confirmation', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     paymentPage,
@@ -55,6 +56,7 @@ test.describe('Payment flow', () => {
   });
 
   test('card: declined card shows error feedback and stays on page', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     paymentPage,
@@ -80,6 +82,7 @@ test.describe('Payment flow', () => {
   });
 
   test('card: expired magic card is declined and stays on page', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     paymentPage,
@@ -104,6 +107,7 @@ test.describe('Payment flow', () => {
   // ─── Wallet payment test ───
 
   test('wallet: successful PayPal payment reaches confirmation', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     paymentPage,
@@ -127,6 +131,7 @@ test.describe('Payment flow', () => {
   // ─── Transfer payment test ───
 
   test('transfer: successful bank transfer reaches confirmation', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     paymentPage,
@@ -151,6 +156,7 @@ test.describe('Payment flow', () => {
   // ─── Form validation tests ───
 
   test('pay button is disabled with empty form', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     paymentPage,
@@ -165,6 +171,7 @@ test.describe('Payment flow', () => {
   });
 
   test('card fields are visible on payment page', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     paymentPage,
@@ -181,6 +188,7 @@ test.describe('Payment flow', () => {
   });
 
   test('wallet tab shows wallet form', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     paymentPage,
@@ -196,6 +204,7 @@ test.describe('Payment flow', () => {
   });
 
   test('transfer tab shows transfer form', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     paymentPage,

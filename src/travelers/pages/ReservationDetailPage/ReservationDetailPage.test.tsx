@@ -3,6 +3,17 @@ import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/renderWithProviders';
 import ReservationDetailPage from './ReservationDetailPage';
 
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => ({
+    user: { id: 'u1', name: 'Test User', email: 'test@test.com', phone: '', initials: 'TU' },
+    guestInfo: { name: 'Test User', email: 'test@test.com', phone: '', initials: 'TU' },
+    isAuthenticated: true,
+    login: vi.fn(),
+    logout: vi.fn(),
+  }),
+  AuthProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
+
 const mockBooking = {
   id: '42',
   code: 'TH-2026-00001',

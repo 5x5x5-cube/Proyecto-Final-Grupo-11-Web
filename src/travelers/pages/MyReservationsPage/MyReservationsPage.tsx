@@ -1,38 +1,25 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box } from '@mui/material';
 import { Link } from 'react-router-dom';
-import LuggageIcon from '@mui/icons-material/Luggage';
-import LogoutIcon from '@mui/icons-material/Logout';
 import PlaceIcon from '@mui/icons-material/Place';
 import BedIcon from '@mui/icons-material/Bed';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import TravelerLayout from '@/design-system/layouts/TravelerLayout';
 import StatusChip from '@/design-system/components/StatusChip';
-import FilterChip from '@/design-system/components/FilterChip';
-import SearchField from '@/design-system/components/SearchField';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import { palette } from '@/design-system/theme/palette';
-import { useBookings } from '@/api/hooks/useBookings';
+import UserSidebar from '@/travelers/components/UserSidebar';
+import { useReservationTabs } from './useReservationTabs';
+import type { ReservationTab } from './useReservationTabs';
 import MyReservationsPageSkeleton from './MyReservationsPage.skeleton';
 import {
-  SidebarRoot,
-  UserCard,
-  UserAvatar,
-  SidebarSectionTitle,
-  SidebarMenuItem,
-  MenuItemLabel,
-  MenuBadge,
-  SidebarDivider,
   PageLayout,
   MainContent,
   PageTitle,
   TabsBar,
   Tab,
-  FiltersRow,
   CardList,
   ReservationCard,
   CardThumbnail,
@@ -45,87 +32,22 @@ import {
   TotalLabel,
 } from './MyReservationsPage.styles';
 
-/* --- User Sidebar --- */
-const UserSidebar: React.FC = () => {
-  const { t } = useTranslation('travelers');
-
-  const menuItems = [
-    {
-      icon: <LuggageIcon sx={{ fontSize: 20 }} />,
-      label: t('myReservations.sidebar.myReservations'),
-      active: true,
-      badge: '3',
-    },
-  ];
-
-  const bottomItems = [
-    { icon: <LogoutIcon sx={{ fontSize: 20 }} />, label: t('myReservations.sidebar.logout') },
-  ];
-
-  return (
-    <SidebarRoot>
-      <UserCard>
-        <UserAvatar>C</UserAvatar>
-        <Box>
-          <Text textVariant="bodySemibold">Carlos Mart&iacute;nez</Text>
-          <Text textVariant="caption">carlos.m@email.com</Text>
-        </Box>
-      </UserCard>
-
-      <SidebarSectionTitle>{t('myReservations.sidebar.myAccount')}</SidebarSectionTitle>
-
-      {menuItems.map(item => (
-        <SidebarMenuItem key={item.label} active={item.active}>
-          {item.icon}
-          <MenuItemLabel>{item.label}</MenuItemLabel>
-          {item.badge && <MenuBadge>{item.badge}</MenuBadge>}
-        </SidebarMenuItem>
-      ))}
-
-      <SidebarDivider />
-
-      {bottomItems.map(item => (
-        <SidebarMenuItem key={item.label}>
-          {item.icon}
-          <MenuItemLabel>{item.label}</MenuItemLabel>
-        </SidebarMenuItem>
-      ))}
-
-      <Text textVariant="caption" sx={{ textAlign: 'center', opacity: 0.5 }}>
-        v{__APP_VERSION__}
-      </Text>
-    </SidebarRoot>
-  );
-};
-
 /* --- Main --- */
 const MyReservationsPage: React.FC = () => {
-  const { data: bookingsData, isLoading } = useBookings();
-  const [activeTab, setActiveTab] = useState(0);
-  const [activeFilter, setActiveFilter] = useState(0);
+  const { tab, setTab, bookings, isLoading } = useReservationTabs();
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
 
-  if (isLoading || !bookingsData) return <MyReservationsPageSkeleton />;
+  const tabKeys: ReservationTab[] = ['active', 'past', 'cancelled'];
+  const activeTab = tabKeys.indexOf(tab);
 
-  const bookings = bookingsData;
+  if (isLoading) return <MyReservationsPageSkeleton />;
 
   const tabs = [
     t('myReservations.tabs.active'),
     t('myReservations.tabs.past'),
     t('myReservations.tabs.cancelled'),
   ];
-  const filters = [
-    {
-      label: t('myReservations.filters.all'),
-      icon: <CheckCircleOutlineIcon sx={{ fontSize: 16 }} />,
-      selected: true,
-    },
-    { label: t('myReservations.filters.confirmed') },
-    { label: t('myReservations.filters.pending') },
-    { label: t('myReservations.filters.date'), icon: <CalendarTodayIcon sx={{ fontSize: 16 }} /> },
-  ];
-
   return (
     <TravelerLayout variant="reservations">
       <PageLayout>
@@ -137,27 +59,16 @@ const MyReservationsPage: React.FC = () => {
           </Box>
 
           <TabsBar>
-            {tabs.map((tab, index) => (
-              <Tab key={tab} active={activeTab === index} onClick={() => setActiveTab(index)}>
-                {tab}
+            {tabs.map((tabLabel, index) => (
+              <Tab
+                key={tabLabel}
+                active={activeTab === index}
+                onClick={() => setTab(tabKeys[index])}
+              >
+                {tabLabel}
               </Tab>
             ))}
           </TabsBar>
-
-          <FiltersRow>
-            <Box sx={{ flex: 1, maxWidth: 400 }}>
-              <SearchField placeholder={t('myReservations.filters.searchPlaceholder')} />
-            </Box>
-            {filters.map((filter, index) => (
-              <FilterChip
-                key={filter.label}
-                label={filter.label}
-                selected={activeFilter === index}
-                icon={filter.icon}
-                onClick={() => setActiveFilter(index)}
-              />
-            ))}
-          </FiltersRow>
 
           <CardList>
             {bookings.map(b => {
@@ -172,9 +83,12 @@ const MyReservationsPage: React.FC = () => {
 
               return (
                 <ReservationCard key={b.id}>
-                  <CardThumbnail>
-                    <Box sx={{ width: '100%', height: '100%' }} />
-                  </CardThumbnail>
+                  <CardThumbnail
+                    sx={{
+                      background: 'linear-gradient(135deg, #006874 0%, #4A9FAA 100%)',
+                      borderRadius: '12px 0 0 12px',
+                    }}
+                  />
 
                   <CardBody>
                     <Box>
