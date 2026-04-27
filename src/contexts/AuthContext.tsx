@@ -1,4 +1,5 @@
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
 import type { GuestInfo } from '@/modules/checkout/types';
 
 interface AuthUser {
@@ -10,51 +11,109 @@ interface AuthUser {
 }
 
 interface AuthContextType {
-  user: AuthUser;
+  user: AuthUser | null;
   guestInfo: GuestInfo;
   isAuthenticated: boolean;
+  login: (response: LoginResponse) => void;
+  logout: () => void;
 }
 
-// TODO: Replace with real auth when implemented.
-// This is the single source of truth for user data across the app.
-const MOCK_USER: AuthUser = {
-  id: '00000000-0000-0000-0000-000000000001',
-  name: 'Carlos Martinez',
-  email: 'carlos.martinez@email.com',
-  phone: '+57 310 000 0000',
-  initials: 'CM',
-};
+interface LoginResponse {
+  access_token: string;
+  user_id: string;
+  name: string;
+  email: string;
+  role?: string;
+}
 
-// Sync user_id to localStorage so httpClient sends X-User-Id header.
-// Runs at module load time — before any component renders or query fires.
-// TODO: Remove when real auth sets this after login.
-localStorage.setItem('user_id', MOCK_USER.id);
+const TOKEN_KEY = 'auth_token';
+const USER_KEY = 'auth_user';
+
+function computeInitials(name: string): string {
+  return name
+    .split(' ')
+    .map(w => w[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+
+function getSession(): { token: string; user: AuthUser } | null {
+  const token = localStorage.getItem(TOKEN_KEY);
+  const rawUser = localStorage.getItem(USER_KEY);
+  if (!token || !rawUser) return null;
+
+  try {
+    const user = JSON.parse(rawUser) as AuthUser;
+    if (!user?.id || !user?.email) return null;
+    return { token, user };
+  } catch {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
+    return null;
+  }
+}
+
+function setSession(token: string, user: AuthUser): void {
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
+}
+
+function clearSession(): void {
+  localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem(USER_KEY);
+}
+
+const EMPTY_GUEST: GuestInfo = { name: '', email: '', phone: '', initials: '' };
 
 const AuthContext = createContext<AuthContextType>({
-  user: MOCK_USER,
-  guestInfo: {
-    name: MOCK_USER.name,
-    email: MOCK_USER.email,
-    phone: MOCK_USER.phone,
-    initials: MOCK_USER.initials,
-  },
-  isAuthenticated: true,
+  user: null,
+  guestInfo: EMPTY_GUEST,
+  isAuthenticated: false,
+  login: () => {},
+  logout: () => {},
 });
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  // TODO: Replace with real auth state (token validation, user profile fetch)
-  const value: AuthContextType = {
-    user: MOCK_USER,
-    guestInfo: {
-      name: MOCK_USER.name,
-      email: MOCK_USER.email,
-      phone: MOCK_USER.phone,
-      initials: MOCK_USER.initials,
-    },
-    isAuthenticated: true,
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [session, setSessionState] = useState(() => getSession());
+
+  useEffect(() => {
+    const onStorage = (e: StorageEvent) => {
+      if (e.key === TOKEN_KEY || e.key === USER_KEY) {
+        setSessionState(getSession());
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
+  }, []);
+
+  const login = (response: LoginResponse) => {
+    const user: AuthUser = {
+      id: response.user_id,
+      name: response.name,
+      email: response.email,
+      phone: '',
+      initials: computeInitials(response.name),
+    };
+    setSession(response.access_token, user);
+    setSessionState({ token: response.access_token, user });
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  const logout = () => {
+    clearSession();
+    setSessionState(null);
+  };
+
+  const user = session?.user ?? null;
+  const guestInfo: GuestInfo = user
+    ? { name: user.name, email: user.email, phone: user.phone, initials: user.initials }
+    : EMPTY_GUEST;
+
+  return (
+    <AuthContext.Provider value={{ user, guestInfo, isAuthenticated: !!session, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {

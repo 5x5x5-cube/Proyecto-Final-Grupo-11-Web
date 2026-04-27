@@ -20,25 +20,62 @@ import RatesPage from './hotels/pages/RatesPage';
 import DiscountsPage from './hotels/pages/DiscountsPage';
 import ReportsPage from './hotels/pages/ReportsPage';
 import { ProtectedHotelRoute } from './hotels/auth/ProtectedHotelRoute';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
   // Design System
   { path: '/design-system', element: <DesignSystemPage /> },
 
-  // Traveler Portal
+  // Traveler Portal — Public
   { path: '/', element: <HomePage /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/register', element: <RegisterPage /> },
   { path: '/results', element: <ResultsPage /> },
   { path: '/property/:id', element: <PropertyDetailPage /> },
-  { path: '/checkout/cart', element: <CartPage /> },
-  { path: '/checkout/payment', element: <PaymentPage /> },
-  { path: '/checkout/confirmation/:paymentId', element: <ConfirmationPage /> },
-  { path: '/reservations', element: <MyReservationsPage /> },
-  { path: '/reservations/:id', element: <ReservationDetailPage /> },
+
+  // Traveler Portal — Protected
+  {
+    path: '/checkout/cart',
+    element: (
+      <ProtectedRoute>
+        <CartPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/checkout/payment',
+    element: (
+      <ProtectedRoute>
+        <PaymentPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/checkout/confirmation/:paymentId',
+    element: (
+      <ProtectedRoute>
+        <ConfirmationPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/reservations',
+    element: (
+      <ProtectedRoute>
+        <MyReservationsPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/reservations/:id',
+    element: (
+      <ProtectedRoute>
+        <ReservationDetailPage />
+      </ProtectedRoute>
+    ),
+  },
 
   // Hotel Admin Portal
-  // /hotel/login is public — everything else is gated by ProtectedHotelRoute.
   { path: '/hotel/login', element: <HotelLoginPage /> },
   {
     path: '/hotel/dashboard',

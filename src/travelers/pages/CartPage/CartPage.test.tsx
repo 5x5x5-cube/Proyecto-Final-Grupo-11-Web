@@ -4,6 +4,28 @@ import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/renderWithProviders';
 import CartPage from './CartPage';
 
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => ({
+    user: {
+      id: 'u1',
+      name: 'Carlos Martinez',
+      email: 'carlos@test.com',
+      phone: '+57 310 000 0000',
+      initials: 'CM',
+    },
+    guestInfo: {
+      name: 'Carlos Martinez',
+      email: 'carlos@test.com',
+      phone: '+57 310 000 0000',
+      initials: 'CM',
+    },
+    isAuthenticated: true,
+    login: vi.fn(),
+    logout: vi.fn(),
+  }),
+  AuthProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
+
 // Mock hooks
 const mockNavigate = vi.fn();
 

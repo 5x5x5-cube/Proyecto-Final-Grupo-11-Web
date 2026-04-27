@@ -2,6 +2,23 @@ import { describe, it, vi } from 'vitest';
 import { renderWithProviders } from '@/test/renderWithProviders';
 import ConfirmationPage from './ConfirmationPage';
 
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => ({
+    user: {
+      id: 'u1',
+      name: 'Carlos Martinez',
+      email: 'carlos@test.com',
+      phone: '',
+      initials: 'CM',
+    },
+    guestInfo: { name: 'Carlos Martinez', email: 'carlos@test.com', phone: '', initials: 'CM' },
+    isAuthenticated: true,
+    login: vi.fn(),
+    logout: vi.fn(),
+  }),
+  AuthProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
+
 vi.mock('react-router-dom', async () => ({
   ...(await vi.importActual('react-router-dom')),
   useParams: () => ({ paymentId: 'pay-123' }),

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { palette } from '@/design-system/theme/palette';
 import { useRegister } from '@/api/hooks/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import {
@@ -23,6 +24,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 export default function RegisterPage() {
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
+  const auth = useAuth();
   const register = useRegister();
 
   const [name, setName] = useState('');
@@ -48,7 +50,17 @@ export default function RegisterPage() {
 
   const handleSubmit = () => {
     if (!isFormValid || register.isPending) return;
-    register.mutate({ name, email, password }, { onSuccess: () => navigate('/login') });
+    register.mutate(
+      { name, email, password },
+      {
+        onSuccess: (response: unknown) => {
+          auth.login(
+            response as { access_token: string; user_id: string; name: string; email: string }
+          );
+          navigate('/');
+        },
+      }
+    );
   };
 
   return (
