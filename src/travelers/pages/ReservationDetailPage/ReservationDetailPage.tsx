@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useBookingDetail, useBookingPayments } from '@/api/hooks/useBookings';
 import { Box, Divider, Skeleton, Typography } from '@mui/material';
 import Text from '@/design-system/components/Text';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HotelIcon from '@mui/icons-material/Hotel';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
@@ -71,6 +71,7 @@ import {
   CancelBox,
   CancelBoxHeader,
   CancelBoxTitle,
+  BackLink,
   PageHeaderRow,
   PageTitle,
   BookingCodeRow,
@@ -111,8 +112,9 @@ import {
 
 /* ─── Main Page ─── */
 const ReservationDetailPage: React.FC = () => {
-  const { isLoading: isBookingLoading } = useBookingDetail(1);
-  const { isLoading: isPaymentsLoading } = useBookingPayments(1);
+  const { id = '' } = useParams<{ id: string }>();
+  const { data: booking, isLoading: isBookingLoading } = useBookingDetail(id);
+  const { isLoading: isPaymentsLoading } = useBookingPayments(id);
 
   const [confirmedOpen, setConfirmedOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -126,7 +128,22 @@ const ReservationDetailPage: React.FC = () => {
     if (modal === 'cancel') setCancelOpen(true);
   }, []);
 
-  if (isBookingLoading) return <ReservationDetailPageSkeleton />;
+  if (isBookingLoading || !booking) return <ReservationDetailPageSkeleton />;
+
+  const nights =
+    booking.nights ??
+    Math.max(
+      1,
+      Math.round(
+        (new Date(booking.checkOut).getTime() - new Date(booking.checkIn).getTime()) / 86400000
+      )
+    );
+
+  const breakdown = booking.priceBreakdown;
+  const pricePerNight = breakdown?.pricePerNight ?? Math.round(booking.totalPrice / nights);
+  const basePrice = breakdown?.basePrice ?? booking.totalPrice;
+  const vat = breakdown?.vat ?? 0;
+  const serviceFee = breakdown?.serviceFee ?? 0;
 
   /* ─── Left Sidebar ─── */
   const UserSidebar: React.FC = () => {
@@ -198,11 +215,20 @@ const ReservationDetailPage: React.FC = () => {
       <PriceRowsList>
         {[
           {
-            label: `${formatPrice(480000)} \u00D7 5 ${t('reservationDetail.priceSummary.nightsLabel')}`,
-            value: formatPrice(2400000),
+            label: `${formatPrice(pricePerNight)} \u00D7 ${nights} ${t('reservationDetail.priceSummary.nightsLabel')}`,
+            value: formatPrice(basePrice),
           },
-          { label: t('reservationDetail.priceSummary.tourismTax'), value: formatPrice(96000) },
-          { label: t('reservationDetail.priceSummary.vat'), value: formatPrice(168000) },
+          ...(vat > 0
+            ? [{ label: t('reservationDetail.priceSummary.vat'), value: formatPrice(vat) }]
+            : []),
+          ...(serviceFee > 0
+            ? [
+                {
+                  label: t('reservationDetail.priceSummary.tourismTax'),
+                  value: formatPrice(serviceFee),
+                },
+              ]
+            : []),
         ].map(row => (
           <PriceRow key={row.label}>
             <Text textVariant="body">{row.label}</Text>
@@ -212,7 +238,7 @@ const ReservationDetailPage: React.FC = () => {
         <Divider sx={{ borderColor: outlineVariant }} />
         <PriceRow>
           <Text textVariant="panelTitle">{t('reservationDetail.priceSummary.totalPaid')}</Text>
-          <Text textVariant="price">{formatPrice(2664000)}</Text>
+          <Text textVariant="price">{formatPrice(booking.totalPrice)}</Text>
         </PriceRow>
       </PriceRowsList>
 
@@ -231,7 +257,7 @@ const ReservationDetailPage: React.FC = () => {
         />
         <Text textVariant="bodyMedium">
           {t('reservationDetail.cancelBox.estimatedRefund')}{' '}
-          <strong style={{ color: success }}>{formatPrice(2664000)}</strong>
+          <strong>{formatPrice(booking.totalPrice)}</strong>
         </Text>
         <ErrorOutlinedPillButton
           onClick={() => setCancelOpen(true)}
@@ -300,22 +326,30 @@ const ReservationDetailPage: React.FC = () => {
           {[
             {
               label: t('reservationDetail.confirmedModal.hotel'),
-              value: 'Hotel Santa Clara Sofitel',
+              value: booking.hotelName ?? '—',
             },
             {
               label: t('reservationDetail.confirmedModal.checkIn'),
-              value: `${formatDate('2026-03-15T15:00:00', 'mediumWithDay')} \u2014 ${new Date('2026-03-15T15:00:00').toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}`,
+              value: `${formatDate(booking.checkIn, 'mediumWithDay')} \u2014 ${new Date(booking.checkIn).toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}`,
             },
             {
               label: t('reservationDetail.confirmedModal.checkOut'),
-              value: `${formatDate('2026-03-20T12:00:00', 'mediumWithDay')} \u2014 ${new Date('2026-03-20T12:00:00').toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}`,
+              value: `${formatDate(booking.checkOut, 'mediumWithDay')} \u2014 ${new Date(booking.checkOut).toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}`,
             },
-            { label: t('reservationDetail.confirmedModal.duration'), value: '5 noches' },
+            {
+              label: t('reservationDetail.confirmedModal.duration'),
+              value: t('reservationDetail.confirmedModal.nightsCount', { count: nights }),
+            },
             {
               label: t('reservationDetail.confirmedModal.room'),
-              value: 'Habitaci\u00f3n Superior',
+              value: booking.roomName ?? '—',
             },
-            { label: t('reservationDetail.confirmedModal.guests'), value: '2 adultos' },
+            {
+              label: t('reservationDetail.confirmedModal.guests'),
+              value: t('reservationDetail.confirmedModal.guestsCount', {
+                count: booking.guests,
+              }),
+            },
           ].map(row => (
             <ModalRow key={row.label}>
               <Text textVariant="hint">{row.label}</Text>
@@ -325,7 +359,7 @@ const ReservationDetailPage: React.FC = () => {
           <Divider sx={{ borderColor: outlineVariant, my: '4px' }} />
           <ModalRow>
             <ModalTotalLabel>{t('reservationDetail.confirmedModal.total')}</ModalTotalLabel>
-            <ModalTotalValue>{formatPrice(2664000)}</ModalTotalValue>
+            <ModalTotalValue>{formatPrice(booking.totalPrice)}</ModalTotalValue>
           </ModalRow>
         </ModalSummarySection>
 
@@ -421,7 +455,7 @@ const ReservationDetailPage: React.FC = () => {
           {[
             {
               label: t('reservationDetail.cancelModal.originalAmount'),
-              value: formatPrice(2664000),
+              value: formatPrice(booking.totalPrice),
               color: onSurface,
             },
             {
@@ -438,7 +472,7 @@ const ReservationDetailPage: React.FC = () => {
           <Divider sx={{ borderColor: outlineVariant, my: '4px' }} />
           <RefundTotalBox>
             <RefundTotalLabel>{t('reservationDetail.cancelModal.totalRefund')}</RefundTotalLabel>
-            <RefundTotalValue>{formatPrice(2664000)}</RefundTotalValue>
+            <RefundTotalValue>{formatPrice(booking.totalPrice)}</RefundTotalValue>
           </RefundTotalBox>
         </ModalSummarySection>
 
@@ -493,31 +527,19 @@ const ReservationDetailPage: React.FC = () => {
           <MainContent>
             {/* Page header */}
             <div>
-              <Link
-                to="/reservations"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '4px',
-                  fontSize: 14,
-                  color: primary,
-                  fontWeight: 500,
-                  textDecoration: 'none',
-                }}
-              >
+              <BackLink component={Link} to="/reservations">
                 <ArrowBackIcon sx={{ fontSize: 18 }} />
                 {t('reservationDetail.backToReservations')}
-              </Link>
+              </BackLink>
 
               <PageHeaderRow>
                 <PageTitle>{t('reservationDetail.title')}</PageTitle>
-                <StatusChip status="confirmed" />
+                <StatusChip status={booking.status} />
               </PageHeaderRow>
 
               <BookingCodeRow>
                 <Text textVariant="body">
-                  {t('reservationDetail.bookingCode')}{' '}
-                  <strong style={{ color: primary, fontWeight: 600 }}>TH-2026-48291</strong>
+                  {t('reservationDetail.bookingCode')} <strong>{booking.code}</strong>
                 </Text>
               </BookingCodeRow>
 
@@ -541,12 +563,10 @@ const ReservationDetailPage: React.FC = () => {
                   <HotelThumbnail />
                   <HotelInfoColumn>
                     <Text textVariant="overline">{t('reservationDetail.hotelType')}</Text>
-                    <Text textVariant="sectionTitle">Hotel Santa Clara Sofitel</Text>
+                    <Text textVariant="sectionTitle">{booking.hotelName ?? '—'}</Text>
                     <LocationRow>
                       <PlaceIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
-                      <Text textVariant="hint">
-                        Calle del Torno #39-29, Centro Hist&oacute;rico, Cartagena
-                      </Text>
+                      <Text textVariant="hint">{booking.location ?? '—'}</Text>
                     </LocationRow>
                     <HotelRatingRow>
                       <RatingBadge rating={4.8} />
@@ -566,23 +586,27 @@ const ReservationDetailPage: React.FC = () => {
                   items={[
                     {
                       label: t('reservationDetail.infoGrid.checkIn'),
-                      value: formatDate('2026-03-15', 'mediumWithDay'),
+                      value: formatDate(booking.checkIn, 'mediumWithDay'),
                       sub: '3:00 PM',
                     },
                     {
                       label: t('reservationDetail.infoGrid.checkOut'),
-                      value: formatDate('2026-03-20', 'mediumWithDay'),
+                      value: formatDate(booking.checkOut, 'mediumWithDay'),
                       sub: '12:00 PM',
                     },
                     {
                       label: t('reservationDetail.infoGrid.duration'),
-                      value: t('reservationDetail.infoGrid.durationValue'),
-                      sub: t('reservationDetail.infoGrid.durationSub'),
+                      value: t('reservationDetail.infoGrid.nightsCount', { count: nights }),
+                      sub: `${formatDate(booking.checkIn, 'medium')} — ${formatDate(booking.checkOut, 'medium')}`,
                     },
                     {
                       label: t('reservationDetail.infoGrid.guests'),
-                      value: t('reservationDetail.infoGrid.guestsValue'),
-                      sub: t('reservationDetail.infoGrid.guestsSub'),
+                      value: t('reservationDetail.infoGrid.guestsCount', {
+                        count: booking.guests,
+                      }),
+                      sub: booking.guestName
+                        ? `${booking.guestName} ${t('reservationDetail.infoGrid.holderSuffix')}`
+                        : undefined,
                     },
                   ]}
                 />
@@ -592,7 +616,7 @@ const ReservationDetailPage: React.FC = () => {
                   <RoomThumbnail />
                   <Box sx={{ flex: 1 }}>
                     <Text textVariant="cardSubheading" sx={{ mb: '4px' }}>
-                      Habitaci&oacute;n Superior
+                      {booking.roomName ?? '—'}
                     </Text>
                     <Text textVariant="hint">{t('reservationDetail.roomFeatures')}</Text>
                     <Box sx={{ display: 'flex', gap: '8px', flexWrap: 'wrap', mt: '6px' }}>
@@ -643,7 +667,7 @@ const ReservationDetailPage: React.FC = () => {
                         {t('reservationDetail.paymentHistory.bookingPayment')}
                       </Text>
                       <Text textVariant="caption">
-                        {formatDate('2026-02-15', 'medium')} &middot; 10:34 a.m.
+                        {booking.createdAt ? formatDate(booking.createdAt, 'medium') : '—'}
                       </Text>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <CreditCardIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
@@ -651,7 +675,7 @@ const ReservationDetailPage: React.FC = () => {
                       </Box>
                     </Box>
                     <PaymentRightCol>
-                      <PaymentAmount>{formatPrice(2664000)}</PaymentAmount>
+                      <PaymentAmount>{formatPrice(booking.totalPrice)}</PaymentAmount>
                       <PaymentBadge>{t('reservationDetail.paymentHistory.approved')}</PaymentBadge>
                     </PaymentRightCol>
                   </PaymentRow>
