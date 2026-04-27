@@ -123,6 +123,13 @@ export const test = base.extend<{
    */
   authenticatedPage: async ({ page }, use) => {
     const { token, userId } = await ensureTestTraveler();
+
+    // Clear any existing cart from previous test runs
+    await fetch(`${apiBaseUrl}/cart`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    }).catch(() => {});
+
     await page.goto('/');
     await page.evaluate(
       ({ token, userId }) => {
