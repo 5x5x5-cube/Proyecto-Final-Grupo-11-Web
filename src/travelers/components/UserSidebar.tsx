@@ -39,7 +39,7 @@ export default function UserSidebar() {
 
       <SidebarSectionTitle>{t('myReservations.sidebar.myAccount')}</SidebarSectionTitle>
 
-      <SidebarMenuItem component={Link} to="/reservations" active>
+      <SidebarMenuItem component={Link} to="/reservations" active sx={{ textDecoration: 'none' }}>
         <LuggageIcon sx={{ fontSize: 20 }} />
         <MenuItemLabel>{t('myReservations.sidebar.myReservations')}</MenuItemLabel>
       </SidebarMenuItem>
