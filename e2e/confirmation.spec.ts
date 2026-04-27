@@ -44,6 +44,7 @@ test.describe('Confirmation page', () => {
 
   // Navigate once, then run all assertions on the same page
   test('full confirmation page after successful payment', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     paymentPage,
@@ -80,6 +81,7 @@ test.describe('Confirmation page', () => {
   });
 
   test('confirmation page survives page reload', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     paymentPage,

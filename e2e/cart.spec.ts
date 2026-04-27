@@ -2,6 +2,7 @@ import { test, expect, hasBackend } from './fixtures';
 
 test.describe('Cart flow', () => {
   test('selecting a room and reserving creates a cart', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     page,
