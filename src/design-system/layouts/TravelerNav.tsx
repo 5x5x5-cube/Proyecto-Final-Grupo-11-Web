@@ -44,11 +44,7 @@ const TravelerNav: React.FC<TravelerNavProps> = ({ variant = 'home', searchSumma
   const { t } = useTranslation('common');
   const { user, isAuthenticated } = useAuth();
 
-  const navLinks = [
-    { label: t('nav.home'), path: '/' },
-    { label: t('nav.hotels'), path: '/results' },
-    { label: t('nav.offers'), path: '/results' },
-  ];
+  const navLinks: { label: string; path: string }[] = [];
 
   return (
     <Box
