@@ -45,7 +45,7 @@ export default function LoginPage() {
             response as { access_token: string; user_id: string; name: string; email: string }
           );
           const returnTo = searchParams.get('returnTo') || '/';
-          navigate(returnTo);
+          navigate(returnTo, { replace: true });
         },
       }
     );
