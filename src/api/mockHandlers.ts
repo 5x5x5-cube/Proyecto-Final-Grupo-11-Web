@@ -3,7 +3,7 @@ import { mockDestinations } from '../travelers/data/mockDestinations';
 import { mockHotels } from '../travelers/data/mockHotels';
 import { mockReservations } from '../travelers/data/mockReservations';
 import { hotelReservations, reservationSummary } from '../hotels/data/mockHotelReservations';
-import { roomRates, discounts } from '../hotels/data/mockRates';
+import { discounts, tariffsList, hotelAdminRooms } from '../hotels/data/mockRates';
 import {
   dashboardStats,
   recentReservations,
@@ -24,6 +24,7 @@ interface MockRoute {
 
 const ok = (data: unknown) => ({ status: 200, data });
 const created = (data: unknown) => ({ status: 201, data });
+const accepted = (data: unknown) => ({ status: 202, data });
 
 // Reviews for property detail (inline since not in a separate mock file)
 const hotelReviews = [
@@ -277,11 +278,43 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'POST',
     pattern: /^\/auth\/login$/,
-    handler: () =>
-      ok({
-        token: 'mock-jwt-token',
-        user: { id: 1, name: 'Carlos Martinez', email: 'carlos.m@email.com' },
-      }),
+    handler: config => {
+      const body = (config?.body ?? {}) as { email?: string; password?: string };
+      const email = (body.email ?? '').toLowerCase();
+      const password = body.password ?? '';
+
+      // Generic rejection for anything obviously wrong. The 401 shape matches
+      // what the frontend expects (see httpClient error normalisation).
+      if (!email || password.length < 6) {
+        return { status: 401, data: { message: 'Invalid credentials' } };
+      }
+
+      // Hotel admin login: routes ending in common admin domains. Any other
+      // email falls through to the traveler branch for back-compat. Response
+      // shape matches the real auth_service contract: flat, with access_token
+      // / user_id / name / email / role.
+      const isHotelAdmin = email.endsWith('@hotel.com') || email.startsWith('admin@');
+      if (isHotelAdmin) {
+        return ok({
+          access_token: 'mock-hotel-admin-jwt',
+          token_type: 'bearer',
+          user_id: 'hotel-admin-001',
+          name: 'Admin Hotel',
+          email,
+          role: 'hotel_admin',
+        });
+      }
+
+      // Traveler fallback — same flat shape as the real backend, role=traveler.
+      return ok({
+        access_token: 'mock-jwt-token',
+        token_type: 'bearer',
+        user_id: 'c1000000-0000-0000-0000-000000000001',
+        name: 'Carlos Martinez',
+        email: 'carlos.m@email.com',
+        role: 'traveler',
+      });
+    },
   },
   {
     method: 'POST',
@@ -348,7 +381,8 @@ export const mockHandlers: MockRoute[] = [
   {
     method: 'GET',
     pattern: /^\/bookings$/,
-    handler: () => ok(mockReservations),
+    handler: () =>
+      ok({ data: mockReservations, total: mockReservations.length, page: 1, limit: 10 }),
   },
   {
     method: 'GET',
@@ -401,14 +435,73 @@ export const mockHandlers: MockRoute[] = [
   // ─── Payments ───
   {
     method: 'POST',
+    pattern: /^\/gateway\/tokenize$/,
+    handler: (config: RequestConfig | undefined) => {
+      const body = config?.body as
+        | {
+            method?: 'credit_card' | 'debit_card' | 'digital_wallet' | 'transfer';
+            cardNumber?: string;
+            walletProvider?: string;
+            walletEmail?: string;
+            bankCode?: string;
+            accountNumber?: string;
+          }
+        | undefined;
+      const method = body?.method ?? 'credit_card';
+      const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+
+      if (method === 'digital_wallet') {
+        const provider = body?.walletProvider ?? 'wallet';
+        return ok({
+          token: `tok_wallet_${provider}_${Date.now()}`,
+          method: 'digital_wallet',
+          displayLabel: `${provider} · ${body?.walletEmail ?? ''}`,
+          expiresAt,
+          cardLast4: null,
+          cardBrand: null,
+          walletProvider: provider,
+          bankCode: null,
+        });
+      }
+
+      if (method === 'transfer') {
+        const bank = body?.bankCode ?? '000';
+        const acct = (body?.accountNumber ?? '').slice(-4) || '0000';
+        return ok({
+          token: `tok_transfer_${bank}_${acct}`,
+          method: 'transfer',
+          displayLabel: `Bank ${bank} · ****${acct}`,
+          expiresAt,
+          cardLast4: null,
+          cardBrand: null,
+          walletProvider: null,
+          bankCode: bank,
+        });
+      }
+
+      const digits = (body?.cardNumber ?? '').replace(/\D/g, '');
+      const last4 = digits.slice(-4) || '0000';
+      return ok({
+        token: `tok_mock_${last4}`,
+        method,
+        displayLabel: `Visa ****${last4}`,
+        expiresAt,
+        cardLast4: last4,
+        cardBrand: 'Visa',
+        walletProvider: null,
+        bankCode: null,
+      });
+    },
+  },
+  {
+    method: 'POST',
     pattern: /^\/payments\/initiate$/,
-    handler: () =>
-      ok({ paymentId: 'pay-001', status: 'approved', redirectUrl: '/checkout/confirmation' }),
+    handler: () => accepted({ paymentId: 'pay-001', status: 'processing' }),
   },
   {
     method: 'GET',
-    pattern: /^\/payments\/([^/]+)\/status$/,
-    handler: () => ok({ paymentId: 'pay-001', status: 'approved' }),
+    pattern: /^\/payments\/([^/]+)$/,
+    handler: () => ok({ paymentId: 'pay-001', status: 'approved', bookingCode: 'BK-MOCK001' }),
   },
 
   // ─── Hotel Bookings (Admin) ───
@@ -504,26 +597,31 @@ export const mockHandlers: MockRoute[] = [
     },
   },
 
-  // ─── Tariffs ───
+  // ─── Tariffs (inventory service) ───
   {
     method: 'GET',
-    pattern: /^\/bookings\/tariffs$/,
-    handler: () => ok(roomRates),
+    pattern: /^\/inventory\/tariffs\/admin\/rooms$/,
+    handler: () => ok(hotelAdminRooms),
+  },
+  {
+    method: 'GET',
+    pattern: /^\/inventory\/tariffs$/,
+    handler: () => ok(tariffsList),
   },
   {
     method: 'POST',
-    pattern: /^\/bookings\/tariffs$/,
-    handler: _config => created({ id: 5, ...(_config?.body as object) }),
+    pattern: /^\/inventory\/tariffs$/,
+    handler: _config => created({ id: crypto.randomUUID(), ...(_config?.body as object) }),
   },
   {
     method: 'PUT',
-    pattern: /^\/bookings\/tariffs\/(\d+)$/,
-    handler: _config => ok({ id: 1, ...(_config?.body as object) }),
+    pattern: /^\/inventory\/tariffs\/([^/]+)$/,
+    handler: (_config, match) => ok({ id: match[1], ...(_config?.body as object) }),
   },
   {
     method: 'DELETE',
-    pattern: /^\/bookings\/tariffs\/(\d+)$/,
-    handler: () => ok({ message: 'Tariff deleted' }),
+    pattern: /^\/inventory\/tariffs\/([^/]+)$/,
+    handler: () => ({ status: 204, data: undefined }),
   },
 
   // ─── Discounts ───

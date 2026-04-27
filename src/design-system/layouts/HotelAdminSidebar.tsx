@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Typography, Avatar } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Box } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import BookOnlineIcon from '@mui/icons-material/BookOnline';
@@ -10,29 +10,53 @@ import DiscountIcon from '@mui/icons-material/Discount';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { useHotel } from '@/contexts/HotelContext';
+import { useHotelAuth } from '@/hotels/auth/HotelAuthContext';
+import { onSurfaceVariant } from '../theme/palette';
 import {
-  primary,
-  onPrimary,
-  secondaryContainer,
-  onSurface,
-  onSurfaceVariant,
-  outlineVariant,
-  outline,
-} from '../theme/palette';
+  SidebarRoot,
+  BrandRow,
+  BrandText,
+  PortalBadge,
+  HotelCard,
+  HotelAvatar,
+  HotelName,
+  LocationRow,
+  LocationText,
+  SectionLabel,
+  NavGroup,
+  NavItemBox,
+  NavItemLabel,
+  BottomSection,
+  VersionText,
+} from './HotelAdminSidebar.styles';
+
+declare const __APP_VERSION__: string;
 
 interface HotelAdminSidebarProps {
   activeItem: string;
 }
 
-interface NavItem {
-  id: string;
-  label: string;
-  icon: React.ElementType;
-  path: string;
-}
+// A nav item is either a link (has `path`) or an action (has `onClick`).
+// Using a discriminated union keeps the render code honest — there is no
+// legal state where both or neither are set.
+type NavItem =
+  | { id: string; label: string; icon: React.ElementType; path: string }
+  | { id: string; label: string; icon: React.ElementType; onClick: () => void };
 
 const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => {
   const { t } = useTranslation('common');
+  const { hotel } = useHotel();
+  const navigate = useNavigate();
+  const hotelAuth = useHotelAuth();
+
+  const handleLogout = () => {
+    hotelAuth.logout();
+    // replace so the admin cannot press "back" into the authenticated page
+    // they were just on (the guard would redirect again, but this avoids the
+    // round-trip and the brief flash).
+    navigate('/hotel/login', { replace: true });
+  };
 
   const mainNavItems: NavItem[] = [
     {
@@ -67,201 +91,98 @@ const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => 
       icon: SettingsIcon,
       path: '/hotel/settings',
     },
-    { id: 'cerrar-sesion', label: t('sidebar.logout'), icon: LogoutIcon, path: '/hotel/login' },
+    { id: 'cerrar-sesion', label: t('sidebar.logout'), icon: LogoutIcon, onClick: handleLogout },
   ];
 
   const renderNavItem = (item: NavItem) => {
     const isActive = activeItem === item.id;
     const IconComp = item.icon;
 
-    return (
-      <Link key={item.id} to={item.path} style={{ textDecoration: 'none' }}>
+    const content = (
+      <NavItemBox $active={isActive}>
+        <IconComp sx={{ fontSize: '20px', color: 'inherit' }} />
+        <NavItemLabel $active={isActive}>{item.label}</NavItemLabel>
+      </NavItemBox>
+    );
+
+    // Action item (e.g. logout): rendered as a button for proper semantics
+    // and keyboard support. The icon + label are visual, so we surface the
+    // label via aria-label for assistive tech and tests — Typography inside
+    // a <button> does not participate in accessible-name calculation.
+    if ('onClick' in item) {
+      return (
         <Box
+          key={item.id}
+          component="button"
+          type="button"
+          aria-label={item.label}
+          onClick={item.onClick}
           sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '10px 16px',
-            borderRadius: '10px',
-            backgroundColor: isActive ? primary : 'transparent',
-            color: isActive ? onPrimary : onSurface,
+            all: 'unset',
             cursor: 'pointer',
-            transition: 'all 0.15s ease',
-            '&:hover': {
-              backgroundColor: isActive ? primary : 'rgba(0,0,0,0.04)',
+            display: 'block',
+            width: '100%',
+            '&:focus-visible': {
+              outline: '2px solid',
+              outlineOffset: '2px',
+              borderRadius: '10px',
             },
           }}
         >
-          <IconComp sx={{ fontSize: '20px', color: 'inherit' }} />
-          <Typography
-            sx={{
-              fontSize: '14px',
-              fontWeight: isActive ? 600 : 400,
-              color: 'inherit',
-            }}
-          >
-            {item.label}
-          </Typography>
+          {content}
         </Box>
+      );
+    }
+
+    // Link item: standard router navigation.
+    return (
+      <Link key={item.id} to={item.path} style={{ textDecoration: 'none' }}>
+        {content}
       </Link>
     );
   };
 
   return (
-    <Box
-      sx={{
-        width: 280,
-        height: '100vh',
-        backgroundColor: secondaryContainer,
-        borderRadius: '0 24px 24px 0',
-        display: 'flex',
-        flexDirection: 'column',
-        padding: '24px 16px',
-        flexShrink: 0,
-        overflowY: 'auto',
-      }}
-    >
+    <SidebarRoot>
       {/* Brand */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px', mb: '8px', px: '8px' }}>
-        <Typography
-          sx={{
-            fontSize: 22,
-            fontWeight: 800,
-            color: primary,
-            letterSpacing: '-0.25px',
-          }}
-        >
+      <BrandRow>
+        <BrandText>
           <Box component="span" sx={{ fontWeight: 300 }}>
             Travel
           </Box>
           Hub
-        </Typography>
-        <Box
-          sx={{
-            backgroundColor: primary,
-            color: onPrimary,
-            borderRadius: '6px',
-            padding: '2px 8px',
-            fontSize: '10px',
-            fontWeight: 600,
-          }}
-        >
-          {t('sidebar.hotelPortal')}
-        </Box>
-      </Box>
+        </BrandText>
+        <PortalBadge>{t('sidebar.hotelPortal')}</PortalBadge>
+      </BrandRow>
 
       {/* Hotel card */}
-      <Box
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          padding: '12px',
-          borderRadius: '12px',
-          backgroundColor: 'rgba(255,255,255,0.5)',
-          mb: '24px',
-          mt: '16px',
-        }}
-      >
-        <Avatar
-          sx={{
-            width: 40,
-            height: 40,
-            backgroundColor: primary,
-            fontSize: '16px',
-            fontWeight: 600,
-          }}
-        >
-          HC
-        </Avatar>
+      <HotelCard>
+        <HotelAvatar>{hotel.initials}</HotelAvatar>
         <Box>
-          <Typography
-            sx={{
-              fontSize: '14px',
-              fontWeight: 600,
-              color: onSurface,
-            }}
-          >
-            Hotel Caribe
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+          <HotelName>{hotel.name}</HotelName>
+          <LocationRow>
             <LocationOnIcon sx={{ fontSize: '12px', color: onSurfaceVariant }} />
-            <Typography
-              sx={{
-                fontSize: '12px',
-                color: onSurfaceVariant,
-              }}
-            >
-              Cartagena, Colombia
-            </Typography>
-          </Box>
+            <LocationText>{hotel.location}</LocationText>
+          </LocationRow>
         </Box>
-      </Box>
+      </HotelCard>
 
-      {/* Main nav section */}
-      <Typography
-        sx={{
-          fontSize: '11px',
-          fontWeight: 600,
-          textTransform: 'uppercase',
-          color: outline,
-          letterSpacing: '0.5px',
-          px: '16px',
-          mb: '8px',
-        }}
-      >
-        {t('sidebar.main')}
-      </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px', mb: '24px' }}>
-        {mainNavItems.map(renderNavItem)}
-      </Box>
+      {/* Main nav */}
+      <SectionLabel>{t('sidebar.main')}</SectionLabel>
+      <NavGroup>{mainNavItems.map(renderNavItem)}</NavGroup>
 
-      {/* Management nav section */}
-      <Typography
-        sx={{
-          fontSize: '11px',
-          fontWeight: 600,
-          textTransform: 'uppercase',
-          color: outline,
-          letterSpacing: '0.5px',
-          px: '16px',
-          mb: '8px',
-        }}
-      >
-        {t('sidebar.management')}
-      </Typography>
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '2px', mb: '24px' }}>
-        {managementNavItems.map(renderNavItem)}
-      </Box>
+      {/* Management nav */}
+      <SectionLabel>{t('sidebar.management')}</SectionLabel>
+      <NavGroup>{managementNavItems.map(renderNavItem)}</NavGroup>
 
       {/* Spacer */}
       <Box sx={{ flex: 1 }} />
 
       {/* Bottom items */}
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '2px',
-          borderTop: `1px solid ${outlineVariant}`,
-          paddingTop: '16px',
-        }}
-      >
-        {bottomNavItems.map(renderNavItem)}
-      </Box>
+      <BottomSection>{bottomNavItems.map(renderNavItem)}</BottomSection>
 
-      <Typography
-        sx={{
-          fontSize: 11,
-          textAlign: 'center',
-          color: onSurfaceVariant,
-          opacity: 0.5,
-          pt: '12px',
-        }}
-      >
-        v{__APP_VERSION__}
-      </Typography>
-    </Box>
+      <VersionText>v{__APP_VERSION__}</VersionText>
+    </SidebarRoot>
   );
 };
 

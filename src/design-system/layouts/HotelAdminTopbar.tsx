@@ -1,10 +1,22 @@
 import React from 'react';
-import { Box, Typography, IconButton, Avatar } from '@mui/material';
 import { Link } from 'react-router-dom';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
-import LanguageIcon from '@mui/icons-material/Language';
-import { useLocale } from '@/contexts/LocaleContext';
-import { primary, onSurface, onSurfaceVariant, outlineVariant, onPrimary } from '../theme/palette';
+import LocaleSelector from '@/design-system/components/LocaleSelector';
+import { useHotel } from '@/contexts/HotelContext';
+import { onSurfaceVariant } from '../theme/palette';
+import {
+  TopbarRoot,
+  LeftSection,
+  BreadcrumbRow,
+  BreadcrumbSeparator,
+  BreadcrumbLink,
+  BreadcrumbCurrent,
+  TopbarTitle,
+  TopbarSubtitle,
+  RightSection,
+  NotificationButton,
+  AdminAvatar,
+} from './HotelAdminTopbar.styles';
 
 interface Breadcrumb {
   label: string;
@@ -24,124 +36,40 @@ const HotelAdminTopbar: React.FC<HotelAdminTopbarProps> = ({
   subtitle,
   actions,
 }) => {
-  const { language, currency } = useLocale();
+  const { adminUser } = useHotel();
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '16px 0',
-        marginBottom: '8px',
-      }}
-    >
-      {/* Left: breadcrumbs + title */}
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+    <TopbarRoot>
+      <LeftSection>
         {breadcrumbs && breadcrumbs.length > 0 && (
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <BreadcrumbRow>
             {breadcrumbs.map((crumb, index) => (
               <React.Fragment key={index}>
-                {index > 0 && (
-                  <Typography sx={{ fontSize: '13px', color: onSurfaceVariant }}>/</Typography>
-                )}
+                {index > 0 && <BreadcrumbSeparator>/</BreadcrumbSeparator>}
                 {crumb.href ? (
                   <Link to={crumb.href} style={{ textDecoration: 'none' }}>
-                    <Typography
-                      sx={{
-                        fontSize: '13px',
-                        color: onSurfaceVariant,
-                        '&:hover': { color: primary },
-                      }}
-                    >
-                      {crumb.label}
-                    </Typography>
+                    <BreadcrumbLink>{crumb.label}</BreadcrumbLink>
                   </Link>
                 ) : (
-                  <Typography
-                    sx={{
-                      fontSize: '13px',
-                      fontWeight: 500,
-                      color: onSurface,
-                    }}
-                  >
-                    {crumb.label}
-                  </Typography>
+                  <BreadcrumbCurrent>{crumb.label}</BreadcrumbCurrent>
                 )}
               </React.Fragment>
             ))}
-          </Box>
+          </BreadcrumbRow>
         )}
-        {title && (
-          <Typography sx={{ fontSize: 26, fontWeight: 700, color: onSurface }}>{title}</Typography>
-        )}
-        {subtitle && (
-          <Typography sx={{ fontSize: 14, color: onSurfaceVariant }}>{subtitle}</Typography>
-        )}
-      </Box>
+        {title && <TopbarTitle>{title}</TopbarTitle>}
+        {subtitle && <TopbarSubtitle>{subtitle}</TopbarSubtitle>}
+      </LeftSection>
 
-      {/* Right: page actions + global actions */}
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+      <RightSection>
         {actions}
-
-        {/* Language selector */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px',
-            padding: '4px 10px',
-            borderRadius: '8px',
-            border: `1px solid ${outlineVariant}`,
-            cursor: 'pointer',
-          }}
-        >
-          <LanguageIcon sx={{ fontSize: '16px', color: onSurfaceVariant }} />
-          <Typography sx={{ fontSize: '12px', color: onSurfaceVariant }}>{language}</Typography>
-        </Box>
-
-        {/* Currency selector */}
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            padding: '4px 10px',
-            borderRadius: '8px',
-            border: `1px solid ${outlineVariant}`,
-            cursor: 'pointer',
-          }}
-        >
-          <Typography sx={{ fontSize: '12px', color: onSurfaceVariant }}>{currency}</Typography>
-        </Box>
-
-        {/* Notification bell */}
-        <IconButton
-          size="small"
-          sx={{
-            border: `1px solid ${outlineVariant}`,
-            borderRadius: '8px',
-            width: 32,
-            height: 32,
-          }}
-        >
+        <LocaleSelector />
+        <NotificationButton size="small">
           <NotificationsNoneIcon sx={{ fontSize: '18px', color: onSurfaceVariant }} />
-        </IconButton>
-
-        {/* Avatar */}
-        <Avatar
-          sx={{
-            width: 32,
-            height: 32,
-            backgroundColor: primary,
-            color: onPrimary,
-            fontSize: '13px',
-            fontWeight: 600,
-          }}
-        >
-          AD
-        </Avatar>
-      </Box>
-    </Box>
+        </NotificationButton>
+        <AdminAvatar>{adminUser.initials}</AdminAvatar>
+      </RightSection>
+    </TopbarRoot>
   );
 };
 

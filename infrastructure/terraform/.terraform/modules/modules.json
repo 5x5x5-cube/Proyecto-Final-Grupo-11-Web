@@ -1,0 +1,6 @@
+{
+  "Modules": [
+    { "Key": "", "Source": "", "Dir": "." },
+    { "Key": "frontend", "Source": "./modules/frontend", "Dir": "modules/frontend" }
+  ]
+}

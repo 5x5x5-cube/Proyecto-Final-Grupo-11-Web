@@ -5,9 +5,12 @@
     "subtitle": "Ingresa tus credenciales para acceder a tu portal de administracion.",
     "emailLabel": "Correo electronico",
     "emailPlaceholder": "admin@mihotel.com",
+    "emailInvalid": "Ingresa un correo electronico valido",
     "passwordLabel": "Contrasena",
     "forgotPassword": "Olvidaste tu contrasena?",
     "loginButton": "Iniciar sesion",
+    "errorInvalidCredentials": "Usuario o contrasena incorrectos",
+    "errorNetwork": "No pudimos iniciar sesion. Intenta de nuevo en unos segundos.",
     "newToTravelHub": "Nuevo en TravelHub Hotels?",
     "contactUs": "Contactanos en",
     "contactSuffix": "para registrar tu hotel.",
@@ -58,6 +61,7 @@
     "filterPending": "Pendientes",
     "filterCancelled": "Canceladas",
     "clearFilters": "Limpiar filtros",
+    "allDates": "Todas las fechas",
     "total": "Total",
     "confirmed": "Confirmadas",
     "pending": "Pendientes",
@@ -169,7 +173,20 @@
     "typeWeekendDesc": "Vie, Sab, Dom",
     "typeSeasonDesc": "Rango de fechas",
     "typePromoDesc": "Descuento especial",
-    "allYear": "Todo el ano"
+    "allYear": "Todo el ano",
+    "createRate": "Nueva tarifa",
+    "selectRoom": "Selecciona una habitacion",
+    "errors": {
+      "roomRequired": "Selecciona una habitacion",
+      "rateTypeRequired": "Selecciona un tipo de tarifa",
+      "priceRequired": "El precio es requerido",
+      "pricePositive": "El precio debe ser mayor a 0",
+      "startDateRequired": "La fecha de inicio es requerida",
+      "endDateRequired": "La fecha fin es requerida",
+      "endDateAfterStart": "La fecha fin debe ser posterior a la fecha inicio"
+    },
+    "successCreated": "Tarifa creada exitosamente",
+    "successUpdated": "Tarifa actualizada exitosamente"
   },
   "discounts": {
     "title": "Gestion de Descuentos",

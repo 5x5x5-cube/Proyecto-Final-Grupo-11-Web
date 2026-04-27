@@ -1,3 +1,100 @@
+export type RateType = 'standard' | 'weekend' | 'season' | 'promo';
+
+export interface Tariff {
+  id: string;
+  roomId: string;
+  roomName: string;
+  roomLocation: string;
+  rateType: RateType;
+  pricePerNight: number;
+  startDate: string | null;
+  endDate: string | null;
+}
+
+export interface AdminRoom {
+  id: string;
+  name: string;
+  location: string;
+}
+
+export const hotelAdminRooms: AdminRoom[] = [
+  { id: 'b1000000-0000-0000-0000-000000000001', name: 'Suite Deluxe King', location: 'Cartagena' },
+  { id: 'b1000000-0000-0000-0000-000000000002', name: 'Junior Suite', location: 'Cartagena' },
+  {
+    id: 'b1000000-0000-0000-0000-000000000003',
+    name: 'Habitacion Estandar',
+    location: 'Cartagena',
+  },
+  {
+    id: 'b1000000-0000-0000-0000-000000000004',
+    name: 'Habitacion Superior',
+    location: 'Cartagena',
+  },
+];
+
+export const tariffsList: Tariff[] = [
+  {
+    id: 't1000000-0000-0000-0000-000000000001',
+    roomId: 'b1000000-0000-0000-0000-000000000001',
+    roomName: 'Suite Deluxe King',
+    roomLocation: 'Cartagena',
+    rateType: 'standard',
+    pricePerNight: 888000,
+    startDate: null,
+    endDate: null,
+  },
+  {
+    id: 't1000000-0000-0000-0000-000000000002',
+    roomId: 'b1000000-0000-0000-0000-000000000001',
+    roomName: 'Suite Deluxe King',
+    roomLocation: 'Cartagena',
+    rateType: 'weekend',
+    pricePerNight: 1050000,
+    startDate: null,
+    endDate: null,
+  },
+  {
+    id: 't1000000-0000-0000-0000-000000000003',
+    roomId: 'b1000000-0000-0000-0000-000000000001',
+    roomName: 'Suite Deluxe King',
+    roomLocation: 'Cartagena',
+    rateType: 'season',
+    pricePerNight: 1280000,
+    startDate: '2025-12-20',
+    endDate: '2026-01-10',
+  },
+  {
+    id: 't1000000-0000-0000-0000-000000000004',
+    roomId: 'b1000000-0000-0000-0000-000000000002',
+    roomName: 'Junior Suite',
+    roomLocation: 'Cartagena',
+    rateType: 'standard',
+    pricePerNight: 560000,
+    startDate: null,
+    endDate: null,
+  },
+  {
+    id: 't1000000-0000-0000-0000-000000000005',
+    roomId: 'b1000000-0000-0000-0000-000000000002',
+    roomName: 'Junior Suite',
+    roomLocation: 'Cartagena',
+    rateType: 'promo',
+    pricePerNight: 420000,
+    startDate: '2026-03-01',
+    endDate: '2026-03-31',
+  },
+  {
+    id: 't1000000-0000-0000-0000-000000000006',
+    roomId: 'b1000000-0000-0000-0000-000000000003',
+    roomName: 'Habitacion Estandar',
+    roomLocation: 'Cartagena',
+    rateType: 'standard',
+    pricePerNight: 320000,
+    startDate: null,
+    endDate: null,
+  },
+];
+
 export const roomRates = [
   {
     id: 1,
