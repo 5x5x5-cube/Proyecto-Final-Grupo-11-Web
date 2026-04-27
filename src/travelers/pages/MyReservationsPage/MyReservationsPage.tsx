@@ -108,21 +108,7 @@ const MyReservationsPage: React.FC = () => {
 
   if (isLoading || !bookingsData) return <MyReservationsPageSkeleton />;
 
-  const mockReservations = bookingsData as unknown as Array<{
-    id: string | number;
-    gradient: string;
-    hotelType: string;
-    hotelName: string;
-    location: string;
-    checkIn: string;
-    checkOut: string;
-    nights: number;
-    guests: string;
-    room: string;
-    status: 'confirmed' | 'pending' | 'cancelled' | 'past';
-    code: string;
-    totalPriceCop: number;
-  }>;
+  const bookings = bookingsData;
 
   const tabs = [
     t('myReservations.tabs.active'),
@@ -174,86 +160,84 @@ const MyReservationsPage: React.FC = () => {
           </FiltersRow>
 
           <CardList>
-            {mockReservations.map(res => (
-              <ReservationCard key={res.id}>
-                <CardThumbnail>
-                  <Box sx={{ width: '100%', height: '100%', background: res.gradient }} />
-                </CardThumbnail>
+            {bookings.map(b => {
+              const nights =
+                b.nights ??
+                Math.max(
+                  1,
+                  Math.round(
+                    (new Date(b.checkOut).getTime() - new Date(b.checkIn).getTime()) / 86400000
+                  )
+                );
 
-                <CardBody>
-                  <Box>
-                    <Text textVariant="overline">{res.hotelType}</Text>
-                    <HotelName>{res.hotelName}</HotelName>
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <PlaceIcon sx={{ fontSize: 14, color: palette.onSurfaceVariant }} />
-                      <Text textVariant="hint">{res.location}</Text>
-                    </Box>
-                  </Box>
+              return (
+                <ReservationCard key={b.id}>
+                  <CardThumbnail>
+                    <Box sx={{ width: '100%', height: '100%' }} />
+                  </CardThumbnail>
 
-                  <DatesRow>
+                  <CardBody>
                     <Box>
-                      <Text textVariant="overline">{t('myReservations.card.checkIn')}</Text>
-                      <Text textVariant="bodyMedium">
-                        {formatDate(res.checkIn, 'mediumWithDay')}
-                      </Text>
-                      <Text textVariant="caption">
-                        Check-in{' '}
-                        {new Date(res.checkIn).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </Text>
+                      <HotelName>{b.hotelName ?? '—'}</HotelName>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <PlaceIcon sx={{ fontSize: 14, color: palette.onSurfaceVariant }} />
+                        <Text textVariant="hint">{b.location ?? '—'}</Text>
+                      </Box>
                     </Box>
-                    <Box>
-                      <Text textVariant="overline">{t('myReservations.card.checkOut')}</Text>
-                      <Text textVariant="bodyMedium">
-                        {formatDate(res.checkOut, 'mediumWithDay')}
-                      </Text>
-                      <Text textVariant="caption">
-                        Check-out{' '}
-                        {new Date(res.checkOut).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </Text>
+
+                    <DatesRow>
+                      <Box>
+                        <Text textVariant="overline">{t('myReservations.card.checkIn')}</Text>
+                        <Text textVariant="bodyMedium">
+                          {formatDate(b.checkIn, 'mediumWithDay')}
+                        </Text>
+                      </Box>
+                      <Box>
+                        <Text textVariant="overline">{t('myReservations.card.checkOut')}</Text>
+                        <Text textVariant="bodyMedium">
+                          {formatDate(b.checkOut, 'mediumWithDay')}
+                        </Text>
+                      </Box>
+                      <Box>
+                        <Text textVariant="overline">{t('myReservations.card.duration')}</Text>
+                        <Text textVariant="bodyMedium">
+                          {t('myReservations.card.nightsCount', { count: nights })}
+                        </Text>
+                        <Text textVariant="caption">
+                          {t('myReservations.card.guestsCount', { count: b.guests })}
+                        </Text>
+                      </Box>
+                    </DatesRow>
+
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px', mt: '4px' }}>
+                      <BedIcon sx={{ fontSize: 15, color: palette.onSurfaceVariant }} />
+                      <Text textVariant="hint">{b.roomName ?? '—'}</Text>
                     </Box>
-                    <Box>
-                      <Text textVariant="overline">{t('myReservations.card.duration')}</Text>
-                      <Text textVariant="bodyMedium">
-                        {res.nights} {t('myReservations.card.nights')}
-                      </Text>
-                      <Text textVariant="caption">{res.guests}</Text>
+                  </CardBody>
+
+                  <CardRightPanel>
+                    <StatusGroup>
+                      <StatusChip status={b.status} />
+                      <BookingCode>{b.code}</BookingCode>
+                    </StatusGroup>
+
+                    <Box sx={{ textAlign: 'right' }}>
+                      <TotalLabel>{t('myReservations.card.totalPaid')}</TotalLabel>
+                      <Text textVariant="price">{formatPrice(b.totalPrice)}</Text>
                     </Box>
-                  </DatesRow>
 
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px', mt: '4px' }}>
-                    <BedIcon sx={{ fontSize: 15, color: palette.onSurfaceVariant }} />
-                    <Text textVariant="hint">{res.room}</Text>
-                  </Box>
-                </CardBody>
-
-                <CardRightPanel>
-                  <StatusGroup>
-                    <StatusChip status={res.status} />
-                    <BookingCode>{res.code}</BookingCode>
-                  </StatusGroup>
-
-                  <Box sx={{ textAlign: 'right' }}>
-                    <TotalLabel>{t('myReservations.card.totalPaid')}</TotalLabel>
-                    <Text textVariant="price">{formatPrice(res.totalPriceCop)}</Text>
-                  </Box>
-
-                  <PrimaryPillButton
-                    component={Link}
-                    to={`/reservations/${res.id}`}
-                    pillSize="xs"
-                    sx={{ whiteSpace: 'nowrap' }}
-                  >
-                    {t('myReservations.card.viewDetail')}
-                  </PrimaryPillButton>
-                </CardRightPanel>
-              </ReservationCard>
-            ))}
+                    <PrimaryPillButton
+                      component={Link}
+                      to={`/reservations/${b.id}`}
+                      pillSize="xs"
+                      sx={{ whiteSpace: 'nowrap' }}
+                    >
+                      {t('myReservations.card.viewDetail')}
+                    </PrimaryPillButton>
+                  </CardRightPanel>
+                </ReservationCard>
+              );
+            })}
           </CardList>
         </MainContent>
       </PageLayout>

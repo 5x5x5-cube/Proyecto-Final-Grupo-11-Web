@@ -426,44 +426,46 @@ export default function PropertyDetailPage() {
           )}
         </div>
 
-        {/* Reviews */}
-        <div>
-          <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
-            {t('propertyDetail.guestReviews')}
-          </Text>
-          {isReviewsLoading ? (
-            <ReviewsRow>
-              {[0, 1, 2].map(i => (
-                <ReviewSkeletonCard key={i}>
-                  <Skeleton animation="wave" variant="rounded" height={36} />
-                  <Skeleton animation="wave" variant="text" width={80} />
-                  <Skeleton animation="wave" variant="rounded" height={60} />
-                </ReviewSkeletonCard>
-              ))}
-            </ReviewsRow>
-          ) : (
-            <ReviewsRow>
-              {reviews.map(review => (
-                <ReviewCard key={review.name}>
-                  <ReviewAuthorRow>
-                    <ReviewAvatar>{review.initial}</ReviewAvatar>
-                    <div>
-                      <Text textVariant="bodyMedium">{review.name}</Text>
-                      <Text textVariant="caption">{review.date}</Text>
-                    </div>
-                  </ReviewAuthorRow>
-                  <ReviewStars>
-                    {'★'.repeat(review.stars)}
-                    {'☆'.repeat(5 - review.stars)}
-                  </ReviewStars>
-                  <Text textVariant="hint" sx={{ lineHeight: 1.5 }}>
-                    {review.text}
-                  </Text>
-                </ReviewCard>
-              ))}
-            </ReviewsRow>
-          )}
-        </div>
+        {/* Reviews — hidden when no reviews and not loading */}
+        {(isReviewsLoading || reviews.length > 0) && (
+          <div>
+            <Text textVariant="sectionTitle" sx={{ mb: '12px' }}>
+              {t('propertyDetail.guestReviews')}
+            </Text>
+            {isReviewsLoading ? (
+              <ReviewsRow>
+                {[0, 1, 2].map(i => (
+                  <ReviewSkeletonCard key={i}>
+                    <Skeleton animation="wave" variant="rounded" height={36} />
+                    <Skeleton animation="wave" variant="text" width={80} />
+                    <Skeleton animation="wave" variant="rounded" height={60} />
+                  </ReviewSkeletonCard>
+                ))}
+              </ReviewsRow>
+            ) : (
+              <ReviewsRow>
+                {reviews.map(review => (
+                  <ReviewCard key={review.name}>
+                    <ReviewAuthorRow>
+                      <ReviewAvatar>{review.initial}</ReviewAvatar>
+                      <div>
+                        <Text textVariant="bodyMedium">{review.name}</Text>
+                        <Text textVariant="caption">{review.date}</Text>
+                      </div>
+                    </ReviewAuthorRow>
+                    <ReviewStars>
+                      {'★'.repeat(review.stars)}
+                      {'☆'.repeat(5 - review.stars)}
+                    </ReviewStars>
+                    <Text textVariant="hint" sx={{ lineHeight: 1.5 }}>
+                      {review.text}
+                    </Text>
+                  </ReviewCard>
+                ))}
+              </ReviewsRow>
+            )}
+          </div>
+        )}
       </ContentColumn>
     </TravelerLayout>
   );

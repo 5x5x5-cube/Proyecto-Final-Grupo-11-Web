@@ -8,15 +8,30 @@ export interface BookingData {
   userId: string;
   hotelId: string;
   roomId: string;
-  holdId: string;
-  paymentId: string;
+  holdId?: string;
+  paymentId?: string;
   checkIn: string;
   checkOut: string;
   guests: number;
-  status: string;
+  status: 'confirmed' | 'pending' | 'cancelled' | 'rejected' | 'past';
   totalPrice: number;
   currency: string;
-  createdAt: string;
+  createdAt?: string;
+  hotelName?: string;
+  roomName?: string;
+  location?: string;
+  nights?: number;
+  guestName?: string;
+  timeline?: Array<{ event: string; timestamp: string; description: string }>;
+  priceBreakdown?: {
+    pricePerNight: number;
+    nights: number;
+    basePrice: number;
+    vat: number;
+    serviceFee: number;
+    totalPrice: number;
+    currency: string;
+  } | null;
 }
 
 interface BookingListResponse {
@@ -51,31 +66,34 @@ export function useBookingByPaymentId(paymentId: string) {
   });
 }
 
-export function useBookingDetail(bookingId: number) {
-  return useQuery({
+export function useBookingDetail(bookingId: string) {
+  return useQuery<BookingData>({
     queryKey: ['bookings', bookingId],
-    queryFn: () => httpClient.get(`/bookings/${bookingId}`),
+    queryFn: () => httpClient.get<BookingData>(`/bookings/${bookingId}`),
+    enabled: !!bookingId,
   });
 }
 
-export function useBookingQR(bookingId: number) {
+export function useBookingQR(bookingId: string) {
   return useQuery({
     queryKey: ['bookings', bookingId, 'qr'],
     queryFn: () => httpClient.get(`/bookings/${bookingId}/qr`),
+    enabled: !!bookingId,
   });
 }
 
-export function useBookingPayments(bookingId: number) {
+export function useBookingPayments(bookingId: string) {
   return useQuery({
     queryKey: ['bookings', bookingId, 'payments'],
     queryFn: () => httpClient.get(`/bookings/${bookingId}/payments`),
+    enabled: !!bookingId,
   });
 }
 
 export function useCancelBooking() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (bookingId: number) => httpClient.post(`/bookings/${bookingId}/cancel`),
+    mutationFn: (bookingId: string) => httpClient.post(`/bookings/${bookingId}/cancel`),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['bookings'] });
     },

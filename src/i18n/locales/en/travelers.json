@@ -341,6 +341,10 @@
       "checkOut": "Check-out",
       "duration": "Duration",
       "nights": "nights",
+      "nightsCount_one": "{{count}} night",
+      "nightsCount_other": "{{count}} nights",
+      "guestsCount_one": "{{count}} guest",
+      "guestsCount_other": "{{count}} guests",
       "totalPaid": "Total paid",
       "viewDetail": "View details"
     }
@@ -373,7 +377,12 @@
       "durationSub": "Mar 15 -- 20, 2026",
       "guests": "Guests",
       "guestsValue": "2 adults",
-      "guestsSub": "Carlos M. (holder)"
+      "guestsSub": "Carlos M. (holder)",
+      "nightsCount_one": "{{count}} night",
+      "nightsCount_other": "{{count}} nights",
+      "guestsCount_one": "{{count}} guest",
+      "guestsCount_other": "{{count}} guests",
+      "holderSuffix": "(holder)"
     },
     "paymentHistory": {
       "title": "Payment history",
@@ -405,6 +414,10 @@
       "duration": "Duration",
       "room": "Room",
       "guests": "Guests",
+      "nightsCount_one": "{{count}} night",
+      "nightsCount_other": "{{count}} nights",
+      "guestsCount_one": "{{count}} guest",
+      "guestsCount_other": "{{count}} guests",
       "total": "Total",
       "whatsNext": "What's next?",
       "voucherSent": "<strong>Voucher sent by email</strong> — You will receive your booking receipt with all the details of your stay.",
