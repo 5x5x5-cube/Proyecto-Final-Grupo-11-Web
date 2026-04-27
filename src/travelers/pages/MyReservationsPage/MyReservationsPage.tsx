@@ -16,7 +16,8 @@ import SearchField from '@/design-system/components/SearchField';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import { palette } from '@/design-system/theme/palette';
-import { useBookings } from '@/api/hooks/useBookings';
+import { useReservationTabs } from './useReservationTabs';
+import type { ReservationTab } from './useReservationTabs';
 import MyReservationsPageSkeleton from './MyReservationsPage.skeleton';
 import {
   SidebarRoot,
@@ -100,15 +101,15 @@ const UserSidebar: React.FC = () => {
 
 /* --- Main --- */
 const MyReservationsPage: React.FC = () => {
-  const { data: bookingsData, isLoading } = useBookings();
-  const [activeTab, setActiveTab] = useState(0);
+  const { tab, setTab, bookings, isLoading } = useReservationTabs();
   const [activeFilter, setActiveFilter] = useState(0);
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
 
-  if (isLoading || !bookingsData) return <MyReservationsPageSkeleton />;
+  const tabKeys: ReservationTab[] = ['active', 'past', 'cancelled'];
+  const activeTab = tabKeys.indexOf(tab);
 
-  const bookings = bookingsData;
+  if (isLoading) return <MyReservationsPageSkeleton />;
 
   const tabs = [
     t('myReservations.tabs.active'),
@@ -138,7 +139,7 @@ const MyReservationsPage: React.FC = () => {
 
           <TabsBar>
             {tabs.map((tab, index) => (
-              <Tab key={tab} active={activeTab === index} onClick={() => setActiveTab(index)}>
+              <Tab key={tab} active={activeTab === index} onClick={() => setTab(tabKeys[index])}>
                 {tab}
               </Tab>
             ))}
