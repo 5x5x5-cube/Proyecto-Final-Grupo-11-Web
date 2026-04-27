@@ -325,9 +325,9 @@
       "logout": "Log out"
     },
     "tabs": {
-      "active": "Active (2)",
-      "past": "Past (4)",
-      "cancelled": "Cancelled (1)"
+      "active": "Active",
+      "past": "Past",
+      "cancelled": "Cancelled"
     },
     "filters": {
       "all": "All",

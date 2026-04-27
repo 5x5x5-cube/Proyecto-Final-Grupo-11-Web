@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -6,14 +6,10 @@ import LuggageIcon from '@mui/icons-material/Luggage';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PlaceIcon from '@mui/icons-material/Place';
 import BedIcon from '@mui/icons-material/Bed';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import TravelerLayout from '@/design-system/layouts/TravelerLayout';
 import StatusChip from '@/design-system/components/StatusChip';
-import FilterChip from '@/design-system/components/FilterChip';
-import SearchField from '@/design-system/components/SearchField';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import { palette } from '@/design-system/theme/palette';
@@ -33,7 +29,6 @@ import {
   PageTitle,
   TabsBar,
   Tab,
-  FiltersRow,
   CardList,
   ReservationCard,
   CardThumbnail,
@@ -91,7 +86,6 @@ const UserSidebar: React.FC = () => {
 /* --- Main --- */
 const MyReservationsPage: React.FC = () => {
   const { tab, setTab, bookings, isLoading } = useReservationTabs();
-  const [activeFilter, setActiveFilter] = useState(0);
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
 
@@ -105,17 +99,6 @@ const MyReservationsPage: React.FC = () => {
     t('myReservations.tabs.past'),
     t('myReservations.tabs.cancelled'),
   ];
-  const filters = [
-    {
-      label: t('myReservations.filters.all'),
-      icon: <CheckCircleOutlineIcon sx={{ fontSize: 16 }} />,
-      selected: true,
-    },
-    { label: t('myReservations.filters.confirmed') },
-    { label: t('myReservations.filters.pending') },
-    { label: t('myReservations.filters.date'), icon: <CalendarTodayIcon sx={{ fontSize: 16 }} /> },
-  ];
-
   return (
     <TravelerLayout variant="reservations">
       <PageLayout>
@@ -127,27 +110,16 @@ const MyReservationsPage: React.FC = () => {
           </Box>
 
           <TabsBar>
-            {tabs.map((tab, index) => (
-              <Tab key={tab} active={activeTab === index} onClick={() => setTab(tabKeys[index])}>
-                {tab}
+            {tabs.map((tabLabel, index) => (
+              <Tab
+                key={tabLabel}
+                active={activeTab === index}
+                onClick={() => setTab(tabKeys[index])}
+              >
+                {tabLabel}
               </Tab>
             ))}
           </TabsBar>
-
-          <FiltersRow>
-            <Box sx={{ flex: 1, maxWidth: 400 }}>
-              <SearchField placeholder={t('myReservations.filters.searchPlaceholder')} />
-            </Box>
-            {filters.map((filter, index) => (
-              <FilterChip
-                key={filter.label}
-                label={filter.label}
-                selected={activeFilter === index}
-                icon={filter.icon}
-                onClick={() => setActiveFilter(index)}
-              />
-            ))}
-          </FiltersRow>
 
           <CardList>
             {bookings.map(b => {
@@ -162,9 +134,12 @@ const MyReservationsPage: React.FC = () => {
 
               return (
                 <ReservationCard key={b.id}>
-                  <CardThumbnail>
-                    <Box sx={{ width: '100%', height: '100%' }} />
-                  </CardThumbnail>
+                  <CardThumbnail
+                    sx={{
+                      background: 'linear-gradient(135deg, #006874 0%, #4A9FAA 100%)',
+                      borderRadius: '12px 0 0 12px',
+                    }}
+                  />
 
                   <CardBody>
                     <Box>
