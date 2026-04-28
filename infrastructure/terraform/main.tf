@@ -16,8 +16,8 @@ provider "aws" {
 module "frontend" {
   source = "./modules/frontend"
 
-  project_name = "proyecto-final"
-  environment  = "dev"
-  api_base_url = "http://ad952c45b8a664a19a4da645f8b8a4a8-fd0c2d064b71d8f3.elb.us-east-1.amazonaws.com/api/v1"
-  domain_name  = ""
+  project_name      = "proyecto-final"
+  environment       = "dev"
+  api_origin_domain = "abe9ed9df940d49d2812f120b8116159-d4f3705a7f9a3e00.elb.us-east-1.amazonaws.com"
+  domain_name       = ""
 }

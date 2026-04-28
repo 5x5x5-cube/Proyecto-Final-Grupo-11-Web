@@ -9,8 +9,8 @@ variable "environment" {
   default     = "dev"
 }
 
-variable "api_base_url" {
-  description = "URL base de la API backend"
+variable "api_origin_domain" {
+  description = "Domain name of the backend API (ELB hostname, without protocol)"
   type        = string
 }
 
