@@ -1,5 +1,6 @@
-import { useState, type ChangeEvent } from 'react';
+import { useState, useEffect, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useLocale } from '@/contexts/LocaleContext';
 import Text from '@/design-system/components/Text';
 import {
   CardPreview,
@@ -63,7 +64,12 @@ export default function CardForm({
   expiryError,
 }: CardFormProps) {
   const { t } = useTranslation('travelers');
+  const { currency: localeCurrency } = useLocale();
   const [cardFocused, setCardFocused] = useState(false);
+
+  useEffect(() => {
+    onCurrencyChange(localeCurrency);
+  }, [localeCurrency]);
 
   const cardDisplayValue = formatCardDisplay(rawCardDigits, !cardFocused);
   const isExpiryValid = /^\d{2}\/\d{2}$/.test(expiry);
@@ -187,7 +193,7 @@ export default function CardForm({
             </Text>
             <FormSelect
               component="select"
-              defaultValue={t('payment.form.currencies.cop')}
+              defaultValue={t(`payment.form.currencies.${localeCurrency.toLowerCase()}`)}
               onChange={handleCurrencyChange}
             >
               <option>{t('payment.form.currencies.cop')}</option>
