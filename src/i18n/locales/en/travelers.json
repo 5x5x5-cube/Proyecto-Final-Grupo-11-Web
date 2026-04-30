@@ -387,7 +387,10 @@
     "paymentHistory": {
       "title": "Payment history",
       "bookingPayment": "Booking payment",
-      "approved": "Approved"
+      "approved": "Approved",
+      "processing": "Processing",
+      "declined": "Declined",
+      "pendingPayment": "No payment information available yet."
     },
     "priceSummary": {
       "title": "Payment summary",

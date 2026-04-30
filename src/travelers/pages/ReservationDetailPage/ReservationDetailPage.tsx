@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useBookingDetail, useBookingPayments } from '@/api/hooks/useBookings';
+import { useBookingDetail } from '@/api/hooks/useBookings';
+import { usePaymentStatus } from '@/api/hooks/usePayments';
+import { useAuth } from '@/contexts/AuthContext';
 import { Box, Divider, Skeleton, Typography } from '@mui/material';
 import Text from '@/design-system/components/Text';
 import { Link, useParams } from 'react-router-dom';
@@ -45,6 +47,8 @@ import {
   outlineVariant,
   success,
   successContainer,
+  warning,
+  warningContainer,
   error,
   star,
   errorContainer,
@@ -104,7 +108,10 @@ import {
 const ReservationDetailPage: React.FC = () => {
   const { id = '' } = useParams<{ id: string }>();
   const { data: booking, isLoading: isBookingLoading } = useBookingDetail(id);
-  const { isLoading: isPaymentsLoading } = useBookingPayments(id);
+  const { user } = useAuth();
+  const payment = usePaymentStatus(booking?.paymentId ?? '');
+  const paymentData = payment.data;
+  const isPaymentsLoading = payment.isLoading;
 
   const [confirmedOpen, setConfirmedOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
@@ -236,7 +243,7 @@ const ReservationDetailPage: React.FC = () => {
           <MarkEmailReadIcon sx={{ fontSize: 22, color: primary }} />
           <div>
             <ModalEmailTitle>{t('reservationDetail.confirmedModal.emailSent')}</ModalEmailTitle>
-            <Text textVariant="caption">carlos.mendoza@email.com</Text>
+            <Text textVariant="caption">{user?.email ?? ''}</Text>
           </div>
         </ModalEmailBanner>
 
@@ -578,27 +585,63 @@ const ReservationDetailPage: React.FC = () => {
                     />
                   </PaymentRightCol>
                 </PaymentRow>
+              ) : !booking.paymentId || (!isPaymentsLoading && !paymentData) ? (
+                <Box sx={{ padding: '14px 0' }}>
+                  <Text textVariant="hint" sx={{ color: onSurfaceVariant }}>
+                    {t('reservationDetail.paymentHistory.pendingPayment')}
+                  </Text>
+                </Box>
               ) : (
                 <Box sx={{ gap: 0, padding: '0' }}>
                   <PaymentRow>
                     <PaymentIcon>
-                      <CheckCircleIcon sx={{ fontSize: 20, color: success }} />
+                      {paymentData?.status === 'declined' ? (
+                        <CancelIcon sx={{ fontSize: 20, color: error }} />
+                      ) : paymentData?.status === 'processing' ? (
+                        <ScheduleIcon sx={{ fontSize: 20, color: warning }} />
+                      ) : (
+                        <CheckCircleIcon sx={{ fontSize: 20, color: success }} />
+                      )}
                     </PaymentIcon>
                     <Box sx={{ flex: 1 }}>
                       <Text textVariant="bodyMedium">
                         {t('reservationDetail.paymentHistory.bookingPayment')}
                       </Text>
                       <Text textVariant="caption">
-                        {booking.createdAt ? formatDate(booking.createdAt, 'medium') : '—'}
+                        {paymentData?.processedAt
+                          ? formatDate(paymentData.processedAt, 'medium')
+                          : booking.createdAt
+                            ? formatDate(booking.createdAt, 'medium')
+                            : '—'}
                       </Text>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <CreditCardIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
-                        <Text textVariant="caption">VISA &bull;&bull;&bull;&bull; 4242</Text>
+                        <Text textVariant="caption">
+                          {paymentData?.paymentMethod?.displayLabel ?? '—'}
+                        </Text>
                       </Box>
                     </Box>
                     <PaymentRightCol>
-                      <PaymentAmount>{fp(booking.totalPrice)}</PaymentAmount>
-                      <PaymentBadge>{t('reservationDetail.paymentHistory.approved')}</PaymentBadge>
+                      <PaymentAmount>
+                        {paymentData
+                          ? formatFixedPrice(paymentData.amount, paymentData.currency)
+                          : fp(booking.totalPrice)}
+                      </PaymentAmount>
+                      {paymentData?.status === 'approved' && (
+                        <PaymentBadge sx={{ background: successContainer, color: success }}>
+                          {t('reservationDetail.paymentHistory.approved')}
+                        </PaymentBadge>
+                      )}
+                      {paymentData?.status === 'processing' && (
+                        <PaymentBadge sx={{ background: warningContainer, color: warning }}>
+                          {t('reservationDetail.paymentHistory.processing')}
+                        </PaymentBadge>
+                      )}
+                      {paymentData?.status === 'declined' && (
+                        <PaymentBadge sx={{ background: errorContainer, color: error }}>
+                          {t('reservationDetail.paymentHistory.declined')}
+                        </PaymentBadge>
+                      )}
                     </PaymentRightCol>
                   </PaymentRow>
                 </Box>

@@ -388,7 +388,10 @@
     "paymentHistory": {
       "title": "Historial de pagos",
       "bookingPayment": "Pago de reserva",
-      "approved": "Aprobado"
+      "approved": "Aprobado",
+      "processing": "Procesando",
+      "declined": "Rechazado",
+      "pendingPayment": "Aún no hay información de pago disponible."
     },
     "priceSummary": {
       "title": "Resumen de pago",

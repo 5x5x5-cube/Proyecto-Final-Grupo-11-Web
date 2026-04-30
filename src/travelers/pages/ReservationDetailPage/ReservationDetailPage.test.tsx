@@ -47,7 +47,10 @@ vi.mock('@/api/hooks/useBookings', () => ({
     capturedBookingId = id;
     return { isLoading: false, data: mockBooking };
   },
-  useBookingPayments: () => ({ isLoading: false, data: [] }),
+}));
+
+vi.mock('@/api/hooks/usePayments', () => ({
+  usePaymentStatus: () => ({ isLoading: false, data: null }),
 }));
 
 describe('ReservationDetailPage', () => {

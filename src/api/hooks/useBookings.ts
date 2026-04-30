@@ -101,14 +101,6 @@ export function useBookingQR(bookingId: string) {
   });
 }
 
-export function useBookingPayments(bookingId: string) {
-  return useQuery({
-    queryKey: ['bookings', bookingId, 'payments'],
-    queryFn: () => httpClient.get(`/bookings/${bookingId}/payments`),
-    enabled: !!bookingId,
-  });
-}
-
 export function useCancelBooking() {
   const queryClient = useQueryClient();
   return useMutation({
