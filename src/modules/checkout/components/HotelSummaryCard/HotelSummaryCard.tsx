@@ -17,7 +17,6 @@ import {
   HotelName,
   LocationRow,
   RatingRow,
-  Stars,
   ReviewCount,
   RoomRow,
   RoomImagePlaceholder,
@@ -56,11 +55,7 @@ export default function HotelSummaryCard({ cart }: Props) {
             )}
             {cart.rating != null && (
               <RatingRow>
-                <RatingBadge rating={cart.rating} />
-                <Stars>
-                  {'★'.repeat(Math.round(cart.rating))}
-                  {'☆'.repeat(5 - Math.round(cart.rating))}
-                </Stars>
+                <RatingBadge rating={cart.rating} showStars="full" />
                 {cart.reviewCount != null && (
                   <ReviewCount>
                     {cart.reviewCount} {t('cart.accommodation.reviews')}

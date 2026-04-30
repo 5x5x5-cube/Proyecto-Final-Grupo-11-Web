@@ -47,7 +47,10 @@ vi.mock('@/api/hooks/useBookings', () => ({
     capturedBookingId = id;
     return { isLoading: false, data: mockBooking };
   },
-  useBookingPayments: () => ({ isLoading: false, data: [] }),
+}));
+
+vi.mock('@/api/hooks/usePayments', () => ({
+  usePaymentStatus: () => ({ isLoading: false, data: null }),
 }));
 
 describe('ReservationDetailPage', () => {
@@ -84,5 +87,17 @@ describe('ReservationDetailPage', () => {
     renderWithProviders(<ReservationDetailPage />);
     const copTotals = screen.getAllByText(/COP\s+2[.,]664[.,]000/);
     expect(copTotals.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('does not render the confirmed modal', () => {
+    renderWithProviders(<ReservationDetailPage />);
+    // The old confirmed modal had a "Ver confirmacion" button; it should no longer exist
+    expect(screen.queryByText(/Ver confirmacion|View confirmation/)).toBeNull();
+  });
+
+  it('renders the next steps section for confirmed status', () => {
+    renderWithProviders(<ReservationDetailPage />);
+    // The next steps section should display a title
+    expect(screen.getByText(/Next steps|Proximos pasos/)).toBeTruthy();
   });
 });
