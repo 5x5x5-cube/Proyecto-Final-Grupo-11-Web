@@ -26,37 +26,24 @@ CloudFront sirve tanto el frontend estático como proxea las requests de API al 
 ### Paso 1: Obtener el hostname del ELB del backend
 
 ```bash
-AWS_PROFILE=maestria kubectl get ingress api-gateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+LB=$(AWS_PROFILE=maestria kubectl get ingress api-gateway -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+echo $LB
 ```
 
-### Paso 2: Actualizar la URL del API en Terraform
+### Paso 2: Crear infraestructura (~5 min)
 
-Editar `infrastructure/terraform/main.tf`:
-
-```hcl
-module "frontend" {
-  source = "./modules/frontend"
-
-  project_name      = "proyecto-final"
-  environment       = "dev"
-  api_origin_domain = "<ELB-HOSTNAME>"  # sin http://, solo el hostname
-  domain_name       = ""
-}
-```
-
-### Paso 3: Crear infraestructura (~5 min)
+El state se guarda en el mismo S3 backend que el backend (key diferente: `frontend/terraform.tfstate`).
 
 ```bash
 cd infrastructure/terraform
 AWS_PROFILE=maestria terraform init
-AWS_PROFILE=maestria terraform plan
-AWS_PROFILE=maestria terraform apply
+AWS_PROFILE=maestria terraform apply -var="api_origin_domain=$LB"
 # Escribir "yes"
 ```
 
 Terraform crea:
 
-- **S3 bucket** (`proyecto-final-dev-frontend-*`) con versionado y encriptación
+- **S3 bucket** con versionado y encriptación
 - **CloudFront distribution** con:
   - Origen S3 (archivos estáticos, OAC)
   - Origen API (proxy al ELB, sin caché)
@@ -68,34 +55,39 @@ Anotar los outputs:
 
 ```bash
 AWS_PROFILE=maestria terraform output
-# cloudfront_url         = "https://xxxxx.cloudfront.net"
+# cloudfront_url             = "https://xxxxx.cloudfront.net"
 # cloudfront_distribution_id = "EXXXXXXXX"
-# s3_bucket_name         = "proyecto-final-dev-frontend-*"
+# s3_bucket_name             = "proyecto-final-dev-frontend-*"
 ```
 
-### Paso 4: Build y deploy
+### Paso 3: Build y deploy
 
 ```bash
 cd ../..  # volver a la raíz del proyecto
 
+# Obtener outputs de terraform
+CF_URL=$(cd infrastructure/terraform && AWS_PROFILE=maestria terraform output -raw cloudfront_url)
+CF_ID=$(cd infrastructure/terraform && AWS_PROFILE=maestria terraform output -raw cloudfront_distribution_id)
+S3_BUCKET=$(cd infrastructure/terraform && AWS_PROFILE=maestria terraform output -raw s3_bucket_name)
+
 # Build con la URL de CloudFront como API base
-VITE_API_BASE_URL="https://<CLOUDFRONT_DOMAIN>/api/v1" yarn build
+VITE_API_BASE_URL="${CF_URL}/api/v1" yarn build
 
 # Subir a S3
-AWS_PROFILE=maestria aws s3 sync dist/ s3://<S3_BUCKET_NAME>/ --delete
+AWS_PROFILE=maestria aws s3 sync dist/ s3://${S3_BUCKET}/ --delete
 
 # Invalidar caché de CloudFront
 AWS_PROFILE=maestria aws cloudfront create-invalidation \
-  --distribution-id <CLOUDFRONT_ID> \
+  --distribution-id $CF_ID \
   --paths "/*"
 ```
 
-### Paso 5: Verificar
+### Paso 4: Verificar
 
 ```bash
-curl -s https://<CLOUDFRONT_DOMAIN>/              # Web app
-curl -s https://<CLOUDFRONT_DOMAIN>/health         # Gateway health
-curl -s https://<CLOUDFRONT_DOMAIN>/api/v1/search/destinations  # API proxy
+curl -s $CF_URL/                              # Web app
+curl -s $CF_URL/health                        # Gateway health
+curl -s $CF_URL/api/v1/search/destinations    # API proxy
 ```
 
 ---
@@ -103,53 +95,74 @@ curl -s https://<CLOUDFRONT_DOMAIN>/api/v1/search/destinations  # API proxy
 ## Actualizar después de cambios en código
 
 ```bash
-# 1. Build
-VITE_API_BASE_URL="https://<CLOUDFRONT_DOMAIN>/api/v1" yarn build
+CF_URL=$(cd infrastructure/terraform && AWS_PROFILE=maestria terraform output -raw cloudfront_url)
+CF_ID=$(cd infrastructure/terraform && AWS_PROFILE=maestria terraform output -raw cloudfront_distribution_id)
+S3_BUCKET=$(cd infrastructure/terraform && AWS_PROFILE=maestria terraform output -raw s3_bucket_name)
 
-# 2. Deploy
-AWS_PROFILE=maestria aws s3 sync dist/ s3://<S3_BUCKET_NAME>/ --delete
-
-# 3. Invalidar caché
-AWS_PROFILE=maestria aws cloudfront create-invalidation \
-  --distribution-id <CLOUDFRONT_ID> \
-  --paths "/*"
+VITE_API_BASE_URL="${CF_URL}/api/v1" yarn build
+AWS_PROFILE=maestria aws s3 sync dist/ s3://${S3_BUCKET}/ --delete
+AWS_PROFILE=maestria aws cloudfront create-invalidation --distribution-id $CF_ID --paths "/*"
 ```
 
 > La invalidación tarda ~30-60 segundos en propagarse.
 
 ---
 
-## Despliegue actual
-
-| Recurso        | Valor                                         |
-| -------------- | --------------------------------------------- |
-| CloudFront URL | `https://dycn6bg2u03a2.cloudfront.net`        |
-| CloudFront ID  | `EU4D05D4NFUN9`                               |
-| S3 Bucket      | `proyecto-final-dev-frontend-881005428234`    |
-| API Base URL   | `https://dycn6bg2u03a2.cloudfront.net/api/v1` |
-
----
-
 ## Destruir infraestructura
 
 ```bash
-# 1. Vaciar el bucket S3
-AWS_PROFILE=maestria aws s3 rm s3://<S3_BUCKET_NAME>/ --recursive
-
-# 2. Destruir con Terraform
 cd infrastructure/terraform
-AWS_PROFILE=maestria terraform destroy
+
+# Vaciar bucket (incluyendo versiones)
+S3_BUCKET=$(AWS_PROFILE=maestria terraform output -raw s3_bucket_name)
+AWS_PROFILE=maestria aws s3 rm s3://${S3_BUCKET}/ --recursive
+# Si el bucket tiene versionado, también eliminar versiones antiguas:
+AWS_PROFILE=maestria aws s3api list-object-versions --bucket $S3_BUCKET --output json | \
+  python3 -c "
+import json,sys,subprocess
+d=json.load(sys.stdin)
+objs=[{'Key':v['Key'],'VersionId':v['VersionId']} for v in d.get('Versions',[])+d.get('DeleteMarkers',[])]
+if objs:
+    json.dump({'Objects':objs,'Quiet':True},open('/tmp/del.json','w'))
+    subprocess.run(['aws','s3api','delete-objects','--bucket','$S3_BUCKET','--delete','file:///tmp/del.json','--profile','maestria'])
+"
+
+# Destruir infraestructura
+AWS_PROFILE=maestria terraform destroy -var="api_origin_domain=unused"
 ```
+
+> `api_origin_domain` se requiere como variable pero no se usa durante destroy.
+
+---
+
+## State Management
+
+El state de terraform se almacena en S3 (no local):
+
+| Config            | Valor                                  |
+| ----------------- | -------------------------------------- |
+| Bucket            | `proyecto-final-tf-state-881005428234` |
+| Key               | `frontend/terraform.tfstate`           |
+| Lock table        | `proyecto-final-terraform-locks`       |
+| Backend state key | `eks/terraform.tfstate`                |
+
+Esto permite:
+
+- `terraform destroy` funciona desde cualquier máquina
+- No se pierde el state al borrar archivos locales
+- Compartido con el backend terraform (mismo bucket, diferente key)
 
 ---
 
 ## Troubleshooting
 
-| Problema                     | Solución                                                                                                       |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Mixed content (HTTPS → HTTP) | Verificar que `VITE_API_BASE_URL` usa `https://` y que CloudFront tiene el origin del API configurado          |
-| API retorna 502/504          | CloudFront no puede conectar con el ELB. Verificar que el ELB está activo y el `api_origin_domain` es correcto |
-| Cambios no se reflejan       | Ejecutar `aws cloudfront create-invalidation` después de cada deploy                                           |
-| SPA routes retornan 403      | Verificar que CloudFront tiene custom error responses (403 → index.html, 404 → index.html)                     |
-| `new URL()` error en JS      | `VITE_API_BASE_URL` debe ser una URL absoluta (`https://...`), no relativa (`/api/v1`)                         |
-| Bucket name conflict         | S3 bucket names son globales. Incluir el account ID en el nombre                                               |
+| Problema                                      | Solución                                                              |
+| --------------------------------------------- | --------------------------------------------------------------------- |
+| Mixed content (HTTPS → HTTP)                  | `VITE_API_BASE_URL` debe usar `https://` (la URL de CloudFront)       |
+| API retorna 502/504                           | ELB no está activo. Verificar `kubectl get ingress`                   |
+| Cambios no se reflejan                        | Ejecutar `aws cloudfront create-invalidation`                         |
+| SPA routes retornan 403                       | CloudFront tiene custom error responses (403/404 → index.html)        |
+| `new URL()` error en JS                       | `VITE_API_BASE_URL` debe ser URL absoluta, no relativa                |
+| Bucket name conflict                          | Nombres S3 son globales — incluir account ID                          |
+| `terraform destroy` falla por bucket no vacío | Eliminar todas las versiones antes de destruir (ver sección Destruir) |
+| State perdido                                 | State está en S3, no local. `terraform init` lo recupera              |

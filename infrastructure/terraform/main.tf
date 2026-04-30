@@ -7,10 +7,23 @@ terraform {
       version = "~> 5.0"
     }
   }
+
+  backend "s3" {
+    bucket         = "proyecto-final-tf-state-881005428234"
+    key            = "frontend/terraform.tfstate"
+    region         = "us-east-1"
+    encrypt        = true
+    dynamodb_table = "proyecto-final-terraform-locks"
+  }
 }
 
 provider "aws" {
   region = "us-east-1"
+}
+
+variable "api_origin_domain" {
+  description = "ELB hostname of the backend API (obtained from kubectl get ingress after deploying K8s)"
+  type        = string
 }
 
 module "frontend" {
@@ -18,6 +31,6 @@ module "frontend" {
 
   project_name      = "proyecto-final"
   environment       = "dev"
-  api_origin_domain = "abe9ed9df940d49d2812f120b8116159-d4f3705a7f9a3e00.elb.us-east-1.amazonaws.com"
+  api_origin_domain = var.api_origin_domain
   domain_name       = ""
 }
