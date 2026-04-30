@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Skeleton } from '@mui/material';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import Text from '@/design-system/components/Text';
 import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import PlaceIcon from '@mui/icons-material/Place';
@@ -8,11 +8,9 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LockIcon from '@mui/icons-material/Lock';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import InfoIcon from '@mui/icons-material/Info';
-import CancelIcon from '@mui/icons-material/Cancel';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import DynamicCancellationPolicyCard from '@/modules/checkout/components/CancellationPolicyCard/CancellationPolicyCard';
 import { useLocale } from '@/contexts/LocaleContext';
 import { useDebouncedCallback } from '@/hooks/useDebouncedCallback';
 import TravelerLayout from '@/design-system/layouts/TravelerLayout';
@@ -35,8 +33,6 @@ import {
   PriceRow,
   PriceTotalRow,
   SecureBadge,
-  CancellationPolicyCard,
-  CancellationRow,
   ContentColumn,
   GalleryGrid,
   GalleryMainImage,
@@ -251,27 +247,7 @@ export default function PropertyDetailPage() {
         </SecureBadge>
       </PriceCard>
 
-      <div>
-        <Text textVariant="cardSubheading" sx={{ mb: '12px' }}>
-          {t('propertyDetail.cancellation.title')}
-        </Text>
-        <CancellationPolicyCard>
-          <CancellationRow>
-            <CheckCircleIcon sx={{ color: '#1A6B4F', fontSize: 18 }} />
-            <Typography sx={{ fontSize: 13, color: palette.onSurface }}>
-              {t('propertyDetail.cancellation.freeCancellation')}
-            </Typography>
-          </CancellationRow>
-          <CancellationRow>
-            <InfoIcon sx={{ color: palette.star, fontSize: 18 }} />
-            <Text textVariant="hint">{t('propertyDetail.cancellation.halfCharge')}</Text>
-          </CancellationRow>
-          <CancellationRow>
-            <CancelIcon sx={{ color: '#B5451B', fontSize: 18 }} />
-            <Text textVariant="hint">{t('propertyDetail.cancellation.noRefund')}</Text>
-          </CancellationRow>
-        </CancellationPolicyCard>
-      </div>
+      <div>{checkIn && <DynamicCancellationPolicyCard checkIn={checkIn} />}</div>
     </SidebarWrapper>
   );
 
