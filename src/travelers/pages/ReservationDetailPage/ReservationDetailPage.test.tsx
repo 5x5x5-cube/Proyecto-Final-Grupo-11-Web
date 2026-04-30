@@ -79,4 +79,10 @@ describe('ReservationDetailPage', () => {
     // useParams returns id='42'; the page must pass it to useBookingDetail
     expect(capturedBookingId).toBe('42');
   });
+
+  it('formats monetary totals with booking currency (COP)', () => {
+    renderWithProviders(<ReservationDetailPage />);
+    const copTotals = screen.getAllByText(/COP\s+2[.,]664[.,]000/);
+    expect(copTotals.length).toBeGreaterThanOrEqual(1);
+  });
 });

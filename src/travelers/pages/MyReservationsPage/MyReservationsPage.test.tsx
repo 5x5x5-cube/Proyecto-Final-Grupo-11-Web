@@ -99,12 +99,11 @@ describe('MyReservationsPage', () => {
     expect(codes).toHaveLength(3);
   });
 
-  it('renders price using formatPrice for each booking', () => {
+  it('renders total paid using formatFixedPrice with each booking currency (COP)', () => {
     renderWithProviders(<MyReservationsPage />);
-    // Default currency is COP; formatPrice outputs a formatted string containing
-    // the numeric amount. We verify that distinct total prices are rendered.
-    // The locale provider formats 2664000 COP as something containing "2.664.000" or "2,664,000".
-    const priceTexts = screen.getAllByText(/2[.,]664[.,]000|2664000/);
-    expect(priceTexts.length).toBeGreaterThanOrEqual(1);
+    // formatFixedPrice(booking.totalPrice, booking.currency) — no conversion to viewer preference.
+    expect(screen.getByText(/COP\s+2[.,]664[.,]000/)).toBeTruthy();
+    expect(screen.getByText(/COP\s+800[.,]000/)).toBeTruthy();
+    expect(screen.getByText(/COP\s+600[.,]000/)).toBeTruthy();
   });
 });

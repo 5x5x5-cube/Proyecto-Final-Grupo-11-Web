@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { useSnackbar } from '@/contexts/SnackbarContext';
 import { useTokenize, useInitiatePayment, usePaymentStatus } from '@/api/hooks/usePayments';
@@ -9,6 +10,7 @@ import type { PaymentMethod } from '@/modules/checkout/types';
 
 export function usePaymentFlow() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { t } = useTranslation('travelers');
   const { showError } = useSnackbar();
 
@@ -31,13 +33,14 @@ export function usePaymentFlow() {
 
     if (paymentStatus.data.status === 'approved') {
       setIsProcessing(false);
+      void queryClient.invalidateQueries({ queryKey: ['bookings'] });
       navigate(`/checkout/confirmation/${paymentId}`);
     } else if (paymentStatus.data.status === 'declined') {
       setIsProcessing(false);
       setPaymentId('');
       showPaymentError();
     }
-  }, [paymentStatus.data, navigate, showPaymentError, paymentId]);
+  }, [paymentStatus.data, navigate, showPaymentError, paymentId, queryClient]);
 
   const submitPayment = (payload: TokenizeRequest, method: PaymentMethod, currency: string) => {
     if (isProcessing) return;

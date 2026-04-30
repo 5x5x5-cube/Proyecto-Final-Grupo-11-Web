@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import { Link, useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { useTranslation } from 'react-i18next';
@@ -27,7 +28,13 @@ const ConfirmationPage: React.FC = () => {
   const { t } = useTranslation('travelers');
   const { user } = useAuth();
   const { paymentId } = useParams<{ paymentId: string }>();
+  const queryClient = useQueryClient();
   const { data: booking } = useBookingByPaymentId(paymentId ?? '');
+
+  useEffect(() => {
+    if (!booking?.id) return;
+    void queryClient.invalidateQueries({ queryKey: ['bookings'] });
+  }, [booking?.id, queryClient]);
 
   return (
     <CheckoutLayout currentStep={4} sidebar={<ConfirmationSidebar paymentId={paymentId ?? ''} />}>

@@ -33,7 +33,7 @@ interface Props {
 
 export default function ConfirmationSidebar({ paymentId }: Props) {
   const { t } = useTranslation('travelers');
-  const { formatPrice, formatDate } = useLocale();
+  const { formatFixedPrice, formatDate } = useLocale();
   const { data: payment } = usePaymentStatus(paymentId);
   const { data: booking } = useBookingByPaymentId(paymentId);
   const { data: hotel } = useHotelDetail(booking?.hotelId ?? '') as {
@@ -135,7 +135,9 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
               <CreditCardIcon sx={{ fontSize: 16, color: palette.primary }} />
               <Text textVariant="hint">{payment.paymentMethod?.displayLabel}</Text>
             </Box>
-            <PaymentAmount>{formatPrice(payment.amount)}</PaymentAmount>
+            <PaymentAmount>
+              {formatFixedPrice(payment.amount, payment?.currency ?? booking?.currency)}
+            </PaymentAmount>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <PaymentSuccessPill>
