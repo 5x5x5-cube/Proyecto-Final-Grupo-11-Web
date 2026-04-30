@@ -1,6 +1,6 @@
 import { useState, useEffect, type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '@/contexts/LocaleContext';
+import { useLocale, type Currency } from '@/contexts/LocaleContext';
 import Text from '@/design-system/components/Text';
 import {
   CardPreview,
@@ -64,7 +64,7 @@ export default function CardForm({
   expiryError,
 }: CardFormProps) {
   const { t } = useTranslation('travelers');
-  const { currency: localeCurrency } = useLocale();
+  const { currency: localeCurrency, setCurrency: setLocaleCurrency } = useLocale();
   const [cardFocused, setCardFocused] = useState(false);
 
   useEffect(() => {
@@ -109,6 +109,7 @@ export default function CardForm({
     const val = (e as ChangeEvent<HTMLSelectElement>).target.value;
     const code = val.split(' ')[0] ?? 'COP';
     onCurrencyChange(code);
+    setLocaleCurrency(code as Currency);
   };
 
   return (
