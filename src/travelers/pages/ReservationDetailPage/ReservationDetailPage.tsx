@@ -218,8 +218,17 @@ const ReservationDetailPage: React.FC = () => {
       onClose={onClose}
       icon={<CheckCircleIcon sx={{ fontSize: 24, color: success }} />}
       iconBg={successContainer}
-      title={t('reservationDetail.confirmedModal.title')}
-      subtitle={t('reservationDetail.confirmedModal.subtitle')}
+      title={t(
+        booking.status === 'confirmed'
+          ? 'reservationDetail.confirmedModal.titleConfirmed'
+          : 'reservationDetail.confirmedModal.titlePending'
+      )}
+      subtitle={t(
+        booking.status === 'confirmed'
+          ? 'reservationDetail.confirmedModal.subtitleConfirmed'
+          : 'reservationDetail.confirmedModal.subtitlePending',
+        { code: booking.code }
+      )}
       footer={
         <>
           <NeutralOutlinedPillButton onClick={onClose} pillSize="xs">
@@ -300,10 +309,17 @@ const ReservationDetailPage: React.FC = () => {
               icon: <EmailIcon sx={{ fontSize: 14, color: success }} />,
               text: t('reservationDetail.confirmedModal.voucherSent'),
             },
-            {
-              icon: <MeetingRoomIcon sx={{ fontSize: 14, color: success }} />,
-              text: t('reservationDetail.confirmedModal.roomReserved'),
-            },
+            ...(booking.status === 'confirmed'
+              ? [
+                  {
+                    icon: <MeetingRoomIcon sx={{ fontSize: 14, color: success }} />,
+                    text: t('reservationDetail.confirmedModal.roomReserved', {
+                      room: booking.roomName ?? '',
+                      hotel: booking.hotelName ?? '',
+                    }),
+                  },
+                ]
+              : []),
           ].map((step, i) => (
             <NextStepRow key={i}>
               <NextStepIcon>{step.icon}</NextStepIcon>

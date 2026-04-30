@@ -407,8 +407,10 @@
     },
     "downloadReceipt": "Download receipt",
     "confirmedModal": {
-      "title": "Reservation confirmed successfully",
-      "subtitle": "Reservation TH-2026-48291 has been confirmed",
+      "titleConfirmed": "Reservation confirmed successfully",
+      "titlePending": "Reservation registered successfully",
+      "subtitleConfirmed": "Reservation {{code}} has been confirmed by the hotel",
+      "subtitlePending": "Reservation {{code}} is pending hotel confirmation",
       "emailSent": "Confirmation email sent",
       "bookingSummary": "Booking summary",
       "hotel": "Hotel",
@@ -424,7 +426,7 @@
       "total": "Total",
       "whatsNext": "What's next?",
       "voucherSent": "<strong>Voucher sent by email</strong> — You will receive your booking receipt with all the details of your stay.",
-      "roomReserved": "<strong>Room reserved</strong> — Your Superior Room at Hotel Santa Clara Sofitel has been reserved for the indicated dates.",
+      "roomReserved": "<strong>Room reserved</strong> — Your {{room}} at {{hotel}} has been reserved for the indicated dates.",
       "close": "Close",
       "viewReservations": "View my reservations"
     },
