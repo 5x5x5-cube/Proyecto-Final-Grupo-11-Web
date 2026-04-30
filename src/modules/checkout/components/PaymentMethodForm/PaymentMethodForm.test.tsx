@@ -52,4 +52,17 @@ describe('PaymentMethodForm', () => {
 
     expect(screen.getByText(/numero de tarjeta invalido/i)).toBeInTheDocument();
   });
+
+  it('currency dropdown defaults to locale currency (COP)', () => {
+    renderWithProviders(<PaymentMethodForm ref={null} onValidityChange={() => {}} />);
+
+    // The currency label is rendered next to the select
+    const currencyLabel = screen.getByText(/moneda/i);
+    expect(currencyLabel).toBeInTheDocument();
+
+    // The select element should have COP as its selected option
+    const selectEl = currencyLabel.parentElement?.querySelector('select');
+    expect(selectEl).toBeTruthy();
+    expect(selectEl?.value).toContain('COP');
+  });
 });
