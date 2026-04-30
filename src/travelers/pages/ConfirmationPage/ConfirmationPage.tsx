@@ -56,7 +56,9 @@ const ConfirmationPage: React.FC = () => {
 
         <EmailNoticePill>
           <MarkEmailReadIcon sx={{ fontSize: 20, color: palette.success }} />
-          <EmailNoticeText>{t('confirmation.emailSent', { email: user.email })}</EmailNoticeText>
+          <EmailNoticeText>
+            {t('confirmation.emailSent', { email: user?.email ?? '' })}
+          </EmailNoticeText>
         </EmailNoticePill>
 
         <ActionButtonsRow>
