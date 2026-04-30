@@ -23,7 +23,7 @@ interface LocaleContextType {
   setLanguage: (lang: Language) => void;
   setCurrency: (cur: Currency) => void;
   formatPrice: (copAmount: number) => string;
-  formatFixedPrice: (amount: number, currency: string) => string;
+  formatFixedPrice: (amount: number, currency?: string | null) => string;
   formatDate: (date: string | Date, format: DateFormat) => string;
   autoOpen: 'language' | 'currency' | null;
   clearAutoOpen: () => void;
@@ -109,8 +109,9 @@ export function LocaleProvider({ children }: { children: React.ReactNode }) {
     return `${symbol} ${formatted}`;
   };
 
-  const formatFixedPrice = (amount: number, cur: string): string => {
-    const info = rates[cur as Currency] ?? { symbol: cur, decimals: 0 };
+  const formatFixedPrice = (amount: number, cur?: string | null): string => {
+    const code = (cur?.trim() || DEFAULT_CURRENCY) as Currency;
+    const info = rates[code] ?? { symbol: code, decimals: 0 };
     const formatted = amount.toLocaleString('es-CO', {
       minimumFractionDigits: info.decimals,
       maximumFractionDigits: info.decimals,
