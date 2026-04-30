@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import BookingNextSteps from '@/travelers/components/BookingNextSteps';
 import { useBookingDetail } from '@/api/hooks/useBookings';
+import { useHotelDetail } from '@/api/hooks/useSearch';
 import { usePaymentStatus } from '@/api/hooks/usePayments';
-import { Box, Divider, Skeleton, Typography } from '@mui/material';
+import { Box, Divider, Skeleton } from '@mui/material';
 import Text from '@/design-system/components/Text';
 import { Link, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -97,6 +98,7 @@ const ReservationDetailPage: React.FC = () => {
   const payment = usePaymentStatus(booking?.paymentId ?? '');
   const paymentData = payment.data;
   const isPaymentsLoading = payment.isLoading;
+  const { data: hotelData } = useHotelDetail(booking?.hotelId ?? '');
 
   const [cancelOpen, setCancelOpen] = useState(false);
   const { t } = useTranslation('travelers');
@@ -370,13 +372,14 @@ const ReservationDetailPage: React.FC = () => {
                       <PlaceIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
                       <Text textVariant="hint">{booking.location ?? '—'}</Text>
                     </LocationRow>
-                    <HotelRatingRow>
-                      <RatingBadge rating={4.8} />
-                      <Typography sx={{ color: star, fontSize: 13 }}>
-                        &#9733;&#9733;&#9733;&#9733;&#9733;
-                      </Typography>
-                      <Text textVariant="caption">312 {t('reservationDetail.reviews')}</Text>
-                    </HotelRatingRow>
+                    {(hotelData as any)?.rating && (
+                      <HotelRatingRow>
+                        <RatingBadge rating={(hotelData as any).rating} />
+                        <Text textVariant="body" sx={{ color: star, fontSize: 16 }}>
+                          &#9733;
+                        </Text>
+                      </HotelRatingRow>
+                    )}
                   </HotelInfoColumn>
                 </HotelRow>
 
