@@ -56,13 +56,26 @@ describe('PaymentMethodForm', () => {
   it('currency dropdown defaults to locale currency (COP)', () => {
     renderWithProviders(<PaymentMethodForm ref={null} onValidityChange={() => {}} />);
 
-    // The currency label is rendered next to the select
     const currencyLabel = screen.getByText(/moneda/i);
     expect(currencyLabel).toBeInTheDocument();
 
-    // The select element should have COP as its selected option
     const selectEl = currencyLabel.parentElement?.querySelector('select');
     expect(selectEl).toBeTruthy();
     expect(selectEl?.value).toContain('COP');
+  });
+
+  it('changing currency dropdown updates the selected value', async () => {
+    const user = userEvent.setup({ delay: null });
+    renderWithProviders(<PaymentMethodForm ref={null} onValidityChange={() => {}} />);
+
+    const currencyLabel = screen.getByText(/moneda/i);
+    const selectEl = currencyLabel.parentElement?.querySelector('select') as HTMLSelectElement;
+    expect(selectEl).toBeTruthy();
+
+    const usdOption = Array.from(selectEl.options).find(o => o.text.startsWith('USD'));
+    expect(usdOption).toBeTruthy();
+
+    await user.selectOptions(selectEl, usdOption!);
+    expect(selectEl.value).toContain('USD');
   });
 });
