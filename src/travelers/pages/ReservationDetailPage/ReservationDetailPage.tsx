@@ -19,7 +19,6 @@ import TvIcon from '@mui/icons-material/Tv';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
 
 import ScheduleIcon from '@mui/icons-material/Schedule';
-import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import TravelerLayout from '@/design-system/layouts/TravelerLayout';
@@ -64,7 +63,6 @@ import {
   PageHeaderRow,
   PageTitle,
   BookingCodeRow,
-  ModalTriggerRow,
   HotelRow,
   HotelThumbnail,
   HotelInfoColumn,
@@ -354,16 +352,6 @@ const ReservationDetailPage: React.FC = () => {
                   {t('reservationDetail.bookingCode')} <strong>{booking.code}</strong>
                 </Text>
               </BookingCodeRow>
-
-              {/* Trigger buttons for modals */}
-              <ModalTriggerRow>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <MarkEmailReadIcon sx={{ fontSize: 16, color: success }} />
-                  <Text textVariant="caption">
-                    {t('reservationDetail.confirmedModal.emailSent')}
-                  </Text>
-                </Box>
-              </ModalTriggerRow>
             </div>
 
             {/* Hotel info section */}
