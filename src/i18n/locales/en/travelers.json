@@ -432,7 +432,7 @@
     },
     "nextSteps": {
       "title": "Next steps",
-      "voucherSent": "<strong>Voucher sent by email</strong> — You will receive your booking receipt with all the details of your stay.",
+      "emailSent": "<strong>Confirmation email sent</strong> — We have sent an email with your booking details and payment receipt.",
       "pendingTitle": "Pending confirmation",
       "pendingDescription": "Your reservation is being reviewed by the hotel. We will notify you when it is confirmed.",
       "confirmedTitle": "Room reserved",

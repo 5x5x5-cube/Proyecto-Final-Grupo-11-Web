@@ -165,6 +165,15 @@ const ReservationDetailPage: React.FC = () => {
 
       <Divider sx={{ borderColor: outlineVariant }} />
 
+      {/* Next steps */}
+      <BookingNextSteps
+        status={booking.status}
+        hotelName={booking.hotelName ?? undefined}
+        roomName={booking.roomName ?? undefined}
+      />
+
+      <Divider sx={{ borderColor: outlineVariant }} />
+
       {/* Cancel box */}
       <CancelBox>
         <CancelBoxHeader>
@@ -523,13 +532,6 @@ const ReservationDetailPage: React.FC = () => {
                 </Box>
               )}
             </SectionCard>
-
-            {/* Next steps */}
-            <BookingNextSteps
-              status={booking.status}
-              hotelName={booking.hotelName}
-              roomName={booking.roomName}
-            />
           </MainContent>
 
           {/* Right sidebar */}

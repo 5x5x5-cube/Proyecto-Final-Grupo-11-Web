@@ -433,7 +433,7 @@
     },
     "nextSteps": {
       "title": "Proximos pasos",
-      "voucherSent": "<strong>Voucher enviado por correo</strong> — Recibiras tu comprobante de reserva con todos los detalles de tu estadia.",
+      "emailSent": "<strong>Confirmacion enviada por correo</strong> — Hemos enviado un email con los detalles de tu reserva y el comprobante de pago.",
       "pendingTitle": "Pendiente de confirmacion",
       "pendingDescription": "Tu reserva esta siendo revisada por el hotel. Te notificaremos cuando sea confirmada.",
       "confirmedTitle": "Habitacion reservada",
