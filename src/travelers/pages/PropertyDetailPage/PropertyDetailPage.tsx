@@ -53,7 +53,6 @@ import {
   HotelTitle,
   LocationRow,
   RatingRow,
-  StarsText,
   ActionButtons,
   ActionIconButton,
   AmenitiesGrid,
@@ -301,8 +300,7 @@ export default function PropertyDetailPage() {
               {[hotelCity, hotelCountry].filter(Boolean).join(', ')}
             </LocationRow>
             <RatingRow>
-              <RatingBadge rating={hotelRating} />
-              <StarsText>{'★'.repeat(Math.round(hotelRating))}</StarsText>
+              <RatingBadge rating={hotelRating} showStars="full" />
               {reviews.length > 0 && (
                 <Text textVariant="hint">
                   {reviews.length} {t('propertyDetail.reviews')}

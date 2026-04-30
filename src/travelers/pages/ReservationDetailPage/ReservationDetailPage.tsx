@@ -45,7 +45,6 @@ import {
   warning,
   warningContainer,
   error,
-  star,
   errorContainer,
 } from '@/design-system/theme/palette';
 import {
@@ -374,10 +373,7 @@ const ReservationDetailPage: React.FC = () => {
                     </LocationRow>
                     {(hotelData as any)?.rating && (
                       <HotelRatingRow>
-                        <RatingBadge rating={(hotelData as any).rating} />
-                        <Text textVariant="body" sx={{ color: star, fontSize: 16 }}>
-                          &#9733;
-                        </Text>
+                        <RatingBadge rating={(hotelData as any).rating} showStars="single" />
                       </HotelRatingRow>
                     )}
                   </HotelInfoColumn>
