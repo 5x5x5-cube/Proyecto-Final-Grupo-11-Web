@@ -109,7 +109,7 @@ const ReservationDetailPage: React.FC = () => {
   const [confirmedOpen, setConfirmedOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
   const { t } = useTranslation('travelers');
-  const { formatPrice, formatDate, language } = useLocale();
+  const { formatFixedPrice, formatDate, language } = useLocale();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -129,6 +129,8 @@ const ReservationDetailPage: React.FC = () => {
       )
     );
 
+  const fp = (amount: number) => formatFixedPrice(amount, booking.currency);
+
   const breakdown = booking.priceBreakdown;
   const pricePerNight = breakdown?.pricePerNight ?? Math.round(booking.totalPrice / nights);
   const basePrice = breakdown?.basePrice ?? booking.totalPrice;
@@ -144,17 +146,15 @@ const ReservationDetailPage: React.FC = () => {
       <PriceRowsList>
         {[
           {
-            label: `${formatPrice(pricePerNight)} \u00D7 ${nights} ${t('reservationDetail.priceSummary.nightsLabel')}`,
-            value: formatPrice(basePrice),
+            label: `${fp(pricePerNight)} \u00D7 ${nights} ${t('reservationDetail.priceSummary.nightsLabel')}`,
+            value: fp(basePrice),
           },
-          ...(vat > 0
-            ? [{ label: t('reservationDetail.priceSummary.vat'), value: formatPrice(vat) }]
-            : []),
+          ...(vat > 0 ? [{ label: t('reservationDetail.priceSummary.vat'), value: fp(vat) }] : []),
           ...(serviceFee > 0
             ? [
                 {
                   label: t('reservationDetail.priceSummary.tourismTax'),
-                  value: formatPrice(serviceFee),
+                  value: fp(serviceFee),
                 },
               ]
             : []),
@@ -167,7 +167,7 @@ const ReservationDetailPage: React.FC = () => {
         <Divider sx={{ borderColor: outlineVariant }} />
         <PriceRow>
           <Text textVariant="panelTitle">{t('reservationDetail.priceSummary.totalPaid')}</Text>
-          <Text textVariant="price">{formatPrice(booking.totalPrice)}</Text>
+          <Text textVariant="price">{fp(booking.totalPrice)}</Text>
         </PriceRow>
       </PriceRowsList>
 
@@ -186,7 +186,7 @@ const ReservationDetailPage: React.FC = () => {
         />
         <Text textVariant="bodyMedium">
           {t('reservationDetail.cancelBox.estimatedRefund')}{' '}
-          <strong>{formatPrice(booking.totalPrice)}</strong>
+          <strong>{fp(booking.totalPrice)}</strong>
         </Text>
         <ErrorOutlinedPillButton
           onClick={() => setCancelOpen(true)}
@@ -281,7 +281,7 @@ const ReservationDetailPage: React.FC = () => {
           <Divider sx={{ borderColor: outlineVariant, my: '4px' }} />
           <ModalRow>
             <ModalTotalLabel>{t('reservationDetail.confirmedModal.total')}</ModalTotalLabel>
-            <ModalTotalValue>{formatPrice(booking.totalPrice)}</ModalTotalValue>
+            <ModalTotalValue>{fp(booking.totalPrice)}</ModalTotalValue>
           </ModalRow>
         </ModalSummarySection>
 
@@ -377,12 +377,12 @@ const ReservationDetailPage: React.FC = () => {
           {[
             {
               label: t('reservationDetail.cancelModal.originalAmount'),
-              value: formatPrice(booking.totalPrice),
+              value: fp(booking.totalPrice),
               color: onSurface,
             },
             {
               label: t('reservationDetail.cancelModal.cancellationPenalty'),
-              value: `-${formatPrice(0)}`,
+              value: `-${fp(0)}`,
               color: success,
             },
           ].map(row => (
@@ -394,7 +394,7 @@ const ReservationDetailPage: React.FC = () => {
           <Divider sx={{ borderColor: outlineVariant, my: '4px' }} />
           <RefundTotalBox>
             <RefundTotalLabel>{t('reservationDetail.cancelModal.totalRefund')}</RefundTotalLabel>
-            <RefundTotalValue>{formatPrice(booking.totalPrice)}</RefundTotalValue>
+            <RefundTotalValue>{fp(booking.totalPrice)}</RefundTotalValue>
           </RefundTotalBox>
         </ModalSummarySection>
 
@@ -597,7 +597,7 @@ const ReservationDetailPage: React.FC = () => {
                       </Box>
                     </Box>
                     <PaymentRightCol>
-                      <PaymentAmount>{formatPrice(booking.totalPrice)}</PaymentAmount>
+                      <PaymentAmount>{fp(booking.totalPrice)}</PaymentAmount>
                       <PaymentBadge>{t('reservationDetail.paymentHistory.approved')}</PaymentBadge>
                     </PaymentRightCol>
                   </PaymentRow>

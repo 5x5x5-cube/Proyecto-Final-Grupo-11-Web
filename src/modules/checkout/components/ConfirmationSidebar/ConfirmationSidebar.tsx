@@ -3,7 +3,7 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import PlaceIcon from '@mui/icons-material/Place';
 import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { useTranslation } from 'react-i18next';
-import { useLocale } from '@/contexts/LocaleContext';
+import { useLocale, DEFAULT_CURRENCY } from '@/contexts/LocaleContext';
 import { usePaymentStatus } from '@/api/hooks/usePayments';
 import { useBookingByPaymentId } from '@/api/hooks/useBookings';
 import { useHotelDetail } from '@/api/hooks/useSearch';
@@ -33,7 +33,7 @@ interface Props {
 
 export default function ConfirmationSidebar({ paymentId }: Props) {
   const { t } = useTranslation('travelers');
-  const { formatPrice, formatDate } = useLocale();
+  const { formatFixedPrice, formatDate } = useLocale();
   const { data: payment } = usePaymentStatus(paymentId);
   const { data: booking } = useBookingByPaymentId(paymentId);
   const { data: hotel } = useHotelDetail(booking?.hotelId ?? '') as {
@@ -53,6 +53,8 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
 
   const location =
     hotel?.city && hotel?.country ? `${hotel.city}, ${hotel.country}` : (hotel?.city ?? '');
+
+  const chargeCurrency = payment?.currency?.trim() || booking?.currency?.trim() || DEFAULT_CURRENCY;
 
   const steps = [
     {
@@ -135,7 +137,7 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
               <CreditCardIcon sx={{ fontSize: 16, color: palette.primary }} />
               <Text textVariant="hint">{payment.paymentMethod?.displayLabel}</Text>
             </Box>
-            <PaymentAmount>{formatPrice(payment.amount)}</PaymentAmount>
+            <PaymentAmount>{formatFixedPrice(payment.amount, chargeCurrency)}</PaymentAmount>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <PaymentSuccessPill>

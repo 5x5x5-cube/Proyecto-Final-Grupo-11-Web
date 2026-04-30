@@ -1,7 +1,12 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/renderWithProviders';
 import ConfirmationSidebar from './ConfirmationSidebar';
+
+const paymentFixture = vi.hoisted(() => ({
+  amount: 595000,
+  currency: 'COP',
+}));
 
 vi.mock('@/api/hooks/usePayments', () => ({
   usePaymentStatus: () => ({
@@ -9,8 +14,8 @@ vi.mock('@/api/hooks/usePayments', () => ({
       paymentId: 'pay-1',
       status: 'approved',
       paymentMethod: { displayLabel: 'Visa •••• 4242' },
-      amount: 595000,
-      currency: 'COP',
+      amount: paymentFixture.amount,
+      currency: paymentFixture.currency,
     },
   }),
 }));
@@ -43,6 +48,11 @@ vi.mock('@/api/hooks/useSearch', () => ({
 }));
 
 describe('ConfirmationSidebar', () => {
+  beforeEach(() => {
+    paymentFixture.amount = 595000;
+    paymentFixture.currency = 'COP';
+  });
+
   it('renders sidebar title', () => {
     renderWithProviders(<ConfirmationSidebar paymentId="pay-1" />);
     expect(screen.getByText(/detalle de tu reserva/i)).toBeInTheDocument();
@@ -72,6 +82,18 @@ describe('ConfirmationSidebar', () => {
   it('renders payment method label', () => {
     renderWithProviders(<ConfirmationSidebar paymentId="pay-1" />);
     expect(screen.getByText('Visa •••• 4242')).toBeInTheDocument();
+  });
+
+  it('shows charged amount in payment currency (COP) via formatFixedPrice, not locale conversion', () => {
+    renderWithProviders(<ConfirmationSidebar paymentId="pay-1" />);
+    expect(screen.getByText(/COP\s+595[.,]000/)).toBeInTheDocument();
+  });
+
+  it('shows charged amount in payment currency when payment is USD', () => {
+    paymentFixture.currency = 'USD';
+    paymentFixture.amount = 150.5;
+    renderWithProviders(<ConfirmationSidebar paymentId="pay-1" />);
+    expect(screen.getByText(/USD\s+150,50/)).toBeInTheDocument();
   });
 
   it('renders next steps section', () => {

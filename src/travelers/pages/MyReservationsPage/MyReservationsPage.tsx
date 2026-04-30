@@ -36,7 +36,7 @@ import {
 const MyReservationsPage: React.FC = () => {
   const { tab, setTab, bookings, isLoading } = useReservationTabs();
   const { t } = useTranslation('travelers');
-  const { formatPrice, formatDate } = useLocale();
+  const { formatFixedPrice, formatDate } = useLocale();
 
   const tabKeys: ReservationTab[] = ['active', 'past', 'cancelled'];
   const activeTab = tabKeys.indexOf(tab);
@@ -137,7 +137,7 @@ const MyReservationsPage: React.FC = () => {
 
                     <Box sx={{ textAlign: 'right' }}>
                       <TotalLabel>{t('myReservations.card.totalPaid')}</TotalLabel>
-                      <Text textVariant="price">{formatPrice(b.totalPrice)}</Text>
+                      <Text textVariant="price">{formatFixedPrice(b.totalPrice, b.currency)}</Text>
                     </Box>
 
                     <PrimaryPillButton
