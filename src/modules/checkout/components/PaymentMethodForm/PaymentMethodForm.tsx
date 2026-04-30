@@ -27,6 +27,7 @@ const METHOD_OPTIONS: { value: PaymentMethod; labelKey: string; emoji: string }[
 export interface PaymentMethodFormHandle {
   isFormValid: boolean;
   selectedMethod: PaymentMethod;
+  currency: string;
   buildTokenizePayload: () => TokenizeRequest | null;
 }
 
@@ -50,6 +51,7 @@ const PaymentMethodForm = forwardRef<PaymentMethodFormHandle, Props>(
     useImperativeHandle(ref, () => ({
       isFormValid: form.isFormValid,
       selectedMethod: form.selectedMethod,
+      currency: form.currency,
       buildTokenizePayload: form.buildTokenizePayload,
     }));
 
