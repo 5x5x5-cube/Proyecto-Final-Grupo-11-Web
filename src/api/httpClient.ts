@@ -46,6 +46,12 @@ async function request<T>(method: Method, path: string, config?: RequestConfig):
   const response = await fetch(url, fetchOptions);
 
   if (!response.ok) {
+    if (response.status === 401 && localStorage.getItem('auth_token')) {
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('auth_user');
+      window.location.href = '/login';
+      return undefined as T;
+    }
     const errorData = await response.json().catch(() => ({ message: response.statusText }));
     throw { status: response.status, data: errorData, ...errorData };
   }
