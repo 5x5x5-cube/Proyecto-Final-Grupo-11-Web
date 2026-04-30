@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import EmailIcon from '@mui/icons-material/Email';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
@@ -7,21 +7,31 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { useTranslation } from 'react-i18next';
 import Text from '@/design-system/components/Text';
 import SectionCard from '@/design-system/components/SectionCard';
-import { success, star, error } from '@/design-system/theme/palette';
+import { palette } from '@/design-system/theme/palette';
+import type { BookingStatus } from '@/types/booking';
 import {
   NextStepRow,
   NextStepIcon,
 } from '@/travelers/pages/ReservationDetailPage/ReservationDetailPage.styles';
 
 interface BookingNextStepsProps {
-  status: string;
+  status: BookingStatus;
   hotelName?: string;
   roomName?: string;
 }
 
+const StepIconSmall = styled('span')<{ $color: string }>(({ $color }) => ({
+  fontSize: 14,
+  color: $color,
+  display: 'inline-flex',
+}));
+
+const SectionIcon = styled(ScheduleIcon)({
+  color: palette.star,
+});
+
 interface StepConfig {
   icon: React.ReactNode;
-  iconColor: string;
   text: string;
 }
 
@@ -33,13 +43,19 @@ const BookingNextSteps: React.FC<BookingNextStepsProps> = ({ status, hotelName, 
       case 'pending':
         return [
           {
-            icon: <EmailIcon sx={{ fontSize: 14, color: success }} />,
-            iconColor: success,
+            icon: (
+              <StepIconSmall $color={palette.success}>
+                <EmailIcon fontSize="inherit" />
+              </StepIconSmall>
+            ),
             text: t('reservationDetail.nextSteps.voucherSent'),
           },
           {
-            icon: <ScheduleIcon sx={{ fontSize: 14, color: star }} />,
-            iconColor: star,
+            icon: (
+              <StepIconSmall $color={palette.star}>
+                <ScheduleIcon fontSize="inherit" />
+              </StepIconSmall>
+            ),
             text: `<strong>${t('reservationDetail.nextSteps.pendingTitle')}</strong> — ${t('reservationDetail.nextSteps.pendingDescription')}`,
           },
         ];
@@ -47,13 +63,19 @@ const BookingNextSteps: React.FC<BookingNextStepsProps> = ({ status, hotelName, 
       case 'confirmed':
         return [
           {
-            icon: <EmailIcon sx={{ fontSize: 14, color: success }} />,
-            iconColor: success,
+            icon: (
+              <StepIconSmall $color={palette.success}>
+                <EmailIcon fontSize="inherit" />
+              </StepIconSmall>
+            ),
             text: t('reservationDetail.nextSteps.voucherSent'),
           },
           {
-            icon: <MeetingRoomIcon sx={{ fontSize: 14, color: success }} />,
-            iconColor: success,
+            icon: (
+              <StepIconSmall $color={palette.success}>
+                <MeetingRoomIcon fontSize="inherit" />
+              </StepIconSmall>
+            ),
             text: `<strong>${t('reservationDetail.nextSteps.confirmedTitle')}</strong> — ${t('reservationDetail.nextSteps.confirmedDescription', { room: roomName ?? '', hotel: hotelName ?? '' })}`,
           },
         ];
@@ -61,8 +83,11 @@ const BookingNextSteps: React.FC<BookingNextStepsProps> = ({ status, hotelName, 
       case 'rejected':
         return [
           {
-            icon: <CancelIcon sx={{ fontSize: 14, color: error }} />,
-            iconColor: error,
+            icon: (
+              <StepIconSmall $color={palette.error}>
+                <CancelIcon fontSize="inherit" />
+              </StepIconSmall>
+            ),
             text: `<strong>${t('reservationDetail.nextSteps.rejectedTitle')}</strong> — ${t('reservationDetail.nextSteps.rejectedDescription')}`,
           },
         ];
@@ -70,8 +95,11 @@ const BookingNextSteps: React.FC<BookingNextStepsProps> = ({ status, hotelName, 
       case 'cancelled':
         return [
           {
-            icon: <CancelIcon sx={{ fontSize: 14, color: error }} />,
-            iconColor: error,
+            icon: (
+              <StepIconSmall $color={palette.error}>
+                <CancelIcon fontSize="inherit" />
+              </StepIconSmall>
+            ),
             text: `<strong>${t('reservationDetail.nextSteps.cancelledTitle')}</strong> — ${t('reservationDetail.nextSteps.cancelledDescription')}`,
           },
         ];
@@ -86,10 +114,7 @@ const BookingNextSteps: React.FC<BookingNextStepsProps> = ({ status, hotelName, 
   if (steps.length === 0) return null;
 
   return (
-    <SectionCard
-      icon={<ScheduleIcon sx={{ color: star }} />}
-      title={t('reservationDetail.nextSteps.title')}
-    >
+    <SectionCard icon={<SectionIcon />} title={t('reservationDetail.nextSteps.title')}>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
         {steps.map((step, i) => (
           <NextStepRow key={i}>
