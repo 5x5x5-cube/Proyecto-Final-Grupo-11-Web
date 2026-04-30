@@ -1,3 +1,5 @@
+import i18n from '../i18n';
+
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 export interface RequestConfig {
@@ -24,6 +26,7 @@ async function request<T>(method: Method, path: string, config?: RequestConfig):
 
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
+    'Accept-Language': i18n.language === 'EN' ? 'en' : 'es',
   };
 
   const token = localStorage.getItem('auth_token');
