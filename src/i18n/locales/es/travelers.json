@@ -431,6 +431,18 @@
       "close": "Cerrar",
       "viewReservations": "Ver mis reservas"
     },
+    "nextSteps": {
+      "title": "Proximos pasos",
+      "voucherSent": "<strong>Voucher enviado por correo</strong> — Recibiras tu comprobante de reserva con todos los detalles de tu estadia.",
+      "pendingTitle": "Pendiente de confirmacion",
+      "pendingDescription": "Tu reserva esta siendo revisada por el hotel. Te notificaremos cuando sea confirmada.",
+      "confirmedTitle": "Habitacion reservada",
+      "confirmedDescription": "Tu {{room}} en {{hotel}} ha sido reservada para las fechas indicadas.",
+      "rejectedTitle": "Reserva no confirmada",
+      "rejectedDescription": "El hotel no pudo confirmar tu reserva. Se procedera con el reembolso automatico.",
+      "cancelledTitle": "Reserva cancelada",
+      "cancelledDescription": "Tu reserva ha sido cancelada. El reembolso sera procesado en los proximos dias."
+    },
     "cancelModal": {
       "title": "Cancelar reserva TH-2026-48291",
       "subtitle": "Esta accion cancelara la reserva y procesara el reembolso automaticamente",

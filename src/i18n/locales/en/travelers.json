@@ -430,6 +430,18 @@
       "close": "Close",
       "viewReservations": "View my reservations"
     },
+    "nextSteps": {
+      "title": "Next steps",
+      "voucherSent": "<strong>Voucher sent by email</strong> — You will receive your booking receipt with all the details of your stay.",
+      "pendingTitle": "Pending confirmation",
+      "pendingDescription": "Your reservation is being reviewed by the hotel. We will notify you when it is confirmed.",
+      "confirmedTitle": "Room reserved",
+      "confirmedDescription": "Your {{room}} at {{hotel}} has been reserved for the indicated dates.",
+      "rejectedTitle": "Reservation not confirmed",
+      "rejectedDescription": "The hotel was unable to confirm your reservation. An automatic refund will be processed.",
+      "cancelledTitle": "Reservation cancelled",
+      "cancelledDescription": "Your reservation has been cancelled. The refund will be processed in the coming days."
+    },
     "cancelModal": {
       "title": "Cancel reservation TH-2026-48291",
       "subtitle": "This action will cancel the reservation and process the refund automatically",
