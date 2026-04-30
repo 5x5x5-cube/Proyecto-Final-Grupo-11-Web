@@ -39,7 +39,7 @@ export function usePaymentFlow() {
     }
   }, [paymentStatus.data, navigate, showPaymentError, paymentId]);
 
-  const submitPayment = (payload: TokenizeRequest, method: PaymentMethod) => {
+  const submitPayment = (payload: TokenizeRequest, method: PaymentMethod, currency: string) => {
     if (isProcessing) return;
 
     setIsProcessing(true);
@@ -47,7 +47,7 @@ export function usePaymentFlow() {
     tokenize.mutate(payload, {
       onSuccess: tokenData => {
         initiate.mutate(
-          { token: tokenData.token, cartId: cart?.id ?? '', method },
+          { token: tokenData.token, cartId: cart?.id ?? '', method, currency },
           {
             onSuccess: paymentData => setPaymentId(paymentData.paymentId),
             onError: () => {

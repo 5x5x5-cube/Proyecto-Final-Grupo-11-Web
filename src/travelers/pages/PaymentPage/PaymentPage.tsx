@@ -17,7 +17,7 @@ export default function PaymentPage() {
     const payload = handle.buildTokenizePayload();
     if (!payload) return;
 
-    flow.submitPayment(payload, handle.selectedMethod);
+    flow.submitPayment(payload, handle.selectedMethod, handle.currency);
   }, [flow]);
 
   return (
