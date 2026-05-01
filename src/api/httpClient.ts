@@ -7,7 +7,7 @@ export interface RequestConfig {
   body?: unknown;
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8090/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1';
 
 function buildUrl(path: string, params?: Record<string, unknown>): string {
   const url = new URL(`${API_BASE_URL}${path}`);

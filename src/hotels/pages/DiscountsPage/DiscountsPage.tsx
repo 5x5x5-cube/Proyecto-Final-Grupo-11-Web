@@ -5,6 +5,7 @@ import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/component
 import AddIcon from '@mui/icons-material/Add';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import CloseIcon from '@mui/icons-material/Close';
+import EditIcon from '@mui/icons-material/Edit';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -19,6 +20,7 @@ import { palette } from '@/design-system/theme/palette';
 import {
   useDiscounts,
   useCreateDiscount,
+  useUpdateDiscount,
   useDeleteDiscount,
   type Discount,
   type DiscountCreate,
@@ -59,11 +61,27 @@ export default function DiscountsPage() {
   const { data: discountsData = [], isLoading } = useDiscounts();
   const { data: tariffsData = [] } = useTariffs();
   const createDiscount = useCreateDiscount();
+  const updateDiscount = useUpdateDiscount();
   const deleteDiscount = useDeleteDiscount();
 
   const [panelOpen, setPanelOpen] = React.useState(false);
+  const [editingId, setEditingId] = React.useState<string | null>(null);
   const [form, setForm] = React.useState<Partial<DiscountCreate>>({ discount_type: 'percentage' });
   const [errors, setErrors] = React.useState<Record<string, string>>({});
+
+  const handleEdit = (discount: Discount) => {
+    setEditingId(discount.id);
+    setForm({
+      tariff_id: discount.tariff_id,
+      name: discount.name,
+      discount_type: discount.discount_type,
+      value: discount.value,
+      start_date: discount.start_date,
+      end_date: discount.end_date,
+    });
+    setErrors({});
+    setPanelOpen(true);
+  };
 
   const validate = (): boolean => {
     const errs: Record<string, string> = {};
@@ -82,14 +100,26 @@ export default function DiscountsPage() {
 
   const handleSave = () => {
     if (!validate()) return;
-    createDiscount.mutate(form as DiscountCreate, {
-      onSuccess: () => {
-        setPanelOpen(false);
-        setForm({ discount_type: 'percentage' });
-        setErrors({});
-      },
-      onError: () => showError(t('discounts.errorCreate')),
-    });
+    const onSuccess = () => {
+      setPanelOpen(false);
+      setEditingId(null);
+      setForm({ discount_type: 'percentage' });
+      setErrors({});
+    };
+    if (editingId) {
+      updateDiscount.mutate(
+        { id: editingId, ...form },
+        {
+          onSuccess,
+          onError: () => showError(t('discounts.errorCreate')),
+        }
+      );
+    } else {
+      createDiscount.mutate(form as DiscountCreate, {
+        onSuccess,
+        onError: () => showError(t('discounts.errorCreate')),
+      });
+    }
   };
 
   const handleDelete = (id: string) => {
@@ -210,6 +240,10 @@ export default function DiscountsPage() {
                       {status.label}
                     </StatusBadge>
                     <Box sx={{ display: 'flex', gap: '4px' }}>
+                      <SmallActionButton onClick={() => handleEdit(discount)}>
+                        <EditIcon sx={{ fontSize: 13 }} />
+                        {t('discounts.edit')}
+                      </SmallActionButton>
                       <SmallActionButton onClick={() => handleDelete(discount.id)}>
                         <DeleteOutlineIcon sx={{ fontSize: 13 }} />
                         {t('discounts.delete')}
@@ -228,11 +262,12 @@ export default function DiscountsPage() {
             <PanelHeader>
               <PanelTitle>
                 <AddCircleIcon sx={{ fontSize: 18 }} />
-                {t('discounts.panelTitle')}
+                {editingId ? t('discounts.editDiscount') : t('discounts.panelTitle')}
               </PanelTitle>
               <CloseButton
                 onClick={() => {
                   setPanelOpen(false);
+                  setEditingId(null);
                   setErrors({});
                 }}
               >
@@ -386,7 +421,7 @@ export default function DiscountsPage() {
               <PrimaryPillButton
                 pillSize="xs"
                 startIcon={
-                  createDiscount.isPending ? (
+                  createDiscount.isPending || updateDiscount.isPending ? (
                     <CircularProgress size={14} sx={{ color: palette.onPrimary }} />
                   ) : (
                     <CheckCircleIcon sx={{ fontSize: 16 }} />
@@ -394,9 +429,9 @@ export default function DiscountsPage() {
                 }
                 sx={{ flex: 1 }}
                 onClick={handleSave}
-                disabled={createDiscount.isPending}
+                disabled={createDiscount.isPending || updateDiscount.isPending}
               >
-                {t('discounts.createDiscount')}
+                {editingId ? t('discounts.saveDiscount') : t('discounts.createDiscount')}
               </PrimaryPillButton>
             </PanelFooter>
           </FormPanel>

@@ -219,7 +219,21 @@
     "cancel": "Cancelar",
     "createDiscount": "Crear descuento",
     "permanent": "Permanente",
-    "allRooms": "Todas las habitaciones"
+    "allRooms": "Todas las habitaciones",
+    "tariffId": "Tarifa base",
+    "tariffIdPlaceholder": "Selecciona una tarifa",
+    "discountFixed": "Valor fijo del descuento",
+    "errorTariffRequired": "Debes seleccionar una tarifa",
+    "errorNameRequired": "El nombre es requerido",
+    "errorValuePositive": "El valor debe ser mayor a 0",
+    "errorPercentageMax": "El porcentaje no puede superar 100%",
+    "errorStartRequired": "La fecha de inicio es requerida",
+    "errorEndRequired": "La fecha de fin es requerida",
+    "errorEndAfterStart": "La fecha fin debe ser posterior a la fecha inicio",
+    "errorCreate": "Error al crear el descuento",
+    "errorDelete": "Error al eliminar el descuento",
+    "editDiscount": "Editar descuento",
+    "saveDiscount": "Guardar cambios"
   },
   "reports": {
     "title": "Reporte de Ingresos",
