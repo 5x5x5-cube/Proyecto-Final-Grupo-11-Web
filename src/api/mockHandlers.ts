@@ -627,23 +627,29 @@ export const mockHandlers: MockRoute[] = [
   // ─── Discounts ───
   {
     method: 'GET',
-    pattern: /^\/bookings\/discounts$/,
+    pattern: /^\/inventory\/discounts$/,
     handler: () => ok(discounts),
   },
   {
     method: 'POST',
-    pattern: /^\/bookings\/discounts$/,
-    handler: _config => created({ id: 4, ...(_config?.body as object) }),
+    pattern: /^\/inventory\/discounts$/,
+    handler: _config =>
+      created({
+        id: crypto.randomUUID(),
+        status: 'active',
+        created_at: new Date().toISOString(),
+        ...(_config?.body as object),
+      }),
   },
   {
     method: 'PUT',
-    pattern: /^\/bookings\/discounts\/(\d+)$/,
-    handler: _config => ok({ id: 1, ...(_config?.body as object) }),
+    pattern: /^\/inventory\/discounts\/([^/]+)$/,
+    handler: (_config, match) => ok({ id: match[1], ...(_config?.body as object) }),
   },
   {
     method: 'DELETE',
-    pattern: /^\/bookings\/discounts\/(\d+)$/,
-    handler: () => ok({ message: 'Discount deleted' }),
+    pattern: /^\/inventory\/discounts\/([^/]+)$/,
+    handler: () => ({ status: 204, data: undefined }),
   },
 
   // ─── Reports ───
