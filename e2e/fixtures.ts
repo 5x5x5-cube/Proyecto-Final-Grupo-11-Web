@@ -9,6 +9,7 @@ import { CartPage } from './pages/cart.page';
 import { ConfirmationPage } from './pages/confirmation.page';
 import { RatesPage } from './pages/rates.page';
 import { HotelLoginPage } from './pages/hotel-login.page';
+import { TransactionsPage } from './pages/transactions.page';
 
 /**
  * Whether a real backend is available.
@@ -74,6 +75,7 @@ export const test = base.extend<{
   confirmationPage: ConfirmationPage;
   ratesPage: RatesPage;
   hotelLoginPage: HotelLoginPage;
+  transactionsPage: TransactionsPage;
   authenticatedPage: void;
 }>({
   homePage: async ({ page }, use) => {
@@ -114,6 +116,10 @@ export const test = base.extend<{
 
   hotelLoginPage: async ({ page }, use) => {
     await use(new HotelLoginPage(page));
+  },
+
+  transactionsPage: async ({ page }, use) => {
+    await use(new TransactionsPage(page));
   },
 
   /**

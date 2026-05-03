@@ -17,14 +17,6 @@ export const FilterBar = styled(Box)({
   alignItems: 'end',
 });
 
-export const FilterFieldLabel = styled('label')({
-  display: 'block',
-  fontSize: '12px',
-  color: palette.onSurfaceVariant,
-  marginBottom: '4px',
-  fontWeight: 500,
-});
-
 export const ClearLink = styled('button')({
   background: 'transparent',
   border: 'none',
