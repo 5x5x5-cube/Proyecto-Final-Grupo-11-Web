@@ -7,6 +7,7 @@ import BookOnlineIcon from '@mui/icons-material/BookOnline';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import PriceChangeIcon from '@mui/icons-material/PriceChange';
 import DiscountIcon from '@mui/icons-material/Discount';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -81,6 +82,12 @@ const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => 
       label: t('sidebar.discounts'),
       icon: DiscountIcon,
       path: '/hotel/discounts',
+    },
+    {
+      id: 'transacciones',
+      label: t('sidebar.transactions'),
+      icon: ReceiptLongIcon,
+      path: '/hotel/transactions',
     },
   ];
 
