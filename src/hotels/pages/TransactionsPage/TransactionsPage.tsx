@@ -5,13 +5,21 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ReplayIcon from '@mui/icons-material/Replay';
+import DownloadIcon from '@mui/icons-material/Download';
 import HotelAdminLayout from '@/design-system/layouts/HotelAdminLayout';
+import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import { useLocale } from '@/contexts/LocaleContext';
+import { useSnackbar } from '@/contexts/SnackbarContext';
 import { palette } from '@/design-system/theme/palette';
-import { usePaymentsSummary, usePaymentsList } from '@/api/hooks/useAdminPayments';
-import type { PaymentsSummary } from '@/api/hooks/useAdminPayments';
+import {
+  usePaymentsSummary,
+  usePaymentsList,
+  exportPaymentsCsv,
+} from '@/api/hooks/useAdminPayments';
+import type { PaymentsSummary, PaymentListItem } from '@/api/hooks/useAdminPayments';
 import TransactionsFilterBar from '@/modules/hotel-transactions/components/TransactionsFilterBar';
 import TransactionsTable from '@/modules/hotel-transactions/components/TransactionsTable';
+import TransactionDetailDrawer from '@/modules/hotel-transactions/components/TransactionDetailDrawer';
 import type { TransactionsFilters } from '@/modules/hotel-transactions/types';
 import { EMPTY_FILTERS } from '@/modules/hotel-transactions/types';
 import {
@@ -59,9 +67,12 @@ function formatApprovalRate(summary: PaymentsSummary | undefined): string {
 export default function TransactionsPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice } = useLocale();
+  const { showError, showSuccess } = useSnackbar();
 
   const [filters, setFilters] = useState<TransactionsFilters>(EMPTY_FILTERS);
   const [page, setPage] = useState(1);
+  const [selectedItem, setSelectedItem] = useState<PaymentListItem | null>(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   const dateRange = buildDateRange(filters);
   const summaryParams = { dateFrom: dateRange.dateFrom, dateTo: dateRange.dateTo };
@@ -87,6 +98,35 @@ export default function TransactionsPage() {
   const handleClearFilters = () => {
     setFilters(EMPTY_FILTERS);
     setPage(1);
+  };
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const blob = await exportPaymentsCsv({
+        status: filters.status,
+        method: filters.method,
+        dateFrom: dateRange.dateFrom,
+        dateTo: dateRange.dateTo,
+        amountMin: filters.amountMin,
+        amountMax: filters.amountMax,
+      });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      // Stamp the filename with the date so repeated exports don't overwrite.
+      const stamp = new Date().toISOString().slice(0, 10);
+      a.download = `transactions_${stamp}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      showSuccess(t('transactions.exportSuccess'));
+    } catch {
+      showError(t('transactions.errors.exportFailed'));
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const kpis = summary
@@ -135,6 +175,16 @@ export default function TransactionsPage() {
       activeNav="transacciones"
       title={t('transactions.title')}
       subtitle={t('transactions.subtitle')}
+      topbarActions={
+        <PrimaryPillButton
+          pillSize="sm"
+          startIcon={<DownloadIcon sx={{ fontSize: 16 }} />}
+          onClick={handleExport}
+          disabled={isExporting || isListLoading}
+        >
+          {t('transactions.exportButton')}
+        </PrimaryPillButton>
+      }
     >
       <KpiGrid>
         {isSummaryLoading
@@ -184,6 +234,13 @@ export default function TransactionsPage() {
         total={list?.total ?? 0}
         totalPages={list?.totalPages ?? 0}
         onPageChange={setPage}
+        onRowClick={setSelectedItem}
+      />
+
+      <TransactionDetailDrawer
+        item={selectedItem}
+        open={selectedItem !== null}
+        onClose={() => setSelectedItem(null)}
       />
     </HotelAdminLayout>
   );

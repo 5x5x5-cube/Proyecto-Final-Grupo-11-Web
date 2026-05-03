@@ -99,3 +99,40 @@ export function usePaymentsList(params: PaymentsListParams = {}) {
     queryFn: () => httpClient.get<PaymentsListResponse>('/payments', { params: queryParams }),
   });
 }
+
+// ── CSV export ──
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8090/api/v1';
+
+/**
+ * Download the payments CSV with the same filters as the listing.
+ *
+ * Uses raw `fetch` because the shared httpClient is JSON-only — it parses
+ * `response.json()` unconditionally, which would corrupt a CSV body.
+ */
+export async function exportPaymentsCsv(
+  params: Omit<PaymentsListParams, 'page' | 'pageSize'> = {}
+): Promise<Blob> {
+  const url = new URL(`${API_BASE_URL}/payments/export`);
+  url.searchParams.append('format', 'csv');
+  if (params.status) url.searchParams.append('status', params.status);
+  if (params.method) url.searchParams.append('method', params.method);
+  if (params.dateFrom) url.searchParams.append('dateFrom', params.dateFrom);
+  if (params.dateTo) url.searchParams.append('dateTo', params.dateTo);
+  if (params.amountMin !== undefined) {
+    url.searchParams.append('amountMin', String(params.amountMin));
+  }
+  if (params.amountMax !== undefined) {
+    url.searchParams.append('amountMax', String(params.amountMax));
+  }
+
+  const headers: Record<string, string> = {};
+  const token = localStorage.getItem('auth_token');
+  if (token) headers['Authorization'] = `Bearer ${token}`;
+
+  const response = await fetch(url.toString(), { method: 'GET', headers });
+  if (!response.ok) {
+    throw { status: response.status };
+  }
+  return response.blob();
+}
