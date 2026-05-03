@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Skeleton } from '@mui/material';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
@@ -5,14 +6,15 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ReplayIcon from '@mui/icons-material/Replay';
 import HotelAdminLayout from '@/design-system/layouts/HotelAdminLayout';
-import Text from '@/design-system/components/Text';
 import { useLocale } from '@/contexts/LocaleContext';
 import { palette } from '@/design-system/theme/palette';
-import { usePaymentsSummary } from '@/api/hooks/useAdminPayments';
+import { usePaymentsSummary, usePaymentsList } from '@/api/hooks/useAdminPayments';
 import type { PaymentsSummary } from '@/api/hooks/useAdminPayments';
+import TransactionsFilterBar from '@/modules/hotel-transactions/components/TransactionsFilterBar';
+import TransactionsTable from '@/modules/hotel-transactions/components/TransactionsTable';
+import type { TransactionsFilters } from '@/modules/hotel-transactions/types';
+import { EMPTY_FILTERS } from '@/modules/hotel-transactions/types';
 import {
-  SectionCard,
-  EmptyState,
   KpiGrid,
   KpiCard,
   KpiCardHeader,
@@ -23,12 +25,23 @@ import {
 } from './TransactionsPage.styles';
 
 const KPI_CARD_COUNT = 4;
+const PAGE_SIZE = 20;
 
 /**
- * Format a 0..1 fraction as a localized percentage with no decimals.
- * Falls back to "—" when no decided transactions exist (avoid showing 0%
- * which would look like every transaction was rejected).
+ * Translate the date inputs (YYYY-MM-DD) into the ISO datetimes the backend
+ * expects. The "to" boundary covers the full day so a same-day filter still
+ * matches transactions created late in the afternoon.
  */
+function buildDateRange(filters: TransactionsFilters): {
+  dateFrom?: string;
+  dateTo?: string;
+} {
+  return {
+    dateFrom: filters.dateFrom ? `${filters.dateFrom}T00:00:00` : undefined,
+    dateTo: filters.dateTo ? `${filters.dateTo}T23:59:59` : undefined,
+  };
+}
+
 function formatApprovalRate(summary: PaymentsSummary | undefined): string {
   if (!summary) return '—';
   const decided = summary.approvedCount + summary.declinedCount;
@@ -39,13 +52,42 @@ function formatApprovalRate(summary: PaymentsSummary | undefined): string {
 /**
  * Admin transactions monitoring page (HU4.4).
  *
- * This commit lands the summary cards backed by GET /payments/summary.
- * The filterable table, detail panel and CSV export follow next.
+ * Wires the summary cards (commit 4) with the filterable, paginated table
+ * (commit 5). Filters are owned here and fan out to both the summary and
+ * the listing queries so the metrics always reflect the visible rows.
  */
 export default function TransactionsPage() {
   const { t } = useTranslation('hotels');
   const { formatPrice } = useLocale();
-  const { data: summary, isLoading } = usePaymentsSummary();
+
+  const [filters, setFilters] = useState<TransactionsFilters>(EMPTY_FILTERS);
+  const [page, setPage] = useState(1);
+
+  const dateRange = buildDateRange(filters);
+  const summaryParams = { dateFrom: dateRange.dateFrom, dateTo: dateRange.dateTo };
+  const listParams = {
+    status: filters.status,
+    method: filters.method,
+    dateFrom: dateRange.dateFrom,
+    dateTo: dateRange.dateTo,
+    amountMin: filters.amountMin,
+    amountMax: filters.amountMax,
+    page,
+    pageSize: PAGE_SIZE,
+  };
+
+  const { data: summary, isLoading: isSummaryLoading } = usePaymentsSummary(summaryParams);
+  const { data: list, isLoading: isListLoading } = usePaymentsList(listParams);
+
+  const handleFiltersChange = (next: TransactionsFilters) => {
+    setFilters(next);
+    setPage(1); // any filter change resets to the first page
+  };
+
+  const handleClearFilters = () => {
+    setFilters(EMPTY_FILTERS);
+    setPage(1);
+  };
 
   const kpis = summary
     ? [
@@ -56,9 +98,7 @@ export default function TransactionsPage() {
           iconColor: palette.primary,
           label: t('transactions.summary.totalProcessed'),
           value: formatPrice(summary.totalProcessed),
-          subtext: t('transactions.summary.transactionCount', {
-            count: summary.approvedCount,
-          }),
+          subtext: t('transactions.summary.transactionCount', { count: summary.approvedCount }),
         },
         {
           key: 'approvalRate',
@@ -67,9 +107,7 @@ export default function TransactionsPage() {
           iconColor: palette.success,
           label: t('transactions.summary.approvalRate'),
           value: formatApprovalRate(summary),
-          subtext: t('transactions.summary.transactionCount', {
-            count: summary.transactionCount,
-          }),
+          subtext: t('transactions.summary.transactionCount', { count: summary.transactionCount }),
         },
         {
           key: 'totalDeclined',
@@ -78,9 +116,7 @@ export default function TransactionsPage() {
           iconColor: palette.error,
           label: t('transactions.summary.totalDeclined'),
           value: formatPrice(summary.totalDeclined),
-          subtext: t('transactions.summary.transactionCount', {
-            count: summary.declinedCount,
-          }),
+          subtext: t('transactions.summary.transactionCount', { count: summary.declinedCount }),
         },
         {
           key: 'totalRefunded',
@@ -89,9 +125,7 @@ export default function TransactionsPage() {
           iconColor: palette.warning,
           label: t('transactions.summary.totalRefunded'),
           value: formatPrice(summary.totalRefunded),
-          subtext: t('transactions.summary.transactionCount', {
-            count: summary.refundedCount,
-          }),
+          subtext: t('transactions.summary.transactionCount', { count: summary.refundedCount }),
         },
       ]
     : [];
@@ -103,7 +137,7 @@ export default function TransactionsPage() {
       subtitle={t('transactions.subtitle')}
     >
       <KpiGrid>
-        {isLoading
+        {isSummaryLoading
           ? Array.from({ length: KPI_CARD_COUNT }).map((_, i) => (
               <KpiCard key={i}>
                 <KpiCardHeader>
@@ -136,11 +170,21 @@ export default function TransactionsPage() {
             })}
       </KpiGrid>
 
-      <SectionCard>
-        <EmptyState>
-          <Text textVariant="body">{t('transactions.empty')}</Text>
-        </EmptyState>
-      </SectionCard>
+      <TransactionsFilterBar
+        filters={filters}
+        onChange={handleFiltersChange}
+        onClear={handleClearFilters}
+      />
+
+      <TransactionsTable
+        items={list?.items ?? []}
+        isLoading={isListLoading}
+        page={list?.page ?? page}
+        pageSize={list?.pageSize ?? PAGE_SIZE}
+        total={list?.total ?? 0}
+        totalPages={list?.totalPages ?? 0}
+        onPageChange={setPage}
+      />
     </HotelAdminLayout>
   );
 }

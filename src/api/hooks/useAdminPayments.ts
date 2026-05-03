@@ -44,3 +44,58 @@ export function usePaymentsSummary(params: PaymentsSummaryParams = {}) {
       }),
   });
 }
+
+// ── Listing ──
+
+export type PaymentStatus = 'approved' | 'declined' | 'processing' | 'refunded';
+export type PaymentMethodType = 'credit_card' | 'debit_card' | 'digital_wallet' | 'transfer';
+
+export interface PaymentsListParams {
+  status?: PaymentStatus;
+  method?: PaymentMethodType;
+  dateFrom?: string;
+  dateTo?: string;
+  amountMin?: number;
+  amountMax?: number;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface PaymentListItem {
+  id: string;
+  userId: string;
+  amount: number;
+  currency: string;
+  method: string;
+  methodLabel: string;
+  status: string;
+  transactionId: string | null;
+  errorCode: string | null;
+  createdAt: string;
+  processedAt: string | null;
+}
+
+export interface PaymentsListResponse {
+  items: PaymentListItem[];
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+export function usePaymentsList(params: PaymentsListParams = {}) {
+  const queryParams: Record<string, string | number> = {};
+  if (params.status) queryParams.status = params.status;
+  if (params.method) queryParams.method = params.method;
+  if (params.dateFrom) queryParams.dateFrom = params.dateFrom;
+  if (params.dateTo) queryParams.dateTo = params.dateTo;
+  if (params.amountMin !== undefined) queryParams.amountMin = params.amountMin;
+  if (params.amountMax !== undefined) queryParams.amountMax = params.amountMax;
+  queryParams.page = params.page ?? 1;
+  queryParams.pageSize = params.pageSize ?? 20;
+
+  return useQuery<PaymentsListResponse>({
+    queryKey: ['payments', 'admin', 'list', queryParams],
+    queryFn: () => httpClient.get<PaymentsListResponse>('/payments', { params: queryParams }),
+  });
+}
