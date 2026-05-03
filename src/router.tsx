@@ -19,6 +19,7 @@ import HotelReservationDetailPage from './hotels/pages/HotelReservationDetailPag
 import RatesPage from './hotels/pages/RatesPage';
 import DiscountsPage from './hotels/pages/DiscountsPage';
 import ReportsPage from './hotels/pages/ReportsPage';
+import TransactionsPage from './hotels/pages/TransactionsPage';
 import { ProtectedHotelRoute } from './hotels/auth/ProtectedHotelRoute';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
@@ -122,6 +123,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedHotelRoute>
         <ReportsPage />
+      </ProtectedHotelRoute>
+    ),
+  },
+  {
+    path: '/hotel/transactions',
+    element: (
+      <ProtectedHotelRoute>
+        <TransactionsPage />
       </ProtectedHotelRoute>
     ),
   },
