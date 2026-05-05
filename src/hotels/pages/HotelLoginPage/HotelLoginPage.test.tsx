@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/test/renderWithProviders';
 import HotelLoginPage from './HotelLoginPage';
@@ -101,10 +101,14 @@ describe('HotelLoginPage', () => {
     const user = await fillValidCredentials();
 
     // Focus on password and press Enter — implicit form submission.
+    // Don't await keyboard() — happy-dom's native form submit creates a
+    // pending fetch that never resolves, hanging the await indefinitely.
     screen.getByLabelText(/contrasena/i).focus();
-    await user.keyboard('{Enter}');
+    void user.keyboard('{Enter}');
 
-    expect(mocks.loginMutate).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(mocks.loginMutate).toHaveBeenCalledTimes(1);
+    });
     const [payload] = mocks.loginMutate.mock.calls[0];
     expect(payload).toEqual({ email: 'admin@hotel.com', password: 'secret123' });
   });
