@@ -38,7 +38,6 @@ import {
   HotelCardName,
   HotelCardLocation,
   HotelCardRatingRow,
-  HotelCardStars,
   HotelCardAmenities,
   HotelCardPriceColumn,
   HotelCardFromLabel,
@@ -368,8 +367,7 @@ export default function ResultsPage() {
                       {hotel.location}
                     </HotelCardLocation>
                     <HotelCardRatingRow>
-                      <RatingBadge rating={hotel.rating} />
-                      <HotelCardStars>{hotel.starsText}</HotelCardStars>
+                      <RatingBadge rating={hotel.rating} showStars="full" />
                       {hotel.reviewCount > 0 && (
                         <Text textVariant="caption">
                           ({hotel.reviewCount} {t('results.card.reviews')})

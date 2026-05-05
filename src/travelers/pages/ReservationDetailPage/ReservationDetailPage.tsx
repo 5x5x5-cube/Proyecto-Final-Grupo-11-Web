@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { useBookingDetail, useBookingPayments } from '@/api/hooks/useBookings';
-import { Box, Divider, Skeleton, Typography } from '@mui/material';
+import BookingNextSteps from '@/travelers/components/BookingNextSteps';
+import { useBookingDetail } from '@/api/hooks/useBookings';
+import { useHotelDetail } from '@/api/hooks/useSearch';
+import { usePaymentStatus } from '@/api/hooks/usePayments';
+import { Box, Divider, Skeleton } from '@mui/material';
 import Text from '@/design-system/components/Text';
 import { Link, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -15,12 +18,8 @@ import FreeBreakfastIcon from '@mui/icons-material/FreeBreakfast';
 import AcUnitIcon from '@mui/icons-material/AcUnit';
 import TvIcon from '@mui/icons-material/Tv';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
-import EmailIcon from '@mui/icons-material/Email';
 
 import ScheduleIcon from '@mui/icons-material/Schedule';
-import MarkEmailReadIcon from '@mui/icons-material/MarkEmailRead';
-import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
-import LuggageIcon from '@mui/icons-material/Luggage';
 import { useTranslation } from 'react-i18next';
 import { useLocale } from '@/contexts/LocaleContext';
 import TravelerLayout from '@/design-system/layouts/TravelerLayout';
@@ -32,10 +31,8 @@ import InfoGrid from '@/design-system/components/InfoGrid';
 import RatingBadge from '@/design-system/components/RatingBadge';
 import ModalOverlay from '@/design-system/components/ModalOverlay';
 import {
-  PrimaryPillButton,
   ErrorOutlinedPillButton,
   ErrorPillButton,
-  SuccessPillButton,
   NeutralOutlinedPillButton,
 } from '@/design-system/components/PillButton';
 import {
@@ -45,8 +42,9 @@ import {
   outlineVariant,
   success,
   successContainer,
+  warning,
+  warningContainer,
   error,
-  star,
   errorContainer,
 } from '@/design-system/theme/palette';
 import {
@@ -65,7 +63,6 @@ import {
   PageHeaderRow,
   PageTitle,
   BookingCodeRow,
-  ModalTriggerRow,
   HotelRow,
   HotelThumbnail,
   HotelInfoColumn,
@@ -79,16 +76,9 @@ import {
   PaymentAmount,
   PaymentBadge,
   PaymentRightCol,
-  ModalEmailBanner,
-  ModalEmailTitle,
   ModalSummarySection,
   ModalSectionLabel,
   ModalRow,
-  ModalRowValue,
-  ModalTotalLabel,
-  ModalTotalValue,
-  NextStepRow,
-  NextStepIcon,
   CancelModalRowValue,
   RefundTotalBox,
   RefundTotalLabel,
@@ -104,17 +94,18 @@ import {
 const ReservationDetailPage: React.FC = () => {
   const { id = '' } = useParams<{ id: string }>();
   const { data: booking, isLoading: isBookingLoading } = useBookingDetail(id);
-  const { isLoading: isPaymentsLoading } = useBookingPayments(id);
+  const payment = usePaymentStatus(booking?.paymentId ?? '');
+  const paymentData = payment.data;
+  const isPaymentsLoading = payment.isLoading;
+  const { data: hotelData } = useHotelDetail(booking?.hotelId ?? '');
 
-  const [confirmedOpen, setConfirmedOpen] = useState(false);
   const [cancelOpen, setCancelOpen] = useState(false);
   const { t } = useTranslation('travelers');
-  const { formatFixedPrice, formatDate, language } = useLocale();
+  const { formatFixedPrice, formatDate } = useLocale();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const modal = params.get('modal');
-    if (modal === 'confirmation') setConfirmedOpen(true);
     if (modal === 'cancel') setCancelOpen(true);
   }, []);
 
@@ -173,6 +164,15 @@ const ReservationDetailPage: React.FC = () => {
 
       <Divider sx={{ borderColor: outlineVariant }} />
 
+      {/* Next steps */}
+      <BookingNextSteps
+        status={booking.status}
+        hotelName={booking.hotelName ?? undefined}
+        roomName={booking.roomName ?? undefined}
+      />
+
+      <Divider sx={{ borderColor: outlineVariant }} />
+
       {/* Cancel box */}
       <CancelBox>
         <CancelBoxHeader>
@@ -199,117 +199,6 @@ const ReservationDetailPage: React.FC = () => {
 
       {/* Download button */}
     </RightSidebarContainer>
-  );
-
-  /* ─── Confirmed Modal ─── */
-  const ReservationConfirmedModal: React.FC<{ open: boolean; onClose: () => void }> = ({
-    open,
-    onClose,
-  }) => (
-    <ModalOverlay
-      open={open}
-      onClose={onClose}
-      icon={<CheckCircleIcon sx={{ fontSize: 24, color: success }} />}
-      iconBg={successContainer}
-      title={t('reservationDetail.confirmedModal.title')}
-      subtitle={t('reservationDetail.confirmedModal.subtitle')}
-      footer={
-        <>
-          <NeutralOutlinedPillButton onClick={onClose} pillSize="xs">
-            {t('reservationDetail.confirmedModal.close')}
-          </NeutralOutlinedPillButton>
-          <PrimaryPillButton
-            component={Link}
-            to="/reservations"
-            pillSize="xs"
-            sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}
-          >
-            <LuggageIcon sx={{ fontSize: 16 }} />
-            {t('reservationDetail.confirmedModal.viewReservations')}
-          </PrimaryPillButton>
-        </>
-      }
-    >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        {/* Email banner */}
-        <ModalEmailBanner>
-          <MarkEmailReadIcon sx={{ fontSize: 22, color: primary }} />
-          <div>
-            <ModalEmailTitle>{t('reservationDetail.confirmedModal.emailSent')}</ModalEmailTitle>
-            <Text textVariant="caption">carlos.mendoza@email.com</Text>
-          </div>
-        </ModalEmailBanner>
-
-        {/* Booking summary section */}
-        <ModalSummarySection>
-          <ModalSectionLabel>
-            {t('reservationDetail.confirmedModal.bookingSummary')}
-          </ModalSectionLabel>
-          {[
-            {
-              label: t('reservationDetail.confirmedModal.hotel'),
-              value: booking.hotelName ?? '—',
-            },
-            {
-              label: t('reservationDetail.confirmedModal.checkIn'),
-              value: `${formatDate(booking.checkIn, 'mediumWithDay')} \u2014 ${new Date(booking.checkIn).toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}`,
-            },
-            {
-              label: t('reservationDetail.confirmedModal.checkOut'),
-              value: `${formatDate(booking.checkOut, 'mediumWithDay')} \u2014 ${new Date(booking.checkOut).toLocaleTimeString(language === 'ES' ? 'es' : 'en', { hour: 'numeric', minute: '2-digit' })}`,
-            },
-            {
-              label: t('reservationDetail.confirmedModal.duration'),
-              value: t('reservationDetail.confirmedModal.nightsCount', { count: nights }),
-            },
-            {
-              label: t('reservationDetail.confirmedModal.room'),
-              value: booking.roomName ?? '—',
-            },
-            {
-              label: t('reservationDetail.confirmedModal.guests'),
-              value: t('reservationDetail.confirmedModal.guestsCount', {
-                count: booking.guests,
-              }),
-            },
-          ].map(row => (
-            <ModalRow key={row.label}>
-              <Text textVariant="hint">{row.label}</Text>
-              <ModalRowValue>{row.value}</ModalRowValue>
-            </ModalRow>
-          ))}
-          <Divider sx={{ borderColor: outlineVariant, my: '4px' }} />
-          <ModalRow>
-            <ModalTotalLabel>{t('reservationDetail.confirmedModal.total')}</ModalTotalLabel>
-            <ModalTotalValue>{fp(booking.totalPrice)}</ModalTotalValue>
-          </ModalRow>
-        </ModalSummarySection>
-
-        {/* Next steps */}
-        <ModalSummarySection>
-          <ModalSectionLabel>{t('reservationDetail.confirmedModal.whatsNext')}</ModalSectionLabel>
-          {[
-            {
-              icon: <EmailIcon sx={{ fontSize: 14, color: success }} />,
-              text: t('reservationDetail.confirmedModal.voucherSent'),
-            },
-            {
-              icon: <MeetingRoomIcon sx={{ fontSize: 14, color: success }} />,
-              text: t('reservationDetail.confirmedModal.roomReserved'),
-            },
-          ].map((step, i) => (
-            <NextStepRow key={i}>
-              <NextStepIcon>{step.icon}</NextStepIcon>
-              <Text
-                textVariant="hint"
-                sx={{ lineHeight: 1.5 }}
-                dangerouslySetInnerHTML={{ __html: step.text }}
-              />
-            </NextStepRow>
-          ))}
-        </ModalSummarySection>
-      </Box>
-    </ModalOverlay>
   );
 
   /* ─── Cancel Modal ─── */
@@ -464,14 +353,6 @@ const ReservationDetailPage: React.FC = () => {
                   {t('reservationDetail.bookingCode')} <strong>{booking.code}</strong>
                 </Text>
               </BookingCodeRow>
-
-              {/* Trigger buttons for modals */}
-              <ModalTriggerRow>
-                <SuccessPillButton onClick={() => setConfirmedOpen(true)} pillSize="xxs">
-                  <CheckCircleIcon sx={{ fontSize: 14, mr: '4px' }} />
-                  {t('reservationDetail.viewConfirmation')}
-                </SuccessPillButton>
-              </ModalTriggerRow>
             </div>
 
             {/* Hotel info section */}
@@ -490,13 +371,11 @@ const ReservationDetailPage: React.FC = () => {
                       <PlaceIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
                       <Text textVariant="hint">{booking.location ?? '—'}</Text>
                     </LocationRow>
-                    <HotelRatingRow>
-                      <RatingBadge rating={4.8} />
-                      <Typography sx={{ color: star, fontSize: 13 }}>
-                        &#9733;&#9733;&#9733;&#9733;&#9733;
-                      </Typography>
-                      <Text textVariant="caption">312 {t('reservationDetail.reviews')}</Text>
-                    </HotelRatingRow>
+                    {(hotelData as any)?.rating && (
+                      <HotelRatingRow>
+                        <RatingBadge rating={(hotelData as any).rating} showStars="single" />
+                      </HotelRatingRow>
+                    )}
                   </HotelInfoColumn>
                 </HotelRow>
 
@@ -578,27 +457,63 @@ const ReservationDetailPage: React.FC = () => {
                     />
                   </PaymentRightCol>
                 </PaymentRow>
+              ) : !booking.paymentId || (!isPaymentsLoading && !paymentData) ? (
+                <Box sx={{ padding: '14px 0' }}>
+                  <Text textVariant="hint" sx={{ color: onSurfaceVariant }}>
+                    {t('reservationDetail.paymentHistory.pendingPayment')}
+                  </Text>
+                </Box>
               ) : (
                 <Box sx={{ gap: 0, padding: '0' }}>
                   <PaymentRow>
                     <PaymentIcon>
-                      <CheckCircleIcon sx={{ fontSize: 20, color: success }} />
+                      {paymentData?.status === 'declined' ? (
+                        <CancelIcon sx={{ fontSize: 20, color: error }} />
+                      ) : paymentData?.status === 'processing' ? (
+                        <ScheduleIcon sx={{ fontSize: 20, color: warning }} />
+                      ) : (
+                        <CheckCircleIcon sx={{ fontSize: 20, color: success }} />
+                      )}
                     </PaymentIcon>
                     <Box sx={{ flex: 1 }}>
                       <Text textVariant="bodyMedium">
                         {t('reservationDetail.paymentHistory.bookingPayment')}
                       </Text>
                       <Text textVariant="caption">
-                        {booking.createdAt ? formatDate(booking.createdAt, 'medium') : '—'}
+                        {paymentData?.processedAt
+                          ? formatDate(paymentData.processedAt, 'medium')
+                          : booking.createdAt
+                            ? formatDate(booking.createdAt, 'medium')
+                            : '—'}
                       </Text>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <CreditCardIcon sx={{ fontSize: 14, color: onSurfaceVariant }} />
-                        <Text textVariant="caption">VISA &bull;&bull;&bull;&bull; 4242</Text>
+                        <Text textVariant="caption">
+                          {paymentData?.paymentMethod?.displayLabel ?? '—'}
+                        </Text>
                       </Box>
                     </Box>
                     <PaymentRightCol>
-                      <PaymentAmount>{fp(booking.totalPrice)}</PaymentAmount>
-                      <PaymentBadge>{t('reservationDetail.paymentHistory.approved')}</PaymentBadge>
+                      <PaymentAmount>
+                        {paymentData
+                          ? formatFixedPrice(paymentData.amount, paymentData.currency)
+                          : fp(booking.totalPrice)}
+                      </PaymentAmount>
+                      {paymentData?.status === 'approved' && (
+                        <PaymentBadge sx={{ background: successContainer, color: success }}>
+                          {t('reservationDetail.paymentHistory.approved')}
+                        </PaymentBadge>
+                      )}
+                      {paymentData?.status === 'processing' && (
+                        <PaymentBadge sx={{ background: warningContainer, color: warning }}>
+                          {t('reservationDetail.paymentHistory.processing')}
+                        </PaymentBadge>
+                      )}
+                      {paymentData?.status === 'declined' && (
+                        <PaymentBadge sx={{ background: errorContainer, color: error }}>
+                          {t('reservationDetail.paymentHistory.declined')}
+                        </PaymentBadge>
+                      )}
                     </PaymentRightCol>
                   </PaymentRow>
                 </Box>
@@ -612,7 +527,6 @@ const ReservationDetailPage: React.FC = () => {
       </ThreeColumnLayout>
 
       {/* Modals */}
-      <ReservationConfirmedModal open={confirmedOpen} onClose={() => setConfirmedOpen(false)} />
       <ReservationCancelModal open={cancelOpen} onClose={() => setCancelOpen(false)} />
     </TravelerLayout>
   );

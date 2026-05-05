@@ -409,16 +409,16 @@ export const NextStepRow = styled(Box)({
   padding: '6px 0',
 });
 
-export const NextStepIcon = styled(Box)({
+export const NextStepIcon = styled(Box)<{ $bg?: string }>(({ $bg }) => ({
   width: 28,
   height: 28,
   borderRadius: '50%',
-  background: successContainer,
+  background: $bg ?? successContainer,
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
   flexShrink: 0,
-});
+}));
 
 /* ─── Cancel Modal ─── */
 

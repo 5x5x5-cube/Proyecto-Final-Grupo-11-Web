@@ -255,5 +255,72 @@
     "statusPending": "Pending",
     "statusConfirmed": "Confirmed",
     "statusCancelled": "Cancelled"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "subtitle": "Monitor and review every payment transaction",
+    "exportButton": "Export CSV",
+    "summary": {
+      "totalProcessed": "Total processed",
+      "approvalRate": "Approval rate",
+      "totalDeclined": "Total declined",
+      "totalRefunded": "Total refunded",
+      "transactionCount": "{{count}} transactions"
+    },
+    "filters": {
+      "title": "Filters",
+      "status": "Status",
+      "method": "Payment method",
+      "dateFrom": "From",
+      "dateTo": "To",
+      "amountMin": "Min amount",
+      "amountMax": "Max amount",
+      "all": "All",
+      "clear": "Clear filters"
+    },
+    "status": {
+      "approved": "Approved",
+      "declined": "Declined",
+      "processing": "Processing",
+      "refunded": "Refunded"
+    },
+    "method": {
+      "creditCard": "Credit card",
+      "debitCard": "Debit card",
+      "digitalWallet": "Digital wallet",
+      "transfer": "Transfer"
+    },
+    "tableHeaders": {
+      "id": "ID",
+      "date": "Date",
+      "user": "Traveler",
+      "amount": "Amount",
+      "method": "Method",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "detail": {
+      "title": "Transaction detail",
+      "id": "Transaction ID",
+      "user": "Traveler (ID)",
+      "amount": "Amount",
+      "currency": "Currency",
+      "method": "Payment method",
+      "status": "Status",
+      "createdAt": "Created",
+      "processedAt": "Processed",
+      "transactionRef": "Bank reference",
+      "errorCode": "Decline reason",
+      "noErrorCode": "No reason on record",
+      "history": "Status history",
+      "close": "Close"
+    },
+    "empty": "No transactions match the current filters.",
+    "loading": "Loading transactions...",
+    "errors": {
+      "loadFailed": "We couldn't load the transactions",
+      "exportFailed": "We couldn't generate the CSV file"
+    },
+    "exportSuccess": "File downloaded successfully"
   }
 }

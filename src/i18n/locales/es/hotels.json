@@ -255,5 +255,72 @@
     "statusPending": "Pendiente",
     "statusConfirmed": "Confirmada",
     "statusCancelled": "Cancelada"
+  },
+  "transactions": {
+    "title": "Transacciones",
+    "subtitle": "Monitorea y consulta todas las transacciones de pago",
+    "exportButton": "Exportar CSV",
+    "summary": {
+      "totalProcessed": "Total procesado",
+      "approvalRate": "Tasa de aprobacion",
+      "totalDeclined": "Total rechazado",
+      "totalRefunded": "Total reembolsado",
+      "transactionCount": "{{count}} transacciones"
+    },
+    "filters": {
+      "title": "Filtros",
+      "status": "Estado",
+      "method": "Metodo de pago",
+      "dateFrom": "Desde",
+      "dateTo": "Hasta",
+      "amountMin": "Monto minimo",
+      "amountMax": "Monto maximo",
+      "all": "Todos",
+      "clear": "Limpiar filtros"
+    },
+    "status": {
+      "approved": "Aprobada",
+      "declined": "Rechazada",
+      "processing": "Procesando",
+      "refunded": "Reembolsada"
+    },
+    "method": {
+      "creditCard": "Tarjeta de credito",
+      "debitCard": "Tarjeta de debito",
+      "digitalWallet": "Billetera digital",
+      "transfer": "Transferencia"
+    },
+    "tableHeaders": {
+      "id": "ID",
+      "date": "Fecha",
+      "user": "Viajero",
+      "amount": "Monto",
+      "method": "Metodo",
+      "status": "Estado",
+      "actions": "Acciones"
+    },
+    "detail": {
+      "title": "Detalle de transaccion",
+      "id": "ID de transaccion",
+      "user": "Viajero (ID)",
+      "amount": "Monto",
+      "currency": "Moneda",
+      "method": "Metodo de pago",
+      "status": "Estado",
+      "createdAt": "Creada",
+      "processedAt": "Procesada",
+      "transactionRef": "Referencia bancaria",
+      "errorCode": "Motivo de rechazo",
+      "noErrorCode": "Sin motivo registrado",
+      "history": "Historial de estados",
+      "close": "Cerrar"
+    },
+    "empty": "No hay transacciones que coincidan con los filtros.",
+    "loading": "Cargando transacciones...",
+    "errors": {
+      "loadFailed": "No pudimos cargar las transacciones",
+      "exportFailed": "No pudimos generar el archivo CSV"
+    },
+    "exportSuccess": "Archivo descargado correctamente"
   }
 }
