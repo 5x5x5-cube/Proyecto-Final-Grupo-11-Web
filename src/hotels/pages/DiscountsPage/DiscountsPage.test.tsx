@@ -10,6 +10,13 @@ vi.mock('react-router-dom', async () => ({
 
 vi.mock('@/api/hooks/useDiscounts', () => ({
   useDiscounts: vi.fn(() => ({ data: [], isLoading: false })),
+  useCreateDiscount: vi.fn(() => ({ mutate: vi.fn(), isPending: false })),
+  useUpdateDiscount: vi.fn(() => ({ mutate: vi.fn(), isPending: false })),
+  useDeleteDiscount: vi.fn(() => ({ mutate: vi.fn(), isPending: false })),
+}));
+
+vi.mock('@/api/hooks/useTariffs', () => ({
+  useTariffs: vi.fn(() => ({ data: [], isLoading: false })),
 }));
 
 describe('DiscountsPage', () => {

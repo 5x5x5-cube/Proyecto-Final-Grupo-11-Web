@@ -219,7 +219,21 @@
     "cancel": "Cancel",
     "createDiscount": "Create discount",
     "permanent": "Permanent",
-    "allRooms": "All rooms"
+    "allRooms": "All rooms",
+    "tariffId": "Base tariff",
+    "tariffIdPlaceholder": "Select a tariff",
+    "discountFixed": "Fixed discount value",
+    "errorTariffRequired": "You must select a tariff",
+    "errorNameRequired": "Name is required",
+    "errorValuePositive": "Value must be greater than 0",
+    "errorPercentageMax": "Percentage cannot exceed 100%",
+    "errorStartRequired": "Start date is required",
+    "errorEndRequired": "End date is required",
+    "errorEndAfterStart": "End date must be after start date",
+    "errorCreate": "Error creating discount",
+    "errorDelete": "Error deleting discount",
+    "editDiscount": "Edit discount",
+    "saveDiscount": "Save changes"
   },
   "reports": {
     "title": "Revenue Report",
