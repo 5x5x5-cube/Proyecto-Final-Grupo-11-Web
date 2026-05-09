@@ -3,7 +3,7 @@ import { mockDestinations } from '../travelers/data/mockDestinations';
 import { mockHotels } from '../travelers/data/mockHotels';
 import { mockReservations } from '../travelers/data/mockReservations';
 import { hotelReservations, reservationSummary } from '../hotels/data/mockHotelReservations';
-import { discounts, tariffsList, hotelAdminRooms } from '../hotels/data/mockRates';
+import { tariffsList, hotelAdminRooms } from '../hotels/data/mockRates';
 import {
   dashboardStats,
   recentReservations,
@@ -625,32 +625,7 @@ export const mockHandlers: MockRoute[] = [
   },
 
   // ─── Discounts ───
-  {
-    method: 'GET',
-    pattern: /^\/inventory\/discounts$/,
-    handler: () => ok(discounts),
-  },
-  {
-    method: 'POST',
-    pattern: /^\/inventory\/discounts$/,
-    handler: _config =>
-      created({
-        id: crypto.randomUUID(),
-        status: 'active',
-        created_at: new Date().toISOString(),
-        ...(_config?.body as object),
-      }),
-  },
-  {
-    method: 'PUT',
-    pattern: /^\/inventory\/discounts\/([^/]+)$/,
-    handler: (_config, match) => ok({ id: match[1], ...(_config?.body as object) }),
-  },
-  {
-    method: 'DELETE',
-    pattern: /^\/inventory\/discounts\/([^/]+)$/,
-    handler: () => ({ status: 204, data: undefined }),
-  },
+  // Discounts handlers removed — requests go to real API
 
   // ─── Reports ───
   {
