@@ -121,6 +121,8 @@ export default function PropertyDetailPage() {
         city?: string;
         country?: string;
         rating?: number;
+        image_url?: string;
+        images?: string[];
       }
     | null
     | undefined;
@@ -133,6 +135,7 @@ export default function PropertyDetailPage() {
     taxRate: number;
     description: string;
     amenities: Array<{ icon: string; label: string }>;
+    images: string[];
   }>;
 
   // Only show rooms with enough capacity for the number of guests
@@ -188,6 +191,19 @@ export default function PropertyDetailPage() {
   const hotelCountry = hotel?.country ?? '';
   const hotelRating = hotel?.rating ?? 0;
   const hotelDescription = hotel?.description ?? '';
+
+  const GALLERY_FALLBACK_GRADIENTS = [
+    'linear-gradient(135deg, #003740, #006874)',
+    'linear-gradient(135deg, #1A6B4F, #4A9F7E)',
+    'linear-gradient(135deg, #5B5EA6, #8E91CC)',
+    'linear-gradient(135deg, #B5451B, #E07050)',
+    'linear-gradient(135deg, #7B4F00, #C89030)',
+  ];
+  const hotelImages = hotel?.images ?? [];
+  const galleryItems = Array.from({ length: 5 }, (_, i) => ({
+    url: hotelImages[i] ?? '',
+    gradient: GALLERY_FALLBACK_GRADIENTS[i],
+  }));
 
   const BookingSidebar = () => (
     <SidebarWrapper>
@@ -265,12 +281,34 @@ export default function PropertyDetailPage() {
       <ContentColumn>
         {/* Gallery */}
         <GalleryGrid>
-          <GalleryMainImage />
-          <Box sx={{ background: 'linear-gradient(135deg, #1A6B4F, #4A9F7E)' }} />
-          <Box sx={{ background: 'linear-gradient(135deg, #5B5EA6, #8E91CC)' }} />
-          <Box sx={{ background: 'linear-gradient(135deg, #B5451B, #E07050)' }} />
+          <GalleryMainImage
+            sx={
+              galleryItems[0].url
+                ? { backgroundImage: `url(${galleryItems[0].url})` }
+                : { background: galleryItems[0].gradient }
+            }
+          />
+          {[1, 2, 3].map(i => (
+            <Box
+              key={i}
+              sx={
+                galleryItems[i].url
+                  ? {
+                      backgroundImage: `url(${galleryItems[i].url})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }
+                  : { background: galleryItems[i].gradient }
+              }
+            />
+          ))}
           <GalleryMorePhotosOverlay
             sx={{
+              ...(galleryItems[4].url
+                ? {
+                    backgroundImage: `url(${galleryItems[4].url})`,
+                  }
+                : { background: galleryItems[4].gradient }),
               '&::after': {
                 content: `"${t('propertyDetail.morePhotos')}"`,
                 position: 'absolute',
@@ -364,7 +402,10 @@ export default function PropertyDetailPage() {
                 const isSelected = selectedRoomId ? room.id === selectedRoomId : idx === 0;
                 return (
                   <RoomCard key={room.id}>
-                    <RoomThumbnail gradient={ROOM_GRADIENTS[idx % ROOM_GRADIENTS.length]} />
+                    <RoomThumbnail
+                      $imageUrl={room.images?.[0] ?? ''}
+                      $gradient={ROOM_GRADIENTS[idx % ROOM_GRADIENTS.length]}
+                    />
                     <Box sx={{ flex: 1 }}>
                       <Text textVariant="cardSubheading" sx={{ mb: '4px' }}>
                         {room.roomType}
