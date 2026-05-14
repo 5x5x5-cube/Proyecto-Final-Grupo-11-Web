@@ -46,7 +46,6 @@ import {
   ContentColumn,
   GalleryGrid,
   GalleryMainImage,
-  GalleryMorePhotosOverlay,
   HeaderRow,
   HeaderInfo,
   HotelTypeLabel,
@@ -302,29 +301,16 @@ export default function PropertyDetailPage() {
               }
             />
           ))}
-          <GalleryMorePhotosOverlay
-            sx={{
-              ...(galleryItems[4].url
+          <Box
+            sx={
+              galleryItems[4].url
                 ? {
                     backgroundImage: `url(${galleryItems[4].url})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                   }
-                : { background: galleryItems[4].gradient }),
-              '&::after': {
-                content: `"${t('propertyDetail.morePhotos')}"`,
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0,0,0,0.45)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontSize: 14,
-                fontWeight: 500,
-              },
-            }}
+                : { background: galleryItems[4].gradient }
+            }
           />
         </GalleryGrid>
 
