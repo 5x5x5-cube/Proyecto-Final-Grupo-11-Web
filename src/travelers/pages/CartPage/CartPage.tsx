@@ -20,7 +20,7 @@ export default function CartPage() {
   const setCart = useSetCart();
   const { data: hotelData } = useHotelDetail(cart?.hotelId ?? '');
   const { data: roomsData } = useHotelRooms(cart?.hotelId ?? '');
-  const cartRoom = (roomsData as any)?.rooms?.find((r: any) => r.id === cart?.roomId);
+  const cartRoom = (roomsData as any)?.find?.((r: any) => r.id === cart?.roomId);
   const { guestInfo } = useAuth();
   const navigate = useNavigate();
   const { showError } = useSnackbar();
