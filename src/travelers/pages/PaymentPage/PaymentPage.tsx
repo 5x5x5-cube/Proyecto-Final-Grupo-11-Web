@@ -1,6 +1,7 @@
 import { useRef, useCallback } from 'react';
 import CheckoutLayout from '@/design-system/layouts/CheckoutLayout';
 import { usePaymentFlow } from '@/modules/checkout/hooks/usePaymentForm';
+import { useHotelDetail } from '@/api/hooks/useSearch';
 import PaymentSidebar from '@/modules/checkout/components/PaymentSidebar/PaymentSidebar';
 import ProcessingOverlay from '@/modules/checkout/components/ProcessingOverlay/ProcessingOverlay';
 import PaymentMethodForm from '@/modules/checkout/components/PaymentMethodForm/PaymentMethodForm';
@@ -9,6 +10,7 @@ import type { PaymentMethodFormHandle } from '@/modules/checkout/components/Paym
 export default function PaymentPage() {
   const formRef = useRef<PaymentMethodFormHandle>(null);
   const flow = usePaymentFlow();
+  const { data: hotelData } = useHotelDetail(flow.cart?.hotelId ?? '');
 
   const handlePay = useCallback(() => {
     const handle = formRef.current;
@@ -30,6 +32,7 @@ export default function PaymentPage() {
           isFormValid={flow.isFormValid}
           isProcessing={flow.isProcessing}
           onPay={handlePay}
+          imageUrl={(hotelData as any)?.image_url}
         />
       }
     >

@@ -28,9 +28,11 @@ import {
 
 interface Props {
   cart: NormalizedCart;
+  hotelImageUrl?: string;
+  roomImageUrl?: string;
 }
 
-export default function HotelSummaryCard({ cart }: Props) {
+export default function HotelSummaryCard({ cart, hotelImageUrl, roomImageUrl }: Props) {
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
 
@@ -43,7 +45,7 @@ export default function HotelSummaryCard({ cart }: Props) {
     >
       <ContentWrapper>
         <HotelInfoRow>
-          <HotelImagePlaceholder />
+          <HotelImagePlaceholder $imageUrl={hotelImageUrl} />
           <HotelDetails>
             {cart.hotelType && <HotelType>{cart.hotelType}</HotelType>}
             <HotelName>{cart.hotelName}</HotelName>
@@ -88,7 +90,7 @@ export default function HotelSummaryCard({ cart }: Props) {
         />
 
         <RoomRow>
-          <RoomImagePlaceholder />
+          <RoomImagePlaceholder $imageUrl={roomImageUrl} />
           <Box sx={{ flex: 1 }}>
             <RoomName>{cart.roomName}</RoomName>
             {cart.roomFeatures && <RoomFeatures>{cart.roomFeatures}</RoomFeatures>}

@@ -244,13 +244,15 @@ export const HotelRow = styled(Box)({
   alignItems: 'flex-start',
 });
 
-export const HotelThumbnail = styled(Box)({
+export const HotelThumbnail = styled(Box)<{ $imageUrl?: string }>(({ $imageUrl }) => ({
   width: 100,
   height: 100,
   borderRadius: '12px',
-  background: 'linear-gradient(135deg, #003740, #006874)',
+  background: $imageUrl
+    ? `url(${$imageUrl}) center/cover no-repeat`
+    : 'linear-gradient(135deg, #003740, #006874)',
   flexShrink: 0,
-});
+}));
 
 export const HotelInfoColumn = styled(Box)({
   flex: 1,
@@ -282,13 +284,15 @@ export const RoomRow = styled(Box)({
   borderRadius: '12px',
 });
 
-export const RoomThumbnail = styled(Box)({
+export const RoomThumbnail = styled(Box)<{ $imageUrl?: string }>(({ $imageUrl }) => ({
   width: 56,
   height: 56,
   borderRadius: '10px',
-  background: 'linear-gradient(135deg, #006874, #4A9FAA)',
+  background: $imageUrl
+    ? `url(${$imageUrl}) center/cover no-repeat`
+    : 'linear-gradient(135deg, #006874, #4A9FAA)',
   flexShrink: 0,
-});
+}));
 
 export const RoomAmenityTag = styled(Box)({
   fontSize: 11,

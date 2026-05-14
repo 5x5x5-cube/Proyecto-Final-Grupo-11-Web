@@ -37,7 +37,9 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
   const { data: payment } = usePaymentStatus(paymentId);
   const { data: booking } = useBookingByPaymentId(paymentId);
   const { data: hotel } = useHotelDetail(booking?.hotelId ?? '') as {
-    data: { name?: string; city?: string; country?: string; rating?: number } | undefined;
+    data:
+      | { name?: string; city?: string; country?: string; rating?: number; image_url?: string }
+      | undefined;
   };
 
   const bookingLoaded = !!booking && !!hotel;
@@ -81,7 +83,7 @@ export default function ConfirmationSidebar({ paymentId }: Props) {
       {bookingLoaded ? (
         <>
           <HotelMiniCard>
-            <HotelThumbnail />
+            <HotelThumbnail $imageUrl={hotel?.image_url} />
             <Box>
               <HotelTypeLabel>{t('confirmation.sidebar.hotelType')}</HotelTypeLabel>
               <HotelNameText>{hotel.name}</HotelNameText>

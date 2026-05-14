@@ -13,13 +13,15 @@ export const HotelInfoRow = styled(Box)({
   alignItems: 'flex-start',
 });
 
-export const HotelImagePlaceholder = styled(Box)({
+export const HotelImagePlaceholder = styled(Box)<{ $imageUrl?: string }>(({ $imageUrl }) => ({
   width: 120,
   height: 90,
   borderRadius: '12px',
-  background: 'linear-gradient(135deg, #003740, #006874)',
+  background: $imageUrl
+    ? `url(${$imageUrl}) center/cover no-repeat`
+    : 'linear-gradient(135deg, #003740, #006874)',
   flexShrink: 0,
-});
+}));
 
 export const HotelDetails = styled(Box)({
   flex: 1,
@@ -75,13 +77,15 @@ export const RoomRow = styled(Box)({
   borderRadius: '12px',
 });
 
-export const RoomImagePlaceholder = styled(Box)({
+export const RoomImagePlaceholder = styled(Box)<{ $imageUrl?: string }>(({ $imageUrl }) => ({
   width: 48,
   height: 48,
   borderRadius: '10px',
-  background: 'linear-gradient(135deg, #006874, #4A9FAA)',
+  background: $imageUrl
+    ? `url(${$imageUrl}) center/cover no-repeat`
+    : 'linear-gradient(135deg, #006874, #4A9FAA)',
   flexShrink: 0,
-});
+}));
 
 export const RoomName = styled(Typography)({
   fontSize: 15,

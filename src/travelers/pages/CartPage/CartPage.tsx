@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import CheckoutLayout from '@/design-system/layouts/CheckoutLayout';
 import CartPageSkeleton from './CartPage.skeleton';
 import { useCart, useSetCart } from '@/api/hooks/useCart';
+import { useHotelDetail } from '@/api/hooks/useSearch';
 import { getCartSelection } from '@/modules/checkout/cartStorage';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSnackbar } from '@/contexts/SnackbarContext';
@@ -17,6 +18,7 @@ import { CardList } from './CartPage.styles';
 export default function CartPage() {
   const { data: cart, isLoading, isPlaceholderData, error } = useCart();
   const setCart = useSetCart();
+  const { data: hotelData } = useHotelDetail(cart?.hotelId ?? '');
   const { guestInfo } = useAuth();
   const navigate = useNavigate();
   const { showError } = useSnackbar();
@@ -67,7 +69,7 @@ export default function CartPage() {
     >
       <CardList>
         <SyncingBanner visible={isPlaceholderData} />
-        <HotelSummaryCard cart={cart} />
+        <HotelSummaryCard cart={cart} hotelImageUrl={(hotelData as any)?.image_url} />
         <GuestInfoCard guest={guestInfo} />
         <CancellationPolicyCard checkIn={cart.checkIn} />
       </CardList>
