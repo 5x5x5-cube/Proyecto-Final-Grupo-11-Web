@@ -20,13 +20,15 @@ export const HotelMiniCard = styled(Box)({
   alignItems: 'flex-start',
 });
 
-export const HotelThumbnail = styled(Box)({
+export const HotelThumbnail = styled(Box)<{ $imageUrl?: string }>(({ $imageUrl }) => ({
   width: 80,
   height: 80,
   borderRadius: '12px',
-  background: 'linear-gradient(135deg, #003740, #006874)',
+  background: $imageUrl
+    ? `url(${$imageUrl}) center/cover no-repeat`
+    : 'linear-gradient(135deg, #003740, #006874)',
   flexShrink: 0,
-});
+}));
 
 export const HotelTypeLabel = styled(Typography)({
   fontSize: 11,

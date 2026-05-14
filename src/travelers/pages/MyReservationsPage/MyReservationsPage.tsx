@@ -11,6 +11,7 @@ import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import { palette } from '@/design-system/theme/palette';
 import UserSidebar from '@/travelers/components/UserSidebar';
+import { useHotelDetail } from '@/api/hooks/useSearch';
 import { useReservationTabs } from './useReservationTabs';
 import type { ReservationTab } from './useReservationTabs';
 import MyReservationsPageSkeleton from './MyReservationsPage.skeleton';
@@ -31,6 +32,14 @@ import {
   BookingCode,
   TotalLabel,
 } from './MyReservationsPage.styles';
+
+/* --- Hotel image thumbnail (fetches per hotel, React Query deduplicates) --- */
+function HotelCardThumbnail({ hotelId }: { hotelId: string }) {
+  const { data } = useHotelDetail(hotelId);
+  return (
+    <CardThumbnail $imageUrl={(data as any)?.image_url} sx={{ borderRadius: '12px 0 0 12px' }} />
+  );
+}
 
 /* --- Main --- */
 const MyReservationsPage: React.FC = () => {
@@ -83,12 +92,7 @@ const MyReservationsPage: React.FC = () => {
 
               return (
                 <ReservationCard key={b.id}>
-                  <CardThumbnail
-                    sx={{
-                      background: 'linear-gradient(135deg, #006874 0%, #4A9FAA 100%)',
-                      borderRadius: '12px 0 0 12px',
-                    }}
-                  />
+                  <HotelCardThumbnail hotelId={b.hotelId} />
 
                   <CardBody>
                     <Box>

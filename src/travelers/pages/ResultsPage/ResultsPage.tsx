@@ -143,6 +143,7 @@ export default function ResultsPage() {
     reviewCount: number;
     starsText: string;
     pricePerNight: number;
+    imageUrl: string;
     gradient: string;
     amenities: Array<{ key: string; icon: string; label: string }>;
     photoCount: number;
@@ -350,7 +351,7 @@ export default function ResultsPage() {
               >
                 <HotelCard>
                   {/* Image area */}
-                  <HotelCardImage gradient={hotel.gradient}>
+                  <HotelCardImage $imageUrl={hotel.imageUrl} $gradient={hotel.gradient}>
                     {hotel.photoCount > 0 && (
                       <PhotoCountBadge>
                         {t('results.card.photos', { count: hotel.photoCount })}

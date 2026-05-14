@@ -363,7 +363,7 @@ const ReservationDetailPage: React.FC = () => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {/* Hotel row */}
                 <HotelRow>
-                  <HotelThumbnail />
+                  <HotelThumbnail $imageUrl={(hotelData as any)?.image_url} />
                   <HotelInfoColumn>
                     <Text textVariant="overline">{t('reservationDetail.hotelType')}</Text>
                     <Text textVariant="sectionTitle">{booking.hotelName ?? '—'}</Text>
@@ -414,7 +414,7 @@ const ReservationDetailPage: React.FC = () => {
 
                 {/* Room row */}
                 <RoomRow>
-                  <RoomThumbnail />
+                  <RoomThumbnail $imageUrl={(hotelData as any)?.image_url} />
                   <Box sx={{ flex: 1 }}>
                     <Text textVariant="cardSubheading" sx={{ mb: '4px' }}>
                       {booking.roomName ?? '—'}

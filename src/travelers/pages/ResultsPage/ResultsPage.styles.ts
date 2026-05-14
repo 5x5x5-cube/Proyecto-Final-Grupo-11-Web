@@ -179,15 +179,17 @@ export const HotelCard = styled(Box)({
   '&:hover': { boxShadow: '0 2px 8px rgba(0,0,0,0.08)' },
 });
 
-export const HotelCardImage = styled(Box)<{ gradient: string }>(({ gradient }) => ({
-  width: 240,
-  flexShrink: 0,
-  background: gradient,
-  display: 'flex',
-  alignItems: 'flex-end',
-  padding: '12px',
-  position: 'relative',
-}));
+export const HotelCardImage = styled(Box)<{ $imageUrl?: string; $gradient?: string }>(
+  ({ $imageUrl, $gradient }) => ({
+    width: 240,
+    flexShrink: 0,
+    background: $imageUrl ? `url(${$imageUrl}) center/cover no-repeat` : $gradient,
+    display: 'flex',
+    alignItems: 'flex-end',
+    padding: '12px',
+    position: 'relative',
+  })
+);
 
 export const PhotoCountBadge = styled(Box)({
   backgroundColor: 'rgba(0,0,0,0.6)',
