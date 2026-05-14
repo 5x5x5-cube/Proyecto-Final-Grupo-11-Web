@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import HomePage from './travelers/pages/HomePage';
 import LoginPage from './travelers/pages/LoginPage';
@@ -13,7 +13,6 @@ import ReservationDetailPage from './travelers/pages/ReservationDetailPage/Reser
 
 import DesignSystemPage from './design-system/pages/DesignSystemPage';
 import HotelLoginPage from './hotels/pages/HotelLoginPage/HotelLoginPage';
-import DashboardPage from './hotels/pages/DashboardPage/DashboardPage';
 import ReservationsPage from './hotels/pages/ReservationsPage/ReservationsPage';
 import HotelReservationDetailPage from './hotels/pages/HotelReservationDetailPage/HotelReservationDetailPage';
 import RatesPage from './hotels/pages/RatesPage';
@@ -78,14 +77,7 @@ export const router = createBrowserRouter([
 
   // Hotel Admin Portal
   { path: '/hotel/login', element: <HotelLoginPage /> },
-  {
-    path: '/hotel/dashboard',
-    element: (
-      <ProtectedHotelRoute>
-        <DashboardPage />
-      </ProtectedHotelRoute>
-    ),
-  },
+  { path: '/hotel/dashboard', element: <Navigate to="/hotel/reservations" replace /> },
   {
     path: '/hotel/reservations',
     element: (

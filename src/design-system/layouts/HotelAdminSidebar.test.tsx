@@ -30,8 +30,13 @@ describe('HotelAdminSidebar', () => {
     );
   });
 
+  it('does not render a dashboard nav item', () => {
+    renderWithProviders(<HotelAdminSidebar activeItem="reservas" />);
+    expect(screen.queryByText(/dashboard/i)).not.toBeInTheDocument();
+  });
+
   it('renders the logout item as a button (not a router link)', () => {
-    renderWithProviders(<HotelAdminSidebar activeItem="dashboard" />);
+    renderWithProviders(<HotelAdminSidebar activeItem="reservas" />);
     // The logout entry must NOT be an <a> — it has to be a real button so it
     // can trigger session cleanup instead of naked navigation. We query by
     // the visible label and then assert on the tag.
@@ -43,7 +48,7 @@ describe('HotelAdminSidebar', () => {
 
   it('clicking logout clears the session and navigates to /hotel/login', async () => {
     const user = userEvent.setup({ delay: null });
-    renderWithProviders(<HotelAdminSidebar activeItem="dashboard" />);
+    renderWithProviders(<HotelAdminSidebar activeItem="reservas" />);
 
     const logoutLabel = screen.getByText(/cerrar sesi[oó]n/i);
     const button = logoutLabel.closest('button');

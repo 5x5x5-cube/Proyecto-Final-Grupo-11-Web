@@ -46,10 +46,24 @@ async function request<T>(method: Method, path: string, config?: RequestConfig):
   const response = await fetch(url, fetchOptions);
 
   if (!response.ok) {
-    if (response.status === 401 && localStorage.getItem('auth_token')) {
+    if (
+      response.status === 401 &&
+      localStorage.getItem('auth_token') &&
+      !path.startsWith('/auth/')
+    ) {
+      const isHotelAdmin = (() => {
+        try {
+          const u = JSON.parse(localStorage.getItem('auth_user') ?? '');
+          return u?.role === 'hotel_admin';
+        } catch {
+          return false;
+        }
+      })();
       localStorage.removeItem('auth_token');
       localStorage.removeItem('auth_user');
-      window.location.href = '/login';
+      localStorage.removeItem('auth_hotel_id');
+      localStorage.removeItem('auth_hotel_info');
+      window.location.href = isHotelAdmin ? '/hotel/login' : '/login';
       return undefined as T;
     }
     const errorData = await response.json().catch(() => ({ message: response.statusText }));

@@ -81,6 +81,7 @@ export default function HomePage() {
     country: string;
     hotelCount: number;
     gradient: string;
+    imageUrl?: string | null;
     minPrice?: number;
   }>;
 
@@ -318,9 +319,18 @@ export default function HomePage() {
           {mockDestinations.map(dest => (
             <DestinationCard
               key={dest.name}
-              onClick={() => navigate(`/results?destination=${encodeURIComponent(dest.name)}`)}
+              onClick={() => {
+                handleSelectDestination(dest.name, dest.country);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
-              <DestinationGradient sx={{ background: dest.gradient }} />
+              <DestinationGradient
+                sx={{
+                  background: dest.imageUrl
+                    ? `url(${dest.imageUrl}) center/cover no-repeat`
+                    : dest.gradient,
+                }}
+              />
               <DestinationOverlay>
                 <DestinationName>{dest.name}</DestinationName>
                 <DestinationMeta>
