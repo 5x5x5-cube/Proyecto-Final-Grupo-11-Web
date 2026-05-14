@@ -318,7 +318,10 @@ export default function HomePage() {
           {mockDestinations.map(dest => (
             <DestinationCard
               key={dest.name}
-              onClick={() => navigate(`/results?destination=${encodeURIComponent(dest.name)}`)}
+              onClick={() => {
+                handleSelectDestination(dest.name, dest.country);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             >
               <DestinationGradient sx={{ background: dest.gradient }} />
               <DestinationOverlay>
