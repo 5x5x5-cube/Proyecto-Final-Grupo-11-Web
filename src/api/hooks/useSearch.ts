@@ -5,6 +5,7 @@ import { httpClient } from '../httpClient';
 interface BackendDestination {
   city: string;
   country: string;
+  image_url?: string;
 }
 
 interface DestinationsResponse {
@@ -53,6 +54,7 @@ export function useDestinations() {
         country: d.country,
         hotelCount: 0,
         gradient: gradientForCity(d.city),
+        imageUrl: d.image_url ?? null,
         minPrice: priceByCity[d.city] ?? 0,
       }));
     },

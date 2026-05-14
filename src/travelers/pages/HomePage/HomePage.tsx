@@ -81,6 +81,7 @@ export default function HomePage() {
     country: string;
     hotelCount: number;
     gradient: string;
+    imageUrl?: string | null;
     minPrice?: number;
   }>;
 
@@ -323,7 +324,13 @@ export default function HomePage() {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
             >
-              <DestinationGradient sx={{ background: dest.gradient }} />
+              <DestinationGradient
+                sx={{
+                  background: dest.imageUrl
+                    ? `url(${dest.imageUrl}) center/cover no-repeat`
+                    : dest.gradient,
+                }}
+              />
               <DestinationOverlay>
                 <DestinationName>{dest.name}</DestinationName>
                 <DestinationMeta>
