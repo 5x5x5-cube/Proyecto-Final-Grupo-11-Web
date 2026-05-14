@@ -113,14 +113,14 @@ describe('HotelLoginPage', () => {
     expect(payload).toEqual({ email: 'admin@hotel.com', password: 'secret123' });
   });
 
-  it('navigates to the dashboard on successful login', async () => {
+  it('navigates to reservations on successful login', async () => {
     mocks.loginMutate.mockImplementation((_payload, opts) => opts?.onSuccess?.(successResponse));
 
     renderWithProviders(<HotelLoginPage />);
     const user = await fillValidCredentials();
     await user.click(screen.getByRole('button', { name: /iniciar sesion/i }));
 
-    expect(mocks.navigate).toHaveBeenCalledWith('/hotel/dashboard');
+    expect(mocks.navigate).toHaveBeenCalledWith('/hotel/reservations');
   });
 
   it('persists the JWT and user in localStorage on successful login', async () => {

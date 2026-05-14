@@ -2,7 +2,6 @@ import React from 'react';
 import { Box } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import DashboardIcon from '@mui/icons-material/Dashboard';
 import BookOnlineIcon from '@mui/icons-material/BookOnline';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import PriceChangeIcon from '@mui/icons-material/PriceChange';
@@ -60,12 +59,6 @@ const HotelAdminSidebar: React.FC<HotelAdminSidebarProps> = ({ activeItem }) => 
   };
 
   const mainNavItems: NavItem[] = [
-    {
-      id: 'dashboard',
-      label: t('sidebar.dashboard'),
-      icon: DashboardIcon,
-      path: '/hotel/dashboard',
-    },
     {
       id: 'reservas',
       label: t('sidebar.reservations'),
