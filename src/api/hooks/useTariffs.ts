@@ -6,6 +6,7 @@ type RawTariff = {
   room_id: string;
   room_name: string;
   room_location: string;
+  room_image: string | null;
   rate_type: string;
   price_per_night: number;
   start_date: string | null;
@@ -24,6 +25,7 @@ function mapTariff(t: RawTariff) {
     roomId: t.room_id,
     roomName: t.room_name,
     roomLocation: t.room_location,
+    roomImage: t.room_image,
     rateType: t.rate_type,
     pricePerNight: t.price_per_night,
     startDate: t.start_date,
