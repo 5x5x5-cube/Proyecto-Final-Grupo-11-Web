@@ -176,13 +176,13 @@ export function useHotelBookingDetail(bookingId: string) {
 
 export function useUpdateBookingStatus() {
   const queryClient = useQueryClient();
+  const invalidate = () => queryClient.invalidateQueries({ queryKey: ['hotelBookings'] });
   return useMutation({
     mutationFn: ({ bookingId, action }: { bookingId: string; action: 'confirm' | 'reject' }) =>
       httpClient.post(`/bookings/hotel/${bookingId}/status`, {
         body: { action },
       }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['hotelBookings'] });
-    },
+    onSuccess: invalidate,
+    onError: invalidate,
   });
 }

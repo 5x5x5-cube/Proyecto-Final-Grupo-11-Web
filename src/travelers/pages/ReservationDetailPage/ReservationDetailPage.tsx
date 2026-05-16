@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import BookingNextSteps from '@/travelers/components/BookingNextSteps';
-import { useBookingDetail } from '@/api/hooks/useBookings';
+import { useBookingDetail, useCancelBooking } from '@/api/hooks/useBookings';
 import { useHotelDetail } from '@/api/hooks/useSearch';
 import { usePaymentStatus } from '@/api/hooks/usePayments';
 import { Box, Divider, Skeleton } from '@mui/material';
 import Text from '@/design-system/components/Text';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import HotelIcon from '@mui/icons-material/Hotel';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
@@ -205,112 +205,139 @@ const ReservationDetailPage: React.FC = () => {
   const ReservationCancelModal: React.FC<{ open: boolean; onClose: () => void }> = ({
     open,
     onClose,
-  }) => (
-    <ModalOverlay
-      open={open}
-      onClose={onClose}
-      icon={<CancelIcon sx={{ fontSize: 24, color: error }} />}
-      iconBg={errorContainer}
-      title={t('reservationDetail.cancelModal.title')}
-      subtitle={t('reservationDetail.cancelModal.subtitle')}
-      footer={
-        <>
-          <NeutralOutlinedPillButton onClick={onClose} pillSize="xs">
-            {t('reservationDetail.cancelModal.goBack')}
-          </NeutralOutlinedPillButton>
-          <ErrorPillButton pillSize="xs" sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <CancelIcon sx={{ fontSize: 16 }} />
-            {t('reservationDetail.cancelModal.confirmCancellation')}
-          </ErrorPillButton>
-        </>
-      }
-    >
-      <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-        {/* Cancellation policy section */}
-        <ModalSummarySection>
-          <ModalSectionLabel>{t('reservationDetail.cancelModal.policyApplied')}</ModalSectionLabel>
-          {[
-            {
-              label: t('reservationDetail.cancelModal.cancellationType'),
-              value: t('reservationDetail.cancelModal.cancellationTypeValue'),
-              color: success,
-            },
-            {
-              label: t('reservationDetail.cancelModal.deadlineLabel'),
-              value: formatDate('2026-03-12', 'medium'),
-              color: onSurface,
-            },
-            {
-              label: t('reservationDetail.cancelModal.currentDateLabel'),
-              value: formatDate('2026-03-05', 'medium'),
-              color: onSurface,
-            },
-            {
-              label: t('reservationDetail.cancelModal.penaltyApplied'),
-              value: t('reservationDetail.cancelModal.penaltyValue'),
-              color: success,
-            },
-          ].map(row => (
-            <ModalRow key={row.label}>
-              <Text textVariant="hint">{row.label}</Text>
-              <CancelModalRowValue color={row.color}>{row.value}</CancelModalRowValue>
-            </ModalRow>
-          ))}
-        </ModalSummarySection>
+  }) => {
+    const cancelBooking = useCancelBooking();
+    const navigate = useNavigate();
 
-        {/* Refund breakdown section */}
-        <ModalSummarySection>
-          <ModalSectionLabel>
-            {t('reservationDetail.cancelModal.refundBreakdown')}
-          </ModalSectionLabel>
-          {[
-            {
-              label: t('reservationDetail.cancelModal.originalAmount'),
-              value: fp(booking.totalPrice),
-              color: onSurface,
-            },
-            {
-              label: t('reservationDetail.cancelModal.cancellationPenalty'),
-              value: `-${fp(0)}`,
-              color: success,
-            },
-          ].map(row => (
-            <ModalRow key={row.label}>
-              <Text textVariant="hint">{row.label}</Text>
-              <CancelModalRowValue color={row.color}>{row.value}</CancelModalRowValue>
-            </ModalRow>
-          ))}
-          <Divider sx={{ borderColor: outlineVariant, my: '4px' }} />
-          <RefundTotalBox>
-            <RefundTotalLabel>{t('reservationDetail.cancelModal.totalRefund')}</RefundTotalLabel>
-            <RefundTotalValue>{fp(booking.totalPrice)}</RefundTotalValue>
-          </RefundTotalBox>
-        </ModalSummarySection>
+    const handleConfirm = () => {
+      cancelBooking.mutate(id, {
+        onSuccess: () => {
+          onClose();
+          navigate('/reservations');
+        },
+      });
+    };
 
-        {/* Refund method */}
-        <RefundMethodBox>
-          <RefundMethodIcon>
-            <CreditCardIcon sx={{ fontSize: 16, color: '#fff' }} />
-          </RefundMethodIcon>
-          <div>
-            <RefundMethodTitle>{t('reservationDetail.cancelModal.refundMethod')}</RefundMethodTitle>
-            <RefundMethodCaption>
-              {t('reservationDetail.cancelModal.samePaymentMethod')}
-            </RefundMethodCaption>
-          </div>
-        </RefundMethodBox>
+    return (
+      <ModalOverlay
+        open={open}
+        onClose={onClose}
+        icon={<CancelIcon sx={{ fontSize: 24, color: error }} />}
+        iconBg={errorContainer}
+        title={t('reservationDetail.cancelModal.title')}
+        subtitle={t('reservationDetail.cancelModal.subtitle')}
+        footer={
+          <>
+            <NeutralOutlinedPillButton
+              onClick={onClose}
+              disabled={cancelBooking.isPending}
+              pillSize="xs"
+            >
+              {t('reservationDetail.cancelModal.goBack')}
+            </NeutralOutlinedPillButton>
+            <ErrorPillButton
+              onClick={handleConfirm}
+              disabled={cancelBooking.isPending}
+              pillSize="xs"
+              sx={{ display: 'flex', alignItems: 'center', gap: '6px' }}
+            >
+              <CancelIcon sx={{ fontSize: 16 }} />
+              {t('reservationDetail.cancelModal.confirmCancellation')}
+            </ErrorPillButton>
+          </>
+        }
+      >
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Cancellation policy section */}
+          <ModalSummarySection>
+            <ModalSectionLabel>
+              {t('reservationDetail.cancelModal.policyApplied')}
+            </ModalSectionLabel>
+            {[
+              {
+                label: t('reservationDetail.cancelModal.cancellationType'),
+                value: t('reservationDetail.cancelModal.cancellationTypeValue'),
+                color: success,
+              },
+              {
+                label: t('reservationDetail.cancelModal.deadlineLabel'),
+                value: formatDate('2026-03-12', 'medium'),
+                color: onSurface,
+              },
+              {
+                label: t('reservationDetail.cancelModal.currentDateLabel'),
+                value: formatDate('2026-03-05', 'medium'),
+                color: onSurface,
+              },
+              {
+                label: t('reservationDetail.cancelModal.penaltyApplied'),
+                value: t('reservationDetail.cancelModal.penaltyValue'),
+                color: success,
+              },
+            ].map(row => (
+              <ModalRow key={row.label}>
+                <Text textVariant="hint">{row.label}</Text>
+                <CancelModalRowValue color={row.color}>{row.value}</CancelModalRowValue>
+              </ModalRow>
+            ))}
+          </ModalSummarySection>
 
-        {/* Timeline */}
-        <TimelineRow>
-          <ScheduleIcon sx={{ fontSize: 16, color: primary }} />
-          <Text
-            textVariant="caption"
-            dangerouslySetInnerHTML={{ __html: t('reservationDetail.cancelModal.estimatedTime') }}
-          />
-        </TimelineRow>
-      </Box>
-    </ModalOverlay>
-  );
+          {/* Refund breakdown section */}
+          <ModalSummarySection>
+            <ModalSectionLabel>
+              {t('reservationDetail.cancelModal.refundBreakdown')}
+            </ModalSectionLabel>
+            {[
+              {
+                label: t('reservationDetail.cancelModal.originalAmount'),
+                value: fp(booking.totalPrice),
+                color: onSurface,
+              },
+              {
+                label: t('reservationDetail.cancelModal.cancellationPenalty'),
+                value: `-${fp(0)}`,
+                color: success,
+              },
+            ].map(row => (
+              <ModalRow key={row.label}>
+                <Text textVariant="hint">{row.label}</Text>
+                <CancelModalRowValue color={row.color}>{row.value}</CancelModalRowValue>
+              </ModalRow>
+            ))}
+            <Divider sx={{ borderColor: outlineVariant, my: '4px' }} />
+            <RefundTotalBox>
+              <RefundTotalLabel>{t('reservationDetail.cancelModal.totalRefund')}</RefundTotalLabel>
+              <RefundTotalValue>{fp(booking.totalPrice)}</RefundTotalValue>
+            </RefundTotalBox>
+          </ModalSummarySection>
+
+          {/* Refund method */}
+          <RefundMethodBox>
+            <RefundMethodIcon>
+              <CreditCardIcon sx={{ fontSize: 16, color: '#fff' }} />
+            </RefundMethodIcon>
+            <div>
+              <RefundMethodTitle>
+                {t('reservationDetail.cancelModal.refundMethod')}
+              </RefundMethodTitle>
+              <RefundMethodCaption>
+                {t('reservationDetail.cancelModal.samePaymentMethod')}
+              </RefundMethodCaption>
+            </div>
+          </RefundMethodBox>
+
+          {/* Timeline */}
+          <TimelineRow>
+            <ScheduleIcon sx={{ fontSize: 16, color: primary }} />
+            <Text
+              textVariant="caption"
+              dangerouslySetInnerHTML={{ __html: t('reservationDetail.cancelModal.estimatedTime') }}
+            />
+          </TimelineRow>
+        </Box>
+      </ModalOverlay>
+    );
+  };
 
   const roomAmenities = [
     { icon: <WifiIcon sx={{ fontSize: 12 }} />, label: t('reservationDetail.roomAmenities.wifi') },
