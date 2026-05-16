@@ -47,6 +47,10 @@ vi.mock('@/api/hooks/useBookings', () => ({
     capturedBookingId = id;
     return { isLoading: false, data: mockBooking };
   },
+  useCancelBooking: () => ({
+    mutate: vi.fn(),
+    isPending: false,
+  }),
 }));
 
 vi.mock('@/api/hooks/usePayments', () => ({
