@@ -1,6 +1,36 @@
-import { describe, it, vi } from 'vitest';
+import { describe, it, vi, expect, beforeEach } from 'vitest';
+import { waitFor } from '@testing-library/react';
 import { renderWithProviders } from '@/test/renderWithProviders';
 import ConfirmationPage from './ConfirmationPage';
+
+const invalidateQueries = vi.fn();
+
+vi.mock('@tanstack/react-query', async importOriginal => {
+  const actual = await importOriginal<typeof import('@tanstack/react-query')>();
+  return {
+    ...actual,
+    useQueryClient: () => ({
+      invalidateQueries,
+    }),
+  };
+});
+
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => ({
+    user: {
+      id: 'u1',
+      name: 'Carlos Martinez',
+      email: 'carlos@test.com',
+      phone: '',
+      initials: 'CM',
+    },
+    guestInfo: { name: 'Carlos Martinez', email: 'carlos@test.com', phone: '', initials: 'CM' },
+    isAuthenticated: true,
+    login: vi.fn(),
+    logout: vi.fn(),
+  }),
+  AuthProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
 
 vi.mock('react-router-dom', async () => ({
   ...(await vi.importActual('react-router-dom')),
@@ -22,7 +52,7 @@ vi.mock('@/api/hooks/usePayments', () => ({
 
 vi.mock('@/api/hooks/useBookings', () => ({
   useBookingByPaymentId: () => ({
-    data: { code: 'BK-12345678' },
+    data: { id: 'bk-1', code: 'BK-12345678' },
     isLoading: false,
   }),
 }));
@@ -54,7 +84,18 @@ vi.mock('@/api/hooks/useCart', () => ({
 }));
 
 describe('ConfirmationPage', () => {
+  beforeEach(() => {
+    invalidateQueries.mockClear();
+  });
+
   it('renders without crashing', () => {
     renderWithProviders(<ConfirmationPage />);
+  });
+
+  it('invalidates bookings queries when booking is loaded', async () => {
+    renderWithProviders(<ConfirmationPage />);
+    await waitFor(() => {
+      expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ['bookings'] });
+    });
   });
 });

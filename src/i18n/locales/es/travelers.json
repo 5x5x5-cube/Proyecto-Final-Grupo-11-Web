@@ -326,9 +326,9 @@
       "logout": "Cerrar sesion"
     },
     "tabs": {
-      "active": "Activas (2)",
-      "past": "Pasadas (4)",
-      "cancelled": "Canceladas (1)"
+      "active": "Activas",
+      "past": "Pasadas",
+      "cancelled": "Canceladas"
     },
     "filters": {
       "all": "Todas",
@@ -388,7 +388,10 @@
     "paymentHistory": {
       "title": "Historial de pagos",
       "bookingPayment": "Pago de reserva",
-      "approved": "Aprobado"
+      "approved": "Aprobado",
+      "processing": "Procesando",
+      "declined": "Rechazado",
+      "pendingPayment": "Aún no hay información de pago disponible."
     },
     "priceSummary": {
       "title": "Resumen de pago",
@@ -405,8 +408,10 @@
     },
     "downloadReceipt": "Descargar comprobante",
     "confirmedModal": {
-      "title": "Reserva confirmada exitosamente",
-      "subtitle": "La reserva TH-2026-48291 ha sido confirmada",
+      "titleConfirmed": "Reserva confirmada exitosamente",
+      "titlePending": "Reserva registrada exitosamente",
+      "subtitleConfirmed": "La reserva {{code}} ha sido confirmada por el hotel",
+      "subtitlePending": "La reserva {{code}} esta pendiente de confirmacion por el hotel",
       "emailSent": "Correo de confirmacion enviado",
       "bookingSummary": "Resumen de la reserva",
       "hotel": "Hotel",
@@ -422,9 +427,21 @@
       "total": "Total",
       "whatsNext": "\u00bfQue sigue?",
       "voucherSent": "<strong>Voucher enviado por correo</strong> — Recibiras tu comprobante de reserva con todos los detalles de tu estadia.",
-      "roomReserved": "<strong>Habitacion reservada</strong> — Tu Habitacion Superior en Hotel Santa Clara Sofitel ha sido reservada para las fechas indicadas.",
+      "roomReserved": "<strong>Habitacion reservada</strong> — Tu {{room}} en {{hotel}} ha sido reservada para las fechas indicadas.",
       "close": "Cerrar",
       "viewReservations": "Ver mis reservas"
+    },
+    "nextSteps": {
+      "title": "Proximos pasos",
+      "emailSent": "<strong>Confirmacion enviada por correo</strong> — Hemos enviado un email con los detalles de tu reserva y el comprobante de pago.",
+      "pendingTitle": "Pendiente de confirmacion",
+      "pendingDescription": "Tu reserva esta siendo revisada por el hotel. Te notificaremos cuando sea confirmada.",
+      "confirmedTitle": "Habitacion reservada",
+      "confirmedDescription": "Tu {{room}} en {{hotel}} ha sido reservada para las fechas indicadas.",
+      "rejectedTitle": "Reserva no confirmada",
+      "rejectedDescription": "El hotel no pudo confirmar tu reserva. Se procedera con el reembolso automatico.",
+      "cancelledTitle": "Reserva cancelada",
+      "cancelledDescription": "Tu reserva ha sido cancelada. El reembolso sera procesado en los proximos dias."
     },
     "cancelModal": {
       "title": "Cancelar reserva TH-2026-48291",

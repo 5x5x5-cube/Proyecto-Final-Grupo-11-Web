@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
 
 import HomePage from './travelers/pages/HomePage';
 import LoginPage from './travelers/pages/LoginPage';
@@ -13,41 +13,71 @@ import ReservationDetailPage from './travelers/pages/ReservationDetailPage/Reser
 
 import DesignSystemPage from './design-system/pages/DesignSystemPage';
 import HotelLoginPage from './hotels/pages/HotelLoginPage/HotelLoginPage';
-import DashboardPage from './hotels/pages/DashboardPage/DashboardPage';
 import ReservationsPage from './hotels/pages/ReservationsPage/ReservationsPage';
 import HotelReservationDetailPage from './hotels/pages/HotelReservationDetailPage/HotelReservationDetailPage';
 import RatesPage from './hotels/pages/RatesPage';
 import DiscountsPage from './hotels/pages/DiscountsPage';
 import ReportsPage from './hotels/pages/ReportsPage';
+import TransactionsPage from './hotels/pages/TransactionsPage';
 import { ProtectedHotelRoute } from './hotels/auth/ProtectedHotelRoute';
+import { ProtectedRoute } from './components/ProtectedRoute';
 
 export const router = createBrowserRouter([
   // Design System
   { path: '/design-system', element: <DesignSystemPage /> },
 
-  // Traveler Portal
+  // Traveler Portal — Public
   { path: '/', element: <HomePage /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/register', element: <RegisterPage /> },
   { path: '/results', element: <ResultsPage /> },
   { path: '/property/:id', element: <PropertyDetailPage /> },
-  { path: '/checkout/cart', element: <CartPage /> },
-  { path: '/checkout/payment', element: <PaymentPage /> },
-  { path: '/checkout/confirmation/:paymentId', element: <ConfirmationPage /> },
-  { path: '/reservations', element: <MyReservationsPage /> },
-  { path: '/reservations/:id', element: <ReservationDetailPage /> },
 
-  // Hotel Admin Portal
-  // /hotel/login is public — everything else is gated by ProtectedHotelRoute.
-  { path: '/hotel/login', element: <HotelLoginPage /> },
+  // Traveler Portal — Protected
   {
-    path: '/hotel/dashboard',
+    path: '/checkout/cart',
     element: (
-      <ProtectedHotelRoute>
-        <DashboardPage />
-      </ProtectedHotelRoute>
+      <ProtectedRoute>
+        <CartPage />
+      </ProtectedRoute>
     ),
   },
+  {
+    path: '/checkout/payment',
+    element: (
+      <ProtectedRoute>
+        <PaymentPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/checkout/confirmation/:paymentId',
+    element: (
+      <ProtectedRoute>
+        <ConfirmationPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/reservations',
+    element: (
+      <ProtectedRoute>
+        <MyReservationsPage />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: '/reservations/:id',
+    element: (
+      <ProtectedRoute>
+        <ReservationDetailPage />
+      </ProtectedRoute>
+    ),
+  },
+
+  // Hotel Admin Portal
+  { path: '/hotel/login', element: <HotelLoginPage /> },
+  { path: '/hotel/dashboard', element: <Navigate to="/hotel/reservations" replace /> },
   {
     path: '/hotel/reservations',
     element: (
@@ -85,6 +115,14 @@ export const router = createBrowserRouter([
     element: (
       <ProtectedHotelRoute>
         <ReportsPage />
+      </ProtectedHotelRoute>
+    ),
+  },
+  {
+    path: '/hotel/transactions',
+    element: (
+      <ProtectedHotelRoute>
+        <TransactionsPage />
       </ProtectedHotelRoute>
     ),
   },

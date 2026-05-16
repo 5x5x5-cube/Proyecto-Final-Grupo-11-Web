@@ -11,7 +11,7 @@ export function usePaymentMethodForm() {
   const [cardHolder, setCardHolder] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
-  const [, setCurrency] = useState('COP');
+  const [currency, setCurrency] = useState('COP');
 
   // Wallet fields
   const [walletProvider, setWalletProvider] = useState<WalletProvider | ''>('');
@@ -94,6 +94,9 @@ export function usePaymentMethodForm() {
     setAccountNumber,
     accountHolder,
     setAccountHolder,
+
+    // Currency
+    currency,
 
     // Computed
     isFormValid,

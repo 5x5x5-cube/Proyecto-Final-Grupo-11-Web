@@ -23,13 +23,15 @@ export const BookingMiniCard = styled(Box)({
   alignItems: 'flex-start',
 });
 
-export const BookingThumbnail = styled(Box)({
+export const BookingThumbnail = styled(Box)<{ $imageUrl?: string }>(({ $imageUrl }) => ({
   width: 60,
   height: 60,
   borderRadius: '10px',
-  background: 'linear-gradient(135deg, #003740, #006874)',
+  background: $imageUrl
+    ? `url(${$imageUrl}) center/cover no-repeat`
+    : 'linear-gradient(135deg, #003740, #006874)',
   flexShrink: 0,
-});
+}));
 
 export const PriceBreakdownList = styled(Box)({
   display: 'flex',

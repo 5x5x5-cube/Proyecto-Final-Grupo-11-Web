@@ -3,6 +3,17 @@ import { screen } from '@testing-library/react';
 import { renderWithProviders } from '@/test/renderWithProviders';
 import ReservationDetailPage from './ReservationDetailPage';
 
+vi.mock('@/contexts/AuthContext', () => ({
+  useAuth: () => ({
+    user: { id: 'u1', name: 'Test User', email: 'test@test.com', phone: '', initials: 'TU' },
+    guestInfo: { name: 'Test User', email: 'test@test.com', phone: '', initials: 'TU' },
+    isAuthenticated: true,
+    login: vi.fn(),
+    logout: vi.fn(),
+  }),
+  AuthProvider: ({ children }: { children: React.ReactNode }) => children,
+}));
+
 const mockBooking = {
   id: '42',
   code: 'TH-2026-00001',
@@ -36,7 +47,14 @@ vi.mock('@/api/hooks/useBookings', () => ({
     capturedBookingId = id;
     return { isLoading: false, data: mockBooking };
   },
-  useBookingPayments: () => ({ isLoading: false, data: [] }),
+  useCancelBooking: () => ({
+    mutate: vi.fn(),
+    isPending: false,
+  }),
+}));
+
+vi.mock('@/api/hooks/usePayments', () => ({
+  usePaymentStatus: () => ({ isLoading: false, data: null }),
 }));
 
 describe('ReservationDetailPage', () => {
@@ -67,5 +85,23 @@ describe('ReservationDetailPage', () => {
     renderWithProviders(<ReservationDetailPage />);
     // useParams returns id='42'; the page must pass it to useBookingDetail
     expect(capturedBookingId).toBe('42');
+  });
+
+  it('formats monetary totals with booking currency (COP)', () => {
+    renderWithProviders(<ReservationDetailPage />);
+    const copTotals = screen.getAllByText(/COP\s+2[.,]664[.,]000/);
+    expect(copTotals.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('does not render the confirmed modal', () => {
+    renderWithProviders(<ReservationDetailPage />);
+    // The old confirmed modal had a "Ver confirmacion" button; it should no longer exist
+    expect(screen.queryByText(/Ver confirmacion|View confirmation/)).toBeNull();
+  });
+
+  it('renders the next steps section for confirmed status', () => {
+    renderWithProviders(<ReservationDetailPage />);
+    // The next steps section should display a title
+    expect(screen.getByText(/Next steps|Proximos pasos/)).toBeTruthy();
   });
 });

@@ -5,6 +5,7 @@ import { httpClient } from '../httpClient';
 interface BackendDestination {
   city: string;
   country: string;
+  image_url?: string;
 }
 
 interface DestinationsResponse {
@@ -53,6 +54,7 @@ export function useDestinations() {
         country: d.country,
         hotelCount: 0,
         gradient: gradientForCity(d.city),
+        imageUrl: d.image_url ?? null,
         minPrice: priceByCity[d.city] ?? 0,
       }));
     },
@@ -81,6 +83,8 @@ interface BackendHotel {
   rating: number;
   available_rooms_count: number;
   min_price: number;
+  image_url?: string;
+  images?: string[];
 }
 
 interface HotelsSearchResponse {
@@ -123,11 +127,12 @@ export function useSearchHotels(params?: HotelSearchParams) {
         reviewCount: 0,
         starsText: '★'.repeat(Math.round(h.rating ?? 0)),
         pricePerNight: h.min_price ?? 0,
-        gradient: gradientForCity(h.city),
+        imageUrl: h.image_url ?? '',
+        gradient: h.image_url ? '' : gradientForCity(h.city),
         amenities: mapAmenities(
           (h as BackendHotel & { amenities?: Record<string, boolean> }).amenities
         ),
-        photoCount: 0,
+        photoCount: h.images?.length ?? 0,
       }));
     },
   });
@@ -144,6 +149,7 @@ interface BackendRoom {
   description: string;
   amenities?: Record<string, boolean>;
   total_quantity: number;
+  images?: string[];
 }
 
 interface HotelRoomsResponse {
@@ -180,6 +186,7 @@ export function useHotelRooms(hotelId: string, checkIn?: string) {
         taxRate: r.tax_rate,
         description: r.description,
         amenities: mapAmenities(r.amenities),
+        images: r.images ?? [],
       }));
     },
     enabled: !!hotelId,

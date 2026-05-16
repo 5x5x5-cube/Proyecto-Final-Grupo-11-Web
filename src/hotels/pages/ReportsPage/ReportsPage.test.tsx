@@ -12,6 +12,9 @@ vi.mock('@/api/hooks/useReports', () => ({
   useReportKpis: vi.fn(() => ({ data: [], isLoading: false })),
   useRevenue: vi.fn(() => ({ data: [], isLoading: false })),
   useReportTransactions: vi.fn(() => ({ data: [], isLoading: false })),
+  useMonthlyRevenue: vi.fn(() => ({ data: null, isLoading: false })),
+  useAvailablePeriods: vi.fn(() => ({ data: { periods: [] }, isLoading: false })),
+  downloadRevenueReport: vi.fn(() => Promise.resolve(new Blob())),
 }));
 
 describe('ReportsPage', () => {

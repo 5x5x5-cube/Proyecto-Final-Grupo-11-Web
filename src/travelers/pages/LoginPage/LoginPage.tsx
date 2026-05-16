@@ -1,9 +1,10 @@
 import { Box, TextField, CircularProgress } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { palette } from '@/design-system/theme/palette';
 import { useLogin } from '@/api/hooks/useAuth';
+import { useAuth } from '@/contexts/AuthContext';
 import { PrimaryPillButton } from '@/design-system/components/PillButton';
 import Text from '@/design-system/components/Text';
 import {
@@ -22,7 +23,9 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { t } = useTranslation('travelers');
+  const auth = useAuth();
   const login = useLogin();
 
   const [email, setEmail] = useState('');
@@ -34,7 +37,18 @@ export default function LoginPage() {
 
   const handleSubmit = () => {
     if (!isFormValid || login.isPending) return;
-    login.mutate({ email, password }, { onSuccess: () => navigate('/') });
+    login.mutate(
+      { email, password },
+      {
+        onSuccess: (response: unknown) => {
+          auth.login(
+            response as { access_token: string; user_id: string; name: string; email: string }
+          );
+          const returnTo = searchParams.get('returnTo') || '/';
+          navigate(returnTo, { replace: true });
+        },
+      }
+    );
   };
 
   return (

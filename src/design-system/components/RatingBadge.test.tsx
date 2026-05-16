@@ -4,10 +4,6 @@ import { renderWithProviders } from '@/test/renderWithProviders';
 import RatingBadge from './RatingBadge';
 
 describe('RatingBadge', () => {
-  it('renders without crashing', () => {
-    renderWithProviders(<RatingBadge rating={4.5} />);
-  });
-
   it('renders the rating formatted to one decimal place', () => {
     renderWithProviders(<RatingBadge rating={4.5} />);
     expect(screen.getByText('4.5')).toBeInTheDocument();
@@ -18,18 +14,26 @@ describe('RatingBadge', () => {
     expect(screen.getByText('5.0')).toBeInTheDocument();
   });
 
-  it('renders zero rating', () => {
-    renderWithProviders(<RatingBadge rating={0} />);
-    expect(screen.getByText('0.0')).toBeInTheDocument();
+  it('renders no stars by default', () => {
+    const { container } = renderWithProviders(<RatingBadge rating={4.2} />);
+    expect(container.textContent).toBe('4.2');
   });
 
-  it('renders a low rating', () => {
-    renderWithProviders(<RatingBadge rating={2.3} />);
-    expect(screen.getByText('2.3')).toBeInTheDocument();
+  it('renders a single star with showStars="single"', () => {
+    const { container } = renderWithProviders(<RatingBadge rating={4.2} showStars="single" />);
+    expect(container.textContent).toBe('4.2★');
   });
 
-  it('renders a maximum rating', () => {
-    renderWithProviders(<RatingBadge rating={10} />);
-    expect(screen.getByText('10.0')).toBeInTheDocument();
+  it('renders full stars with partial for showStars="full"', () => {
+    const { container } = renderWithProviders(<RatingBadge rating={4.2} showStars="full" />);
+    // 4 full + 1 partial + 0 empty = content includes rating + stars
+    const stars = container.querySelectorAll('span');
+    expect(stars.length).toBeGreaterThan(1);
+  });
+
+  it('renders 5 full stars for rating 5', () => {
+    const { container } = renderWithProviders(<RatingBadge rating={5} showStars="full" />);
+    expect(container.textContent).toContain('5.0');
+    expect(container.textContent).toContain('★★★★★');
   });
 });

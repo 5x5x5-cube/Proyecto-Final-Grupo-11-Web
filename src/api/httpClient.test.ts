@@ -4,16 +4,6 @@ import { httpClient } from './httpClient';
 const mockFetch = vi.fn();
 vi.stubGlobal('fetch', mockFetch);
 
-vi.mock('./mockHandlers', () => ({
-  mockHandlers: [
-    {
-      method: 'GET',
-      pattern: /^\/search\/hotels$/,
-      handler: () => ({ status: 200, data: { hotels: ['mock-hotel'] } }),
-    },
-  ],
-}));
-
 beforeEach(() => {
   mockFetch.mockClear();
   localStorage.clear();
@@ -112,40 +102,16 @@ describe('httpClient', () => {
       const result = await httpClient.delete('/bookings/123');
       expect(result).toBeUndefined();
     });
-  });
 
-  describe('501 fallback to mock', () => {
-    it('falls back to mock handler when gateway returns 501', async () => {
-      mockFetch.mockResolvedValueOnce({ ok: false, status: 501, statusText: 'Not Implemented' });
-
-      const result = await httpClient.get<{ hotels: string[] }>('/search/hotels');
-      expect(result).toEqual({ hotels: ['mock-hotel'] });
-    });
-
-    it('throws when 501 and no mock handler exists', async () => {
-      mockFetch.mockResolvedValueOnce({ ok: false, status: 501, statusText: 'Not Implemented' });
-
-      await expect(httpClient.get('/unknown/path')).rejects.toThrow('No mock handler');
-    });
-  });
-
-  describe('network error fallback', () => {
-    it('falls back to mock on TypeError (gateway not running)', async () => {
-      mockFetch.mockRejectedValueOnce(new TypeError('Failed to fetch'));
-
-      const result = await httpClient.get<{ hotels: string[] }>('/search/hotels');
-      expect(result).toEqual({ hotels: ['mock-hotel'] });
-    });
-
-    it('rethrows non-network errors', async () => {
+    it('throws on 501 without fallback', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
-        status: 500,
-        statusText: 'Server Error',
-        json: async () => ({ message: 'Server error' }),
+        status: 501,
+        statusText: 'Not Implemented',
+        json: async () => ({ message: 'Not Implemented' }),
       });
 
-      await expect(httpClient.get('/bookings')).rejects.toMatchObject({ status: 500 });
+      await expect(httpClient.get('/unknown')).rejects.toMatchObject({ status: 501 });
     });
   });
 

@@ -3,7 +3,7 @@ import { mockDestinations } from '../travelers/data/mockDestinations';
 import { mockHotels } from '../travelers/data/mockHotels';
 import { mockReservations } from '../travelers/data/mockReservations';
 import { hotelReservations, reservationSummary } from '../hotels/data/mockHotelReservations';
-import { discounts, tariffsList, hotelAdminRooms } from '../hotels/data/mockRates';
+import { tariffsList, hotelAdminRooms } from '../hotels/data/mockRates';
 import {
   dashboardStats,
   recentReservations,
@@ -625,26 +625,7 @@ export const mockHandlers: MockRoute[] = [
   },
 
   // ─── Discounts ───
-  {
-    method: 'GET',
-    pattern: /^\/bookings\/discounts$/,
-    handler: () => ok(discounts),
-  },
-  {
-    method: 'POST',
-    pattern: /^\/bookings\/discounts$/,
-    handler: _config => created({ id: 4, ...(_config?.body as object) }),
-  },
-  {
-    method: 'PUT',
-    pattern: /^\/bookings\/discounts\/(\d+)$/,
-    handler: _config => ok({ id: 1, ...(_config?.body as object) }),
-  },
-  {
-    method: 'DELETE',
-    pattern: /^\/bookings\/discounts\/(\d+)$/,
-    handler: () => ok({ message: 'Discount deleted' }),
-  },
+  // Discounts handlers removed — requests go to real API
 
   // ─── Reports ───
   {

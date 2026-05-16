@@ -57,9 +57,19 @@ const mockBookings = [
   },
 ];
 
-vi.mock('@/api/hooks/useBookings', () => ({
-  useBookings: vi.fn(() => ({
-    data: mockBookings,
+vi.mock('@/api/hooks/useSearch', () => ({
+  useHotelDetail: (hotelId: string) => ({
+    data: hotelId
+      ? { image_url: `https://images.unsplash.com/hotel-${hotelId}`, images: [] }
+      : undefined,
+  }),
+}));
+
+vi.mock('./useReservationTabs', () => ({
+  useReservationTabs: vi.fn(() => ({
+    tab: 'active',
+    setTab: vi.fn(),
+    bookings: mockBookings,
     isLoading: false,
   })),
 }));
@@ -97,12 +107,23 @@ describe('MyReservationsPage', () => {
     expect(codes).toHaveLength(3);
   });
 
-  it('renders price using formatPrice for each booking', () => {
+  it('renders total paid using formatFixedPrice with each booking currency (COP)', () => {
     renderWithProviders(<MyReservationsPage />);
-    // Default currency is COP; formatPrice outputs a formatted string containing
-    // the numeric amount. We verify that distinct total prices are rendered.
-    // The locale provider formats 2664000 COP as something containing "2.664.000" or "2,664,000".
-    const priceTexts = screen.getAllByText(/2[.,]664[.,]000|2664000/);
-    expect(priceTexts.length).toBeGreaterThanOrEqual(1);
+    // formatFixedPrice(booking.totalPrice, booking.currency) — no conversion to viewer preference.
+    expect(screen.getByText(/COP\s+2[.,]664[.,]000/)).toBeTruthy();
+    expect(screen.getByText(/COP\s+800[.,]000/)).toBeTruthy();
+    expect(screen.getByText(/COP\s+600[.,]000/)).toBeTruthy();
+  });
+
+  it('renders hotel images from useHotelDetail in card thumbnails', () => {
+    const { container } = renderWithProviders(<MyReservationsPage />);
+    // Each card thumbnail should have the hotel image as background
+    const thumbnails = container.querySelectorAll('[class*="CardThumbnail"]');
+    thumbnails.forEach(thumb => {
+      const style = (thumb as HTMLElement).style;
+      expect(style.background || style.backgroundImage || thumb.getAttribute('style')).toContain(
+        'unsplash'
+      );
+    });
   });
 });

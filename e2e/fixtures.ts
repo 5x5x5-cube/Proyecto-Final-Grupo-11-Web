@@ -9,6 +9,7 @@ import { CartPage } from './pages/cart.page';
 import { ConfirmationPage } from './pages/confirmation.page';
 import { RatesPage } from './pages/rates.page';
 import { HotelLoginPage } from './pages/hotel-login.page';
+import { TransactionsPage } from './pages/transactions.page';
 
 /**
  * Whether a real backend is available.
@@ -16,21 +17,53 @@ import { HotelLoginPage } from './pages/hotel-login.page';
  */
 export const hasBackend = !!process.env.E2E_BACKEND_URL;
 
+/** API base URL for direct backend calls in fixtures. */
+const apiBaseUrl = process.env.VITE_API_BASE_URL || 'http://localhost:8090/api/v1';
+
+/** Test traveler credentials (must exist in the auth service). */
+export const TEST_TRAVELER = {
+  email: 'e2e-traveler@test.com',
+  password: 'Test1234',
+  name: 'E2E Traveler',
+};
+
+/** Test hotel admin credentials. */
+export const TEST_HOTEL_ADMIN = {
+  email: 'admin@hotel.com',
+  password: 'Admin123!',
+};
+
 /**
- * Custom test fixtures that provide page objects to all tests.
- *
- * Usage:
- *   import { test, expect, hasBackend } from './fixtures';
- *
- *   // Test that always runs (uses mocked data or doesn't need backend):
- *   test('homepage loads', async ({ homePage }) => { ... });
- *
- *   // Test that requires a real backend:
- *   test('booking flow creates a reservation', async ({ homePage }) => {
- *     test.skip(!hasBackend, 'Requires backend');
- *     ...
- *   });
+ * Ensures the test traveler user exists by attempting registration.
+ * Idempotent — ignores "already registered" errors.
  */
+async function ensureTestTraveler(): Promise<{ token: string; userId: string }> {
+  // Try to register first (idempotent)
+  await fetch(`${apiBaseUrl}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: TEST_TRAVELER.email,
+      password: TEST_TRAVELER.password,
+      name: TEST_TRAVELER.name,
+    }),
+  }).catch(() => {});
+
+  // Login to get a fresh token
+  const resp = await fetch(`${apiBaseUrl}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: TEST_TRAVELER.email,
+      password: TEST_TRAVELER.password,
+    }),
+  });
+
+  if (!resp.ok) throw new Error(`Login failed: ${resp.status}`);
+  const data = (await resp.json()) as { access_token: string; user_id: string };
+  return { token: data.access_token, userId: data.user_id };
+}
+
 export const test = base.extend<{
   homePage: HomePage;
   resultsPage: ResultsPage;
@@ -42,6 +75,8 @@ export const test = base.extend<{
   confirmationPage: ConfirmationPage;
   ratesPage: RatesPage;
   hotelLoginPage: HotelLoginPage;
+  transactionsPage: TransactionsPage;
+  authenticatedPage: void;
 }>({
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
@@ -81,6 +116,35 @@ export const test = base.extend<{
 
   hotelLoginPage: async ({ page }, use) => {
     await use(new HotelLoginPage(page));
+  },
+
+  transactionsPage: async ({ page }, use) => {
+    await use(new TransactionsPage(page));
+  },
+
+  /**
+   * Fixture that logs in as a test traveler before the test runs.
+   * Sets auth_token and user_id in localStorage so the gateway accepts requests.
+   * Use: test('my test', async ({ authenticatedPage, cartPage, page }) => { ... });
+   */
+  authenticatedPage: async ({ page }, use) => {
+    const { token, userId } = await ensureTestTraveler();
+
+    // Clear any existing cart from previous test runs
+    await fetch(`${apiBaseUrl}/cart`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    }).catch(() => {});
+
+    await page.goto('/');
+    await page.evaluate(
+      ({ token, userId }) => {
+        localStorage.setItem('auth_token', token);
+        localStorage.setItem('user_id', userId);
+      },
+      { token, userId }
+    );
+    await use();
   },
 });
 

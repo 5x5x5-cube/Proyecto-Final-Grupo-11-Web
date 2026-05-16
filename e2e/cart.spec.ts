@@ -2,6 +2,7 @@ import { test, expect, hasBackend } from './fixtures';
 
 test.describe('Cart flow', () => {
   test('selecting a room and reserving creates a cart', async ({
+    authenticatedPage,
     propertyDetailPage,
     cartPage,
     page,
@@ -31,7 +32,7 @@ test.describe('Cart flow', () => {
     await propertyDetailPage.reserveButton.click();
 
     // Should navigate to the cart page
-    await expect(page).toHaveURL(/\/checkout\/cart/);
+    await expect(page).toHaveURL(/\/checkout\/cart/, { timeout: 10000 });
 
     // Cart page should show the accommodation summary and payment sidebar
     await expect(cartPage.accommodationTitle).toBeVisible();

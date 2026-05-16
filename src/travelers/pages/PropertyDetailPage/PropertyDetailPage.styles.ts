@@ -135,11 +135,13 @@ export const GalleryGrid = styled(Box)({
 export const GalleryMainImage = styled(Box)({
   gridColumn: '1 / 2',
   gridRow: '1 / 3',
-  background: 'linear-gradient(135deg, #003740, #006874)',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
 });
 
 export const GalleryMorePhotosOverlay = styled(Box)({
-  background: 'linear-gradient(135deg, #7B4F00, #C89030)',
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
   position: 'relative',
 });
 
@@ -235,13 +237,15 @@ export const RoomCard = styled(Box)({
   gap: '20px',
 });
 
-export const RoomThumbnail = styled(Box)<{ gradient: string }>(({ gradient }) => ({
-  width: 72,
-  height: 72,
-  borderRadius: '10px',
-  flexShrink: 0,
-  background: gradient,
-}));
+export const RoomThumbnail = styled(Box)<{ $imageUrl?: string; $gradient?: string }>(
+  ({ $imageUrl, $gradient }) => ({
+    width: 72,
+    height: 72,
+    borderRadius: '10px',
+    flexShrink: 0,
+    background: $imageUrl ? `url(${$imageUrl}) center/cover no-repeat` : $gradient,
+  })
+);
 
 export const ReviewsRow = styled(Box)({
   display: 'flex',

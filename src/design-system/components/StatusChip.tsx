@@ -4,14 +4,13 @@ import ScheduleIcon from '@mui/icons-material/Schedule';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { useTranslation } from 'react-i18next';
 import { palette } from '../theme/palette';
+import type { BookingStatus } from '@/types/booking';
 
-type Status = 'confirmed' | 'pending' | 'cancelled' | 'rejected' | 'past';
-
-export default function StatusChip({ status, label }: { status: Status; label?: string }) {
+export default function StatusChip({ status, label }: { status: BookingStatus; label?: string }) {
   const { t } = useTranslation('common');
 
   const statusConfig: Record<
-    Status,
+    BookingStatus,
     { bg: string; color: string; icon: React.ReactNode; label: string }
   > = {
     confirmed: {

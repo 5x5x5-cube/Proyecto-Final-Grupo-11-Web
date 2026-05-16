@@ -155,10 +155,13 @@ export const ReservationCard = styled(Box)({
   '&:hover': { boxShadow: '0 4px 16px rgba(0,104,116,0.12)' },
 });
 
-export const CardThumbnail = styled(Box)({
+export const CardThumbnail = styled(Box)<{ $imageUrl?: string }>(({ $imageUrl }) => ({
   width: 180,
   flexShrink: 0,
-});
+  background: $imageUrl
+    ? `url(${$imageUrl}) center/cover no-repeat`
+    : 'linear-gradient(135deg, #006874 0%, #4A9FAA 100%)',
+}));
 
 export const CardBody = styled(Box)({
   flex: 1,

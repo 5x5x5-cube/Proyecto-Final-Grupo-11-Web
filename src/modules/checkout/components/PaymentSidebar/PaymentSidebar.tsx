@@ -26,9 +26,17 @@ interface Props {
   isFormValid: boolean;
   isProcessing: boolean;
   onPay: () => void;
+  imageUrl?: string;
 }
 
-export default function PaymentSidebar({ cart, pricing, isFormValid, isProcessing, onPay }: Props) {
+export default function PaymentSidebar({
+  cart,
+  pricing,
+  isFormValid,
+  isProcessing,
+  onPay,
+  imageUrl,
+}: Props) {
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
 
@@ -39,7 +47,7 @@ export default function PaymentSidebar({ cart, pricing, isFormValid, isProcessin
       <SidebarTitle>{t('payment.sidebar.title')}</SidebarTitle>
 
       <BookingMiniCard>
-        <BookingThumbnail />
+        <BookingThumbnail $imageUrl={imageUrl} />
         <div>
           <Text textVariant="bodySemibold" sx={{ mb: '4px' }}>
             {cart?.hotelName || '...'}

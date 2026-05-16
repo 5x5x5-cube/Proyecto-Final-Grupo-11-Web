@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Skeleton } from '@mui/material';
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import Text from '@/design-system/components/Text';
 import { PrimaryPillButton, OutlinedPillButton } from '@/design-system/components/PillButton';
 import PlaceIcon from '@mui/icons-material/Place';
@@ -8,11 +8,19 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LockIcon from '@mui/icons-material/Lock';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import InfoIcon from '@mui/icons-material/Info';
-import CancelIcon from '@mui/icons-material/Cancel';
+import WifiIcon from '@mui/icons-material/Wifi';
+import AcUnitIcon from '@mui/icons-material/AcUnit';
+import TvIcon from '@mui/icons-material/Tv';
+import LocalBarIcon from '@mui/icons-material/LocalBar';
+import DeskIcon from '@mui/icons-material/Desk';
+import KitchenIcon from '@mui/icons-material/Kitchen';
+import PoolIcon from '@mui/icons-material/Pool';
+import ParkIcon from '@mui/icons-material/Park';
+import BalconyIcon from '@mui/icons-material/Balcony';
+import HotTubIcon from '@mui/icons-material/HotTub';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import DynamicCancellationPolicyCard from '@/modules/checkout/components/CancellationPolicyCard/CancellationPolicyCard';
 import { useLocale } from '@/contexts/LocaleContext';
 import { useDebouncedCallback } from '@/hooks/useDebouncedCallback';
 import TravelerLayout from '@/design-system/layouts/TravelerLayout';
@@ -20,7 +28,6 @@ import RatingBadge from '@/design-system/components/RatingBadge';
 import { palette } from '@/design-system/theme/palette';
 import PropertyDetailPageSkeleton from './PropertyDetailPage.skeleton';
 import { useHotelDetail, useHotelReviews, useHotelRooms } from '@/api/hooks/useSearch';
-import { useSetCart } from '@/api/hooks/useCart';
 import { saveCartSelection } from '@/modules/checkout/cartStorage';
 import {
   SidebarWrapper,
@@ -36,19 +43,15 @@ import {
   PriceRow,
   PriceTotalRow,
   SecureBadge,
-  CancellationPolicyCard,
-  CancellationRow,
   ContentColumn,
   GalleryGrid,
   GalleryMainImage,
-  GalleryMorePhotosOverlay,
   HeaderRow,
   HeaderInfo,
   HotelTypeLabel,
   HotelTitle,
   LocationRow,
   RatingRow,
-  StarsText,
   ActionButtons,
   ActionIconButton,
   AmenitiesGrid,
@@ -64,17 +67,17 @@ import {
   ReviewStars,
 } from './PropertyDetailPage.styles';
 
-const ICON_MAP: Record<string, string> = {
-  wifi: 'wifi',
-  ac: 'ac_unit',
-  tv: 'tv',
-  minibar: 'local_bar',
-  balcony: 'balcony',
-  jacuzzi: 'hot_tub',
-  desk: 'desk',
-  kitchen: 'kitchen',
-  private_pool: 'pool',
-  garden_view: 'park',
+const ICON_MAP: Record<string, React.ReactNode> = {
+  wifi: <WifiIcon fontSize="inherit" />,
+  ac: <AcUnitIcon fontSize="inherit" />,
+  tv: <TvIcon fontSize="inherit" />,
+  minibar: <LocalBarIcon fontSize="inherit" />,
+  balcony: <BalconyIcon fontSize="inherit" />,
+  jacuzzi: <HotTubIcon fontSize="inherit" />,
+  desk: <DeskIcon fontSize="inherit" />,
+  kitchen: <KitchenIcon fontSize="inherit" />,
+  private_pool: <PoolIcon fontSize="inherit" />,
+  garden_view: <ParkIcon fontSize="inherit" />,
 };
 
 const ROOM_GRADIENTS = [
@@ -105,7 +108,6 @@ export default function PropertyDetailPage() {
 
   const [selectedRoomId, setSelectedRoomId] = useState<string | null>(null);
 
-  const setCart = useSetCart();
   const navigate = useNavigate();
   const { t } = useTranslation('travelers');
   const { formatPrice, formatDate } = useLocale();
@@ -118,6 +120,8 @@ export default function PropertyDetailPage() {
         city?: string;
         country?: string;
         rating?: number;
+        image_url?: string;
+        images?: string[];
       }
     | null
     | undefined;
@@ -130,6 +134,7 @@ export default function PropertyDetailPage() {
     taxRate: number;
     description: string;
     amenities: Array<{ icon: string; label: string }>;
+    images: string[];
   }>;
 
   // Only show rooms with enough capacity for the number of guests
@@ -138,7 +143,7 @@ export default function PropertyDetailPage() {
   const selectedRoom = rooms.find(r => r.id === selectedRoomId) ?? rooms[0] ?? null;
 
   const handleReserve = useDebouncedCallback(() => {
-    if (setCart.isPending || !selectedRoom) return;
+    if (!selectedRoom) return;
 
     const selection = {
       roomId: selectedRoom.id,
@@ -149,9 +154,7 @@ export default function PropertyDetailPage() {
     };
 
     saveCartSelection(selection);
-    setCart.mutate(selection, {
-      onSuccess: () => navigate('/checkout/cart'),
-    });
+    navigate('/checkout/cart');
   });
 
   if (isHotelLoading || isRoomsLoading) return <PropertyDetailPageSkeleton />;
@@ -187,6 +190,19 @@ export default function PropertyDetailPage() {
   const hotelCountry = hotel?.country ?? '';
   const hotelRating = hotel?.rating ?? 0;
   const hotelDescription = hotel?.description ?? '';
+
+  const GALLERY_FALLBACK_GRADIENTS = [
+    'linear-gradient(135deg, #003740, #006874)',
+    'linear-gradient(135deg, #1A6B4F, #4A9F7E)',
+    'linear-gradient(135deg, #5B5EA6, #8E91CC)',
+    'linear-gradient(135deg, #B5451B, #E07050)',
+    'linear-gradient(135deg, #7B4F00, #C89030)',
+  ];
+  const hotelImages = hotel?.images ?? [];
+  const galleryItems = Array.from({ length: 5 }, (_, i) => ({
+    url: hotelImages[i] ?? '',
+    gradient: GALLERY_FALLBACK_GRADIENTS[i],
+  }));
 
   const BookingSidebar = () => (
     <SidebarWrapper>
@@ -242,7 +258,7 @@ export default function PropertyDetailPage() {
         <PrimaryPillButton
           pillSize="lg"
           fullWidth
-          loading={setCart.isPending}
+          loading={false}
           onClick={handleReserve}
           disabled={!selectedRoom}
         >
@@ -255,27 +271,7 @@ export default function PropertyDetailPage() {
         </SecureBadge>
       </PriceCard>
 
-      <div>
-        <Text textVariant="cardSubheading" sx={{ mb: '12px' }}>
-          {t('propertyDetail.cancellation.title')}
-        </Text>
-        <CancellationPolicyCard>
-          <CancellationRow>
-            <CheckCircleIcon sx={{ color: '#1A6B4F', fontSize: 18 }} />
-            <Typography sx={{ fontSize: 13, color: palette.onSurface }}>
-              {t('propertyDetail.cancellation.freeCancellation')}
-            </Typography>
-          </CancellationRow>
-          <CancellationRow>
-            <InfoIcon sx={{ color: palette.star, fontSize: 18 }} />
-            <Text textVariant="hint">{t('propertyDetail.cancellation.halfCharge')}</Text>
-          </CancellationRow>
-          <CancellationRow>
-            <CancelIcon sx={{ color: '#B5451B', fontSize: 18 }} />
-            <Text textVariant="hint">{t('propertyDetail.cancellation.noRefund')}</Text>
-          </CancellationRow>
-        </CancellationPolicyCard>
-      </div>
+      <div>{checkIn && <DynamicCancellationPolicyCard checkIn={checkIn} />}</div>
     </SidebarWrapper>
   );
 
@@ -284,28 +280,37 @@ export default function PropertyDetailPage() {
       <ContentColumn>
         {/* Gallery */}
         <GalleryGrid>
-          <GalleryMainImage />
-          <Box sx={{ background: 'linear-gradient(135deg, #1A6B4F, #4A9F7E)' }} />
-          <Box sx={{ background: 'linear-gradient(135deg, #5B5EA6, #8E91CC)' }} />
-          <Box sx={{ background: 'linear-gradient(135deg, #B5451B, #E07050)' }} />
-          <GalleryMorePhotosOverlay
-            sx={{
-              '&::after': {
-                content: `"${t('propertyDetail.morePhotos')}"`,
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0,0,0,0.45)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: 'white',
-                fontSize: 14,
-                fontWeight: 500,
-              },
-            }}
+          <GalleryMainImage
+            sx={
+              galleryItems[0].url
+                ? { backgroundImage: `url(${galleryItems[0].url})` }
+                : { background: galleryItems[0].gradient }
+            }
+          />
+          {[1, 2, 3].map(i => (
+            <Box
+              key={i}
+              sx={
+                galleryItems[i].url
+                  ? {
+                      backgroundImage: `url(${galleryItems[i].url})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    }
+                  : { background: galleryItems[i].gradient }
+              }
+            />
+          ))}
+          <Box
+            sx={
+              galleryItems[4].url
+                ? {
+                    backgroundImage: `url(${galleryItems[4].url})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                  }
+                : { background: galleryItems[4].gradient }
+            }
           />
         </GalleryGrid>
 
@@ -319,8 +324,7 @@ export default function PropertyDetailPage() {
               {[hotelCity, hotelCountry].filter(Boolean).join(', ')}
             </LocationRow>
             <RatingRow>
-              <RatingBadge rating={hotelRating} />
-              <StarsText>{'★'.repeat(Math.round(hotelRating))}</StarsText>
+              <RatingBadge rating={hotelRating} showStars="full" />
               {reviews.length > 0 && (
                 <Text textVariant="hint">
                   {reviews.length} {t('propertyDetail.reviews')}
@@ -359,12 +363,9 @@ export default function PropertyDetailPage() {
             <AmenitiesGrid>
               {hotelAmenities.map(amenity => (
                 <AmenityChip key={amenity.label}>
-                  <span
-                    className="material-symbols-outlined"
-                    style={{ fontSize: 16, color: palette.primary }}
-                  >
-                    {ICON_MAP[amenity.icon] ?? amenity.icon}
-                  </span>
+                  <Box sx={{ fontSize: 16, color: palette.primary, display: 'inline-flex' }}>
+                    {ICON_MAP[amenity.icon] ?? <WifiIcon fontSize="inherit" />}
+                  </Box>
                   {amenity.label}
                 </AmenityChip>
               ))}
@@ -387,7 +388,10 @@ export default function PropertyDetailPage() {
                 const isSelected = selectedRoomId ? room.id === selectedRoomId : idx === 0;
                 return (
                   <RoomCard key={room.id}>
-                    <RoomThumbnail gradient={ROOM_GRADIENTS[idx % ROOM_GRADIENTS.length]} />
+                    <RoomThumbnail
+                      $imageUrl={room.images?.[0] ?? ''}
+                      $gradient={ROOM_GRADIENTS[idx % ROOM_GRADIENTS.length]}
+                    />
                     <Box sx={{ flex: 1 }}>
                       <Text textVariant="cardSubheading" sx={{ mb: '4px' }}>
                         {room.roomType}

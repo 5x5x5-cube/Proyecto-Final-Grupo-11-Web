@@ -148,7 +148,7 @@ export default function HotelLoginPage() {
           }
 
           hotelAuth.login({ ...session, hotelId, hotelInfo });
-          navigate('/hotel/dashboard');
+          navigate('/hotel/reservations');
         },
         onError: err => showError(mapAuthError(err)),
       }

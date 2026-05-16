@@ -384,8 +384,20 @@ export default function RatesPage() {
                   >
                     <RateCell component="td">
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <RoomIconBox>
-                          <KingBedIcon sx={{ fontSize: 16, color: 'rgba(255,255,255,0.8)' }} />
+                        <RoomIconBox
+                          sx={
+                            rate.roomImage
+                              ? {
+                                  backgroundImage: `url(${rate.roomImage})`,
+                                  backgroundSize: 'cover',
+                                  backgroundPosition: 'center',
+                                }
+                              : {}
+                          }
+                        >
+                          {!rate.roomImage && (
+                            <KingBedIcon sx={{ fontSize: 16, color: 'rgba(255,255,255,0.8)' }} />
+                          )}
                         </RoomIconBox>
                         <Box>
                           <RoomName>{rate.roomName}</RoomName>

@@ -1,7 +1,7 @@
 import { test, expect, hasBackend } from './fixtures';
 
-const HOTEL_ADMIN_EMAIL = process.env.HOTEL_ADMIN_EMAIL ?? 'admin@caribeplaza.com';
-const HOTEL_ADMIN_PASSWORD = process.env.HOTEL_ADMIN_PASSWORD ?? 'password123';
+const HOTEL_ADMIN_EMAIL = process.env.HOTEL_ADMIN_EMAIL ?? 'admin@hotel.com';
+const HOTEL_ADMIN_PASSWORD = process.env.HOTEL_ADMIN_PASSWORD ?? 'Admin123!';
 
 test.describe('HU3.6 / HU3.7 – Gestión de tarifas (hotel admin)', () => {
   // ─── UI tests (no backend required) ────────────────────────────────────────

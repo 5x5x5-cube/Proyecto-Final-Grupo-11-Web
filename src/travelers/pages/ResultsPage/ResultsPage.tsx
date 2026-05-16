@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, Checkbox, FormControlLabel } from '@mui/material';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import PlaceIcon from '@mui/icons-material/Place';
 import StarIcon from '@mui/icons-material/Star';
 import SearchOffIcon from '@mui/icons-material/SearchOff';
@@ -38,7 +38,6 @@ import {
   HotelCardName,
   HotelCardLocation,
   HotelCardRatingRow,
-  HotelCardStars,
   HotelCardAmenities,
   HotelCardPriceColumn,
   HotelCardFromLabel,
@@ -97,6 +96,7 @@ const DEFAULT_AMENITIES: Record<AmenityKey, boolean> = {
 
 export default function ResultsPage() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const destination = searchParams.get('destination') ?? '';
   const checkIn = searchParams.get('checkIn') ?? '';
   const checkOut = searchParams.get('checkOut') ?? '';
@@ -120,7 +120,11 @@ export default function ResultsPage() {
   const { t } = useTranslation('travelers');
   const { formatPrice } = useLocale();
 
-  if (isLoading) return <ResultsPageSkeleton />;
+  useEffect(() => {
+    if (!destination) navigate('/', { replace: true });
+  }, [destination, navigate]);
+
+  if (!destination || isLoading) return <ResultsPageSkeleton />;
 
   const nights = calcNights(checkIn, checkOut);
   const datesLabel =
@@ -139,6 +143,7 @@ export default function ResultsPage() {
     reviewCount: number;
     starsText: string;
     pricePerNight: number;
+    imageUrl: string;
     gradient: string;
     amenities: Array<{ key: string; icon: string; label: string }>;
     photoCount: number;
@@ -346,7 +351,7 @@ export default function ResultsPage() {
               >
                 <HotelCard>
                   {/* Image area */}
-                  <HotelCardImage gradient={hotel.gradient}>
+                  <HotelCardImage $imageUrl={hotel.imageUrl} $gradient={hotel.gradient}>
                     {hotel.photoCount > 0 && (
                       <PhotoCountBadge>
                         {t('results.card.photos', { count: hotel.photoCount })}
@@ -363,8 +368,7 @@ export default function ResultsPage() {
                       {hotel.location}
                     </HotelCardLocation>
                     <HotelCardRatingRow>
-                      <RatingBadge rating={hotel.rating} />
-                      <HotelCardStars>{hotel.starsText}</HotelCardStars>
+                      <RatingBadge rating={hotel.rating} showStars="full" />
                       {hotel.reviewCount > 0 && (
                         <Text textVariant="caption">
                           ({hotel.reviewCount} {t('results.card.reviews')})
