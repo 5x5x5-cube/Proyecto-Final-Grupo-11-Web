@@ -3,6 +3,12 @@ import BookingNextSteps from '@/travelers/components/BookingNextSteps';
 import { useBookingDetail, useCancelBooking } from '@/api/hooks/useBookings';
 import { useHotelDetail } from '@/api/hooks/useSearch';
 import { usePaymentStatus } from '@/api/hooks/usePayments';
+import {
+  calculateRefundPercentage,
+  cancellationKind,
+  freeCancellationDeadline,
+  isCancellable,
+} from '@/utils/cancellationPolicy';
 import { Box, Divider, Skeleton } from '@mui/material';
 import Text from '@/design-system/components/Text';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -128,6 +134,34 @@ const ReservationDetailPage: React.FC = () => {
   const vat = breakdown?.vat ?? 0;
   const serviceFee = breakdown?.serviceFee ?? 0;
 
+  // Cancellation policy — mirrors backend services/booking_service/.../cancellation_policy.py
+  const today = new Date();
+  const refundPct = calculateRefundPercentage(booking.checkIn, today);
+  const refundAmount = Math.round(booking.totalPrice * refundPct);
+  const penaltyAmount = booking.totalPrice - refundAmount;
+  const penaltyPct = Math.round((1 - refundPct) * 100);
+  const policyKind = cancellationKind(refundPct);
+  const deadline = freeCancellationDeadline(booking.checkIn);
+  const refundMethodLabel =
+    paymentData?.paymentMethod?.displayLabel ??
+    t('reservationDetail.cancelModal.refundMethodFallback');
+  const cancellationTypeText =
+    policyKind === 'free'
+      ? t('reservationDetail.cancelModal.cancellationTypeFree')
+      : policyKind === 'partial'
+        ? t('reservationDetail.cancelModal.cancellationTypePartial')
+        : t('reservationDetail.cancelModal.cancellationTypeNone');
+  const penaltyValueText =
+    policyKind === 'free'
+      ? t('reservationDetail.cancelModal.penaltyValueNone')
+      : policyKind === 'partial'
+        ? t('reservationDetail.cancelModal.penaltyValuePartial', { percent: penaltyPct })
+        : t('reservationDetail.cancelModal.penaltyValueFull');
+  const cancellationTypeColor =
+    policyKind === 'free' ? success : policyKind === 'partial' ? warning : error;
+  // The sidebar card teases the refund the user will actually get back
+  const estimatedRefund = refundAmount;
+
   /* ─── Right Sidebar ─── */
   const RightSidebar: React.FC = () => (
     <RightSidebarContainer>
@@ -171,33 +205,35 @@ const ReservationDetailPage: React.FC = () => {
         roomName={booking.roomName ?? undefined}
       />
 
-      <Divider sx={{ borderColor: outlineVariant }} />
+      {isCancellable(booking.status) && (
+        <>
+          <Divider sx={{ borderColor: outlineVariant }} />
 
-      {/* Cancel box */}
-      <CancelBox>
-        <CancelBoxHeader>
-          <CancelIcon sx={{ fontSize: 18, color: error }} />
-          <CancelBoxTitle>{t('reservationDetail.cancelBox.title')}</CancelBoxTitle>
-        </CancelBoxHeader>
-        <Text
-          textVariant="hint"
-          sx={{ lineHeight: 1.5 }}
-          dangerouslySetInnerHTML={{ __html: t('reservationDetail.cancelBox.description') }}
-        />
-        <Text textVariant="bodyMedium">
-          {t('reservationDetail.cancelBox.estimatedRefund')}{' '}
-          <strong>{fp(booking.totalPrice)}</strong>
-        </Text>
-        <ErrorOutlinedPillButton
-          onClick={() => setCancelOpen(true)}
-          pillSize="md"
-          sx={{ width: '100%' }}
-        >
-          {t('reservationDetail.cancelBox.cancelButton')}
-        </ErrorOutlinedPillButton>
-      </CancelBox>
-
-      {/* Download button */}
+          {/* Cancel box */}
+          <CancelBox>
+            <CancelBoxHeader>
+              <CancelIcon sx={{ fontSize: 18, color: error }} />
+              <CancelBoxTitle>{t('reservationDetail.cancelBox.title')}</CancelBoxTitle>
+            </CancelBoxHeader>
+            <Text
+              textVariant="hint"
+              sx={{ lineHeight: 1.5 }}
+              dangerouslySetInnerHTML={{ __html: t('reservationDetail.cancelBox.description') }}
+            />
+            <Text textVariant="bodyMedium">
+              {t('reservationDetail.cancelBox.estimatedRefund')}{' '}
+              <strong>{fp(estimatedRefund)}</strong>
+            </Text>
+            <ErrorOutlinedPillButton
+              onClick={() => setCancelOpen(true)}
+              pillSize="md"
+              sx={{ width: '100%' }}
+            >
+              {t('reservationDetail.cancelBox.cancelButton')}
+            </ErrorOutlinedPillButton>
+          </CancelBox>
+        </>
+      )}
     </RightSidebarContainer>
   );
 
@@ -224,7 +260,7 @@ const ReservationDetailPage: React.FC = () => {
         onClose={onClose}
         icon={<CancelIcon sx={{ fontSize: 24, color: error }} />}
         iconBg={errorContainer}
-        title={t('reservationDetail.cancelModal.title')}
+        title={t('reservationDetail.cancelModal.title', { code: booking.code })}
         subtitle={t('reservationDetail.cancelModal.subtitle')}
         footer={
           <>
@@ -256,23 +292,23 @@ const ReservationDetailPage: React.FC = () => {
             {[
               {
                 label: t('reservationDetail.cancelModal.cancellationType'),
-                value: t('reservationDetail.cancelModal.cancellationTypeValue'),
-                color: success,
+                value: cancellationTypeText,
+                color: cancellationTypeColor,
               },
               {
                 label: t('reservationDetail.cancelModal.deadlineLabel'),
-                value: formatDate('2026-03-12', 'medium'),
+                value: formatDate(deadline.toISOString(), 'medium'),
                 color: onSurface,
               },
               {
                 label: t('reservationDetail.cancelModal.currentDateLabel'),
-                value: formatDate('2026-03-05', 'medium'),
+                value: formatDate(today.toISOString(), 'medium'),
                 color: onSurface,
               },
               {
                 label: t('reservationDetail.cancelModal.penaltyApplied'),
-                value: t('reservationDetail.cancelModal.penaltyValue'),
-                color: success,
+                value: penaltyValueText,
+                color: cancellationTypeColor,
               },
             ].map(row => (
               <ModalRow key={row.label}>
@@ -295,8 +331,8 @@ const ReservationDetailPage: React.FC = () => {
               },
               {
                 label: t('reservationDetail.cancelModal.cancellationPenalty'),
-                value: `-${fp(0)}`,
-                color: success,
+                value: `-${fp(penaltyAmount)}`,
+                color: penaltyAmount > 0 ? error : success,
               },
             ].map(row => (
               <ModalRow key={row.label}>
@@ -307,7 +343,7 @@ const ReservationDetailPage: React.FC = () => {
             <Divider sx={{ borderColor: outlineVariant, my: '4px' }} />
             <RefundTotalBox>
               <RefundTotalLabel>{t('reservationDetail.cancelModal.totalRefund')}</RefundTotalLabel>
-              <RefundTotalValue>{fp(booking.totalPrice)}</RefundTotalValue>
+              <RefundTotalValue>{fp(refundAmount)}</RefundTotalValue>
             </RefundTotalBox>
           </ModalSummarySection>
 
@@ -318,7 +354,7 @@ const ReservationDetailPage: React.FC = () => {
             </RefundMethodIcon>
             <div>
               <RefundMethodTitle>
-                {t('reservationDetail.cancelModal.refundMethod')}
+                {t('reservationDetail.cancelModal.refundMethod', { method: refundMethodLabel })}
               </RefundMethodTitle>
               <RefundMethodCaption>
                 {t('reservationDetail.cancelModal.samePaymentMethod')}
