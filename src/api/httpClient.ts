@@ -5,6 +5,8 @@ type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 export interface RequestConfig {
   params?: Record<string, unknown>;
   body?: unknown;
+  headers?: Record<string, string>;
+  responseType?: 'json' | 'blob';
 }
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api/v1';
@@ -27,6 +29,7 @@ async function request<T>(method: Method, path: string, config?: RequestConfig):
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     'Accept-Language': i18n.language === 'EN' ? 'en' : 'es',
+    ...config?.headers,
   };
 
   const token = localStorage.getItem('auth_token');
@@ -72,6 +75,10 @@ async function request<T>(method: Method, path: string, config?: RequestConfig):
 
   if (response.status === 204) {
     return undefined as T;
+  }
+
+  if (config?.responseType === 'blob') {
+    return response.blob() as Promise<T>;
   }
 
   return response.json();
